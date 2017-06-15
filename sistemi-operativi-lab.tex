@@ -11,7 +11,6 @@
 \hypersetup{hidelinks, colorlinks = true, linkcolor = black}
 \large
 \title{Sistemi operativi - Laboratorio}
-\author{Davide "Dalton" Bianchi}
 \pagestyle{fancy}
 \maketitle
 \newpage
@@ -19,6 +18,16 @@
 \tableofcontents
 \newpage
 \pagenumbering{arabic}
+
+\section{Introduzione}
+Questa dispensa è scritta sulla base del programma di laboratorio del corso di Sistemi Operativi dell'anno accademico 2015/2016 per il corso di Laurea in Informatica, Università di Verona.
+
+È stata omessa una sezione sulle thread.\\
+
+Il codice della dispensa, scritta in \LaTeX, è reperibile seguendo il link \url{https://github.com/alx79/dispense-univr.git}.
+
+Chiunque volesse contribuire, segnalare errori (sicuramente presenti) o modificare il testo è ben accetto, è sufficiente scrivere ai gestori del repository GitHub (vedi fine documento).
+
 
 \section{Shell UNIX}
 \subsection{Introduzione}
@@ -1247,11 +1256,17 @@ I possibili valori si \verb|sem_op| sono:
 \item $\verb|sem_op|>0$: equivale a \textbf{V}. Incrementa il semaforo della quantità \verb|sem_op|
 \end{itemize}
 
-I valori di \verb|sem_flg| sono soltanto 2: \verb|IPC_NOWAIT| per realizzare \textbf{P} e \textbf{V} non bloccanti (utili per meccanismi di polling), \verb|SEM_UNDO| per ripristinare un valore precedente del semaforo (nel caso di terminazioni impreviste).
+I valori di \verb|sem_flg| sono soltanto 2: \verb|IPC_NOWAIT| per realizzare \textbf{P} e \textbf{V} non bloccanti (utili per meccanismi di polling), \verb|SEM_UNDO| per ripristinare un valore precedente del semaforo (nel caso di terminazioni impreviste).\newpage
 
 Ricordare che le operazioni inserite in una chiamata di \verb|semop()| vengono eseguite in modo \textbf{atomico}: se una delle operazioni specificate non può essere eseguita, il comportamento della syscall dipende dal flag \verb|IPC_NOWAIT|:
 \begin{itemize}
 \item se è settato, \verb|semop| fallisce e ritorna -1
 \item se non è settato, il processo viene bloccato
 \end{itemize}
+\newpage
+
+\section{Credits}
+Davide Bianchi (mail: \url{davideb1912@gmail.com}) \\
+Matteo Danzi
+
 \end{document}

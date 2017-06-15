@@ -4,3 +4,4 @@ Per contribuire scrivere a `davideb1912@gmail.com`.
 
 ## Corsi inclusi nelle dispense
 - Linguaggi di programmazione
+- Sistemi Operativi lab.
