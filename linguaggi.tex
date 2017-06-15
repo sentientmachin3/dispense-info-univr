@@ -1,0 +1,381 @@
+\documentclass{article}[10pt]
+\usepackage[italian]{babel}
+\usepackage{sans}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=3cm]{geometry}
+\title{Linguaggi di programmazione}
+
+\begin{document}
+	\hypersetup{hidelinks, colorlinks = true, linkcolor = black}
+	\large
+	
+	\title{\Huge \textbf{Linguaggi di programmazione}}
+	\pagestyle{fancy}
+	
+	\maketitle
+	\newpage
+	
+	\pagenumbering{roman}
+	\tableofcontents
+	\newpage
+	\pagenumbering{arabic}
+	
+	\section{Introduzione}
+	Questa dispensa è scritta sulla base del programma di Linguaggi dell'anno accademico 2016/2017 riguardante i seguenti argomenti: poset, reticoli, punti fissi, macchine astratte, cenni di semantica operazionale e denotazionale. Sono omesse le seguenti sezioni: language of commands e le parti di semantica statica e dinamica dei vari costrutti. \\
+	
+	Il codice della dispensa, scritta in \LaTeX, è reperibile seguendo il link \url{https://github.com/alx79/dispense-univr.git}.
+	
+	Chiunque volesse contribuire, segnalare errori (sicuramente presenti) o modificare il testo è ben accetto, è sufficiente scrivere ai gestori del repository GitHub (vedi fine documento).
+	
+	\section{Preliminari matematici}
+	\subsection{Posets}
+	
+	Un poset (\textit{partially ordered set}, indicato con $\mathcal{P}$) è un insieme dotato di ordine parziale su tutti i suoi elementi. Un poset possiede alcuni elementi particolari, quali:
+	\begin{itemize}
+		\item upper bound: un elemento $M \in \mathcal{P}$ tale che $\forall x \in \mathcal{P}$, dove  $\mathcal{S} \subseteq \mathcal{P}$, $x \leq M$;
+		\item lower bound: un elemento $m \in \mathcal{P}$ tale che $\forall x \in \mathcal{P}$, dove  $\mathcal{S} \subseteq \mathcal{P}$, $x \geq m$;
+	\end{itemize}
+	\textbf{NOTA:} non è necessario che $m$ e $M$ appartengano a $\mathcal{S}$.\\
+	
+	Inoltre, dato un poset $\mathcal{P}$ e un $\mathcal{X} \subseteq \mathcal{P}$, sono definiti:
+	\begin{itemize}
+		\item least upper bound: un elemento $x \in \mathcal{X}$ tale che:
+		\begin{itemize}
+			\item $x$ è upper bound di $\mathcal{X}$
+			\item $x$ è il più piccolo degli upper bound
+		\end{itemize}
+		\item greatest lower bound: un elemento $x \in \mathcal{X}$ tale che:
+		\begin{itemize}
+			\item $x$ è lower bound di $\mathcal{X}$
+			\item $x$ è il più grande dei lower bound
+		\end{itemize}
+	\end{itemize}
+	
+	\subsection{Reticoli}
+	Prima di definire un reticolo completo, è necessario definire:
+	\begin{itemize}
+		\item Join-semi lattice: un poset in cui due elementi qualsiasi hanno un least upper bound
+		\item Meet-semi lattice: un poset in cui due elementi qualsiasi hanno un greatest lower bound
+	\end{itemize}
+	
+	Un reticolo è quindi un reticolo che è sia join-semi lattice sia meet-semi lattice. Un caso particolare di reticolo è il reticolo completo, in cui ogni sottoinsieme $\mathcal{X} \subseteq \mathcal{P}$ ha un least upper bound.
+	
+	Un reticolo completo ha un elemento \textit{infimo} $\bot = \sqcup \emptyset$ e un elemento \textit{supremo} $\bot = \sqcup \mathcal{P}$
+	
+	\subsection{Teoria di punto fisso}
+	Un punto fisso di un operatore $f$ su un insieme $L$ è un elemento $x \in L$ tale che $f(x)=x$. \\
+	
+	Definito come \textbf{trace semantics} l'insieme delle tracce di esecuzione di un programma, finite o infinite, un prefisso della traccia è un sequenza di stati attraverso i quali la traccia passa di lunghezza finita.
+	
+	Applicando la definizione di punto fisso all'insieme dei prefissi di una traccia, otteniamo l'equazione $Pref=f(Pref)$ che in generale ammette soluzioni multiple. Si deduce che i punti fissi di un operatore possono essere un numero variabile, anche infiniti ($\lambda x \cdot x$).
+	
+	Esistono ovviamente anche punti fissi particolari, quali:
+	\begin{itemize}
+		\item least fixpoint: se esiste, $\forall x \in L: (f(x)=x) \Rightarrow (\text{lfp}(f) \sqsubseteq x)$
+		
+		\item greatest fixpoint: se esiste, $\forall x \in L: (f(x)=x) \Rightarrow (\text{gfp}(f) \sqsupseteq x)$
+	\end{itemize}
+	
+
+	\section{Macchine astratte}
+	\subsection{Introduzione}
+	Il modello fondamentale di una macchina astratta fa riferimento al modello della macchina di Von Neumann. Tale macchina da un quadro generale di una qualsiasi macchina, che svolge fondamentalmente sempre lo stesso ciclo di fasi:
+	\begin{enumerate}
+		\item Lettura delle istruzioni
+		\begin{enumerate}
+			\item Lettura dell'istruzione da eseguire
+			\item Decodifica dell'istruzione
+		\end{enumerate}
+		\item Fase di esecuzione
+		\begin{enumerate}
+			\item Lettura valore degli operandi
+			\item Esecuzione dell'istruzione
+			\item Memorizzazione del risultato
+		\end{enumerate}
+	\end{enumerate}
+	
+	Una macchina astratta è suddivisa in vari livelli, quali:
+	\begin{itemize}
+		\item \textbf{Livello applicativo:} contiene gli applicativi che si interfacciano direttamente con l'utente ed è strutturato con linguaggi ad alto livello, basi di dati e interfacce grafiche;
+		\item \textbf{Livello OS:} gestisce processi, programmi, memoria, operazioni di I/O e si interfaccia direttamente col kernel;
+		\item \textbf{Livello ASM:} contiene i codici mnemonici per gestire i registri della CPU, è implementato generalmente in Assembly;
+		\item \textbf{Livello HW:} livello fisico con i componenti hardware.
+	\end{itemize}
+	
+	Un \textbf{Linguaggio L} è definito da una sintassi e da una semantica. La sintassi è un insieme finito di costrutti che permette di creare dei programmi. Il linguaggio è supportato da una determinata \textbf{macchina astratta} $M_L$, ovvero un certo insieme di strutture dati e algoritmi che permettono di memorizzare ed eseguire programmi di $L$.
+	
+	Una macchina astratta è costruita su una certa quantità di memoria, che dovrà memorizzare dati e programmi, e un interprete, che esegue le istruzioni dei programmi.
+	Ogni macchina astratta ha tre possibili realizzazioni:
+	\begin{itemize}
+		\item \textbf{Hardware:} usata per macchine a basso livello o sistemi embedded, è dotato della velocità massima ma essendo una macchina specifica ha flessibilità nulla;
+		\item \textbf{Firmware:} struttura basata su un insieme di microprogrammi, è molto veloce e poco più flessibile di una macchina puramente hardware;
+		\item \textbf{Software:} strutture dati e algoritmi realizzati tramite programmi veri e propri, le performance calano, ma vengono compensate da una flessibilità maggiore e il fatto che può essere realizzata su una qualsiasi macchina ospite.
+	\end{itemize}
+	
+	\subsection{Interprete}
+	Ogni interprete ha delle tipologie di operazioni e modalità di lavoro che sono indipendenti dal linguaggio che riconosce, quali:
+	\begin{itemize}
+		\item \textbf{Elaborazione dei dati primitivi:} dati rappresentabili direttamente dalla memoria
+		\item \textbf{Control Flow:} gestione del flusso di esecuzione delle istruzioni, che non è sempre sequenziale
+		\item \textbf{Data flow:} recupero dei dati necessari all'esecuzione delle istruzioni
+		\item \textbf{Gestione della memoria:} gestione dell'allocazione della memoria per dati e programmi da memorizzare
+	\end{itemize}
+
+	L'interprete interpreta un \textbf{linguaggio macchina}, ovvero il linguaggio $L_M$ che ha come stringhe legali tutte le stringhe interpretabili da $M$. Dal momento che una macchina astratta ha come unico linguaggio legale $M_L$, implementare un linguaggio significa realizzare una macchina astratta $M$ per $L$.\\
+	
+	\textbf{NB:} esistono infinite macchine astratte per uno stesso linguaggio, la differenza sta nel come l'interprete viene realizzato e nelle strutture dati utilizzate.
+	
+	\subsection{Implementazione del linguaggio}
+	
+	Fondamentalmente per l'implementazione di un linguaggio sono dati:
+	\begin{itemize}
+		\item Il linguaggio da implementare
+		\item Una macchina astratta $Mo_{Lo}$, ovvero la macchina ospite con il suo linguaggio $Lo$
+	\end{itemize}
+	Quello che bisogna implementare è $L$ su $Mo_{Lo}$, traducendo quindi $L$ in $Lo$. Per realizzare ciò esistono due modalità:
+	\begin{itemize}
+		\item Una traduzione implicita (\textit{interpretativa}), basata sulla simulazione di $M_L$ mediante programmi in $Lo$
+		\item una traduzione esplicita (\textit{compilativa}), realizzata traducendo programmi in $L$ direttamente in programmi in $Lo$.
+	\end{itemize}
+
+	Un po' di notazione. Siano:
+	\begin{itemize}
+		\item $Prog^L$ l'insieme dei programmi scritti in $L$;
+		\item $D$ l'insieme dei dati in I/O (indifferente quale dei due);
+		\item $P^L:D\to D$ una funzione parziale ricorsiva tale che $P^L(input)=output$, con $P^L\in Prog^L$.
+	\end{itemize}
+	
+	\subsection{Soluzione interpretativa e compilativa}
+	La soluzione interpretativa prevede che si realizzi l'interprete di $M_L$ tramite un insieme di istruzioni di $Lo$, ovvero realizzando un $I^{Lo,L}$, scritto in $Lo$, che interpreta la istruzioni di $L$ ($I$ viene quindi eseguito su $Mo$).
+	In fin dei conti, un interprete $I$ è definibile come segue:
+	$$I^{Lo,L}:(Prog^L) \times D\to D$$\quad tale che $$I^{Lo,L}(P^L, D)=P^L(D)$$
+	
+	La soluzione compilativa invece traduce esplicitamente un programma in $L$ in uno scritto in $Lo$. La traduzione è eseguita da un \textbf{compilatore}. Nel caso della compilazione la fase di esecuzione è completamente separata da quella di traduzione. Dal punto di vista matematico, un compilatore realizza la funzione:
+	$$C^{L,Lo}:Prog^L \to Prog^L$$ tale che, dato un $P^L \in Prog^L$, 
+	$$C^{L,Lo}(P^L)=P^{Lo}$$ e $$P^L(input)=P^{Lo}(input)$$
+	Tra le due opzioni viene solitamente scelta una soluzione ibrida (es. Java), in quanto compilazione e interpretazione pura presentano svantaggi che si possono in parte ridurre usando questo tipo di metodo. 
+	
+	In alcuni casi è necessario caricare strutture dati e sottoprogrammi sulla macchina ospite per poter permettere l'esecuzione del codice prodotto dal compilatore (in particolare quando l'interprete della macchina intermedia e quello della macchina ospite coincidono). Questo insieme di dati è detto supporto a tempo di esecuzione (\textit{runtime support}). Nei linguaggi più vecchi era più che altro una rarità, nei moderni linguaggi ad alto livello questo scenario si presenta con quasi tutti i costrutti del linguaggio. \\
+	
+	\subsection{Specializzazioni}
+	All'interno di un linguaggio si possono inoltre aggiungere delle trasformazioni per motivi di performance, dette \textbf{specializzazioni}.
+	Una specializzazione prende un $P(x,y)$ con $x$ noto, e lo trasforma in $P_x(y)$ dove le computazioni relative ad $x$ sono state svolte prima della computazione. 
+	Uno specializzatore è quindi un programma che realizza la seguente funzione: $$Spec_L:(Prog^L \times D) \to Prog^L$$ tale che, dati un $P^L \in Prog^L$ e $d \in D$, $$Spec_L(P^L,d)=P_d$$ e $$I_L(P_L(d,Y))=I_L(P_d,Y)$$ dove $Y \in D$ e $I_L$ è l'interprete per $L$.
+	\newpage
+	
+	\section{Semantica operazionale}
+	
+	
+	\subsection{Descrizione di un linguaggio}
+	La descrizione di un linguaggio avviene su tre dimensioni:
+	\begin{itemize}
+		\item Sintassi
+		\item Semantica
+		\item Pragmatica
+	\end{itemize}
+
+	Nel gergo dei linguaggi di programmazione si definisce sintassi tutto ciò che è definito dalla grammatica, il rimanente cosituisce la semantica.
+	
+	La formalizzazione della sintassi di un linguaggio di programmazione avviene su tre possibili strutture:
+	\begin{itemize}
+		\item Grammatiche libere dal contesto
+		\item Derivazioni e linguaggi
+		\item Alberi di derivazione
+	\end{itemize}
+
+	La pragmatica invece è l'ambito che tende più alle metodologie di progettazione del software fornisce un adeguato stile di programmazione.
+	
+	La semantica descrive il significato di una frase di un certo linguaggio, e consta di 3 metodi formali per la sua descrizione:
+	\begin{itemize}
+		\item Semantica operazionale
+		\item Semantica denotazionale
+		\item Semantica assiomatica
+	\end{itemize}
+
+	La semantica operazionale si preoccupa di come vengono calcolati i risultati finali attraverso una variazione di configurazione del programma. Il modello matematico a cui fa riferimento è quello del sistema di transizione.
+	
+	Un sistema di transizione è una struttura $(\Gamma, \to)$ dove $\Gamma$ è un insieme di elementi $\gamma$ chiamati configurazioni e la relazione binaria $\to\subseteq \Gamma \times \Gamma $ è chiamata relazione di transizione.
+	
+	\subsection{Linguaggio IMP}
+	Gli insiemi sintattici di base sono:
+	\begin{itemize}
+		\item Tipi 
+		\item Valori di verità
+		\item Numeri
+		\item Identificatori
+		\item Operatori unari e binari
+	\end{itemize}
+
+	Le categorie sintattiche che ne derivano sono:
+	\begin{itemize}
+		\item Costanti 
+		\item Espressioni
+		\item Dichiarazioni
+		\item Comandi
+		\item Parametri attuali e formali
+		\item Parametri attuali valutati
+		\item Chiusure
+		\item Tipi dei parametri attuali
+		\item Valori e tipi esprimibili/denotabili/memorizzabili
+	\end{itemize}
+
+	
+	\subsection{Dichiarazioni}
+	Le dichiarazioni sono la categoria sintattica i cui elementi sono elaborati per produrre legami, ovvero un'associazione tra un identificatore e un valore denotabile oppure tra un identificatore e un tipo denotabile.
+	
+	\subsubsection{Locazioni}
+	Le locazioni sono un meccanismo di indirizzamento indiretto tra identificatori e valori che possono memorizzare ($bool \cup int$).
+	
+	Per ogni valore memorizzabile di tipo $\tau$ sia $Loc_\tau$ un insieme infinito di celle di memoria che possono memorizzare i valori di tipo $\tau$.
+	La collezione delle locazioni è quindi data da $$Loc=\bigcup\limits_{\tau\in STyp} Loc_\tau$$ \\ con $STyp=bool \cup int$, ovvero l'insieme di elementi memorizzabili.
+	
+	\subsubsection{Memoria}
+	Una memoria è un elemento dello spazio di funzioni $$Stores=\bigcup\limits_{L\subseteq Loc} Store_L$$ \\ dove $$Store_L:L\to SVal \cup \{?, \bot\}$$
+	I simboli $?$ e $\bot$ indicano rispettivamente lo stato inutilizzato e indefinito. Il simbolo $SVal$ denota i valori memorizzabili.
+	
+	Alle memorie viene inoltre imposta la condizione:
+	$$\forall l \in L.Stores(l) \in \tau \iff l\in L\cap Loc_\tau$$ per garantire che le locazioni siano utilizzate correttamente dal punto di vista dei tipi. \\
+	
+	La memoria viene inoltre dinamicamente aggiornata durante l'esecuzione del programma. Dati $L,L' \subseteq Loc, \sigma \in Store_L$ e $\sigma' \in Store_L'$, definiamo $\sigma [\sigma'] \in Store_{L \cup L'}$ come:
+	
+	%sistema di equazioni pag 60 del pdf
+	$$\sigma[\sigma'] = \begin{cases} \sigma'(l) &\mbox{if } l\in L' \\ 
+		\sigma (l) & \mbox{if } l \in (L-L') \end{cases}$$ \\
+	
+	Se $L\cap L'=\emptyset$ scriviamo $\sigma, \sigma'$ al posto di $\sigma [\sigma']$.
+	
+	\subsubsection{Ambiente}
+	L'ambiente (dinamico) associa identificatori a valori denotabili, con $\bot$ associato all'identificatore che non è associato ad alcun valore. Gli ambienti sono modificati dalle dichiarazioni che a nuovi valori associano un valore o una locazione.
+	
+	Un ambiente dinamico è un elemento dello spazio di funzioni $$Env=\bigcup\limits_{I\subseteq Id} Env_I$$ dove $$Env_I:I \to DVal \cup Loc\cup \{\bot\}$$ con metavariabile $\rho$ e $DVal$ valori denotabili.
+	
+	Le operazioni di aggiornamento degli ambienti $\rho[\rho'] \in Env_{I \cup I'}$ e $\rho,\rho' \in Env_{I \cup I'}$ sono definite come per le memorie.
+	
+	\subsubsection{Generatore di locazioni}
+	Per dichiarare nuove variabili è necessario definite una funzione che ad ogni nuovo identificatore associ un locazione di memoria non utilizzata. Supponiamo quindi di poter ordinare le locazioni dello stesso tipo, associando ad ognuna di esse un valore naturale quando vengono utilizzate.
+	
+	Un generatore di locazioni è una funzione $$New:Loc \times DTyp \to Loc \times \mathbb{N} $$ (con $DTyp$ tipi denotabili) definita come la funzione che esegue l'associazione:
+	$$New(L, \tau) = \langle l,m \rangle, L \subseteq Loc_\tau, l\in Loc_\tau$$ con $$m=max\{n | \exists \langle l,n \rangle.l\in L\}+1$$
+	
+	\subsubsection{Ambienti statici e compatibilità di ambienti}
+	Un ambiente statico (o di tipi) è un elemento dello spazio di funzioni $TEnv$ definito da: $$TEnv= \bigcup\limits_{I \subseteq Id} TEnv_I$$ dove $$TEnv_I:I \to DTyp$$ ha metavariabile $\Delta$ e $DTyp$ è l'insieme dei tipi denotabili. Le operazioni d aggiornamento degli ambienti statici sono definiti come per le memorie.
+	
+	Sia $\rho : I$ un ambiente dinamico e $\Delta:I$ un ambiente statico con $I\subseteq Id$. Gli ambienti $\rho$ e $\Delta$ sono compatibili ($\rho : \Delta$) se e soltanto se $$\forall(id) \in I.(\Delta(id)=\tau \wedge \rho(id) \in \tau) \vee \exists \tau.(\Delta(id) = \tau loc \wedge \rho(id) \in Loc_\tau)$$
+	
+	\subsubsection{Elaborazione ed equivalenza}
+	La funzione di elaborazione $Elab:Dic \times Store \to Env$ descrive il comportamento dinamico delle dichiarazioni a partire da una memoria $\sigma$ restituendo l'ambiente che esse generano. La funzione è così definita:
+	$$Elab(d, \sigma)=\rho \iff \langle d,\sigma \rangle \to_d^* \langle \rho, \sigma' \rangle$$
+	
+	L'equivalenza di due dichiarazioni $\equiv \subseteq Dic \times Dic$, è definita da $$d_0 \equiv d_1 \iff \forall \sigma.(Elab(d_0,\sigma) = Elab(d_1, \sigma))$$
+	
+	\subsection{Espressioni}
+	Sono una categoria sintattica che compare in tutti i linguaggi di programmazione. Vengono valutate per ottenere un valore, un tipo esprimibile. I costituenti elementari sono i letterali (constanti e identificatori), composti mediante operatori.
+	
+	\subsubsection{Valutazione ed equivalenza}
+	La funzione di valutazione $$Eval:Exp \times Store \to Con$$
+	che descrive il comportamento dinamico delle espressioni a partire da una memoria $\sigma$ restituendo il valore in cui esse sono valutate, è definita da $$Eval(e, \sigma)=k \iff \langle e, \sigma \rangle \to_e^* \langle k, \sigma \rangle$$
+	
+	La funzione di equivalenza di espressioni $\equiv \subseteq Exp \times Exp$ è definita da $$e_0 \equiv e_1 \iff \forall \sigma.(Eval(e_0,\sigma)=Eval(e_1, \sigma))$$
+	
+	\subsection{Comandi}
+	\subsubsection{Variabili e assegnamenti}
+	Categoria sintattica i cui elementi sono eseguiti per aggiornare la memoria della macchina astratta che supporta il linguaggio. Il comando base è l'assegnamento che modifica il contenuto di una locazione. \\
+	
+	Una variabile è un contenitore di valori che ha un nome particolare. Il loro contenuto può essere modificato tramite un assegnamento. Un assegnamento è costruito utilizzando un termine come \textit{left-value}, che denota la locazione da modificare, e un \textit{right-value}, che contiene il nuovo valore da associare alla locazione.
+	
+	\subsubsection{Iterazione e ricorsione}
+	Iterazione e ricorsione sono due meccanismi che permettono di ottenere formalismi di calcolo Turing-completi.
+	L'iterazione può essere di due tipologie:
+	\begin{itemize}
+		\item \textit{indeterminata} quando i cicli sono controllati logicamente (\verb|while, repeat|)
+		\item \textit{determinata} quando i cicli sono controllati numericamente (\verb|for, do while|)
+	\end{itemize}
+
+	La ricorsione è strutturata facendo chiamare ad una funzione se stessa per ripeterne l'esecuzione su un valore (o una serie di valori) fino a ricondursi ad un caso di base.
+	
+	\subsubsection{Esecuzione ed equivalenza}
+	La funzione $$Exec:Com\times Store \to Store$$ che descrive il comportamento dinamico dei comandi a partire da una memoria $\sigma$ resituendo la memoria della configurazione iniziale, è definita da $$Exec(c, \sigma)=\sigma' \iff \langle c, \sigma \rangle \to_c^* \sigma'$$
+	
+	L'equivalenza di comandi $\equiv \subseteq Com \times Com$ è definita da $$c_0 \equiv c_1 \iff \forall \sigma.(Exec(c_0, \sigma)=Exec(c_1, \sigma))$$
+	
+	\subsection{Procedure}
+	Lo scopo delle procedure è quello di abbreviare la scrittura di programmi che contengono sequenze di comandi ripetute, la cui unica differenza è data dal valore dei dati su cui lavorano. Questa differenza viene concretizzata con il meccanismo del passaggio di parametri. Negli ambienti viene legata una sequenza di comandi (il corpo della procedura) con il suo identificatore (nome della procedura).
+	
+	\subsubsection{Parametri}
+	I parametri consentono il riutilizzo di una procedura su valori diversi dello stesso dato.
+	I parametri sono:
+	\begin{itemize}
+		\item \textit{formali} se si trovano nella dichiarazione/definizione della procedura
+		\item \textit{attuali} quando vengono utilizzati nella chiamata effettiva della funzione
+	\end{itemize}
+
+	I parametri possono venire passati in due metodi:
+	\begin{itemize}
+		\item \textit{per valore} quando il valore attuale è assegnato a quello formale; in questo caso il contenuto del valore attuale viene copiato in quello formale, che si comporta come una variabile locale alla procedura di cui fa parte (le modifiche al valore del parametro formale non influenzano il valore del parametro attuale)
+		
+		\item \textit{per riferimento} quando un riferimento del valore attuale è passato al parametro formale (\textit{aliasing}), e le modifiche a quello formale si ripercuotono su quello attuale.
+	\end{itemize}
+	
+	\subsubsection{Regole di scope}
+	Con regola di scope si intende lo spazio di programma in cui una certa variabile è visibile e può quindi essere modificata.
+	
+	Il problema dello scope di una variabile si verifica sostanzialmente in 3 casi:
+	\begin{enumerate}
+		\item in presenza di procedure (blocchi eseguiti in posizioni diverse dalla loro definizione)
+		\item in presenza di ambiente locale
+		\item in presenza di dichiarazioni con nome uguale che possano mascherare la dichiarazione precedente
+	\end{enumerate}
+
+	In generale un riferimento non locale in un generico blocco B può essere risolto in 2 modalità:
+	\begin{itemize}
+		\item nel blocco che include sintatticamente B (\textit{scope statico})
+		\item nel blocco che è eseguito immediatamente prima di B (\textit{scope dinamico})
+	\end{itemize}
+\newpage
+
+	\section{Semantica denotazionale}
+	\subsection{Caratteristiche della semantica denotazionale}
+	La semantica denotazionale consta di questi caratteri:
+	\begin{itemize}
+		\item \textit{composizionalità}: la semantica di un costrutto è definita a partire dalla semantica dei suoi componenti
+		\item assegna una denotazione al programma (funzione sui domini semantici)
+		\item richiede un calcolo di minimo punto fisso, in quanto le funzioni di valutazione della semantica sono definite in modo ricorsivo
+	\end{itemize}
+
+	Nella semantica denotazionale si usa un altro dominio semantico, le \textit{continuazioni}, funzioni $$\mathcal{C}:store \to store$$ per trattare costrutti come i salti.
+	\subsection{Sintassi astratta}
+	La semantica formale viene solitamente definita su una rappresentazione dei programmi in \textit{sintassi astratta}.
+	Mentre nella sintassi concreta i costrutti del linguaggi sono rappresentati tramite stringhe, in sintassi astratta un costrutto è un'espressione (o albero) in termini di applicazione di un operatore astratto ad $n$ operandi, che a loro volta sono espressioni.
+	La sintassi astratta è definita specificano dei \textit{domini sintattici}, ognuno dei quali possiede un nome e relative metavariabili.
+	
+	La semantica denotazionale associa ad ogni costrutto sintattico la sua denotazione, ovvero una funzione che ha come dominio e codominio opportuni \textit{domini semantici}.
+	I domini semantici sono definiti da equazioni di dominio del tipo $$nomeDominio = espressioneDiDominio$$ le quali sono costruite a partire da \textit{costruttori di dominio} del tipo:$$ bool = \lbrace true, false \rbrace \quad \text{enumerazione di valori}$$ oppure $$val = \lbrack int + bool \rbrack \quad \text{somma di domini}$$
+	Per ogni dominio esiste un metodo per garantire un ordinamento parziale degli stessi, garantendo che ogni dominio sia effettivamente un reticolo completo.
+	
+	\subsection{Domini semantici}
+	In un qualunque linguaggio ad alto livello lo stato deve comprendere un dominio chiamato \textit{ambiente} ($env$), per modellare l'associazione tra gli identificatori e i valori che questi possono denotare. Il dominio $env$ è definito quindi come $$env:ide \to dval$$ inoltre, essendo possibile che identificatori diversi denotino la stessa locazione di memoria, è necessaria un componente \textit{memoria} ($store$), per modellare l'associazione tra locazioni e valori che possono essere memorizzati, quindi $$store:loc \to mval$$
+	
+	Precedentemente sono stati specificati anche $dval$, dominio dei valori che possono essere denotati da un identificatore nell'ambiente e $mval$, dominio dei valori che possono essere contenuti in una locazione di memoria.
+	
+	Viene introdotto anche un terzo dominio, $eval$, valori che possono essere ottenuti come semantica di un'espressione.
+	
+	\subsection{Funzioni di valutazione semantica}
+	Per ogni dominio sintattico esiste una funzione di valutazione semantica, 
+	$$\mathcal{E}:expr \times env \times store \to eval \quad \text{espressioni}$$
+	$$\mathcal{C}:com \times env \times store \to store \quad \text{comandi}$$
+	$$\mathcal{D}:dec \times env \times store \to env \times store \quad \text{dichiarazioni}$$
+	$$\mathcal{P}:prog \times env \times store \to store \quad \text{programmi}$$
+	
+	Le funzioni di valutazione semantica assegnano uno specifico significato ai vari costrutti del linguaggio, con una definizione data sui casi della sintassi astratta.
+	\newpage
+	
+	\section{Credits}
+	Davide Bianchi (mail: \url{davideb1912@gmail.com}) \\
+	Matteo Danzi
+	
+\end{document}
