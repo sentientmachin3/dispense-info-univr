@@ -1,0 +1,1257 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{utopia}
+\usepackage{bookmark}
+\usepackage{hyperref}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{fancyhdr}
+
+\begin{document}
+\hypersetup{hidelinks, colorlinks = true, linkcolor = black}
+\large
+\title{Sistemi operativi - Laboratorio}
+\author{Davide "Dalton" Bianchi}
+\pagestyle{fancy}
+\maketitle
+\newpage
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+\section{Shell UNIX}
+\subsection{Introduzione}
+La shell è una sezione del sistema operativo che permette all'utente di interfacciarsi direttamente con il kernel del sistema, che controlla direttamente l'hardware della macchina.
+Per "dialogare" con il resto del sistema utilizza un insieme di librerie e funzioni che semplificano il lavoro dell'utente, automatizzando gruppi di operazioni che altrimenti andrebbero svolte singolarmente.
+
+\subsection{Comandi utente e manuale}
+La sintassi generale di un comando da shell è la seguente:
+\begin{verbatim}
+comando [opzioni] [argomenti]
+\end{verbatim}
+I comandi lunghi possono essere continuati sulla riga successiva con un carattere "\textbackslash" posto alla fine della riga, mentre se si vogliono dare molteplici comandi in una sola volta basta separarli sulla stessa riga con ";".
+Per determinare l'utente corrente (ogni user è identificato da un \textit{user-id} e/o \textit{group-id}) si possono dare i seguenti comandi:
+\begin{itemize}
+\item \verb|whoami|
+\item \verb|who|
+\item \verb|finger|
+\item \verb|id|
+\end{itemize}
+Tutti i comandi sono inoltre documentati (con tutte le opzioni disponibili e gli argomenti che possono essere passati). La documentazione di un comando è reperibile tramite il comando
+\begin{verbatim}
+man [comando]
+\end{verbatim}
+\subsection{Struttura e comandi per il file system}
+\subsubsection{Path assoluti e relativi}
+Ogni directory contiene due directory:
+\begin{itemize}
+\item \verb|.| punta alla cartella corrente
+\item \verb|..| punta alla cartella padre
+\end{itemize}
+Ricordare che i file che iniziano con "." sono nascosti.
+Per la navigazione nel filesystem si usano i \textit{path}, ovvero i percorsi di directory e file. Un path può essere di due tipologie:
+\begin{itemize}
+\item \textbf{assoluto:} ha come radice la radice del filesystem (cartella root "\textbackslash")
+\item \textbf{relativo:} ha origine dalla cartella corrente
+\end{itemize}
+
+\subsubsection{File}
+I file a livello fisico sono semplicemente visti come flusso di byte (\textit{byte stream}), mentre a livello logico sono di 4 tipi:
+\begin{itemize}
+\item Directory: contengono nomi e indirizzi di altri file
+\item Special file: costituiscono l'entry point per i device (puntano al relativo device driver)
+\item Link:sono collegamenti ad altri file (hard e soft link)
+\item File ordinario: tutti gli altri file
+\end{itemize}
+\paragraph{Special file} Sono file particolari che semplificano le operazioni di lettura/scrittura, rendendo indipendenti l'I/O dal tipo di dispositivo.
+\paragraph{Link}
+Sono generalmente collegamenti a file. Ne esistono di due tipi:
+\begin{itemize}
+\item Soft link: contiene semplicemente il nome di un altro file
+\item Hard link:Nome in una directory che punta ad un i-node (che può essere puntato anche da altri)
+\end{itemize}
+\textbf{N.B.: non si può fare un hard link di directory nè a file su altri file system. Inoltre un file viene rimosso solo quando tutti i suoi hard link vengono cancellati.}
+
+\paragraph{Contenuto di directory}Il comando \verb|ls| elenca file e directory in una data cartella \\
+Sintassi: \verb|ls [-opzioni] [args]| \\ \\
+Opzioni:
+\begin{itemize}
+\item \verb|-a| mostra file e directory nascosti
+\item \verb|-l| mostra l'output in formato esteso
+\item \verb|-g| include/sopprime il nome del proprietario
+\item \verb|-r| ordine inverso (alfabetico/temporale)
+\item \verb|-F| (obsoleta) indica file particolari aggiungendo un carattere
+\item \verb|-R| elenca i file nelle sottodirectory
+\end{itemize}
+
+\paragraph{Spazio su disco} Il comando \verb|df| mostra lo spazio occupato nel disco \\
+Sintassi: \verb|df [-opts]| \\ \\
+Opzioni:
+\begin{itemize}
+\item \verb|-k| mostra l'occupazione in byte
+\item \verb|-h| mostra l'occ. in formato più facilmente leggibile
+\end{itemize}
+\paragraph{Occupazione delle directory} Il comando \verb|du|mostra l'occupazione del contenuto di una directory \\
+Sintassi: \verb|du [-opts] [dir]| \\ \\
+Opzioni:
+\begin{itemize}
+\item \verb|-a| mostra l'occ. di ciascun file
+\item \verb|-s| mostra solo il totale complessivo
+\item \verb|-h| come in \verb|df|
+\end{itemize}
+\paragraph{Visualizzazione di file} I comandi descritti più avanti sono usati per visualizzare il contentuto di file di testo. \verb|cat| concatena i file passati su stdout, \verb|head| e \verb|tail| visualizzano le prime/ultime righe di un file \\
+Sintassi:
+\begin{verbatim}
+cat [files]
+head [-opts] [files]
+tail [-/+ opts] [files]
+\end{verbatim}
+
+Opzioni: (\verb|-n| per \verb|head| e \verb|tail|, \verb|-r| e \verb|-f| solo per \verb|tail|.
+\begin{itemize}
+\item \verb|-r| visualizza in ordine inverso
+\item \verb|-f| rilegge continuamente il file (cazzo vuol dire?)
+\item \verb|-n| visualizza o salta (con il \verb|+n|) le ultime (prime) n righe
+\end{itemize}
+
+\paragraph{Visualizzazione interattiva di file}I seguenti comandi visualizzano per pagine in modo interattivo un file di testo \\
+Sintassi:
+\begin{verbatim}
+pg [files]
+more [files]
+less [files]
+\end{verbatim}
+
+Non esistono delle vere proprie opzioni, ma si possono dare comandi interattivi utili per la navigazione:
+\begin{itemize}
+\item spazio:pagina successiva
+\item CR:riga successiva
+\item b:pagina precedente
+\item /\textit{pattern}:prossima pagina con \textit{pattern}
+\item ?\textit{pattern}:pagina prec. con \textit{pattern}
+\item q:termina programma
+\item v:edita file corrente
+\end{itemize}
+Per la navigazione si possono usare anche \textit{n} o \textit{p}.
+
+\paragraph{Copia, spostamento e cancellazione di file} Comandi usati per la manipolazione di file. \verb|cp| copia un file, \verb|rm| rimuove file e \verb|mv| li sposta.\\
+Sintassi:
+\begin{verbatim}
+cp [-opts] [srcs] [dest]
+rm [-opts] [files]
+mv [-opts] [files] [dest]
+\end{verbatim}
+Opzioni: (\verb|-r| solo per \verb|cp| e \verb|rm|)
+\begin{itemize}
+\item \verb|-f| non chiede conferma
+\item \verb|-i| chiede conferma per ogni file
+\item \verb|-r| opera ricorsivamente nelle sottodir.
+\end{itemize}
+
+\paragraph{Manipolazione di directory} Questi sono i comandi che manipolano delle directory.\verb|cd| consente di muoversi nel fs, \verb|pwd| stampa il path della directory corrente, \verb|mkdir| e \verb|rmdir| creano/rimuovono la cartella specificata.\\
+Sintassi:
+\begin{verbatim}
+cd [dir]
+pwd
+mkdir [dir]
+rmdir [dir]
+\end{verbatim}
+Non ci sono opzioni.
+
+\paragraph{Gruppi e proprietari} I seguenti comandi cambiano gruppo/proprietario del file.\\
+Sintassi:
+\begin{verbatim}
+chgrp [-opt] [group] [file]
+chown [-opt] [utente:gruppo] [file]
+\end{verbatim}
+Opzioni:
+\begin{itemize}
+\item \verb|-R| opera su sottodirectory in entrambi i casi.
+\end{itemize}
+
+\paragraph{Modifica dei permessi} Il comando \verb|chmod| cambia i permessi di un dato file.\\
+Sintassi:
+\verb|chmod [-opt] [prot] [file]| \\ \\
+Opzioni:
+\begin{itemize}
+\item \verb|-R| opera ricorsivamente sulle sottodirectory
+\end{itemize}
+I permessi vengono modificati con la codifica ottale. Si indicano 4,2,1 per i permessi di lettura/scrittura/esecuzione per ogni tipo di utente (owner, gruppo, altri).
+Sommando la codifica ottenuta si ottengono i permessi da aggiungere/modificare.
+Esempio: \verb|chmod 755 file.txt| setta i permessi rwx per il proprietario ($4+2+1=7$), r-x per il gruppo e gli altri utenti ($4+0+1=5$).
+
+\subparagraph{Sticky bit} bit impostato solo sulle directory che, a seconda di come è impostato, consente a tutti oppure solo al proprietario e all'amministratore di cancellare, rinominare o modificare il contenuto di una directory.
+
+\subparagraph{Campi setuid/setgid:} campi modificabili tramite comando \verb|chmod| che consentono di diventare temporaneamente padrone del file o di appartenere allo stesso gruppo del padrone del file.
+
+\paragraph{Ricerca di file e directory} Il comando \verb|find| visita il sottoalbero sotto la directory specificata e ritorna i file che rendono vera l'espressione passata. \\
+Sintassi: \verb|find [dir] [expr]|\\ \\
+Espressioni di ricerca possibili:
+\begin{itemize}
+\item \verb|name [pattern]|
+\item \verb|type [tipo]|
+\item \verb|group [gruppo]|
+\item \verb|newer file|
+\item \verb|atime/mtime/ctime [+/- giorni]|
+\item \verb|print|
+\item \verb|size [+/- blocchi]|
+\end{itemize}
+
+\paragraph{Comando diff} ritorna le differenze tra due file o directory. Mostra le righe diverse, indicando quelle in più (\verb|a|), quelle cancellate(\verb|d|) e quelle cambiate (\verb|c|).\\
+Sintassi:
+\begin{verbatim}
+diff [-opts] [file1] [file2]
+diff [-opts] [dir1] [dir2]
+\end{verbatim}
+Opzioni:
+\begin{itemize}
+\item \verb|-b| ignora gli spazi a fine riga, collassando gli altri
+\item \verb|-i| ignora maiuscolo/minuscolo
+\item \verb|-w| ignora la spaziatura
+\end{itemize}
+
+\paragraph{Attributi di file} modifica gli attributi di un file. Se la data non è specificata la imposta a quella corrente, se il file non esiste lo crea vuoto. \\
+Sintassi:
+\verb|touch [-opts] [data] [file]| \\ \\
+Opzioni:
+\begin{itemize}
+\item \verb|-a| modifica accesso
+\item \verb|-m| cambia ultima modifica
+\end{itemize}
+
+\subsection{Processi e relativi comandi}
+Un processo è definito come un programma in esecuzione, ovvero una sequenza di byte interpretata dalla cpu come un insieme di istruzioni e dati. I processi hanno 3 caratteristiche di base:
+\begin{itemize}
+\item sono organizzati in maniera gerarchica
+\item hanno un PID univoco (assegnato dal sistema)
+\item hanno una priorità (asseganta dal sistema)
+\end{itemize}
+Evolvono attraverso un certo numero di stati (generici):
+\begin{itemize}
+\item In esecuzione in user mode
+\item In esecuzione in kernel mode
+\item In attesa
+\item Pronto
+\end{itemize}
+In UNIX i processi eseguono normalmente in foreground hanno tre canali standard connessi al terminale (\textit{stdin}, \textit{stdout}, \textit{stderr}). I processi che sono attivati con la "\&" sono eseguiti in background e sono privi di stdin. I normali processi in fg possono essere sospesi con "\^{}Z". I processi sono eseguiti in entrambe le modalità e possono essere scambiati (da bg a fg e viceversa).
+
+\subsubsection{Dati relativi ai processi} Consente di analizzare dati relativi ai processi attivi. Gli stati dei processi UNIX sono  i seguenti:
+\begin{itemize}
+\item \textbf{R} In esecuzione/eseguibile
+\item \textbf{T} Stoppato
+\item \textbf{S} Addormentato
+\item \textbf{Z} Zombie
+\item \textbf{D} In attesa con I/O non interrompibile.
+\end{itemize}
+Ci sono particolari processi detti \textbf{daemon} che sono vitali e girano sempre in bg, come il processo di gestione delle risorse. \\
+Sintassi:
+\verb|ps [-opts]| \\ \\
+Opzioni:
+\begin{itemize}
+\item \verb|-a| visualizza processi di tutti gli utenti
+\item \verb|-x| visualizza anche i processi in background
+\item \verb|-u| visualizza informazioni relative all'utente
+\end{itemize}
+
+\subsubsection{Processi in back/foreground} \verb|fg| e \verb|bg| mettono i processi in bg e fg e \verb|jobs| elenca i processi in background/sospesi.\\
+Sintassi:
+\begin{verbatim}
+jobs [-l]
+bg [job-id]
+fg [job-id]
+\end{verbatim}
+
+\subsubsection{Segnali} manda un segnale al job indicato. \\
+Sintassi:
+\begin{verbatim}
+kill [-sig] [pid]
+kill [-sig] [job-id]
+\end{verbatim}
+I segnali più usati sono \verb|-9| (kill) e \verb|-1| (hup), ma con il comando \verb|kill -l| si possono visualizzare tutti i segnali disponibili.
+
+\subsection{Programmazione della shell}
+Offre vie di comunicazione rapide con il sistema operativo, tramite script o interattività. Funzionalià avanzate della shell permettono di ridirezionare l'I/O su file e di strutturare pipe tra comandi (usare lo stdout del primo come stdin del secondo).
+Ogni script di bash inizia con la riga \verb|#!bin/bash|, che specifica il percorso della shell usata.
+
+\subsubsection{Assegnamenti e accesso alle variabili}
+Gli assegnamenti in bash si svolgono alla classica maniera \verb|var1=10| (senza spazi vicino al simbolo =), mentre l'accesso a valori si effettua con il simbolo "\$" (\verb|var1=$var2|). Ricordare che i valori delle variabili \textbf{sono sempre stringhe}. Per effettuare valutazioni aritmetiche si usa quindi una sintassi del tipo \verb|$(())|.
+
+\subsubsection{Cronologia bash} La bash mantiene una cronologia dei comandi dati nel file di default \verb|.bash_history|, modificabile cambiando il valore della variabile d'ambiente \verb|HISTFILE|.
+Ai comandi passati si può accedere nei seguenti modi:
+\begin{itemize}
+\item \verb|!n| esegue il comando \textit{n} del buffer, che potrebbe anche non esistere
+\item \verb|!!| esegue l'ultimo comando
+\item \verb|!-n!| esegue l'\textit{n-ultimo} comando
+\item \verb|!^| primo parametro del comando precedente
+\item \verb|!$| l'ultimo parametro del comando precedente
+\item \verb|!*| tutti i parametri del comando precedente
+\item \verb|![str]| l'ultimo comando che inizia con stringa
+\item \verb|^[str1]^[str2]| nell'ultimo comando sostituisce \verb|str1| con \verb|str2|.
+\end{itemize}
+
+\subsubsection{Wildcard} Sono caratteri speciali che hanno funzioni particolari:
+\begin{itemize}
+\item \verb|/| separa i nomi delle dir in un path
+\item \verb|?| un qualunque carattere
+\item \verb|*| una qualunque sequenza di caratteri
+\item \verb|~| la directory di login (\textit{home})
+\item \verb|~[user]| la home dell'utente specificato
+\item \verb|[]| un carattere tra quelli in parentesi
+\item \verb|{,}| una parola tra quelle in parentesi
+\end{itemize}
+
+\subsubsection{Aliasing} Il comando \verb|alias| consente di dare nomi diversi a comandi noti. Tipicamente i nomi dati sono più semplici da memorizzare. \verb|alias| senza parametri elenca gli alias attuali, \verb|alias [nome]='[valore]'| consente di assegnare un alias, \verb|unalias [nome]| cancella l'alias specificato.\\ \\
+Sintassi:
+\begin{verbatim}
+alias [nome]='[valore]'
+alias
+unalias [nome]
+\end{verbatim}
+
+\subsubsection{Ambiente e variabili d'ambiente}
+Le variabili sono normalmente locali alla bash in cui vengono eseguite. Tuttavia, in casi particolari come quello di una bash padre e una bash figlio è possibile trasmettere le modifiche eseguite, tramite i comandi \verb|export [var]| (da padre a figlio) e \verb|source| (da figlio a padre).
+
+\subsubsection{Ridirezione dell'I/O}
+L'output o l'input di un comando (presi tramite canali stdin e stdout) possono essere ridiretti (\textit{pipe}) su file o in un altro comando.
+\begin{itemize}
+\item \verb|comando [params] < [file]| esegue lo stdin da file
+\item \verb|[comando] > [file]| stdout su file (se il file non è vuoto viene cancellato quello che c'è dentro
+\item \verb|[comando] >> [file]| stdout aggiunto in coda al file
+\item \verb|[comando] >& [file]| stderr e stdout in file
+\item \verb|[comando1]| \textbar \verb|[comando2]| pipe tra \verb|comando1| e \verb|comando2|.
+\end{itemize}
+
+\subsubsection{Variabili speciali}
+La bash memorizza gli argomenti della linea di comando in una serie di variabili \verb|$1,$2,...$n|. Vi sono anche variabili particolari come :
+\begin{itemize}
+\item \verb|$$| PID del processo shell
+\item \verb|$0| nome dello script eseguito
+\item \verb|$#| numero di argomenti
+\item \verb|$?| exit-code dell'ultimo programma eseguito in foreground
+\item \verb|$!| PID dell'ultimo programma eseguito in bg
+\item \verb|$*| tutti gli argomenti (\verb|"$1 $2...$n"|)
+\item \verb|$@| tutti gli argomenti (\verb|"$1" "$2"..."$n"|)
+\end{itemize}
+
+\subsubsection{Vettori}
+Le variabili vettore hanno in bash la stessa struttura che assumono gli array in C. Si definiscono enumerando i valori tra parentesi tonde. (\verb|v=(1 2 3)|), e si accede ai campi tramite parentesi quadre (\verb|${v[1]}|). 
+Ricordare che \textbf{gli indici partono da 0}.
+
+\subsubsection{Input/Output} Per stampare un valore su stdout si usa la keyword \verb|echo [valore]|, mentre per acquisire un valore da stdin si usa \verb|read [var]|.
+
+\subsubsection{Condizionale if}
+Come in altri linguaggi di programmazione, la struttura condizionale \verb|if-else| si usa per imporre l'esecuzione di codice al verificarsi di determinate condizioni. La sintassi più classica è la seguente:
+\begin{verbatim}
+if [ cond ];
+    then [azioni];
+fi
+\end{verbatim} oppure, usando \verb|else|/\verb|else if|:
+\begin{verbatim}
+if [ cond ];
+    then (istr);
+elif [ cond ];
+    then (istr);
+...
+else
+    (istr);
+fi
+\end{verbatim}
+
+Ricordare che tra le parentesi quadre e la condizione ci va uno \textbf{spazio} sia a dx che a sx.
+\textbf{Precisazioni sulle parentesi:} nella struttura \verb|if-else| si possono usare tutti i tipi di parentesi:
+\begin{itemize}
+\item \verb|[...]| la versione classica (comando test)
+\item \verb|[[...]]| una versione che non considera l'espansione dei pathname
+\item \verb|((...))| per usare l'ambiente aritmetico (per testare il risultato di operazioni)
+\end{itemize}
+Le parentesi tonde singole sono invece usate per modificare le regole di precedenza nello svolgimento di operazioni.
+
+Per specificare una condizione all'interno di una struttura condizionale si usa la seguente sintassi:
+\begin{itemize}
+\item \verb|-n| verifica se l'operando ha lunghezza diversa da 0
+\item \verb|-z| verifica se l'operando ha lunghezza 0
+\item \verb|-d| esiste una dir. con nome uguale all'operando
+\item \verb|-f| esiste un file regolare con nome uguale all'operando
+\item \verb|-e| esiste un file con nome uguale all'operando
+\item \verb|-r,-w,-x| esiste un file leggibile/scrivibile/eseguibile
+\item \verb|-eq,-ne| gli operandi sono interi e uguali/diversi
+\item \verb|=,!=| gli operandi sono stringhe uguali/diverse
+\item \verb|-lt,-gt| operando maggiore/minore di un altro
+\item \verb|-ge,-le| operando maggiore o uguale/minore o uguale all'altro
+\end{itemize}
+
+Possono anche essere utilizzati i simboli classici (\verb|&&|, \verb|!=|, ... ) quando si usa l'ambiente aritmetico.
+
+\subsubsection{Struttura switch/case}
+Lo switch case funziona in maniera simile al C. Ricordare che la sintassi \verb|*)| indica il \verb|default| del C. Inoltre le guardie dei casi sono considerate stringhe.
+\begin{verbatim}
+case [sel] in
+case1) [istr];;
+case2) [istr];;
+...
+*) [istr];;
+esac
+\end{verbatim}
+
+\subsubsection{Ciclo for}
+Il ciclo for è strutturato su una sintassi particolare per la bash, anche se è previsto un for con sintassi come quella del C/Java.
+\begin{verbatim}
+for [arg] in [lista]
+    [istr]
+done
+\end{verbatim}
+La variabile lista può assumere i seguenti valori:
+\begin{itemize}
+\item un elenco di valori
+\item una variabile (una lista di valori)
+\item un meta-carattere che si può espandere in una lista di valori (??)
+\end{itemize}
+Se non viene messa la clausola \verb|in| il ciclo itera sugli argomenti da linea di comando.
+
+\subsubsection{Ciclo while}
+Come per il \verb|for|, anche il ciclo while ha due sintassi:
+\begin{verbatim}
+while [ cond ]
+do
+    [istr]
+done
+\end{verbatim}
+e una come in C/Java. La parte tra \verb|[ ]| funziona come in un \verb|if|.
+
+\subsubsection{Ciclo until}
+Il ciclo until non ha corrispondenti in C/Java, e ha la particolarità di reiterare finchè la condizione specificata è \textbf{falsa}.
+\begin{verbatim}
+until [ cond ]
+do
+    [istr]
+done
+\end{verbatim}
+
+\subsubsection{Funzioni}
+Come in altri linguaggi di programmazione in bash si possono scrivere funzioni, da richiamare nel corpo dello script.
+La sintassi per definire una funzione è:
+\begin{verbatim}
+function [nome] {
+    [istr]
+}
+\end{verbatim}
+La funzione vede come parametri \verb|$1, $2,...| come se si invocasse uno script indipendente. Può ritornare un valore con la keyword \verb|return [valore]|.
+
+\subsubsection{Filtrare l'output} Il comando \verb|grep| fa parte dei filtri (come i seguenti), comandi che prendono un input, lo filtrano secondo alcune regole passate come parametro e producono un output. Possono rivelarsi molto utili se ridirezionati su file o in pipe. \verb|grep| cerca se una stringa compare all'interno di un file. \\
+Sintassi : \verb|grep [-opts] [pattern] [file]| \\ \\
+Opzioni:
+\begin{itemize}
+\item \verb|-c| conta le righe contenenti \textit{pattern}
+\item \verb|-i| ignora il upper/lower case
+\item \verb|-l| elenca i nomi dei file contenenti \textit{pattern}
+\item \verb|-n| indica il numero d'ordine delle righe
+\item \verb|-v| considera le righe non contenenti \textit{pattern}
+\item \verb|-x| controlla che l'intera linea corrisponda completamente
+\item \verb|-w| controlla che l'intera parola corrisponda completamente
+\end{itemize}
+Le espressioni per \verb|pattern| possono essere normali stringhe oppure:\begin{itemize}
+\item \verb|.| un carattere qualunque
+\item \verb|^| inizio riga
+\item \verb|$| fine riga
+\item \verb|*| ripetizione (zero o più) 
+\item \verb|+| ripetizione (una o più)
+\item \verb|[ ]| un carattere tra quelli in parentesi
+\item \verb|[^]| un carattere tranne quelli in parentesi
+\item \verb|\<| inizio parola
+\item \verb|\>| fine parola
+\end{itemize}
+Esistono anche due varianti di \verb|grep|:
+\begin{itemize}
+\item \verb|fgrep [-opts] [str] [file]| i pattern sono stringhe (più veloce e compatto)
+\item \verb|egrep [-opts] [str] [file]| i pattern sono espressioni regolari estese (più lento e consuma più memoria)
+\end{itemize}
+\subsubsection{Ordinamento} Il comando \verb|sort| si occupa di ordinare dei dati secondo criterio. \\
+Sintassi: \verb|sort [-opts] [file]| \\ \\
+Opzioni:
+\begin{itemize}
+\item \verb|-b| ignora gli spazi iniziali
+\item \verb|-d| modo alfabetico
+\item \verb|-f| ignora upper/lower case
+\item \verb|-n| modo numerico
+\item \verb|-o [file]| scrive i dati da ordinare in \verb|file|
+\item \verb|-r| ordinamento inverso
+\item \verb|-t [char]| usa \verb|char| come separatore per i campi
+\item \verb|-k [field]| ordina sul campo/i specificati
+\end{itemize}
+
+\subsubsection{Selezione di campi} Il comando \verb|cut| seleziona campi in una riga di testo \\
+Sintassi:
+\begin{verbatim}
+cut [-opt+list] [file]
+cut [-opt+list] [-opt+char] [-opt] [file]
+\end{verbatim}
+Opzioni:
+\begin{itemize}
+\item \verb|-c| selezione per caratteri
+\item \verb|-f| seleziona per campi
+\item \verb|-d [char]| usa \verb|char| come separatore
+\item \verb|-s| considera solo le linee che contengono il separatore
+\end{itemize}
+\subsubsection{Contatori di riga} Il comando \verb|wc| può contare numero di righe, parole, caratteri in un file. \\
+Sintassi:\verb|wc [-opts] [file]| \\ \\
+Opzioni:
+\begin{itemize}
+\item \verb|-c| conta solo i caratteri
+\item \verb|-l| conta solo le righe
+\item \verb|-w| conta solo le parole
+\end{itemize}
+
+\subsubsection{Soppressione dei doppioni} Il comando \verb|uniq| trasferisce l'input sull'output sopprimendo le righe doppie contigue. \\
+Sintassi:\verb|uniq [-opts] [file]| \\ \\
+Opzioni:
+\begin{itemize}
+\item \verb|-u| visualizza solo le righe non ripetute
+\item \verb|-c| visualizza anche il contatore del numero di righe
+\end{itemize}
+\subsubsection{Uso dell'output di un comando}
+È possibile usare l'output di un comando come dati per un comando successivo, tramite l'operatore \verb|"`[comando]`"| oppure con  \verb|$([comando])|.
+\section{System call}
+\subsection{Introduzione}
+Le system call sono delle funzioni del sistema operativo che permettono di interfacciarsi con il kernel.
+Dal punto di vista della loro invocazione funzionano esattamente come un'invocazione di una funzione in C. In realtà funzionano in maniera leggermente più complicata.
+\begin{itemize}
+\item Esiste una \textit{system call library} che contiene funzioni con lo stesso nome della syscall.
+\item Le funzioni di libreria eseguono lo switch da user a kernel mode, per eseguire il codice della funzione chiamata.
+\item La funzione di libreria passa un ID unico al kernel che identifica la syscall chiamata.
+\end{itemize}
+Di norma l'utilizzo delle syscall è generalmente meno efficiente delle corrispondenti chiamate alla libreria C.
+In caso di errore le syscall ritornano un valore (tipicamente -1).
+
+\subsection{System call per il file system}
+\subsubsection{Introduzione}
+Ricordare che in UNIX esistono i seguenti tipi di file :
+\begin{itemize}
+\item Link
+\item File regolari
+\item Directory
+\item Pipe
+\item Special file
+\end{itemize}
+N.B.: gli special file sono file particolari che non contengono dati, ma solo un puntatore al device driver del corrispondente device.
+
+\subsubsection{I/O bufferizzato}
+Le funzioni del sistema come 
+\verb|fopen(), fread(), fwrite(), fclose(), printf()|sono bufferizzate, mentre quelle di POSIX non lo sono.
+In caso di I/O si parla di \textit{canali} e non di file.
+\subsubsection{Apertura di file}
+L'apertura di un file si effettua con una chiamata della funzione \verb|fopen|:
+\begin{verbatim}
+int open ( char * name , int access , mode_t mode );
+\end{verbatim}
+I valori che il parametro \verb|access| può assumere sono i seguenti:
+\begin{itemize}
+\item Uno fra \verb|O_RDONLY|, \verb|O_WRONLY| o \verb|O_RDWR|
+\item Uno o più fra \verb|O_APPEND|, \verb|O_CREAT|, \verb|O_EXCL|, \verb|O_SYNC|, \verb|O_TRUNC|.
+\end{itemize}
+Ricordare che \textbf{vanno messi in OR}.
+I valori del parametro \verb|mode| possono essere uno o più fra i seguenti (sempre messi in OR):
+\begin{verbatim}
+S_IRUSR S_IWUSR S_IXUSR S_IRGRP S_IWGRP S_IXGRP
+S_IROTH S_IWOTH S_IXOTH S_IRWXU S_IRWXG S_IRWXO
+\end{verbatim}
+Le costanti possono essere rimpiazzate usando gli ottali che si usano per i permessi dei file modificati con \verb|chmod|, ma per garantire un minimo di portabilità è meglio usare le costanti. La funzione \verb|open| mette a disposizione anche modi speciali:
+\begin{itemize}
+\item \verb|O_EXCL|: apertura in modo esclusivo (nessun altro processo può aprire/creare)
+\item \verb|O_SYNC|: apertura in modo sincronizzato (file tipo lock, prima terminano eventuali operazioni di I/O in atto)
+\item \verb|O_TRUNC|: apertura di file esistente implica cancellazione del suo contenuto.
+\end{itemize}
+\subsubsection{Creazione di file}
+La funzione \verb|creat()| permette di creare un file (precisamente un i-node) e di aprirlo \textbf{in lettura}.
+\begin{verbatim}
+int creat ( char * name , int mode );
+\end{verbatim}
+La funzione prende come parametro \verb|int mode| che funziona allo stesso modo del parametro \verb|access| della funzione \verb|fopen|.
+\\ \\
+\textbf{N.B.: nonostante anche la open possa creare un file, è preferibile usare la creat, e usare la open solo per aprire un file già esistente.Inoltre sia la open che la creat devono includere <fcntl.h>}
+
+\subsubsection{Creazione di directory}
+Per creare una directory si usa la funzione \verb|mknod|, con la seguente sintassi:
+\begin{verbatim}
+int mknod ( char * path , mode_t mode , dev_t dev );
+\end{verbatim}
+Prende come parametro un path, una modalità (vedi tabella) e il parametro \verb|dev|, in cui viene specificato il major/minor number se si tratta di uno special file, viene ginorato in caso contrario.
+Ricordarsi di includere :
+\begin{verbatim}
+# include <sys/types.h >
+# include <sys/stat.h >
+\end{verbatim}
+
+
+\textbf{La creazione di una directory con creat NON genera le directory . e .., necessarie per la navigazione tra le directory create.}\newline
+\\
+È preferibile usare le funzioni di libreria \verb|mkdir| e \verb|rmdir|.
+\begin{verbatim}
+# include <sys/stat .h>
+# include <sys/types.h>
+# include <fcntl.h>
+# include <unistd.h>
+
+int mkdir ( const char * path , mode_t mode );
+int rmdir ( const char * path );
+\end{verbatim}
+Con gli stessi parametri della funzione \verb|creat|.
+
+\subsubsection{Manipolazione diretta di file}
+Le funzioni di read/write consentono di leggere/scrivere dati da file.
+\begin{verbatim}
+ssize_t read (int fildes, void * buf, size_t n);
+ssize_t write (int fildes, void * buf, size_t n);
+\end{verbatim}
+Queste funzioni necessitano dell'header \verb|unistd .h| per funzionare e ritornano in entrambi i casi il numero di byte letti.
+Il parametro \verb|size_t| indica la dimensione dei blocchi da leggere (la massima efficienza si ha quando $n=512$ byte o $n=1$ kb.
+
+Terminata la lettura del file si può invocare la funzione \verb|close| con i seguenti parametri:
+\begin{verbatim}
+int close ( int fildes );
+\end{verbatim}
+dove \verb|fildes| è il file descriptor del file sul quale sono state eseguite le operazioni.
+
+\subsubsection{Duplicazione di canali}
+Duplica un file descriptor che ha in comune con quello precedente il riferimento al file, il puntatore per l'accesso casuale e il modo di accesso. Ritorna il primo descrittore libero partendo da 0.
+
+\subsubsection{Accesso alle directory}
+Per accedere/manipolare alle directory si possono utilizzare le seguenti funzioni:
+\begin{verbatim}
+DIR *opendir(char *dirname)
+struct dirent *readdir (DIR *dirp)
+void rewinddir(DIR *dirpath)
+int closedir(DIR *dirpath)
+\end{verbatim}
+Rispettivamente:
+\begin{itemize}
+\item Apertura di una cartella
+\item Puntatore alla prossima entry nella directory \verb|dirp|
+\item Resetta la posizione del puntatore all'inizio
+\item Chiusura della directory
+\end{itemize}
+È consigliabile non usare la \verb|open| per creare/manipolare directory, è consigliato l'uso di funzioni C, non system call.
+
+Per navigare all'interno del filesystem, attraversando directory, si può usare la \verb|chdir| con la seguente sintassi:
+\verb|int chdir(char *dirname)|. È necessario che la directory abbia permessi di esecuzione.
+
+\subsubsection{Gestione dei link}
+Per la creazione/rimozione di link si usano:
+\begin{verbatim}
+int link(char *orig_name, char *new_name);
+int unlink(char *file_name);
+\end{verbatim}
+Con la prima viene creato un hard link a \verb|orig_name|, con \verb|unlink|, si cancella un file cancellando l'\textit{i-number} nella dir. entry, oppure sottrae 1 al link count dell'inode passato (se il link count è 0, il file viene cancellato).
+
+\subsubsection{Privilegi e controllo dell'accesso}
+La funzione \verb|access| verifica i permessi così passati:
+\verb|int access (char *file_name, int access_mode);|
+I permessi sono una combinazione bitwise (\textit{and, or...}) dei valori \verb|R_OK|, \verb|W_OK| e \verb|X_OK|. Viene ritornato 0 se la verifica ha avuto successo.
+Per \textit{modificare} i permessi si usano le funzioni:
+\begin{verbatim}
+int chmod (char *file_name, int mode);
+int fchmod(int filedes, int mode);
+\end{verbatim}
+
+Qui di seguito un riassunto con i permessi utilizzabili: \\ \\
+Per cambiare il proprietario di un file si usa:
+\verb|int chown (char *file_name, int owner, int group);|
+Con \verb|owner| e \verb|group| si intendono \verb|UID| e \verb|GID|. \verb|chown| è utilizzabile sono con permessi di super-user.
+
+\subsubsection{Informazioni sullo stato di un file}
+Le seguenti funzioni ritornano informazioni contenute nell'i-node di un file. (All'interno di \verb|stat_buf|.)
+\begin{verbatim}
+int stat (char *file_name ,struct stat *stat_buf);
+int fstat (int fd ,struct stat *stat_buf);
+\end{verbatim}
+Vedere sulle diapositive i possobili valori di \verb|stat|.
+
+\subsubsection{Variabili d'ambiente}
+La funzione \verb|getenv| ritorna il valore di una variabile d'ambiente, \verb|NULL| se la variabile non è definita.
+\begin{verbatim}
+char *getenv (char *env_var);
+\end{verbatim}
+Si può inoltre accedere alla variabile \verb|char **environ|, e si possono analizzare le variabili d'ambiente con il terzo argomento del main (\verb|char *env[]|), da evitare se si vuole ottenere un programma facilmente portabile.
+\newpage
+\subsection{System call per i processi}
+\subsubsection{Introduzione}
+La struttura del programma eseguibile è la seguente:
+\begin{itemize}
+\item HEADER: (definito in \verb|usr/include/linux/a.out.h|), contiene la dimensione delle altre sezioni, l'entry point dell'esecuzione e il \textit{magic number}, ovvero un codice speciale per la trasformazione in processo.
+\item TEXT: sono le istruzioni del programma
+\item DATA: i dati inizializzati (\verb|static|, \verb|extern|)
+\item BSS: dati non inizializzati
+\item RELOCATION: come il loader carica il programma
+\item SYMBOL TABLE: contiene la locazione, il tipo e lo scope di variabili e funzioni.
+\end{itemize}
+La struttura del processo in memoria (processo = programma in esecuzione) è la seguente:
+\begin{itemize}
+\item TEXT/DATA (heap)/BSS: come l'omonima sezione dell'eseguibile
+\item STACK: creato nella costruzione del processo. Contiene variabili automatiche, parametri delle procedure, argomenti del programma.
+\item USER BLOCK: sottoinsieme delle informazioni mantenute dal sistema sul processo
+\end{itemize}
+
+\subsubsection{Fork}
+Crea un nuovo processo figlio di quello corrente. Il figlio eredita dal padre i file/directory usati dal padre e le variabili d'ambiente.
+Nel processo figlio viene replicata solo la thread corrente.
+Ritorna 0 al figlio, il PID del figlio al padre (-1 in caso di errore).
+Il codice è semplice:
+\begin{verbatim}
+fork();
+\end{verbatim}
+
+\subsubsection{Esecuzione di un programma}
+Sostituisce all'immagine attuale l'immagine specificata da \verb|*file|. Qui i prototipi:
+\begin{verbatim}
+int execl (char* file, char* arg0, char* arg1,(char*) NULL);
+int execlp (char* file, char* arg0, char* arg1,(char*) NULL);
+int execle (char* file, char* arg0, char* arg1,(char*) NULL, 
+  char* envp[]);
+int execv (char* file , char* argv[]);
+int execvp (char* file, char* argv[]);
+int execve (char* file, char* argv[], char* envp[]);
+\end{verbatim}
+Ricordare che il codice inserito dopo una exec non viene mai eseguito, in quanto viene caricata una nuova immagine di programma e non ritorna nulla se il programma viene eseguito.
+\begin{itemize}
+\item \verb|execl| utile quando si conoscono in anticipo il numero di args e gli argomenti (altrimenti usare \verb|execv|).
+\item \verb|execle| e \verb|execve| ricevono come parametro anche la lista delle variabili d'ambiente
+\item \verb|execlp| e \verb|execvp| usano la var. d'ambiente PATH  per cercare il comando del file
+\end{itemize}
+Alla fine di ogni chiamata, \verb|(char*) NULL)| viene inserito come terminatore. Devono essere terminati così anche gli array \verb|argv| e \verb|envp|.
+
+\subsubsection{Sincronizzazione padre/figlio}
+Per sincronizzare padre e figlio si usano le funzioni:
+\begin{verbatim}
+void exit(int status);
+void _exit(int status);
+pid_t wait(int *status);
+\end{verbatim}
+
+La \verb|exit| è usata come wrapper per la syscall \verb|_exit|.
+La funzione \verb|wait| sospende l'esecuzione di un processo fino a quando uno dei suoi figlio termina. Ritorna il PID e lo stato di terminazione del figlio al padre, -1 se il processo non ha figli. \\
+
+\textbf{Un figlio rimane zombie dalla terminazione a quando il padre ne legge lo stato con la wait.} \\
+
+Se il figlio è terminato con \verb|exit| allora la \verb|wait| ritorna: 
+\begin{itemize}
+\item Byte 0: (tutti 0)
+\item Byte 1: argomento della \verb|exit|
+\end{itemize}
+Se il figlio è terminato con un segnale allora \verb|wait| ritorna:
+\begin{itemize}
+\item Byte 0: valore del segnale
+\item Byte 1: tutti 0
+\end{itemize}
+
+Per testare lo stato si possono usare le seguenti macro:
+\begin{itemize}
+\item \verb|WIFEXITED(status)|
+\item \verb|WEXITSTATUS(status)|
+\item \verb|WIFSIGNALED(status)|
+\item \verb|WTERMSIG(status)|
+\item \verb|WIFSTOPPED(status)|
+\item \verb|WSTOPSIG(status)|
+\end{itemize}
+
+\subsubsection{Famiglia di wait}
+Oltre alla classica \verb|wait| esistono anche altre due funzioni che offrono funzionalità aggiuntive:
+\begin{verbatim}
+pid_t waitpid(pid_t pid, int *status, int options);
+pid_t wait3(int *status, int options, struct rusage *rusage);
+\end{verbatim}
+
+La funzione \verb|waitpid| attende la terminazione di un particolare processo:
+\begin{itemize}
+\item \verb|pid=-1|: tutti i figli del processo corrente
+\item \verb|pid=0|: tutti i figli con lo stesso GID del processo chiamante
+\item \verb|pid<-1|: tutti i figli con GID=-\verb|pid|
+\item \verb|pid>0|: il processo con PID=\verb|pid|
+\end{itemize}
+La fuzione \verb|wait3| è simile alla precedente, ma ritorna informazioni sull'uso delle risorse nella struct \verb|rusage|. Vedere il manuale per dettagli (\verb|man rusage|).
+
+\subsubsection{Informazioni sui processi}
+Per ottenere il pid di un processo si utilizzano le funzioni:
+\begin{verbatim}
+pid_t getpid();
+pid_t getppid();
+\end{verbatim}
+
+\verb|getpid()| ritorna il PID del processo corrente, mentre \verb|getppid()| ritorna il pid del padre del processo corrente.
+
+Esistono funzioni che permettono di verificare quale utente o gruppo ha generato un certo processo.
+Per i \textit{real} UID e GID si usano le funzioni:
+\begin{verbatim}
+uid_t getuid();
+uid_t getgid();
+\end{verbatim}
+Per gli \textit{effective} UID e GID si usano le funzioni:
+\begin{verbatim}
+uid_t geteuid();
+uid_t getegid();
+\end{verbatim}
+
+La differenza tra \textit{real} ed \textit{effective} UID/GID sta nel fatto che con real ci si riferisce sempre ai dati reali dell'utente che lancia il processo, con effective ai dati che possono essere modificati con i comandi \verb|suid| e \verb|sgid|.
+
+\subsubsection{Segnalazioni tra processi}
+I segnali tra processi sono spediti asincronamente (sono quindi sconsigliati per sincronizzare processi, in quanto non garantiscono al 100\% la corretta esecuzione del codice).
+\begin{verbatim}
+int kill(pid_t pid, int sig);
+\end{verbatim}
+I valori possibili di \verb|pid| sono i seguenti:
+\begin{itemize}
+\item \verb|pid|$>$0: inviato al processo con PID=\verb|pid|
+\item \verb|pid|$=$0: a tutti i processi dello stesso gruppo del processo chiamante
+\item \verb|pid|$=$-1: a tutti i processi (tranne quelli di sistema)
+\item \verb|pid|$<$-1 a tutti i processi del gruppo \verb|-pid|
+\end{itemize}
+
+\textbf{Nota:} con \textit{guppo di processi} ci si riferisce a tutti i processi aventi un antenato in comune.
+
+Il processo che riceve il segnale può avere una routine che avvia alla sua ricezione:
+\begin{verbatim}
+typedef void (*sighandler_t)(int);
+sighandler_t signal (int signum, sighandler_t funct);
+\end{verbatim}
+Nel codice sopra la funzione \verb|funct| è la routine da eseguire quando il segnale viene registrato. Può anche essere definita dall'utente oppure \verb|SIG_DFL| per specificare un comportamento di default o \verb|SIG_IGN| per ignorare il segnale ricevuto.
+
+
+
+I segnali \verb|SIGKILL| e \verb|SIGSTOP| non possono essere intercettati per ovvi motivi, inoltre il segnale \verb|SIGCLD| è usato quando un figlio segnala al padre la propria terminazione. In questo caso l'azione di default è di ignorare il segnale(può comunque essere intercettato per modificare l'azione da svolgere). Tenere presente che il segnale \verb|SIGCLD| causa lo sblocco della \verb|wait|.
+
+\subsubsection{Timeout e sospensione}
+Tramite appropriata syscall è possibile implementare dei timeout, utili per il controllo di risorse utilizzate da più processi.
+\begin{verbatim}
+unsigned int alarm(unsigned seconds);
+\end{verbatim}
+Invia un segnale di allarme (\verb|SIGALRM|) al processo chiamante dopo \verb|seconds| secondi. Ritorna 0 nel caso normale; se esistevano delle \verb|alarm| con tempo residuo, viene ritornato il numero di secondi che mancavano all'allarme.
+Per eliminare eventuali allarmi sospesi si passa il parametro 0.
+
+La funzione 
+\begin{verbatim}
+int pause();
+\end{verbatim}
+sospende un processo fino a quando non riceve un \textit{qualsiasi} segnale. Ritorna sempre -1.
+
+\textbf{Nota:} se si usa \verb|alarm| per chiudere una \verb|pause|, inserire dopo la pause un \verb|alarm(0)| per eliminare l'allarme, per evitare che l'allarme scatti nel caso che la \verb|pause| sia stata disinserita a causa di un altro segnale.
+
+\subsection{System call per la comunicazione tra processi (IPC)}
+\subsubsection{Introduzione}
+Le IPC sono syscall che consentono di effettuare comunicazioni tra processi tramite l'utilizzo di strutture dati come pipe, FIFO, semafori e code di messaggi.
+
+Tramite il comando \verb|ipcs [-opts]| si possono ottenere informazioni riguardanti le risorse allocate:
+\begin{itemize}
+\item \verb|-s| per i semafori
+\item \verb|-m| per la memoria condivisa
+\item \verb|-q| per le code di messaggi
+\end{itemize}
+
+Tramite il comando \verb|ipcrm| si possono eliminare le risorse (se permesso dal sistema). Si usa con le stesse opzioni di \verb|ipcs| e va specificato un ID di risorsa (ritornato da \verb|ipcs|).
+
+\subsubsection{Pipe}
+Le pipe sono dei canali di comunicazione \textbf{unidirezionali e sequenziali} in memoria. Per creare una pipe si usa la funzione:
+\begin{verbatim}
+int pipe(int filedes[2]);
+\end{verbatim}
+Ritorna 0 in caso di successo, -1 in caso di errore. La funzione richiede come parametro due file descriptor, il primo per leggere, il secondo per scrivere.
+Le pipe hanno alcune caratteristiche particolari, quali:
+\begin{itemize}
+\item Non hanno accesso random
+\item La dimensione fisica di una pipe è limitata (variabile a seconda del sistema)
+\item L'operazione di scrittura su una pipe è atomica
+\item La lettura si blocca su una pipe vuota e si sblocca appena è disponibile un byte da leggere
+\end{itemize}
+Ogni estremo della pipe è indipendente dall'altro e può essere chiuso (volontariamente tramite funzione o prematuramente).
+Un estremo di pipe si chiude prematuramente quando:
+\begin{itemize}
+\item Le \verb|read| ritornano 0
+\item i processi in scrittura ricevono il segnale (\verb|SIGPIPE|)
+\end{itemize}
+
+È possibile aggirare il problema del bloccaggio delle funzioni \verb|read| e \verb|write| con la funzione:
+\begin{verbatim}
+fcntl(int fd, F_SETFL, O_NONBLOCK);
+\end{verbatim}
+Il parametro \verb|fd| è uno dei file descriptor su cui è stata modellata la pipe.
+Impostando il flag \verb|O_NONBLOCK|, le \verb|write| ritornano 0 se la pipe è piena (è impossibile scriverci dentro) e le \verb|read| ritornano subito 0 se la pipe è vuota (nulla da leggere).
+Questo meccanismo è utile per implementare controlli tipo polling. \\
+
+\textbf{Limitazioni delle pipe:} 
+\begin{itemize}
+\item Possono essere create solo tra processi imparentati
+\item Non sono permanenti ma vengono distrutte quando il processo  che le crea termina
+\end{itemize}
+
+\subsubsection{Named pipe (FIFO)}
+Sono pipe particolari che esistono fisicamente su disco e consentono di aggirare i limiti imposti dalle pipe (vanno rimosse con \verb|unlink|). Il riferimento avviene attraverso un nome, non con i file descriptor.
+Le FIFO si creano con la seguente funzione:
+\begin{verbatim}
+int mknod(const char *pathname, mode_t mode, dev_t dev); 
+\end{verbatim}
+Ricordare che l'argomento \verb|dev| è ignorato (passare \verb|0|). \\
+Argomenti per \verb|mode_t mode|:
+\begin{itemize}
+\item \verb|S_IFIFO|
+\item \verb|S_IRUSR| 
+\item \verb|S_IWUSR|
+\end{itemize}
+Questa funzione ritorna 0 in caso di successo, -1 in caso di errore.
+Apertura, chiusura e operazioni di I/O avvengono come per un file normale (quindi sono ereditate dai figli), inoltre l'I/O è sempre atomico. \\
+L'I/O normalmente è bloccante, ma tramite la \verb|open| e il flag \verb|O_NONBLOCK| la FIFO viene aperta non bloccante (\verb|read| e \verb|write| funzionano quindi come per una pipe non bloccante).
+In alternativa alla \verb|mknod| si può usare la funzione di libreria \verb|mkfifo|, con gli stessi parametri e valori di ritorno della prima.
+
+\subsection{System call per meccanismi di IPC avanzati}
+Gli IPC avanzati sono principalmente di tre categorie:
+\begin{itemize}
+\item Code di messaggi
+\item Memoria condivisa
+\item Semafori
+\end{itemize}
+Tutti questi costituenti sono dotati di due primitive:
+\begin{itemize}
+\item \verb|get| per creare nuove entry e recuperare entry esistenti
+\item \verb|ctl| per verificare lo stato di entry, cambiare lo stato di quelle esistenti e rimuovere entry già presenti.
+\end{itemize}
+
+\subsubsection{Primitiva get}
+La primitiva \verb|get| richiede una \textit{chiave}, usata per la creazione o il recupero dell'oggetto. Richiede inoltre dei flag di utilizzo, ovvero:
+\begin{itemize}
+\item permessi relativi all'accesso
+\item \verb|IPC_CREAT|: si crea una nuova entry se la chiave non esiste
+\item \verb|IPC_CREAT + IPC_EXCL|: si crea una nuova entry ad uso esclusivo da parte del processo
+\end{itemize}
+L'identificatore ritornato dalla \verb|get| (se il valore è diverso da -1) è un descrittore utilizzabile anche dalle altre syscall.
+La creazione di un oggetto IPC causa anche l'inizializzazione di:
+\begin{itemize}
+\item una struttura dati, contenente informazioni su:
+\begin{itemize}
+\item UID, GID
+\item PID dell'ultimo processo che ha apportato qualche modifica
+\item tempi di ultimo accesso/modifica
+\end{itemize}
+\item una struttura di permessi \verb|ipc_perm|
+\end{itemize}
+
+La struttura \verb|ipc_perm| è costruita come segue:
+\begin{verbatim}
+struct ipc_perm {
+    key_t key;
+    uid_t uid;
+    gid_t gid;
+    uid_t cuid;
+    gid_t cgid;
+    unsigned short int mode;
+}
+\end{verbatim}
+e contiene ripsettivamente:
+\begin{itemize}
+\item chiave
+\item UID del proprietario
+\item GID del proprietario
+\item UID del creatore
+\item GID del creatore
+\item permessi di read/write
+\end{itemize}
+
+\subsubsection{Primitiva ctl}
+La primitiva \verb|ctl| richiede la specifica di informazioni diverse in base all'oggetto di sistema.
+In tutti i casi, richiede:
+\begin{itemize}
+\item un descrittore, usato per accedere all'oggetto di sistema (valore intero ritornato dalla \verb|get|)
+\item comandi di utilizzo (cancellazione, modifica, lettura di informazioni relative agli oggetti)
+\end{itemize}
+
+\subsubsection{Funzione ftok}
+La funzione \verb|ftok()| è usata per ottenere chiavi probabilmente non in uso nel sistema.
+Si usa con la seguente sintassi:
+\verb|key_t ftok(const *char pathname, int proj_id);|
+Come parametri richiede un path ad un file esistente ed accessibile, e una costante espressa su \textit{un byte}.
+In caso di errore ritorna -1, o una chiave univoca a parità di path/ID.
+
+\subsubsection{Code di messaggi}
+\paragraph{Introduzione}
+Un messaggio è un'unità di informazione di dimensione variabile, mentre una coda è un vero e proprio oggetto di sistema. 
+
+\paragraph{Gestione di una coda}
+Con la funzione:
+\begin{verbatim}
+int msgget(key_t key, int flag);
+\end{verbatim}
+viene ritornato l'identificatore di una cosa di messaggi se si trova una corrispondenza, altrimenti viene ritornato un errore.
+È inoltre usata per creare una coda di messaggi data la chiave \verb|key| nel caso in cui:
+\verb|key==IPC_PRIVATE|, oppure \verb|key!=IPC_PRIVATE| e il flag  \verb|IPC_CREAT| è settato a true.
+
+La funzione:
+\begin{verbatim}
+int msgctl (int id, int cmd, struct msqid_ds *buf);
+\end{verbatim}
+permette di accedere ai campi della \verb|struct msqid_ds|  mantenuta all'indirizzo \verb|buf| per la coda specificata dalla chiave \verb|id|, ovvero il costruttore ritornato da \verb|msgget|.
+Il comportamento della funzione dipende dal valore dell'argomento \verb|cmd|:
+\begin{itemize}
+\item \verb|IPC_RMID| cancella la coda
+\item \verb|IPC_STAT| ritorna informazioni relative alla struttura puntata da \verb|buf| (UID, GID, stato della coda)
+\item \verb|IPC_SET| modifica un sottoinsieme dei campi contenuti nella struct.
+\end{itemize}
+La coda può essere cancellata solo con la funzione \verb|msgctl| o riavviando la macchina; una chiusura prematura del programma causata da un segnale del sistema operativo o da un interrupt da tastiera non la rimuove.
+
+La struttura puntata da \verb|buf| è definita in \verb|sys/msg.h| ed è cos' costituita:
+\begin{verbatim}
+struct msqid_ds {
+    struct ipc_perm msg_perm;
+    __time_t msg_time;
+    __time_t msg_rtime;
+    __time_t msg_ctime;
+    unsigned long int __msg_cbytes;
+    msgqnum_t msg_qnum;
+    msglen_t msg_qbytes;
+    __pid_t msg_lspid;
+    __pid_t msg_lrpid;
+}
+\end{verbatim}
+I campi della struttura contengono rispettivamente:
+\begin{itemize}
+\item permessi (\verb|struct ipc_perm|, vedi sopra)
+\item ora dell'ultimo comando \verb|msgsnd|
+\item ora dell'ultimo comando \verb|msgrcv|
+\item ora dell'ultima modifica
+\item numero di byte nella coda
+\item numero corrente di messaggi nella coda
+\item numero massimo di byte che la coda può contenere
+\item pid dell'ultimo \verb|msgsnd()|
+\item pid dell'ultimo \verb|msgrcv()|
+\end{itemize}
+
+\paragraph{Scambio delle informazioni}
+Per mandare dei messaggi su una coda si usa la funzione:
+\begin{verbatim}
+int msgsnd(int id, struct msgbuf *msg, size_t size, int flag);
+\end{verbatim}
+dove \verb|id| è l'identificatore della coda , \verb|*msg| un buffer dove il messaggio è salvato, \verb|size| la lunghezza del messaggio. Viene ritornato 0 in caso di successo, -1 in caso di errore.
+La struttura \verb|msgbuf| è così definita:
+\begin{verbatim}
+struct msgbuf {
+    long mtype;
+    char mtext[1];
+}
+\end{verbatim}
+dove \verb|mtype| è il tipo di messaggio e \verb|mtext| è il testo.
+Questo è solo un template dei messaggi, scrivendo il codice si usa una struct definita dall'utente.
+
+La funzione per ricevere messaggi è la seguente:
+\begin{verbatim}
+int msgrcv(int id, struct msgbuf *msg, size_t size, long type, int flag);
+\end{verbatim}
+La funzione legge un messaggio dalla coda \verb|id|, lo scrive nella struttura puntata da \verb|msg| e ritorna il numero di byte letti. Una volta estratto, il messaggio viene rimosso dalla coda.
+L'argomento \verb|size| indica la lunghezza \textit{massima} del testo del messaggio: se il messaggio ha lunghezza superiore a \verb|size|, il messaggio non viene estratto e la funzione ritorna con un errore.
+
+I flag di \verb|msgsnd| e \verb|msgrcv| sono \verb|IPC_NOWAIT| (non si blocca se non ci sono messaggi da leggere) e \verb|MSG_NOERROR| (tronca il messaggio a \verb|size| byte senza ritornare l'errore), quest'ultima solo per \verb|msgrcv|.
+
+Il valore di \verb|type| indica il messaggio da prelevare:
+\begin{itemize}
+\item \verb|type=0| il primo messaggio (indip. dal tipo)
+\item \verb|type>0| il primo messaggio di tipo \verb|type|
+\item \verb|type<0| il messaggio con tipo più vicino al modulo di \verb|type|.
+\end{itemize}
+\newpage
+
+\subsubsection{Memoria condivisa}
+\paragraph{Introduzione}
+Il metodo della memoria condivisa è un altro dei modi tramite i quali i processi possono comunicare. Funziona attraverso la condivisione di una parte dello spazio di indirizzamento proprio di ogni processo e la comunicazione avviene leggendo e scrivendo in questa parte di memoria.
+
+\paragraph{Allocazione}
+La funzione \verb|shmget| ritorna un puntatore alla zona di memoria allocata. Si usa con la seguente sintassi:
+\begin{verbatim}
+int shmget (key_t key, size_t size, int flags);
+\end{verbatim}
+dove i parametri hanno lo stesso significato di quelli della funzione \verb|msgget|.
+
+Una volta creata, l'area di memoria non è immediatamente disponibile ai processi, ma deve essere collegata all'area dati dei processi che la vogliono usare, tramite la funzione:
+\begin{verbatim}
+void *shmat (int shmid, void *shmaddr, int flag)
+\end{verbatim}
+\textbf{Nota:} l'area di memoria è ereditata dei processi creati con \verb|fork|, ma non con quelli creati da \verb|exec|.
+
+Il parametro \verb|*shmaddr| indica l'indirizzo virtuale dove il processo vuole collegare il segmento di memoria condivisa (tipicamente è \verb|NULL|), mentre il parametro \verb|shmid| è un semplice identificatore del segmento di memoria utilizzato.
+
+In base ai valori di \verb|flag| e \verb|shmaddr| si determina il punto di attacco del segmento:
+\begin{itemize}
+\item se \verb|shmaddr == NULL| la memoria viene posizionata in un punto a scelta del sistema operativo
+\item se \verb|shmaddr != NULL| e \verb|SHM_RND| è nei flag la memoria  viene attaccata al multiplo di \verb|SHMLBA|(\textbf{??}) più vicino a \verb|shmaddr| (comunque non oltre \verb|shmaddr|)
+\item se non è valida nessuna delle condizioni precedenti, \verb|shmaddr| deve essere allineato ad una pagina di memoria (\textbf{??}).
+\end{itemize}
+Il segmento è attaccato in lettura se il flag \verb|SHM_RDONLY| è presente, altrimenti è attaccato sia in lettura che scrittura.
+
+Altri flag possono essere (sono tutti specifici per Linux):
+\begin{itemize}
+\item \verb|SHM_REMAP|: si vuole rimpiazzare un segmento esistente rimappandolo nell'intervallo [\verb|shmaddr|; \verb|shmaddr + size|].
+\item \verb|SHM_EXEC|: consente di eseguire il contenuto del segmento (necessari permessi di esecuzione)
+\end{itemize}
+
+Il valore di ritorno della \verb|shmat| è un puntatore alla zona di memoria attaccata, in caso di errore viene ritornato \verb|(void *) -1| e viene settata la variabile \verb|errno| ai seguenti valori:
+\begin{itemize}
+\item \verb|EACCESS|: il processo non ha i permessi necessari per attaccare la memoria
+\item \verb|EIDRM|: \verb|shmid| punta a un identificatore rimosso
+\item \verb|EINVAL|: i valori di \verb|shmid| o \verb|shmaddr| non sono validi o non è stato possibile attaccare il segmento all'indirizzo specificato oppure \verb|SHM_REMAP| è stato specificato e \verb|shmaddr| punta a \verb|null|.
+\end{itemize}
+
+Per staccare segmenti si usa la funzione \verb|shmdt| con la seguente sintassi:
+\begin{verbatim}
+int shmdt(void *shmaddr)
+\end{verbatim}
+Il parametro da passare è di immediata intuizione.
+
+La funzione \verb|shmdt| ritorna 0 in caso di successo, -1 se qualcosa va storto; in tal caso \verb|errno| viene settata a \verb|EINVAL| per indicare che non è stato rintracciato nessun segmento di memoria.
+
+\paragraph{Gestione}
+La funzione
+\begin{verbatim}
+int shmctl (int shmid, int cmd, struct shmid_ds *buffer)
+\end{verbatim}
+esegue le operazioni di controllo specificate in \verb|cmd|, quali:
+\begin{itemize}
+\item \verb|IPC_RMID|: cancella il segmento
+\item \verb|IPC_STAT|: ritorna informazioni sulla zona di memoria nella struct \verb|*buffer|
+\item \verb|IPC_SET|: modifica un sottoinsieme dei campi della struct (UID, GID, permessi)
+\item \verb|SHM_LOCK|: impedisce che il segmento venga swappato o paginato
+\item \verb|SHM_UNLOCK|: ripristina il normale utilizzo della zona di memoria
+\end{itemize}
+Ricordare che \verb|shmid| è il valore ritornato dalla funzione \verb|shmget|. \\
+
+La struct \verb|shmid_ds| è così composta:
+\begin{verbatim}
+struct shmid_ds {
+    struct ipc_perm shm_perm;
+    size_t shm_segsz;
+    __time_t shm_atime;
+    __time_t shm_dtime;
+    __time_t shm_ctime;
+    __pid_t shm_cpid;
+    __pid_t shm_lpid;
+    shmatt_t shm_nattch;
+}
+\end{verbatim}
+informazioni che rispettivamente indicano:
+\begin{itemize}
+\item le operazioni permesse
+\item misura del segmento in byte
+\item orario dell'ultima \verb|shmat()|
+\item orario dell'ultima \verb|shmdt()|
+\item orario dell'ultima modifica da parte di \verb|shmctl()|
+\item PID del processo che ha creato il segmento
+\item PID dell'ultima \verb|shmop|
+\item numero corrente di collegamenti
+\end{itemize}
+
+\subsubsection{Semafori e sincronizzazione}
+\paragraph{Introduzione ai semafori}
+I semafori sono un meccanismo di IPC avanzato che consente di sincronizzare l'accesso ad una zona di memoria condivisa tra due o più processi.
+Possono essere di due tipologie:
+\begin{itemize}
+\item Binari\textit{(mutex)}: valgono solo 1 o 0.
+\item Interi: assumono qualsiasi valore intero e tornano particolarmente utili quando si vuole limitare il numero di accessi ad una risorsa.
+\end{itemize}
+
+\paragraph{Funzionamento}
+Che il semaforo sia biario o intero il protocollo usato per accedere alle risorse condivise è lo stesso:
+\begin{itemize}
+\item \verb|sem>0|: la risorsa è utilizzabile (si decrementa il valore del semaforo.
+\item \verb|sem==0|: il processo entra nello stato di \textit{sleep} fino a quando il semaforo non torna a valori positivi.
+\end{itemize}
+Quando l'uso della risorsa è terminato, il valore del semaforo viene incrementato.
+
+La verifica dei valori di un semaforo \textbf{deve} essere atomica, altrimenti non si potrà mai garantire un corretto svolgimento del meccanismo di sincronizzazione implementato. Per questo motivo la struttura dei semafori è implementata nel kernel. I semafori sono inizializzati a valori sempre positivi. Sebbene il Linux si possano inizializzare a 0, è sconsigliato per motivi di portabilità.
+
+Ricordare che non si può allocare un singolo semaforo ma se ne deve allocare un array. 
+
+\paragraph{Funzioni relative}
+La funzione \verb|semget| consente di ottenere il set di semafori indentificato con il parametro relativo:
+\begin{verbatim}
+int semget(key_t key, int nsems, int semflg);
+\end{verbatim}
+
+I parametri \verb|key| e \verb|semflg| assumono gli stessi valori dei corrispondenti parametri delle funzioni relative alle code di messaggi e alla memoria condivisa, mentre \verb|nsems| è il numero di semafori identificati da \verb|semid|, ovvero il numero di semafori contenuti nel vettore.
+
+La funzione:
+\begin{verbatim}
+int semctl(int semid, int semnum, int cmd, ... );
+\end{verbatim}
+esegue operazioni di controllo (specificate in \verb|cmd|), sull'insieme di semafori specificato da \verb|semid| o sul \verb|semnum|-esimo semaforo dell'insieme.
+Questa funzione può accettare opzionalmente il quarto parametro \verb|semun (args)| così costruito:
+\begin{verbatim}
+union semun {
+    int val;
+    struct semid_ds* buffer;
+    unsigned short *array;
+    struct seminfo *__buf;
+};
+\end{verbatim}
+
+Le operazioni eseguibili tramite \verb|cmd| sono:
+\begin{itemize}
+\item \verb|IPC_RMID|: rimuove il set di semafori
+\item \verb|IPC_SET|: modifica il set
+\item \verb|IPC_STAT|: statistiche sul set
+\item \verb|GETVAL|: legge il valore del semaforo \verb|semnum| in \verb|args.val|
+\item \verb|GETALL|: legge tutti i valori in \verb|args.array|
+\item \verb|SETVAL|: assegna il valore del semaforo \verb|semnum| in \verb|args.val|
+\item \verb|SETALL|: assegna tutti i semafori con valori in \verb|args.array|
+\item \verb|GETPID|: valore del PID dell'ultimo processo che ha eseguito operazioni
+\item \verb|GETNCNT|: numero di processi in attesa che un semaforo aumenti
+\item \verb|GETZCNT|: numero di processi in attesa che un semaforo diventi 0
+\end{itemize}
+
+Il parametro \verb|buffer| è un puntatore ad una struttura \verb|semid_ds| così composta:
+\begin{verbatim}
+struct semid_ds {
+    struct ipc_perm sem_perm;
+    time_t sem_otime;
+    time_t sem_ctime;
+    unsigned short sem_nsems;
+};
+\end{verbatim}
+
+e contiene rispettivamente:
+\begin{itemize}
+\item operazioni permesse
+\item ora dell'ultimo \verb|semop| 
+\item orario dell'ultima modifica
+\item numero di semafori
+\end{itemize}
+
+Ricordare che la struttura \verb|semun| va definita nel codice del processo che chiama la \verb|semctl()|.
+
+Per eseguire operazioni di incremento/decremento del valore di un semaforo si usa la funzione:
+\begin{verbatim}
+int semop(int semid, struct sembuf* sops, unsigned nsops);
+\end{verbatim}
+applica l'insieme \verb|sops| di operazioni all'insieme di semafori \verb|semid|. Il parametro \verb|nsops| contiene il numero di operazioni eseguite.
+
+Le operazioni (contenute in un array opportunamente allocato) sono descritte nella \verb|struct sembuf|:
+\begin{verbatim}
+struct sembuf {
+    short sem_num;
+    short sem_op;
+    short sem_flg;
+}
+\end{verbatim}
+La struttura contiene rispettivamente:
+\begin{itemize}
+\item semaforo su cui l'operazione viene eseguita
+\item l'operazione da eseguire
+\item modalità di esecuzione dell'operazione
+\end{itemize}
+
+I possibili valori si \verb|sem_op| sono:
+\begin{itemize}
+\item $\verb|sem_op|<0$: equivale a \textbf{P}. Si blocca se il risultato finale di \verb|sem_val| è minore di 0
+\item $\verb|sem_op|=0$: rimane in attesa che il semaforo diventi 0
+\item $\verb|sem_op|>0$: equivale a \textbf{V}. Incrementa il semaforo della quantità \verb|sem_op|
+\end{itemize}
+
+I valori di \verb|sem_flg| sono soltanto 2: \verb|IPC_NOWAIT| per realizzare \textbf{P} e \textbf{V} non bloccanti (utili per meccanismi di polling), \verb|SEM_UNDO| per ripristinare un valore precedente del semaforo (nel caso di terminazioni impreviste).
+
+Ricordare che le operazioni inserite in una chiamata di \verb|semop()| vengono eseguite in modo \textbf{atomico}: se una delle operazioni specificate non può essere eseguita, il comportamento della syscall dipende dal flag \verb|IPC_NOWAIT|:
+\begin{itemize}
+\item se è settato, \verb|semop| fallisce e ritorna -1
+\item se non è settato, il processo viene bloccato
+\end{itemize}
+\end{document}
