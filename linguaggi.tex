@@ -599,6 +599,7 @@
 	
 	\section{Semantica denotazionale}
 	\subsection{Caratteristiche della semantica denotazionale}
+	\label{denot}
 	La semantica denotazionale consta di questi caratteri:
 	\begin{itemize}
 		\item \textit{composizionalità}: la semantica di un costrutto è definita a partire dalla semantica dei suoi componenti
@@ -652,7 +653,25 @@
 	
 	
 	Le funzioni di valutazione semantica assegnano uno specifico significato ai vari costrutti del linguaggio, con una definizione data sui casi della sintassi astratta.
-	\newpage
+	
+	\subsection{Denotazionale vs operazionale}
+	A differenza della semantica denotazionale, la semantica operazionale non è sempre composizionale (Sez. \ref{denot}), inoltre non assegna solo una denotazione (funzione tra domini semantici) al programma ma specifica anche come si raggiunge per un dato programma lo stato finale a partire da quello iniziale (tramite sistemi di transizione).
+	
+	Le funzioni di valutazione della semantica sono in entrambi i casi definite in modo ricorsivo, ma per la semantica operazionale non è necessario alcun calcolo di punto fisso, in quanto questo viene determinato dall'interprete come chiusura transitiva delle transazioni che descrivono i passaggi di stato del programma. \\
+	
+	Un'altra sostanziale differenza tra semantica operazionale e denotazionale è costituita dalla diversa definizione delle funzioni di valutazione della semantica, ad esempio: 
+	
+	\begin{align*}
+		\mathcal{C}:&Com \to env \to store \to store \quad &\text{(denotazionale)} \\
+		\mathcal{C}:&Com \times env \times store \to store &\quad \text{(operazionale)}
+	\end{align*}
+	
+	e dal cambiamento dei domini di valori funzionali, come
+	\begin{align*}
+		fun =& store \to dval \to eval \quad &\text{(denotazionale)} \\
+		fun =& EXPR \times env \quad &\text{(operazionale)}
+	\end{align*}
+	
 	
 	\section{Credits}
 	Davide Bianchi (mail: \url{davideb1912@gmail.com}) \\
