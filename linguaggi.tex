@@ -529,18 +529,18 @@
 	\end{itemize}
 	\renewcommand{\lstlistingname}{Scope statico}
 	\begin{lstlisting}[frame=tb,caption={Un nome non locale è risolto nel blocco che testualmente lo racchiude}]
-	{int x = 0;
-	void pippo(int n){
-	x = n+1;
-	}
-	pippo(3);
-	$\tikzmark{write1}$write(x);
-	{int x = 0;
-	pippo(3);
-	write(x);$\tikzmark{write2}$
-	}
-	$\tikzmark{write3}$write(x);
-	}
+		{int x = 0;
+		void pippo(int n){
+			x = n+1;
+		}
+		pippo(3);
+		$\tikzmark{write1}$write(x);
+			{int x = 0;
+			pippo(3);
+			write(x);$\tikzmark{write2}$
+			}
+		$\tikzmark{write3}$write(x);
+		}
 	\end{lstlisting}
 	\tikz[overlay,remember picture] \draw ($(write1)+(0pt,0.7ex)$) -- (2,3);
 	\tikz[overlay,remember picture] \draw ($(write3)+(0pt,0.7ex)$) -- (2,2.5);
@@ -551,18 +551,18 @@
 	\newpage
 	
 	\begin{lstlisting}[frame=tb,caption={Un nome non locale è risolto nel blocco che testualmente lo racchiude}]
-	{int x = 0;
-	void pippo(int n){
-	x = n+1;
-	}
-	pippo(3);
-	$\tikzmark{write4}$write(x);
-	{int x = 0;
-	pippo(3);
-	write(x);$\tikzmark{write5}$
-	}
-	write(x);$\tikzmark{write6}$
-	}
+		{int x = 0;
+		void pippo(int n){
+			x = n+1;
+		}
+		pippo(3);
+		$\tikzmark{write4}$write(x);
+			{int x = 0;
+			pippo(3);
+			write(x);$\tikzmark{write5}$
+			}
+		write(x);$\tikzmark{write6}$
+		}
 	\end{lstlisting}
 	\tikz[overlay,remember picture] \draw ($(write4)+(0pt,0.7ex)$) -- (2,3);
 	\tikz[overlay,remember picture] \draw ($(write6)+(0pt,0.7ex)$) -- (10.25,1.5);
@@ -577,18 +577,18 @@
 	Per l'ambiente locale (e quello globale) non c'è differenza con lo scoping statico.
 	\renewcommand{\lstlistingname}{Scope dinamico}
 	\begin{lstlisting}[frame=tb,caption={Un nome non locale è risolto nel blocco attivato più di recente e non ancora disattivato}]
-	{int x = 0;
-	void pippo(int n){
-	x = n+1;
-	}
-	pippo(3);
-	$\tikzmark{write1}$write(x);
-	{int x = 0;
-	pippo(3);
-	$\tikzmark{write2}$write(x);
-	}
-	$\tikzmark{write3}$write(x);
-	}
+		{int x = 0;
+		void pippo(int n){
+			x = n+1;
+		}
+		pippo(3);
+		$\tikzmark{write1}$write(x);
+			{int x = 0;
+			pippo(3);
+			$\tikzmark{write2}$write(x);
+			}
+		$\tikzmark{write3}$write(x);
+		}
 	\end{lstlisting}
 	\tikz[overlay,remember picture] \draw ($(write1)+(0pt,0.7ex)$) -- (2,3);
 	\tikz[overlay,remember picture] \draw ($(write3)+(0pt,0.7ex)$) -- (2,2.5);
