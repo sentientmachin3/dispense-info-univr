@@ -99,7 +99,7 @@
 	
 	Un reticolo è quindi un reticolo che è sia join-semi lattice sia meet-semi lattice. Un caso particolare di reticolo è il reticolo completo, in cui ogni sottoinsieme $\mathcal{X} \subseteq \mathcal{P}$ ha un least upper bound.
 	
-	Un reticolo completo ha un elemento \textit{infimo} $\bot = \sqcup \emptyset$ e un elemento \textit{supremo} $\bot = \sqcup \mathcal{P}$
+	Un reticolo completo è definito come un poset $\langle P, \sqsubseteq \rangle$ con la differenza che un qualsiasi sottoinsieme $X \subseteq P$ ha un least upper bound $\sqcup X$ in $P$. Inoltre un reticolo completo ha un elemento \textit{infimo} $\bot = \sqcup \emptyset$ e un elemento \textit{supremo} $\bot = \sqcup \mathcal{P}$
 	
 	\subsection{Teoria di punto fisso}
 	Un punto fisso di un operatore $f$ su un insieme $L$ è un elemento $x \in L$ tale che $f(x)=x$. \\
@@ -113,6 +113,13 @@
 		\item least fixpoint: se esiste, $\forall x \in L: (f(x)=x) \Rightarrow (\text{lfp}(f) \sqsubseteq x)$
 		
 		\item greatest fixpoint: se esiste, $\forall x \in L: (f(x)=x) \Rightarrow (\text{gfp}(f) \sqsupseteq x)$
+	\end{itemize}
+
+	Tramite la definzione di punto fisso sono definiti anche i seguenti insiemi:
+	\begin{itemize}
+		\item insieme dei fixpoints: $fp(f)= \lbrace x \in L | f(x)=x \rbrace$
+		\item insieme dei pre-fixpoints: $prefp(f)= \lbrace x \in L | x \sqsubseteq f(x) \rbrace$
+		\item insieme dei post-fixpoint: $postfp(f)= \lbrace x \in L | f(x) \sqsubseteq x \rbrace$
 	\end{itemize}
 	
 	
