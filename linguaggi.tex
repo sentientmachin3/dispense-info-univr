@@ -14,6 +14,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[margin=3cm]{geometry}
+\usepackage{multicol}
 \usepackage{booktabs}
 \usepackage{fancyhdr}
 \usepackage{tikz}
@@ -32,6 +33,9 @@
 \rfoot{}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
+
+\newcommand{\numberset}{\mathbb}
+\newcommand{\N}{\numberset{N}}
 
 \fvset{commandchars=\\\{\}}
 \newcommand{\tikzmark}[1]{\tikz[overlay,remember picture] \node (#1) {};}
@@ -78,12 +82,12 @@
 	\noindent
 	Inoltre, dato un poset $\mathcal{P}$ e un $\mathcal{X} \subseteq \mathcal{P}$, sono definiti:
 	\begin{itemize}
-		\item least upper bound: un elemento $x \in \mathcal{X}$ tale che:
+		\item least upper bound (notazioni: $ lubX, supX, \bigvee X, \sqcup X $ ): un elemento $x \in \mathcal{X}$ tale che:
 		\begin{itemize}
 			\item $x$ è upper bound di $\mathcal{X}$
 			\item $x$ è il più piccolo degli upper bound
 		\end{itemize}
-		\item greatest lower bound: un elemento $x \in \mathcal{X}$ tale che:
+		\item greatest lower bound (notazioni: $ glbX, infX, \bigwedge X, \sqcap X $ ): un elemento $x \in \mathcal{X}$ tale che:
 		\begin{itemize}
 			\item $x$ è lower bound di $\mathcal{X}$
 			\item $x$ è il più grande dei lower bound
@@ -100,6 +104,84 @@
 	Un reticolo è quindi un reticolo che è sia join-semi lattice sia meet-semi lattice. Un caso particolare di reticolo è il reticolo completo, in cui ogni sottoinsieme $\mathcal{X} \subseteq \mathcal{P}$ ha un least upper bound.
 	
 	Un reticolo completo è definito come un poset $\langle P, \sqsubseteq \rangle$ con la differenza che un qualsiasi sottoinsieme $X \subseteq P$ ha un least upper bound $\sqcup X$ in $P$. Inoltre un reticolo completo ha un elemento \textit{infimo} $\bot = \sqcup \emptyset$ e un elemento \textit{supremo} $\bot = \sqcup \mathcal{P}$
+	
+	\subsection{Esempi}
+	Esempi di posets:
+	\begin{itemize}
+		\item[es.1:] $ \langle \N, \leq \rangle $ è un poset 
+		$ \left( \forall x,y \in \N : \: x \leq y \:
+		\Leftrightarrow \: \exists z \in \N : \: x + z = y \right) $
+		\item[es.2:] $ \langle \N, \geq \rangle $ è un poset
+		$ \left( \forall x, y \in \N : \: x \geq y \: \Leftrightarrow \: x \leq y \right) $
+	\end{itemize}
+	\begin{multicols}{2}
+		
+		Esempi di upper e lower bound:
+		
+		\begin{tikzpicture}[baseline=-1cm]
+			\fill (0,1) circle (1.4pt) coordinate (a) ; \fill (1,0) circle (1.4pt) coordinate (b) ; 
+			\fill (2,1) circle (1.4pt) coordinate (c) ; \fill (1,2) circle (1.4pt) coordinate (d) ; 
+			\fill (0,2) circle (1.4pt) coordinate (e) ; \fill (1,1) circle (1.4pt) coordinate (f) ; 
+			\fill (2,2) circle (1.4pt) coordinate (g) ; \fill (1,3) circle (1.4pt) coordinate (h) ; 
+			
+			\draw (a) -- (b) -- (c) -- (d) -- cycle;
+			\draw (e) -- (f) -- (g) -- (h) -- cycle;
+			\draw (a) -- (e) ; \draw (c) -- (g) ; \draw (b) -- (h);
+			
+			\draw (1,0) circle (0.25) node[xshift=.25cm,right] {$ \mathcal{S}^l$};
+			\draw (1.5,1) ellipse (0.75 and 0.25) node[xshift=.75cm,right] {$ \mathcal{S} $};
+			\draw[rounded corners] (0.9,1.85) -- (2.25,1.85) node[right] {$ \mathcal{S}^u $} -- (0.9,3.25) -- cycle;
+		\end{tikzpicture}
+	
+		\columnbreak
+
+		Esempi di greatest lower bound:
+		
+		\begin{tikzpicture}
+			\fill (0,1) circle (1.4pt) coordinate (a) node[left] {$ \{a\} $} ; 
+			\fill (1,0) circle (1.4pt) coordinate (b) node[below] (bn) {$ \emptyset $} ; 
+			\fill (2,1) circle (1.4pt) coordinate (c) node[below] {$ \{c\} $} ; 
+			\fill (1,2) circle (1.4pt) coordinate (d) node[above] (dn) {$ \{a,c\} $}; 
+			\fill (0,2) circle (1.4pt) coordinate (e) node[left] {$ \{a,b\} $}; 
+			\fill (1,1) circle (1.4pt) coordinate (f) node[below] {$ \{b\} $}; 
+			\fill (2,2) circle (1.4pt) coordinate (g) node[right] {$ \{b,c\} $}; 
+			\fill (1,3) circle (1.4pt) coordinate (h) node[above] {$ \{a,b,c\} $}; 
+			
+			\draw (a) -- (b) -- (c) -- (d) -- cycle;
+			\draw (e) -- (f) -- (g) -- (h) -- cycle;
+			\draw (a) -- (e) ; \draw (c) -- (g) ; \draw (b) -- (h);
+			
+			\draw (bn) circle (0.5) node[xshift=.45cm,right] {$ \sqcap \mathcal{S} $};
+			\draw (1.5,1) ellipse (0.95 and 0.55) node[xshift=.95cm,right] {$ \mathcal{S} $};
+			\draw (dn) circle (0.5) node[xshift=.45cm,above right] {$ \sqcup \mathcal{S} $};
+			 
+		\end{tikzpicture}
+	\end{multicols}
+	
+	Esempi di reticoli:
+	
+	\begin{tikzpicture}[thick]
+		\draw [help lines, gray, ultra thin, xstep=12] (0,0) grid (10,3);
+		\foreach \i in {0,1,2,3}{%
+			\fill (10,\i) circle (2pt);
+		}
+		\draw (10,0) -- (10,3);
+		\draw[dashed] (10,3) -- (10,4);
+		\fill (1,2) circle (2pt) coordinate (a); \fill (3,2) circle (2pt) coordinate (b);
+		\fill (2,1) circle (2pt) coordinate (c);
+		
+		\fill (4,2) circle (2pt) coordinate (d); \fill (6,2) circle (2pt) coordinate (e);
+		\fill (5,3) circle (2pt) coordinate (f);
+		
+		\fill (7,2) circle (2pt) coordinate (g); \fill (8,1) circle (2pt) coordinate (h);
+		\fill (9,2) circle (2pt) coordinate (i);  \fill (8,3) circle (2pt) coordinate (l);
+		
+		\draw (a) -- (c) -- (b); \draw (d) -- (f) -- (e);
+		\draw (g) -- (h) -- (i) -- (l) -- cycle;
+		\node[below] at (c.south) {meet-semi lattice};
+		\node[below,xshift=3cm] at (c.south) {join-semi lattice};
+		\node[below] at (h.south) {lattice};
+	\end{tikzpicture}
 	
 	\subsection{Teoria di punto fisso}
 	Un punto fisso di un operatore $f$ su un insieme $L$ è un elemento $x \in L$ tale che $f(x)=x$. \\
