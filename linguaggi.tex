@@ -308,7 +308,6 @@
 	Spec_L(P^L,d)=P_d$$ e $$I_L(P_L(d,Y))=I_L(P_d,Y)
 	\]
 	dove $Y \in D$ e $I_L$ è l'interprete per $L$.
-	\newpage
 	
 	\section{Semantica operazionale}
 	
@@ -462,7 +461,7 @@
 	Le operazioni di aggiornamento degli ambienti $\rho[\rho'] \in Env_{I \cup I'}$ e $\rho,\rho' \in Env_{I \cup I'}$ sono definite come per le memorie.
 	
 	\subsubsection{Generatore di locazioni}
-	Per dichiarare nuove variabili è necessario definite una funzione che ad ogni nuovo identificatore associ un locazione di memoria non utilizzata. Supponiamo quindi di poter ordinare le locazioni dello stesso tipo, associando ad ognuna di esse un valore naturale quando vengono utilizzate.
+	Per dichiarare nuove variabili è necessario definire una funzione che ad ogni nuovo identificatore associ un locazione di memoria non utilizzata. Supponiamo quindi di poter ordinare le locazioni dello stesso tipo, associando ad ognuna di esse un valore naturale quando vengono utilizzate.
 	
 	Un generatore di locazioni è una funzione 
 	\[
@@ -616,6 +615,8 @@
 		\item l'utilizzo dell'ambiente locale se esiste, altrimenti
 		\item si risale la gerarchia dei blocchi per cercare un ambiente non locale contenente un binding valido.
 	\end{itemize}
+	
+	\newpage
 	\renewcommand{\lstlistingname}{Scope statico}
 	\begin{lstlisting}[frame=tb,caption={Un nome non locale è risolto nel blocco che testualmente lo racchiude}]
 		{int x = 0;
@@ -636,8 +637,6 @@
 	\tikz[overlay,remember picture] \node at (2,2.75) {stampa 4};
 	\tikz[overlay,remember picture] \draw ($(write2)+(0pt,0.7ex)$) -- (10.5,2.25);
 	\tikz[overlay,remember picture] \node at (11.25,2.25) {stampa 0};
-	
-	\newpage
 	
 	\begin{lstlisting}[frame=tb,caption={Un nome non locale è risolto nel blocco che testualmente lo racchiude}]
 		{int x = 0;
@@ -734,10 +733,10 @@
 	\subsection{Funzioni di valutazione semantica}
 	Per ogni dominio sintattico esiste una funzione di valutazione semantica, 
 	\begin{align*}
-	\mathcal{E}&:expr \times env \times store \to eval \quad \text{espressioni} \\
-	\mathcal{C}&:com \times env \times store \to store \quad \text{comandi} \\
-	\mathcal{D}&:dec \times env \times store \to env \times store \quad \text{dichiarazioni} \\
-	\mathcal{P}&:prog \times env \times store \to store \quad \text{programmi}
+	\mathcal{E}&:expr \to env \to store \to eval \quad \text{espressioni} \\
+	\mathcal{C}&:com \to env \to store \to store \quad \text{comandi} \\
+	\mathcal{D}&:dec \to env \to store \to (env \times store) \quad \text{dichiarazioni} \\
+	\mathcal{P}&:prog \to env \to store \to store \quad \text{programmi}
 	\end{align*}
 	
 	
