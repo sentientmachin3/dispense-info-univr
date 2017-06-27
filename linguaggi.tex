@@ -62,7 +62,7 @@
 	
 	Questa dispensa è scritta sulla base del programma di Linguaggi dell'anno accademico 2016/2017
 	riguardante i seguenti argomenti: poset, reticoli, punti fissi, macchine astratte, cenni di semantica 
-	operazionale e denotazionale. Sono omesse le seguenti sezioni: language of commands e le parti di semantica statica e dinamica dei vari costrutti. \\
+	operazionale e denotazionale. Sono omesse le seguenti sezioni: language of commands e le parti di semantica statica e dinamica dei vari costrutti.
 	
 	\noindent
 	Il codice della dispensa, scritta in \LaTeX, è reperibile seguendo il link: \\ \url{https://github.com/alx79/dispense-univr.git}.
@@ -77,7 +77,7 @@
 		\item upper bound: un elemento $M \in \mathcal{P}$ tale che $\forall x \in \mathcal{S}$, dove  $\mathcal{S} \subseteq \mathcal{P}$, $x \leq M$;
 		\item lower bound: un elemento $m \in \mathcal{P}$ tale che $\forall x \in \mathcal{S}$, dove  $\mathcal{S} \subseteq \mathcal{P}$, $x \geq m$;
 	\end{itemize}
-	\textbf{NOTA:} non è necessario che $m$ e $M$ appartengano a $\mathcal{S}$. \\
+	\textbf{NOTA:} non è necessario che $m$ e $M$ appartengano a $\mathcal{S}$. 
 	
 	\noindent
 	Inoltre, dato un poset $\mathcal{P}$ e un $\mathcal{X} \subseteq \mathcal{P}$, sono definiti:
@@ -184,8 +184,9 @@
 	\end{tikzpicture}
 	
 	\subsection{Teoria di punto fisso}
-	Un punto fisso di un operatore $f$ su un insieme $L$ è un elemento $x \in L$ tale che $f(x)=x$. \\
+	Un punto fisso di un operatore $f$ su un insieme $L$ è un elemento $x \in L$ tale che $f(x)=x$. 
 	
+	\noindent
 	Definito come \textbf{trace semantics} l'insieme delle tracce di esecuzione di un programma, finite o infinite, un prefisso della traccia è un sequenza di stati attraverso i quali la traccia passa di lunghezza finita.
 	
 	Applicando la definizione di punto fisso all'insieme dei prefissi di una traccia, otteniamo l'equazione $Pref=f(Pref)$ che in generale ammette soluzioni multiple. Si deduce che i punti fissi di un operatore possono essere un numero variabile, anche infiniti ($\lambda x \cdot x$).
@@ -249,8 +250,9 @@
 		\item \textbf{Gestione della memoria:} gestione dell'allocazione della memoria per dati e programmi da memorizzare
 	\end{itemize}
 	
-	L'interprete interpreta un \textbf{linguaggio macchina}, ovvero il linguaggio $L_M$ che ha come stringhe legali tutte le stringhe interpretabili da $M$. Dal momento che una macchina astratta ha come unico linguaggio legale $M_L$, implementare un linguaggio significa realizzare una macchina astratta $M$ per $L$.\\
+	L'interprete interpreta un \textbf{linguaggio macchina}, ovvero il linguaggio $L_M$ che ha come stringhe legali tutte le stringhe interpretabili da $M$. Dal momento che una macchina astratta ha come unico linguaggio legale $M_L$, implementare un linguaggio significa realizzare una macchina astratta $M$ per $L$.
 	
+	\noindent
 	\textbf{NB:} esistono infinite macchine astratte per uno stesso linguaggio, la differenza sta nel come l'interprete viene realizzato e nelle strutture dati utilizzate.
 	
 	\subsection{Implementazione del linguaggio}
@@ -294,7 +296,7 @@
 	\]
 	Tra le due opzioni viene solitamente scelta una soluzione ibrida (es. Java), in quanto compilazione e interpretazione pura presentano svantaggi che si possono in parte ridurre usando questo tipo di metodo. 
 	
-	In alcuni casi è necessario caricare strutture dati e sottoprogrammi sulla macchina ospite per poter permettere l'esecuzione del codice prodotto dal compilatore (in particolare quando l'interprete della macchina intermedia e quello della macchina ospite coincidono). Questo insieme di dati è detto supporto a tempo di esecuzione (\textit{runtime support}). Nei linguaggi più vecchi era più che altro una rarità, nei moderni linguaggi ad alto livello questo scenario si presenta con quasi tutti i costrutti del linguaggio. \\
+	In alcuni casi è necessario caricare strutture dati e sottoprogrammi sulla macchina ospite per poter permettere l'esecuzione del codice prodotto dal compilatore (in particolare quando l'interprete della macchina intermedia e quello della macchina ospite coincidono). Questo insieme di dati è detto supporto a tempo di esecuzione (\textit{runtime support}). Nei linguaggi più vecchi era più che altro una rarità, nei moderni linguaggi ad alto livello questo scenario si presenta con quasi tutti i costrutti del linguaggio.
 	
 	\subsection{Specializzazioni}
 	All'interno di un linguaggio si possono inoltre aggiungere delle trasformazioni per motivi di performance, dette \textbf{specializzazioni}.
@@ -419,29 +421,30 @@
 	\[
 	Loc=\bigcup\limits_{\tau\in STyp} Loc_\tau
 	\] 
-	\\ con $STyp=bool \cup int$, ovvero l'insieme di elementi memorizzabili.
+	con $STyp=bool \cup int$, ovvero l'insieme di elementi memorizzabili.
 	
 	\subsubsection{Memoria}
 	Una memoria è un elemento dello spazio di funzioni 
 	\[
-	Stores=\bigcup\limits_{L\subseteq Loc} Store_L$$ \\ dove $$Store_L:L\to SVal \cup \{?, \bot\}
+		Stores=\bigcup\limits_{L\subseteq Loc} Store_L$$ \\ dove $$Store_L:L\to SVal \cup \{?, \bot\}
 	\]
 	I simboli $?$ e $\bot$ indicano rispettivamente lo stato inutilizzato e indefinito. Il simbolo $SVal$ denota i valori memorizzabili.
 	
 	Alle memorie viene inoltre imposta la condizione:
-	$$\forall l \in L.Stores(l) \in \tau \iff l\in L\cap Loc_\tau$$ per garantire che le locazioni siano utilizzate correttamente dal punto di vista dei tipi. \\
+	$$\forall l \in L.Stores(l) \in \tau \iff l\in L\cap Loc_\tau$$ per garantire che le locazioni siano utilizzate correttamente dal punto di vista dei tipi. 
 	
+	\noindent
 	La memoria viene inoltre dinamicamente aggiornata durante l'esecuzione del programma. Dati $L,L' \subseteq Loc, \sigma \in Store_L$ e $\sigma' \in Store_L'$, definiamo $\sigma [\sigma'] \in Store_{L \cup L'}$ come:
 	
 	%sistema di equazioni pag 60 del pdf
 	\[
-	\textup{\textbf{Aggiornamento: }} \quad
-	\sigma[\sigma'] = 
-	\begin{cases} 
-	\sigma'(l) &\mbox{if } l\in L' \\ 
-	\sigma (l) & \mbox{if } l \in (L-L') 
-	\end{cases}
-	\] \\
+		\textup{\textbf{Aggiornamento: }} \quad
+		\sigma[\sigma'] = 
+		\begin{cases} 
+		\sigma'(l) &\mbox{if } l\in L' \\ 
+		\sigma (l) & \mbox{if } l \in (L-L') 
+		\end{cases}
+	\] 
 	
 	Se $L\cap L'=\emptyset$ scriviamo $\sigma, \sigma'$ al posto di $\sigma [\sigma']$.
 	
@@ -450,11 +453,11 @@
 	
 	Un ambiente dinamico è un elemento dello spazio di funzioni 
 	\[
-	Env=\bigcup\limits_{I\subseteq Id} Env_I
+		Env=\bigcup\limits_{I\subseteq Id} Env_I
 	\]
 	dove
 	\[
-	Env_I:I \to DVal \cup Loc\cup \{\bot\}
+		Env_I:I \to DVal \cup Loc\cup \{\bot\}
 	\] 
 	con metavariabile $\rho$ e $DVal$ valori denotabili.
 	
@@ -540,8 +543,9 @@
 	
 	\subsection{Comandi}
 	\subsubsection{Variabili e assegnamenti}
-	Categoria sintattica i cui elementi sono eseguiti per aggiornare la memoria della macchina astratta che supporta il linguaggio. Il comando base è l'assegnamento che modifica il contenuto di una locazione. \\
+	Categoria sintattica i cui elementi sono eseguiti per aggiornare la memoria della macchina astratta che supporta il linguaggio. Il comando base è l'assegnamento che modifica il contenuto di una locazione. 
 	
+	\noindent
 	Una variabile è un contenitore di valori che ha un nome particolare. Il loro contenuto può essere modificato tramite un assegnamento. Un assegnamento è costruito utilizzando un termine come \textit{left-value}, che denota la locazione da modificare, e un \textit{right-value}, che contiene il nuovo valore da associare alla locazione.
 	
 	\subsubsection{Iterazione e ricorsione}
@@ -720,15 +724,29 @@
 	\]
 	Per ogni dominio esiste un metodo per garantire un ordinamento parziale degli stessi, garantendo che ogni dominio sia effettivamente un reticolo completo.
 	
-	\subsection{Domini semantici}
+	\subsection{Domini semantici: lo stato}
 	In un qualunque linguaggio ad alto livello lo stato deve comprendere un dominio chiamato \textit{ambiente} ($env$), per modellare l'associazione tra gli identificatori e i valori che questi possono denotare. Il dominio $env$ è definito quindi come $$env:ide \to dval$$ inoltre, essendo possibile che identificatori diversi denotino la stessa locazione di memoria, è necessaria un componente \textit{memoria} ($store$), per modellare l'associazione tra locazioni e valori che possono essere memorizzati, quindi 
 	\[
 	store:loc \to mval
 	\]
 	
-	Precedentemente sono stati specificati anche $dval$, dominio dei valori che possono essere denotati da un identificatore nell'ambiente e $mval$, dominio dei valori che possono essere contenuti in una locazione di memoria.
+	\subsection{Domini semantici: i valori}
+	\begin{itemize}
+		\item $dval$: \textit{valori denotabili}, dominio dei valori che possono essere denotati da un identificatore nell'ambiente.
+		\item $mval$: \textit{valori memorizzabili}, dominio dei valori che possono essere contenuti in una locazione di memoria.
+		\item $eval$: \textit{valori esprimibili}, dominio dei valori che possono essere ottenuti come semantica di un'espressione.
+	\end{itemize}
 	
-	Viene introdotto anche un terzo dominio, $eval$, valori che possono essere ottenuti come semantica di un'espressione.
+	\subsection{Dominio semantico fun}
+		Le espressioni contengono l’astrazione $ lambda(I, E ) $ che rappresenta una funzione
+		il cui corpo è l’espressione $ E_1 $ con parametro formale $ I $
+		
+		\noindent
+		La semantica di tale costrutto è una funzione del dominio $ fun $
+		\[
+			fun = \: store \to dval \to eval
+		\]
+		il valore di tipo $ dval $ sarà il valore dell’argomento nella applicazione.
 	
 	\subsection{Funzioni di valutazione semantica}
 	Per ogni dominio sintattico esiste una funzione di valutazione semantica, 
@@ -745,8 +763,9 @@
 	\subsection{Denotazionale vs operazionale}
 	A differenza della semantica denotazionale, la semantica operazionale non è sempre composizionale (Sez. \ref{denot}), inoltre non assegna solo una denotazione (funzione tra domini semantici) al programma ma specifica anche come si raggiunge per un dato programma lo stato finale a partire da quello iniziale (tramite sistemi di transizione).
 	
-	Le funzioni di valutazione della semantica sono in entrambi i casi definite in modo ricorsivo, ma per la semantica operazionale non è necessario alcun calcolo di punto fisso, in quanto questo viene determinato dall'interprete come chiusura transitiva delle transazioni che descrivono i passaggi di stato del programma. \\
+	Le funzioni di valutazione della semantica sono in entrambi i casi definite in modo ricorsivo, ma per la semantica operazionale non è necessario alcun calcolo di punto fisso, in quanto questo viene determinato dall'interprete come chiusura transitiva delle transazioni che descrivono i passaggi di stato del programma. 
 	
+	\noindent
 	Un'altra sostanziale differenza tra semantica operazionale e denotazionale è costituita dalla diversa definizione delle funzioni di valutazione della semantica, ad esempio: 
 	
 	\begin{align*}
@@ -760,7 +779,41 @@
 		fun =& EXPR \times env \quad &\text{(operazionale)}
 	\end{align*}
 	
+	\subsection{Semantica denotazionale e paradigmi}
+		\subsubsection{Paradigma funzionale}
+			\begin{itemize}
+				\item dominio sintattico: $ expr $
+				\item dominio semantico per lo stato: $ env $
+				\item $ dval = eval $ : gli $ eval $ contengono sempre $ fun $
+				\item funzione di valutazione semantica:$\quad \mathcal{E}: expr \to env \to eval$
+			\end{itemize}
 	
+		\subsubsection{Paradigma imperativo}
+			\begin{itemize}
+				\item 3 domini sintattici: $ expr $, $ com $, $ dec $
+				\item 2 domini semantici per lo stato: $ env $, $ store $
+				\item $ dval \neq eval \neq mval $: i valori su cui si interpretano le astrazioni funzionali 
+				($ fun $) sono di solito $ dval $. Le locazioni sono sempre denotabili.
+				\item 3 funzioni di valutazione semantica:
+					\begin{align*}
+						\mathcal{E}:& expr \to env \to store \to eval  \\
+						\mathcal{C}:& com \to env \to store \to store \\
+						\mathcal{D}:& dec \to env \to store \to (env \times store)  
+					\end{align*}
+			\end{itemize}
+			
+		\subsubsection{Paradigma ad oggetti}
+			\begin{itemize}
+				\item 4 domini sintattici: $ expr $, $ com $, $ dec $, dichiarazioni di \textbf{classe}
+				\item 3 domini semantici per lo stato: $ env $, $ store $, $ heap $: per modellare i puntatori e gli oggetti
+				\item $ dval \neq eval \neq mval $: i valori su cui si interpretano le astrazioni funzionali 
+				($ fun $) sono di solito $ dval $. Le locazioni sono sempre denotabili. Gli oggetti di solito appartengono a tutti e tre i domini.
+				\item funzioni di valutazione semantica, prendono (e restituiscono)
+				anche la heap: 
+				\[
+					\mathcal{C}: com \to env \to store \to heap \to (store \times heap)
+				\]
+			\end{itemize}
 	\section{Credits}
 	Davide Bianchi (mail: \url{davideb1912@gmail.com}) \\
 	Matteo Danzi (mail: \url{matteodanziguitarman@hotmail.it)}
