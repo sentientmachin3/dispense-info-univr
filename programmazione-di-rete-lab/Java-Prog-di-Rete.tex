@@ -1,0 +1,415 @@
+\documentclass[a4paper, titlepage]{article}
+\usepackage[italian]{babel}
+\usepackage[sfdefault]{ClearSans}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[sans]{frontespizio}
+\usepackage{listings}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[scaled=1.04]{couriers}
+\usepackage{geometry}
+\lstset{language = Java,
+basicstyle=\ttfamily ,
+keywordstyle=\color{Violet}\bfseries,
+commentstyle=\color{Green},
+stringstyle=\color{blue},
+morekeywords={String},
+showstringspaces=false}
+
+\usepackage{bookmark}
+\usepackage{hyperref}
+\hypersetup{
+hidelinks, 
+colorlinks = true,
+linkcolor = black}
+\geometry{a4paper, total={6in, 8in}}
+\begin{document}
+
+\begin{frontespizio}
+\Universita{Verona}
+\Dipartimento{Informatica}
+\Scuola{}
+\Titoletto{Documentazione java}
+\Titolo{Programmazione e Sicurezza delle Reti}
+\Sottotitolo{Riassunto delle principali librerie java\\
+ed esempi di applicazioni}
+\Candidato[VR388529]{Danzi Matteo}
+\Annoaccademico{2015/2016}
+\NCandidato{Autore}
+\end{frontespizio}
+\tableofcontents
+
+\newpage
+
+\section{java.net.*}
+
+	Il pacchetto \lstinline!java.net.*!  fornisce classi e interfacce per l'implementazione di 
+	applicazioni di rete:
+	\begin{itemize}
+		\item Classi Socket e ServerSocket per le connessioni TCP
+		\item Classe DatagramSocket per le connessioni UDP
+		\item Classe URL per le connessioni HTTP
+		\item Classe InetAddress per rappresentare gli indirizzi Internet
+		\item Classe URLConnection per rappresentare le connessioni a un URL
+	\end{itemize}		
+	
+	\subsection{Socket}
+		\begin{lstlisting}
+public class Socket
+extends Object
+implements Closeable
+		\end{lstlisting}		
+		Questa classe implementa un socket lato client per connessioni TCP. \\
+		Un socket è un canale bidirezionale di comunicazione tra due macchine.
+		Il lavoro effettivo del socket è attuato da un metodo della classe \lstinline!SocketImpl!.\\
+		Il costruttore principale di \lstinline!Socket! che abbiamo usato è:
+		\begin{lstlisting}[]
+Socket(String host, int port) throws IOException,
+             UnknownHostException
+// crea un socket lato client, ricevendo:
+// host = indirizzo IP(di tipo Stringa)
+// port = porta(> 1024 e < 49151)
+// esempio di creazione un socket lato client:
+try{
+	Socket s = new Socket("localhost", 11111);
+}catch(IOException e){
+	System.err.println(e.getMessage());
+	System.exit(1);
+}
+		\end{lstlisting}
+		Se l'host specificato è \lstinline!null! è equivalente a inserire l'indirizzo di loopback
+		della propria interfaccia("localhost").\\
+		Per chiudere il socket lato client si usa il metodo \lstinline!close()!:
+		\begin{lstlisting}
+public void close()
+           throws IOException
+// l'utilizzo di questo metodo, come per
+//  il costruttore, va incluso in un blocco try-catch.
+		\end{lstlisting}
+		Chiudendo il socket lato client si chiude automaticamente sia 
+		l'\lstinline!InputStream! che 
+		
+		l'\lstinline!OutputStream! del socket.	
+		\newpage	
+		\subsection{ServerSocket}
+		\begin{lstlisting}
+public class ServerSocket
+extends Object
+implements Closeable
+		\end{lstlisting}
+		Questa classe implementa un socket lato server per connessioni TCP.\\
+		Questo socket lato server attende la richiesta di apertura 
+		della connessione da parte di un client. 
+		Solitamente esegue delle operazioni basate sulla richiesta e ritorna il risultato 
+		al richiedente.\\
+		Il costruttore principale di \lstinline!ServerSocket! che abbiamo usato è:
+		\begin{lstlisting}[]
+ServerSocket(int port) throws IOException
+// crea un socket lato server, ricevendo:
+// port = porta su cui il server attende la richiesta
+// esempio di creazione un socket lato server:
+try{
+	ServerSocket s = new ServerSocket(11111);
+}catch(IOException e){
+	System.err.println(e.getMessage());
+	System.exit(1);
+}
+		\end{lstlisting}		
+		Per rendere effettiva la connessione una volta creata la socket abbiamo usato il metodo
+		\lstinline!accept()! il quale ascolta il canale per la connessione; blocca l'esecuzione
+		fino al momento in cui riceve una richiesta di connessione.
+		\begin{lstlisting}
+public Socket accept() throws IOException
+//esempio:
+try{
+	Socket clientSocket = s.accept();
+}catch(IOException e){
+	System.err.println("Connessione fallita");
+	System.exit(2);
+}
+		\end{lstlisting}
+		Per chiudere la connessione si usa il metodo \lstinline!close()! della classe 
+		\lstinline!Socket!.
+		
+		\bigskip
+		
+		\subsection{DatagramSocket}
+		\begin{lstlisting}
+public class DatagramSocket
+extends Object
+implements Closeable
+		\end{lstlisting}
+		Questa classe implementa un socket per inviare e ricevere pacchetti per connessioni UDP.\\
+		Questo DatagramSocket è il punto di ricezione/invio di un servizio di consegna di pacchetti.
+		Ogni pacchetto ricevuto/inviato in un DatagramSocket è indirizzato e instradato singolarmente.
+		Se ci sono più pacchetti da inviare, l'ordine di arrivo di questo può non coincidere
+		con l'ordine di invio.\\
+		Costruttore:
+		\begin{lstlisting}
+public DatagramSocket() throws SocketException
+		\end{lstlisting}
+		\subsection{URL}
+		Questa classe crea un oggetto che rappresenta il Uniform Resource Locator,
+		cioè un puntatore ad una risorsa sul Web. Questa risorsa può essere un semplice 
+		file o cartella, oppure può essere un riferimento a un oggetto più complicato
+		come una query su un data base o su un motore di ricerca.\\
+		Costruttore:
+		\begin{lstlisting}
+public URL(String spec) throws MalformedURLException
+// spec = indirizzo corrispondente in formato URL
+		\end{lstlisting}
+		\subsection{InetAddress}
+		Questa classe rappresenta un indirizzo IP (Internet Protocol). Un'istanza di un oggetto di tipo 
+		InetAddress consiste in un indirizzo IP e possibilmente il nome dell'host corrispondente.
+		\begin{lstlisting}
+public class InetAddress
+extends Object
+implements Serializable
+		\end{lstlisting}
+		Il metodo \lstinline!getByName(String host)! resituisce l'indirizzo IP corrispondente al nome
+		dell'host inserito come argomento.
+		\subsection{URLConnection}
+		Questa classe astratta è la superclasse di tutte le classi che rappresentano una comunicazione tra
+		l'applicazione e un URL. I metodi di questa classe possono essere usati sia per leggere che per
+		scrivere sulla risorsa a cui fa riferimento l'URL. In generale creare una connessione ad un URL
+		è un processo multistep.
+		\begin{lstlisting}
+public abstract class URLConnection
+extends Object
+		\end{lstlisting}
+		Per creare una connessione ad un URL si usano i seguenti metodi:
+		\begin{lstlisting}
+URLConnection c = url.openConnection(); // url di tipo URL
+c.connect(); 
+		\end{lstlisting}
+		\begin{enumerate}
+		\item L'oggetto connessione è generato invocando il metodo \lstinline!openConnection! su un URL
+		\item La connessione effettiva all'oggetto remoto è fatta usando il metodo \lstinline!connection()! 
+		sull'oggetto ritornato da \lstinline!openConnection! di tipo \lstinline!URLConnection!
+		\item L'oggetto remoto diventa disponiblie e i campi header e i contenuti dell'oggetto sono
+		 accessibili.
+		\end{enumerate}
+
+\newpage
+\newgeometry{left=2cm,bottom=0.1cm, top=1cm}
+\section{Applicazione UDP}	
+	\begin{lstlisting}
+//CLIENT UDP
+import java.io.*;
+import java.net.*;
+
+public class UDPClient{
+  public static void main(String[] args) throws Exception{
+	BufferedReader inFromUser = 
+	  new BufferedReader(new InputStreamReader(System.in));
+	DatagramSocket clientSocket = new DatagramSocket();
+	InetAddress IPAddress = InetAddress.getByName("localhost");
+    
+	byte[] sendData = new byte[1024];
+	byte[] receiveData = new byte[1024];
+	
+	System.out.println("Inserisci il messaggio per il Server");
+	String sentence = inFromUser.readLine();
+	sendData = sentence.getBytes();
+	
+	DatagramPacket sendPacket = 
+	  new DatagramPacket(
+	    sendData, sendData.length, IPAddress, 9876);
+	clientSocket.send(sendPacket);
+	
+	DatagramPacket receivePacket =
+	  new DatagramPacket(receiveData, receiveData.length);
+	clientSocket.receive(receivePacket);
+	
+	String serverSentence = new String(receiveData.getData());
+	System.out.println("From Server: " + serverSentence);
+	
+	clientSocket.close();
+  }
+}
+//SERVER UDP
+import java.io.*;
+import java.net.*;
+
+public class UDPServer{
+  public static void main(String[] args) throws Exception{
+    try{
+      DatagramSocket serverSocket = new DatagramSocket(9876);
+      
+      byte[] sendData = new byte[1024];
+      byte[] receiveData = new byte[1024];
+      
+      while(true){
+        try{
+          DatagramPacket receivePacket = 
+            new DatagramPacket(receiveData, receiveData.length);
+    		  serverSocket.receive(receivePacket);
+    		  String sentence = new String(receivePacket.getData());
+    		  InetAddress IPAddress = receivePacket.getAddress();
+    		  int port = receivePacket.getPort();
+    		  String answer = sentence + " ok";
+    		  sendData = answer.getBytes();
+    		  DatagramPacket sendPacket = 
+    		    new DatagramPacket(
+    		      sendPacket, sendPacket.length, IPAddress, port);
+    		  serverSocket.send(sendPacket);
+    		}catch(UnknownHostException ue){}
+    	  }
+    	}catch(java.net.BindException b){}
+  }
+}
+	\end{lstlisting}
+
+\newpage
+
+\section{Chat TCP}
+	\begin{lstlisting}
+//CLIENT TCP
+import java.io.*;
+import java.net.*;
+import java.util.Scanner;
+
+class Client{
+  public void main(String[] args){
+    try{
+      Socket s = new Socket("localhost", 8000);
+      PrintStream os = new PrintStream(
+        new BufferedOutputStream(s.getOutputStream()));
+    }catch(IOException e){
+      System.err.println(e.getMessage());
+      System.exit(1);
+    }
+    
+    readerThread r = new readerThread(s);
+    Thread thread = new Thread(r);
+    thread.start();
+    
+    System.out.println("Socket creata: " + s);
+    
+    Scanner l = new Scanner(System.in);
+    String out = null;
+    while((out = l.nextLine()) != null){
+    	  os.println(out);
+    	  os.flush();
+    	}
+    	l.close();
+    	os.close();
+    	r.terminate();
+  }
+}
+class readerThread implements Runnable{
+  Socket s;
+  boolean finish;
+  readerThread(Socket s){
+    this.s = s;
+    this.finish = false;
+  }
+  
+  public void terminate(){
+    this.finish = true;
+  }
+  
+  @Override
+  public void run(){
+    BufferedReader b = null;
+    String in = null;
+    try{
+      b = new BufferedReader(
+        new InputStreamReader(s.getInputStream()));
+      while(finish == false){
+        in = new String(b.ReadLine());
+        while(in != null)
+          System.out.println(in);
+      }
+      b.close();
+      s.close();
+    }catch(IOException e){
+      System.err.println(e.getMessage());
+      System.exit(1);
+    }
+  }
+}
+	\end{lstlisting}
+\newpage
+	\begin{lstlisting}
+//SERVER TCP
+import java.io.*;
+import java.net.*;
+import java.util.List;
+import java.util.ArrayList;
+
+class Server{
+  public static void main(String[] args) throws Exception{
+    	ServerSocket connection = new ServerSocket(8000);
+    	List<Server1> clients = new ArrayList<Server1>();
+    	while(true){
+    	  Server1 s = new Server1(conn.accept(), clients);
+    	  clients.add(s);
+    	}
+  }
+}
+class Server1 implements Runnable{
+  Socket s;
+  List<Server1> clients;
+  String nickname;
+  public Server1(Socket s, List<Server1> clients){
+    this.s = s;
+    this.clients = clients;
+    new Thread(this).start();
+  }
+  
+  @Override
+  public void run(){
+  	String from;
+  	try{
+  	  in = new BufferedReader(
+  	    new InputStreamReader(s.getInputStream()));
+  	  out = new PrintStream(s.getOutputStream());
+  	  System.out.println("Connected " + s);
+  	  out.println("Inserisci il nickname: ");
+  	  
+  	  do{
+  	    this.nickname = in.readLine();
+  	    if(isAlreadyUsed())
+  	      out.println("Nickname gia in uso, reinserire: ");
+  	    else
+  	      out.println("ok");
+  	  }while(isAlreadyUsed);
+  	  
+  	  while((from = in.readLine()) != null){
+  	    transmitToAll(this.nickname + ": " + from , out);
+  	    System.out.println(this.nickname + ": " + from);
+  	  }
+  	  
+  	  transmitToAll(this.nickname + " ha abbandonato" , out);
+  	  s.close();
+  	  clients.remove(this);
+  	}catch(IOException e){}
+  	System.out.println(this.nickname + " " 
+  	  + this.getPort() + " Disconnected");
+  }
+  
+  public void transmitToAll(String s, PrintStream out){
+    try{
+      for(Server1 ser : clients){
+        out = new PrintStream((ser.s).getOutputStream());
+        if(!this.equals(ser))
+          out.println(s);
+      }
+    }catch(IOException e){}
+  }
+  
+  public boolean isAlreadyUsed(){
+    for(Server1 ser : clients){
+      if(!this.equals(ser) && this.nickname.equals(ser.nickname))
+        return true;
+    }
+    return false;
+  }
+}
+      
+  
+	\end{lstlisting}
+\restoregeometry
+
+\end{document}

@@ -1,0 +1,122 @@
+\documentclass[a4paper, titlepage]{article}
+
+\usepackage[italian]{babel}
+\usepackage[sfdefault]{ClearSans}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lipsum}
+\usepackage[scaled=1.04]{couriers}
+\usepackage{multicol}
+\usepackage{fullpage}
+\usepackage{listings}
+\usepackage[top=1in, bottom=1in, left=0.5in, right=0.5in]{geometry}
+
+\setlength{\columnsep}{1.5cm}
+\setlength{\columnseprule}{0.4pt}
+\lstset{literate={á}{{\'a}}1 {ã}{{\~a}}1 {è}{{\'e}}1,
+basicstyle=\ttfamily}
+
+\pagenumbering{gobble}% Remove page numbers (and reset to 1)
+\clearpage
+\pagestyle{empty}
+\begin{document}
+\begin{center}
+\section*{\Huge Configurazione di Rete}
+\end{center}
+\begin{multicols}{2}
+\subsection*{Configurazione switch}
+	\begin{lstlisting}
+enable
+#configure terminal
+#hostname SW1
+#vlan 10
+#name studenti
+exit
+
+show vlan	
+	\end{lstlisting}
+\subsection*{Assegnamento VLAN alle porte switch}
+	\begin{lstlisting}
+#configure terminal
+#interface F0/1
+#switchport access vlan 10
+exit
+	\end{lstlisting}
+\subsection*{Porte Trunk o up-link}
+	\begin{lstlisting}
+#configure terminal
+#interface F0/3
+#switchport mode trunk
+exit	
+	\end{lstlisting}
+\subsection*{Configurazione Router}
+	\begin{lstlisting}
+enable
+#configure terminal
+#interface FastEthernet0/0.1
+#encapsulation dot1q 10
+#ipaddress 192.168.0.1 255.255.255.0
+//per le altre interfacce:
+#interface FastEthernet0/0.2
+#encapsulation dot1q 20
+#ipaddress 192.168.1.1 255.255.255.0
+...
+#interface FastEthernet 0/0
+#no shutdown
+exit
+
+show controllers S0/0
+// se è un cavo dalla parte DCE
+#interface S0/0
+#clock rate 64000
+exit
+
+	\end{lstlisting}
+\subsection*{DHCP}
+	\begin{lstlisting}
+#ip dhcp pool studenti
+#network 192.168.0.0 255.255.255.0
+#default-router 192.168.0.1
+#lease 7
+exit
+
+ipconfig/all	
+	\end{lstlisting}	
+\subsection*{RIP}
+	\begin{lstlisting}
+#configure terminal
+#router rip
+#network 10.0.0.0
+#network 10.0.1.0
+#network 192.168.0.0
+#network 192.168.1.0
+exit
+	\end{lstlisting}
+\subsection*{NAT}
+	\begin{lstlisting}
+//interfaccia F0/0 rivolta all'interno
+//interfaccia F0/1 è pubblica
+#configure terminal
+#interface F0/0
+#ipaddress 192.168.6.1 255.255.255.0
+#ip nat inside
+#no shutdown
+exit
+
+#configure terminal
+#interface F0/1
+#ip address 10.10.10.1 255.255.255.0
+#ip nat outside
+#no shutdown
+exit
+//per farlo dinamico:
+#ip nat pool servizi 10.10.10.1 
+  10.10.10.1 prefix-length 24
+#access-list 1 
+  permit 192.168.6.0 0.0.0.255
+#ip nat inside source 1 
+  pool servizi overload
+	\end{lstlisting}	
+
+\end{multicols}
+\end{document}
