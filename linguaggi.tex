@@ -1,6 +1,8 @@
 \documentclass[a4paper, 10pt]{article}
 \usepackage[italian]{babel}
 \usepackage{sans}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amsthm}
@@ -619,8 +621,7 @@
 		\item l'utilizzo dell'ambiente locale se esiste, altrimenti
 		\item si risale la gerarchia dei blocchi per cercare un ambiente non locale contenente un binding valido.
 	\end{itemize}
-	
-	\newpage
+
 	\renewcommand{\lstlistingname}{Scope statico}
 	\begin{lstlisting}[frame=tb,caption={Un nome non locale è risolto nel blocco che testualmente lo racchiude}]
 		{int x = 0;
