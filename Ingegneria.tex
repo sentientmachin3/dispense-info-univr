@@ -9,6 +9,8 @@
 	colorlinks = true,
 	linkcolor = black
 }
+\usepackage{geometry}
+\geometry{a4paper, left=3cm,right=3cm,top=3cm,bottom=3cm}
 
 \title{Ingegneria del Software}
 \date{}
@@ -22,13 +24,11 @@
 	
 	\section{Introduzione}
 	L' ingegneria del software è lo \textit{studio delle metodologie, strumenti e teorie che
-	stanno alla base della creazione dei software a livello professionale}.\\
-
+		stanno alla base della creazione dei software a livello professionale}.\\
+	
 	\noindent
 	È lo studio a livello \textit{professionale} perché a livello \textit{artigianale} non sempre vi è la garanzia del prodotto, in quanto non è garantito che la soluzione sia \textbf{scalabile} (cioè
 	permette di utilizzare il software per un ambito/problema più grande o differente rispetto a quello in cui è utilizzato).\\
-	
-	\noindent
 	I prodotti software si suddividono in:
 	\begin{itemize}
 		\item \textbf{prodotti software generici} (e.g.: S.O., Applicazioni ...)
@@ -38,34 +38,38 @@
 		
 		prodotti in cui l'utilizzatore richiede al progettista le caratteristiche che deve avere il prodotto, e il software è pesantemente influenzato da chi lo usa.
 	\end{itemize}
-
+	
 	\noindent
 	\textbf{Ma che cos'è il software?} 
 	
 	\noindent
-	Il software non è altro che un insieme di programmi che svolgono un compito che viene opportunamente documentato, la cui documentazione indica com'è strutturato. \\
+	Il software non è altro che un insieme di programmi che svolgono un compito qualsiasi e che viene opportunamente documentato, la cui documentazione indica com'è strutturato. \\
 	
 	\noindent
-	\textbf{Caratteristiche di un buon prodotto software}:
+	\subsection*{Caratteristiche di un buon prodotto software}
 	\begin{enumerate}
-		\item \textbf{Mantenibilità}: il prodotto software deve durare e deve saper correggere
-		eventuali errori, deve saper gestire il cambiamento (come, per esempio, l'esecuzione su diverse macchine).
+		\item \textbf{Mantenibilità}: 
+		\begin{itemize}
+			\item deve poter essere gestito su un periodo vita medio/lungo.
+			\item deve saper gestire eventuali errori che non si erano trovati precedentemente.
+			\item deve fare in modo che il software giri su piattaforme diverse.
+		\end{itemize}
 		\item \textbf{Affidabilità}: un software deve eseguire quello che gli viene imposto senza
-		compromettere la sicurezza degli utenti.
-		\item \textbf{Usabilità}: quanto è facile da utilizzare un software.
+		compromettere altri aspetti come ad esempio la sicurezza degli utenti.
+		\item \textbf{Usabilità}: quanto è facile da utilizzare un software, saperlo utilizzare senza dover leggere le istruzioni. Ad esempio per utilizzare un browser web utilizzo sempre gli stessi criteri di usabilità e faccio in modo che sia utilizzabile in modo intuitivo.
 	\end{enumerate}
 	
 	
 	\noindent
-	Quattro attività principali dell' ingegneria del software :
+	\subsection*{Quattro attività principali dell' ingegneria del software}
 	\begin{enumerate}
 		\item \textbf{\textit{Specifica del software}} : si considerano i requisiti di chi mi richiede di
 		creare il software.
-			\subitem{-} l'ingegneria dei requisiti considera i requisti dati e li trasforma in
-			requisiti ad alto livello, ma piú rigorosi e meno ambigui.
+		\subitem{-} l'ingegneria dei requisiti considera i requisti dati e li trasforma in
+		requisiti ad alto livello, ma più rigorosi e meno ambigui.
 		\item \textbf{\textit{Realizzazione del software}} : si appoggia sui requisiti e consiste di due fasi:
-			\subitem{-} progettazione
-			\subitem{-} implementazione
+		\subitem{-} progettazione
+		\subitem{-} implementazione
 		\item \textbf{\textit{Validazione del software}} : è un fattore molto importante e consiste nella
 		validazione da parte di un utente del software creato.
 		\item \textbf{\textit{Evoluzione del software}} : consiste in modifiche e aggiornamenti apportati
@@ -73,5 +77,33 @@
 		(più del 50\%!!!) di una vita media di un sw.
 	\end{enumerate}
 	
+	\subsection*{Problemi e sfde attuali dell' ingegneria del software}
+	
+	\begin{itemize}
+		\item \underline{sicurezza}: privacy, frodi, danni a cose o persone ecc.
+		\item \underline{costi}: si deve contenere i costi di produzione sotto controllo.
+		\item \underline{etereogeneità}: sfruttare il sw su più macchine, soddisfare più richieste in
+		contemporanea ecc.
+		\item \underline{tempistiche}: sono sempre più ridotte.
+	\end{itemize}
+	
+	\subsection*{Efficienza VS efficacia}
+	L' \textit{efficienza} indica quanto materiale uso per risolvere un problema, è un'aspetto più computazionale, mentre l' \textit{efficacia} consiste nel chiedersi se un sw svolge il proprio compito per cui è stato creato, quanto un sw è in grado di risolvere il problema richiesto dall'utente e quindi se raggiunge l'obbiettivo delle specifiche.
+	
+	\noindent
+	Tipologie software:
+	\begin{enumerate}
+		\item \underline{Sistemi Stand-Alone}: sistemi sw isolati a livello di rete, funzionano su una macchina isolata.
+		\item \underline{Applicazioni interattive basate su transizioni}: scambio di dati concordato
+		da entrambe le parti (vi è il concetto di "o tutto, o niente"). Sono per lo
+		più basate sul web e quindi distribuite sulla rete. Ad esempio operazioni di scambio di dati tipo commercio elettronico(Amazon) oppure tutte le applicazioni bancarie.
+		\item \underline{Sistemi embedded}: sistemi sw che sono innestati all'interno di apparecchi di varia natura (controllo treni, bancomat). Il software è a bordo di un sistema dedicato e quindi ho vincoli architetturali. 
+		\item \underline{Applicazioni batch}: applicazioni che elaborano dati in grossi gruppi. Ad esempio stampare e produrre dati bancari di tutti i clienti di una banca in un certo istante oppure inserimento pesante di dati.
+		\item \underline{Sistemi d'intrattenimento}: tipo videogiochi, film on demand, il daltonismo del Dalty ecc. Pesantemente basati sul web.
+		\item \underline{Applicazioni di raccolta dati}: tipo Arpav, centraline per rilevare dati di inquinamento, i quali raccolti e 
+		\item \underline{Sistemi di sistemi}: sistemi che si basano su altri sistemi (come Amazon,
+		il quale fa scambio di merci e, contemporaneamente, raccoglie i dati e li
+		rivende ad altre aziende).
+	\end{enumerate}
 	
 \end{document}
