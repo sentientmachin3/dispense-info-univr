@@ -71,6 +71,55 @@
 		\item \textbf{\textit{Evoluzione del software}} : consiste in modifiche e aggiornamenti apportati
 		dopo la creazione finale del software; rappresenta il costo principale
 		(più del 50\%!!!) di una vita media di un sw.
+		
+		\section{Sviluppo agile}
+		\subsection{Introduzione}
+		Nel mondo moderno, lo sviluppo rapido e la consegna in breve tempo di un prodotto finito sono i requisiti più importanti per i sistemi software.
+		
+		Il metodo di sviluppo agile si è sviluppato nei tardi anni 90 e il suo scopo principale era quello di ridurre il tempo di consegna di un prodotto software finito. 
+		
+		In un sistema agile di norma la progettazione e l'implementazione di un software sono sempre a stretto contatto, e le parti interessate al software sono spesso coinvolte nel processo di sviluppo, per scopi di specifica e validazione del prodotto stesso, che viene consegnato in più versioni (spesso con una documentazione minima, per focalizzare gli sforzi dello sviluppo nella scrittura di codice funzionante).
+		
+		Lo sviluppo agile del software ruota in generale attorno a 5 principi cardine:
+		\begin{itemize}
+			\item Coinvolgimento del cliente: sfruttato soprattutto per le sezioni di verifica del prodotto;
+			
+			\item Consegna incrementale: il cliente specifica i requisiti una porzione alle volta, e la loro realizzazione è inclusa nella consegna del prodotto più vicina;
+			
+			\item Sfruttamento delle abilità del team;
+			
+			\item Progettare basandosi sui cambiamenti dei requisiti, quindi sviluppare un prodotto che sia semplice da cambiare;
+			
+			\item Mantenere la semplicità del prodotto: se possibile lavorare anche attivamente per ridurre la complessità del software sviluppato finora.
+		\end{itemize}
+	
+		\subsection{Extreme programming}
+		La tecnica di extreme programming estremizza le condizioni di lavoro per lo sviluppo agile del software, a volte anche facendo build del prodotto diverse volte al giorno, pubblicando release dopo brevissimi periodi di sviluppo e test (circa 2 settimane), e assicurandosi che la release venga pubblicata solo quando tutti i test siano passati.
+		
+		Le caratteristiche principali dell'extreme programming sono le seguenti:
+		\begin{itemize}
+			\item Planning dei task incrementale: le caratteristiche da includere nel software sono decise sulla base del tempo che richiedono per essere sviluppate, e sono divise in tasks;
+			
+			\item Piccole release: una versione con delle funzionalità di base è la prima ad essere rilasciata, successivamente vengono fatte release frequenti e con aggiunte di feature extra in maniera incrementale;
+			
+			\item Design semplice: il design è spesso progettato in maniera minimale, in modo da concentrare lo sviluppo per soddisfare al massimo i requisiti richiesti;
+			
+			\item Sviluppo del test necessario per testare una funzionalità prima di implementare la funzionalità stessa;
+			
+			\item Refactoring: tutti gli sviluppatori eseguono un refactoring del codice ogni volta che sono possibili delle ottimizzazioni, per mantenere il codice più semplice e mantenibile possibile;
+			
+			\item Pair programming: programmazione di coppia, per verificare ognuno il lavoro dell'altro;
+			
+			\item Proprietà collettiva: le coppie di sviluppatori lavorano su tutto il software, in modo da non creare zone di codice che solo una coppia sa interpretare e tutti si prendono la responsabilità di tutto il codice;
+			
+			\item Integrazione continua: ogni volta che una nuova funzionalità è implementata viene immediatamente integrata nel prodotto finito;
+			
+			\item Ritmo sostenibile: non sono permessi grandi overtime, per non abbassare la qualità del codice;
+			
+			\item Cliente sempre in loco: un rappresentante del cliente è sempre disponibile al team di sviluppo ed è responsabile per la consegna delle specifiche.
+		\end{itemize}
+		
+		\paragraph{Refactoring} Il refactoring è una procedura (in alcuni punti anche automatizzata) per migliorare la qualità del codice e mantenerlo leggibile e facilmente modificabile, ad esempio riorganizzando la gerarchia delle classi per evitare codice duplicato, tenere un codice pulito per renderlo semplice da capire, usare delle librerie per evitare di sovraccaricare il codice che si scrivere con molte chiamate consecutive.
 	\end{enumerate}
 	
 	
