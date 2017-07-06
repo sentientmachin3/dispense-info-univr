@@ -75,35 +75,111 @@
 		\item \textbf{\textit{Evoluzione del software}} : consiste in modifiche e aggiornamenti apportati
 		dopo la creazione finale del software; rappresenta il costo principale
 		(più del 50\%!!!) di una vita media di un sw.
+		
+		\subsection*{Problemi e sfde attuali dell' ingegneria del software}
+		
+		\begin{itemize}
+			\item \underline{sicurezza}: privacy, frodi, danni a cose o persone ecc.
+			\item \underline{costi}: si deve contenere i costi di produzione sotto controllo.
+			\item \underline{etereogeneità}: sfruttare il sw su più macchine, soddisfare più richieste in
+			contemporanea ecc.
+			\item \underline{tempistiche}: sono sempre più ridotte.
+		\end{itemize}
+		
+		\subsection*{Efficienza VS efficacia}
+		L' \textit{efficienza} indica quanto materiale uso per risolvere un problema, è un'aspetto più computazionale, mentre l' \textit{efficacia} consiste nel chiedersi se un sw svolge il proprio compito per cui è stato creato, quanto un sw è in grado di risolvere il problema richiesto dall'utente e quindi se raggiunge l'obbiettivo delle specifiche.
+		
+		\noindent
+		Tipologie software:
+		\begin{enumerate}
+			\item \underline{Sistemi Stand-Alone}: sistemi sw isolati a livello di rete, funzionano su una macchina isolata.
+			\item \underline{Applicazioni interattive basate su transizioni}: scambio di dati concordato
+			da entrambe le parti (vi è il concetto di "o tutto, o niente"). Sono per lo
+			più basate sul web e quindi distribuite sulla rete. Ad esempio operazioni di scambio di dati tipo commercio elettronico(Amazon) oppure tutte le applicazioni bancarie.
+			\item \underline{Sistemi embedded}: sistemi sw che sono innestati all'interno di apparecchi di varia natura (controllo treni, bancomat). Il software è a bordo di un sistema dedicato e quindi ho vincoli architetturali. 
+			\item \underline{Applicazioni batch}: applicazioni che elaborano dati in grossi gruppi. Ad esempio stampare e produrre dati bancari di tutti i clienti di una banca in un certo istante oppure inserimento pesante di dati.
+			\item \underline{Sistemi d'intrattenimento}: tipo videogiochi, film on demand, il daltonismo del Dalty ecc. Pesantemente basati sul web.
+			\item \underline{Applicazioni di raccolta dati}: tipo Arpav, centraline per rilevare dati di inquinamento, i quali raccolti e 
+			\item \underline{Sistemi di sistemi}: sistemi che si basano su altri sistemi (come Amazon,
+			il quale fa scambio di merci e, contemporaneamente, raccoglie i dati e li
+			rivende ad altre aziende).
+		\end{enumerate}
 	\end{enumerate}
+		
+		\section{Sviluppo agile}
+		\subsection*{Introduzione}
+		Nel mondo moderno, lo sviluppo rapido e la consegna in breve tempo di un prodotto finito sono i requisiti più importanti per i sistemi software.
+		
+		Il metodo di sviluppo agile si è sviluppato nei tardi anni 90 e il suo scopo principale era quello di ridurre il tempo di consegna di un prodotto software finito. 
+		
+		In un sistema agile di norma la progettazione e l'implementazione di un software sono sempre a stretto contatto, e le parti interessate al software sono spesso coinvolte nel processo di sviluppo, per scopi di specifica e validazione del prodotto stesso, che viene consegnato in più versioni (spesso con una documentazione minima, per focalizzare gli sforzi dello sviluppo nella scrittura di codice funzionante).
+		
+		Lo sviluppo agile del software ruota in generale attorno a 5 principi cardine:
+		\begin{itemize}
+			\item Coinvolgimento del cliente: sfruttato soprattutto per le sezioni di verifica del prodotto;
+			
+			\item Consegna incrementale: il cliente specifica i requisiti una porzione alle volta, e la loro realizzazione è inclusa nella consegna del prodotto più vicina;
+			
+			\item Sfruttamento delle abilità del team;
+			
+			\item Progettare basandosi sui cambiamenti dei requisiti, quindi sviluppare un prodotto che sia semplice da cambiare;
+			
+			\item Mantenere la semplicità del prodotto: se possibile lavorare anche attivamente per ridurre la complessità del software sviluppato finora.
+		\end{itemize}
 	
-	\subsection*{Problemi e sfde attuali dell' ingegneria del software}
+		\subsection*{Extreme programming}
+		La tecnica di extreme programming estremizza le condizioni di lavoro per lo sviluppo agile del software, a volte anche facendo build del prodotto diverse volte al giorno, pubblicando release dopo brevissimi periodi di sviluppo e test (circa 2 settimane), e assicurandosi che la release venga pubblicata solo quando tutti i test siano passati.
+		
+		Le caratteristiche principali dell'extreme programming sono le seguenti:
+		\begin{itemize}
+			\item Planning dei task incrementale: le caratteristiche da includere nel software sono decise sulla base del tempo che richiedono per essere sviluppate, e sono divise in tasks;
+			
+			\item Piccole release: una versione con delle funzionalità di base è la prima ad essere rilasciata, successivamente vengono fatte release frequenti e con aggiunte di feature extra in maniera incrementale;
+			
+			\item Design semplice: il design è spesso progettato in maniera minimale, in modo da concentrare lo sviluppo per soddisfare al massimo i requisiti richiesti;
+			
+			\item Sviluppo del test necessario per testare una funzionalità prima di implementare la funzionalità stessa;
+			
+			\item Refactoring: tutti gli sviluppatori eseguono un refactoring del codice ogni volta che sono possibili delle ottimizzazioni, per mantenere il codice più semplice e mantenibile possibile;
+			
+			\item Pair programming: programmazione di coppia, per verificare ognuno il lavoro dell'altro;
+			
+			\item Proprietà collettiva: le coppie di sviluppatori lavorano su tutto il software, in modo da non creare zone di codice che solo una coppia sa interpretare e tutti si prendono la responsabilità di tutto il codice;
+			
+			\item Integrazione continua: ogni volta che una nuova funzionalità è implementata viene immediatamente integrata nel prodotto finito;
+			
+			\item Ritmo sostenibile: non sono permessi grandi overtime, per non abbassare la qualità del codice;
+			
+			\item Cliente sempre in loco: un rappresentante del cliente è sempre disponibile al team di sviluppo ed è responsabile per la consegna delle specifiche.
+		\end{itemize}
+		
+		\paragraph{Refactoring} Il refactoring è una procedura (in alcuni punti anche automatizzata) per migliorare la qualità del codice e mantenerlo leggibile e facilmente modificabile, ad esempio riorganizzando la gerarchia delle classi per evitare codice duplicato, tenere un codice pulito per renderlo semplice da capire, usare delle librerie per evitare di sovraccaricare il codice che si scrivere con molte chiamate consecutive.
+		
+		\paragraph{Test-first} Il metodo test-first è basato sull'idea di sviluppare prima il test della feature che la feature stessa, in questo modo vengono a galla molti chiarimenti sulla funzionalità da implementare. Spesso i test di questo tipo sono vengono eseguiti facendo affidamento su un testing framework, ad esempio JUnit, che aiuta lo sviluppatore nella stesura e nell'esecuzione dei test stessi.
+		
+		\subsection*{Sistema Scrum}
+		Il sistema \textit{Scrum} è un metodo di sviluppo basato più sul controllare lo sviluppo iterativo. È contruito su 3 fasi:
+		\begin{itemize}
+			\item Fase iniziale di pianificazione dove vengono specificati gli obiettivi del software e disegnata l'architettura del sistema;
+			\item Fase di sviluppo, costituita da una serie di sprint iterativi che aggiungono sempre nuove feature al sistema;
+			
+			\item Al termine dello sviluppo, vengono scritti la documentazione e i manuali utente.
+		\end{itemize}
+		I vantaggi di un sistema Scrum sono dati dal fatto che il prodotto completo per essere sviluppato viene diviso in una serie di sotto-chunk, che vengono risolti man mano dagli sviluppatori durante ogni ciclo di lavoro.
+		
+		\subsection*{Problematiche dello sviluppo agile}
+		Le più grandi problematiche dello sviluppo agile sono le seguenti:
+		\begin{itemize}
+			\item I metodi di lavoro agili sono più adatti alla scrittura di nuovo software piuttosto che alla manutenzione di software precedente, e la maggior parte delle grandi compagnie si affida di più a software datato che viene continuamente aggiornato;
+			
+			\item I metodi sono concepiti più per lo sviluppo con pochi sviluppatori concentrati in un solo luogo, non per grandi compagnie, per le quali potrebbero risultare dispersivi approcci di questo tipo;
+			
+			\item Il sistema agile spesso è in conflitto con quello che è l'approccio dell'azienda al sistema di sviluppo del software;
+			
+			\item Il sistema agile è concentrato maggiormente sulla frequenza delle release che non sulla documentazione, cosa che può rendere problematica la manutenzione di software scritto con questo sistema o software di grandi dimensioni. Per questo motivo si preferisce più che altro usare un approccio plan-driven e agile (una sorta di metodo ibrido), anche per adattarsi a progetti di software con un ciclo di vita lungo (che hanno quindi bisogno di documentazione) o di grandi dimesioni (in quanto richiedono un numero di sviluppatori che può essere sparso per il mondo).
+		\end{itemize}
+		
 	
-	\begin{itemize}
-		\item \underline{sicurezza}: privacy, frodi, danni a cose o persone ecc.
-		\item \underline{costi}: si deve contenere i costi di produzione sotto controllo.
-		\item \underline{etereogeneità}: sfruttare il sw su più macchine, soddisfare più richieste in
-		contemporanea ecc.
-		\item \underline{tempistiche}: sono sempre più ridotte.
-	\end{itemize}
 	
-	\subsection*{Efficienza VS efficacia}
-	L' \textit{efficienza} indica quanto materiale uso per risolvere un problema, è un'aspetto più computazionale, mentre l' \textit{efficacia} consiste nel chiedersi se un sw svolge il proprio compito per cui è stato creato, quanto un sw è in grado di risolvere il problema richiesto dall'utente e quindi se raggiunge l'obbiettivo delle specifiche.
-	
-	\noindent
-	Tipologie software:
-	\begin{enumerate}
-		\item \underline{Sistemi Stand-Alone}: sistemi sw isolati a livello di rete, funzionano su una macchina isolata.
-		\item \underline{Applicazioni interattive basate su transizioni}: scambio di dati concordato
-		da entrambe le parti (vi è il concetto di "o tutto, o niente"). Sono per lo
-		più basate sul web e quindi distribuite sulla rete. Ad esempio operazioni di scambio di dati tipo commercio elettronico(Amazon) oppure tutte le applicazioni bancarie.
-		\item \underline{Sistemi embedded}: sistemi sw che sono innestati all'interno di apparecchi di varia natura (controllo treni, bancomat). Il software è a bordo di un sistema dedicato e quindi ho vincoli architetturali. 
-		\item \underline{Applicazioni batch}: applicazioni che elaborano dati in grossi gruppi. Ad esempio stampare e produrre dati bancari di tutti i clienti di una banca in un certo istante oppure inserimento pesante di dati.
-		\item \underline{Sistemi d'intrattenimento}: tipo videogiochi, film on demand, il daltonismo del Dalty ecc. Pesantemente basati sul web.
-		\item \underline{Applicazioni di raccolta dati}: tipo Arpav, centraline per rilevare dati di inquinamento, i quali raccolti e 
-		\item \underline{Sistemi di sistemi}: sistemi che si basano su altri sistemi (come Amazon,
-		il quale fa scambio di merci e, contemporaneamente, raccoglie i dati e li
-		rivende ad altre aziende).
-	\end{enumerate}
 	
 \end{document}
