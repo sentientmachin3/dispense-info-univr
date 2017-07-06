@@ -7,3 +7,4 @@ Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman
 - Sistemi Operativi lab.
 - Basi di Dati (Teoria)
 - Programmazione di Rete (Laboratorio)
+- Ingegneria del Software (parziale)
