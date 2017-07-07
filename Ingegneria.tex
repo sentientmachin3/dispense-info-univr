@@ -15,6 +15,18 @@
 \title{Ingegneria del Software}
 \date{}
 \author{Matteo Danzi \\Davide Bianchi}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{\nouppercase{\leftmark}}
+\rhead{\nouppercase{\rightmark}}
+\chead{}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
 \begin{document}
 	\maketitle
 	
@@ -46,7 +58,7 @@
 	Il software non è altro che un insieme di programmi che svolgono un compito qualsiasi e che viene opportunamente documentato, la cui documentazione indica com'è strutturato. \\
 	
 	\noindent
-	\subsection*{Caratteristiche di un buon prodotto software}
+	\subsection{Caratteristiche di un buon prodotto software}
 	\begin{enumerate}
 		\item \textbf{Mantenibilità}: 
 		\begin{itemize}
@@ -61,7 +73,7 @@
 	
 	
 	\noindent
-	\subsection*{Quattro attività principali dell' ingegneria del software}
+	\subsection{Quattro attività principali dell' ingegneria del software}
 	\begin{enumerate}
 		\item \textbf{\textit{Specifica del software}} : si considerano i requisiti di chi mi richiede di
 		creare il software.
@@ -76,7 +88,7 @@
 		dopo la creazione finale del software; rappresenta il costo principale
 		(più del 50\%!!!) di una vita media di un sw.
 		
-		\subsection*{Problemi e sfde attuali dell' ingegneria del software}
+	\subsection*{Problemi e sfde attuali dell' ingegneria del software}
 		
 		\begin{itemize}
 			\item \underline{sicurezza}: privacy, frodi, danni a cose o persone ecc.
@@ -86,7 +98,7 @@
 			\item \underline{tempistiche}: sono sempre più ridotte.
 		\end{itemize}
 		
-		\subsection*{Efficienza VS efficacia}
+	\subsection{Efficienza VS efficacia}
 		L' \textit{efficienza} indica quanto materiale uso per risolvere un problema, è un'aspetto più computazionale, mentre l' \textit{efficacia} consiste nel chiedersi se un sw svolge il proprio compito per cui è stato creato, quanto un sw è in grado di risolvere il problema richiesto dall'utente e quindi se raggiunge l'obbiettivo delle specifiche.
 		
 		\noindent
@@ -106,8 +118,8 @@
 		\end{enumerate}
 	\end{enumerate}
 		
-		\section{Sviluppo agile}
-		\subsection*{Introduzione}
+	\section{Sviluppo agile}
+		\subsection{Introduzione}
 		Nel mondo moderno, lo sviluppo rapido e la consegna in breve tempo di un prodotto finito sono i requisiti più importanti per i sistemi software.
 		
 		Il metodo di sviluppo agile si è sviluppato nei tardi anni 90 e il suo scopo principale era quello di ridurre il tempo di consegna di un prodotto software finito. 
@@ -127,7 +139,7 @@
 			\item Mantenere la semplicità del prodotto: se possibile lavorare anche attivamente per ridurre la complessità del software sviluppato finora.
 		\end{itemize}
 	
-		\subsection*{Extreme programming}
+		\subsection{Extreme programming}
 		La tecnica di extreme programming estremizza le condizioni di lavoro per lo sviluppo agile del software, a volte anche facendo build del prodotto diverse volte al giorno, pubblicando release dopo brevissimi periodi di sviluppo e test (circa 2 settimane), e assicurandosi che la release venga pubblicata solo quando tutti i test siano passati.
 		
 		Le caratteristiche principali dell'extreme programming sono le seguenti:
@@ -157,7 +169,7 @@
 		
 		\paragraph{Test-first} Il metodo test-first è basato sull'idea di sviluppare prima il test della feature che la feature stessa, in questo modo vengono a galla molti chiarimenti sulla funzionalità da implementare. Spesso i test di questo tipo sono vengono eseguiti facendo affidamento su un testing framework, ad esempio JUnit, che aiuta lo sviluppatore nella stesura e nell'esecuzione dei test stessi.
 		
-		\subsection*{Sistema Scrum}
+	\subsection{Sistema Scrum}
 		Il sistema \textit{Scrum} è un metodo di sviluppo basato più sul controllare lo sviluppo iterativo. È contruito su 3 fasi:
 		\begin{itemize}
 			\item Fase iniziale di pianificazione dove vengono specificati gli obiettivi del software e disegnata l'architettura del sistema;
@@ -167,7 +179,7 @@
 		\end{itemize}
 		I vantaggi di un sistema Scrum sono dati dal fatto che il prodotto completo per essere sviluppato viene diviso in una serie di sotto-chunk, che vengono risolti man mano dagli sviluppatori durante ogni ciclo di lavoro.
 		
-		\subsection*{Problematiche dello sviluppo agile}
+	\subsection{Problematiche dello sviluppo agile}
 		Le più grandi problematiche dello sviluppo agile sono le seguenti:
 		\begin{itemize}
 			\item I metodi di lavoro agili sono più adatti alla scrittura di nuovo software piuttosto che alla manutenzione di software precedente, e la maggior parte delle grandi compagnie si affida di più a software datato che viene continuamente aggiornato;
@@ -188,7 +200,7 @@
 		\item Requisiti di sistema: sono indicati in un documento ben strutturato, che da una specifica dettagliata delle funzioni del sistema, dei servizi che offre e dei vincoli di funzionamento (di performance, ecc.).
 	\end{itemize}
 
-	\subsection*{Requisiti funzionali e non funzionali}
+	\subsection{Requisiti funzionali e non funzionali}
 	I requisiti si possono suddividere inoltre in altre due grandi categorie:
 	\begin{itemize}
 		\item Requisiti funzionali: specificano quali servizi il sistema deve offrire, come il sistema dovrebbe reagire di fronte a determinati input, come dovrebbe comportarsi in determinate situazioni
@@ -207,7 +219,7 @@
  		\item Requisiti esterni: derivano da fattori esterni (legali, di interoperabilità...)
  	\end{itemize}
  
- 	\subsection*{Processi di ingegneria dei requisiti}
+ 	\subsection{Processi di ingegneria dei requisiti}
  	Il processo di ingegneria dei requisiti è concentrato su 4 punti, svolti iterativamente:
  	\begin{enumerate}
  		\item Estrazione dei requisiti;
@@ -216,14 +228,14 @@
  		\item Gestione dei requisiti.
  	\end{enumerate}
 	
-	\subsubsection*{Estrazione dei requisiti}
+	\subsubsection{Estrazione dei requisiti}
 	È il processo con il quale si determinano i requisiti da implementare:
 	\begin{enumerate}
 		\item Scoperta dei requisiti: richiede interazione diretta col cliente;
 		\item Specifica dei requisiti: stesura dei documenti che specificano i requisiti di sistema e i requisiti utente, in modo che possano essere compresi anche dai clienti;
 	\end{enumerate}
 
-	\subsubsection*{Validazione dei requisiti}
+	\subsubsection{Validazione dei requisiti}
 	È la "dimostrazione" che i requisiti analizzati sono esattamente quello che il cliente vuole dal team di sviluppo. La sezione della validazione è importante, in quanto permette di rilevare gli errori nell'analisi dei requisiti che costerebbero molto tempo per essere risolti in fase di sviluppo.
 	
 	I punti da tenere sotto controllo sono i seguenti:
@@ -235,7 +247,7 @@
 		\item Verificabilità: descrizione di metodi per verificare i requisiti.
 	\end{enumerate}
 
-	\subsubsection*{Gestione dei requisiti}
+	\subsubsection{Gestione dei requisiti}
 	Questa parte del processo di ingegnerizzazione dei requisiti consiste nel definire delle politiche di gestione in caso di cambio di requisiti del sistema.
 	Il processo di modifica dei requisiti passa attraverso un analisi dei costi di modifica del programma, un'analisi dei delle modifiche da apportare e poi viene avviata la modifica dell'implementazione del prodotto finito.
 	
