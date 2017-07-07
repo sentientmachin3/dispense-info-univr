@@ -3,8 +3,8 @@ Collezione di codice LaTex di dispense scritte per alcuni corsi della Laurea in 
 Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman@hotmail.it`.
 
 ## Corsi inclusi nelle dispense
-- Linguaggi di programmazione
-- Sistemi Operativi lab.
 - Basi di Dati (Teoria)
-- Programmazione di Rete (Laboratorio)
 - Ingegneria del Software (parziale)
+- Linguaggi di programmazione
+- Programmazione di Rete (Laboratorio)
+- Sistemi Operativi lab.
