@@ -9,6 +9,11 @@
 	colorlinks = true,
 	linkcolor = black
 }
+\usepackage{tikz}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shapes,positioning,calc}
+\usetikzlibrary{shapes.geometric, arrows}
+\usetikzlibrary{arrows.meta}
 \usepackage{geometry}
 \geometry{a4paper, left=3cm,right=3cm,top=3cm,bottom=3cm}
 
@@ -27,6 +32,9 @@
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand{\footrulewidth}{0.4pt}
 
+\tikzstyle{box} = [rectangle, 
+rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=black]
+
 \begin{document}
 	\maketitle
 	
@@ -36,7 +44,7 @@
 	
 	\section{Introduzione}
 	L' ingegneria del software è lo \textit{studio delle metodologie, strumenti e teorie che
-		stanno alla base della creazione dei software a livello professionale}.\\
+		stanno alla base della creazione dei software a livello professionale}.
 	
 	\noindent
 	È lo studio a livello \textit{professionale} perché a livello \textit{artigianale} non sempre vi è la garanzia del prodotto, in quanto non è garantito che la soluzione sia \textbf{scalabile} (cioè
@@ -111,13 +119,106 @@
 			\item \underline{Sistemi embedded}: sistemi sw che sono innestati all'interno di apparecchi di varia natura (controllo treni, bancomat). Il software è a bordo di un sistema dedicato e quindi ho vincoli architetturali. 
 			\item \underline{Applicazioni batch}: applicazioni che elaborano dati in grossi gruppi. Ad esempio stampare e produrre dati bancari di tutti i clienti di una banca in un certo istante oppure inserimento pesante di dati.
 			\item \underline{Sistemi d'intrattenimento}: tipo videogiochi, film on demand, il daltonismo del Dalty ecc. Pesantemente basati sul web.
-			\item \underline{Applicazioni di raccolta dati}: tipo Arpav, centraline per rilevare dati di inquinamento, i quali raccolti e 
-			\item \underline{Sistemi di sistemi}: sistemi che si basano su altri sistemi (come Amazon,
-			il quale fa scambio di merci e, contemporaneamente, raccoglie i dati e li
-			rivende ad altre aziende).
+			\item \underline{Applicazioni di raccolta dati}: tipo Arpav, centraline per rilevare dati di inquinamento, i quali vengono raccolti e compongono un archivio.\underline{Wearable Systems}: cioè sistemi che raccolgono parametri vitali (tipo elettrocardiogramma, per monitorare ...).
+			\item \underline{Sistemi di sistemi}: sistemi che si basano su altri sistemi
+			
+			esempio: Amazon che ha una parte basata su transazioni, che gestisce i pagamenti, e una parte di applicazione raccolta dati, che permette di avere informazioni sui clienti per dare consigli e pubblicità (cookies, banner...).
 		\end{enumerate}
 	\end{enumerate}
 		
+	\subsection{Fondamenti dell'ingegneria del Software}
+		Ogni sviluppo del SW dovrebbe avere:
+		\begin{itemize}
+			\item Chiara metodologia/processo di sviluppo:
+			\begin{itemize}
+				\item devo avere un percorso ben definito all'inizio
+				\item devo dotarmi di strumenti che mi supportano le fasi di sviluppo
+				\item devo sapere come avvengono i vari passi di sviluppo
+			\end{itemize}
+			\item Affidabilità e prestazioni (Efficienza-Efficacia)
+			\item Specifica del Software e requisiti
+			\item Riuso del Software: esistono componenti SW che permettono di iniziare a costruire un nuovo progetto prendendo questi esempi e usando le \textit{librerie di base}.
+		\end{itemize}
+		
+	\section{Etica dell'ingegneria del Software}
+		Gli ingegneri del software devono devono comportarsi in modo onesto e in modo eticamente responsabile se vogliono essere rispettati dal punto di vista professionale. Il comportamento etico non è solamente il semplice rispetto della legge ma implica il rispetto di un insieme di principi che sono moralmente corretti.
+		\begin{itemize}
+			\item \textbf{Confidenzialità}: Gli ingegneri dovrebbero rispettare la confidenzialità dei loro datori di lavoro o clienti, indipendentemente dal fatto che si sia firmato un accordo di confidenzialità.
+			\item \textbf{Competenza-Onestà}: Gli sviluppatori non dovrebbero fornire false competenze o accettare lavori che sono al di là del proprio livello di conoscenza. Dovrebbero invece costantemente documentarsi e aggiornare le proprie competenze se il lavoro che devono svolgere lo richiede.
+			\item \textbf{Proprietà Intellettuale}: Gli ingegneri dovrebbero essere a conoscenza delle leggi che governano l'uso della proprietà intellettuale, come ad esempio brevetti, licenze, copyright, ecc. Dovrebbero fare in modo di assicurare che la proprietà intellettuale dei dipendenti o dei clienti sia protetta.
+			\item \textbf{Uso Scorretto del SW}: Gli ingegneri del software non dovrebbero usare le loro conoscenze tecniche per danneggiare gli altri. Non possono usare il software in modo ricreativo (giocare a videogiochi sui pc dei dipendenti) oppure malevolo (generare virus), devono generare software senza arrecare danni. 
+			\item \textbf{Giudizio e Rapporto con colleghi}: Gli ingegneri del sw dovrebbero essere giusti e coadiuvare in modo corretto i propri colleghi, se necessario.
+		\end{itemize}
+		 Le organizzazioni statunitensi \textit{ACM/IEEE} hanno cooperato per costruire un codice etico, che viene firmato dai membri di queste quando vengono assunti. Il codice contiene 8 princìpi legati al comportamento e alle decisioni fatte dagli ingegneri del software professionisti, includendo anche altre professioni (manager, insegnanti, medici ...).
+		 
+		\subsection{Dilemmi Etici}
+			Esempi di dilemmi etici e relative ipotetiche soluzioni:
+			\begin{itemize}
+				\item Disaccordo con i principi e con le politiche aziendali.
+				
+				Soluzione: proposta di una soluzione alternativa corretta dal punto di vista etico
+				
+				\item I dipendenti non si comportano in modo responsabile ed eticamente scorretto pubblicando sistemi non stabili dal punto di vista della sicurezza, senza eseguire gli adeguati test sul software.
+				
+				Soluzione: Devo garantire il controllo sui dipendenti per migliorare la qualità e la professionalità.
+			\end{itemize}
+			
+	\section{Processi per lo sviluppo di Software}
+		I processi per il Software sono l'insieme strutturato di attività richieste per sviluppare un sistema software. Ci sono molti modelli di processo diversi, cioè molti diversi schemi per realizzare sw utilizzabili per molte diverse tipologie. Tutti questi modelli comprendono:
+			\begin{enumerate}
+				\item Specifica: cosa il sistema dovrebbe fare.
+				\item Progettazione e Implementazione: definire l'organizzazione del sistema e l'implementazione dello stesso.
+				\item Validazione: controllare che faccia ciò che il cliente vuole.
+				\item Evoluzione: cambiare il sistema in risposta ai cambiamenti di ciò che il cliente vuole.
+			\end{enumerate}
+	Un modello di processo per il software è una rappresentazione astratta di un processo. Presenta una descrizione di un processo da uno specifico punto di vista.
+	
+	\noindent
+	Quando si descrivono i processi solitamente si parla di attività come ad esempio la specifica di strutture dati, la costruzione di un'interfaccia utente, ecc. e l'ordinamento di tali attività.
+	
+		\subsection{Processi Plan-driven e Agile}
+			Nei processi \textbf{plan-driven} tutte le attività vengono pianificate all'inizio e mentre si esegue lo sviluppo viene verificata la progressione dell'esecuzione del piano iniziale.
+			
+			\noindent
+			Nei processi \textbf{agile} la pianificazione viene fuori man mano che le attività vengono eseguite e quindi risulta più facile modificare il processo a fronte del cambiamento delle richieste da parte del cliente.
+			
+			\noindent
+			Nella pratica la maggior parte dei processi pratici include sia elementi dell'uno che dell'altro approccio.
+			
+		\subsection{Modelli di processi Software}
+			Ci sono 3 tipi di modelli di processi software:
+			\subsubsection{Modello a cascata}
+				
+				Modello \textit{Plan-driven} in cui le fasi di specifica e di sviluppo sono distinte e separate.
+				
+				\begin{tikzpicture}[>=latex, baseline= 25pt]
+					\node[box, align=center] (a) at (0,0) {Definizione dei Requisiti};
+					\node[box, align=center] (b) at (2,-1) {Progettazione SW\\e del Sistema};
+					\node[box, align=center] (c) at (4,-2) {Implementazione\\e test su unità};
+					\node[box, align=center] (d) at (6,-3) {Integrazione\\e validazione sistema};
+					\node[box, align=center] (e) at (8,-4) {Operatività e gestione};
+					
+					\draw[->] (a.east) -- (2.5,0) -- (2.5, -0.5);
+					\draw[->] (b.east) -- (4,-1) -- (c.north);
+					\draw[->] (c.east) -- (6,-2) -- (d.north);
+					\draw[->] (d.east) -- (8,-3) -- (e.north);
+					\draw[->] (e.south) -- (8,-5) -- (0,-5) -- (a.south);
+					\draw[->] (2,-5) -- (b.south);
+					\draw[->] (4,-5) -- (c.south);
+					\draw[->] (6,-5) -- (d.south);
+					
+				\end{tikzpicture}
+				
+				L'output diventa input, ogni fase non inizia prima che la precedente sia terminata. Solo quando arrivo all'ultima fase ho \textit{retroazione} e posso tornare indietro.
+				
+				\noindent
+				Lo svantaggio principale è la difficoltà di cambiamento dopo che il processo si è avviato.
+				La sua partizione in fasi distinte rende difficile rispondere ai cambiamenti delle specifiche da parte del cliente.
+				
+			\subsubsection{Sviluppo incrementale}
+			\subsubsection{Processi basati sul riuso}
+
+	
 	\section{Sviluppo agile}
 		\subsection{Introduzione}
 		Nel mondo moderno, lo sviluppo rapido e la consegna in breve tempo di un prodotto finito sono i requisiti più importanti per i sistemi software.
