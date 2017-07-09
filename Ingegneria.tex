@@ -209,15 +209,136 @@ rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=bla
 					
 				\end{tikzpicture}
 				
+				\vspace*{0.5cm}
+				
+				\noindent
 				L'output diventa input, ogni fase non inizia prima che la precedente sia terminata. Solo quando arrivo all'ultima fase ho \textit{retroazione} e posso tornare indietro.
 				
 				\noindent
-				Lo svantaggio principale è la difficoltà di cambiamento dopo che il processo si è avviato.
-				La sua partizione in fasi distinte rende difficile rispondere ai cambiamenti delle specifiche da parte del cliente.
+				Lo \textbf{svantaggio} principale è la difficoltà di cambiamento dopo che il processo si è avviato.
+				La sua partizione in fasi distinte rende difficile rispondere ai cambiamenti delle specifiche da parte del cliente. Questo modello è appropriato quando i requisiti sono stati ben compresi e i cambiamenti saranno limitati durante il processo di sviluppo.
+				
+				Questo modello è principalmente usato per grossi progetti di sistemi di ingegneria dove un sistema è sviluppato in diverse zone.
 				
 			\subsubsection{Sviluppo incrementale}
+			\begin{center}
+			\begin{tikzpicture}[>=latex]
+				\node[box, align=center] (a) at (0,-1.5) {Descrizione\\ del problema};
+				\node[box] (b) at (4,0) {Specifica};
+				\node[box] (c) at (4,-1.5) {Sviluppo};
+				\node[box] (d) at (4,-3) {Validazione};
+				\node[box, rounded corners=false] (e) at (8,-0) {Versione Iniziale};
+				\node[box, align=center, rounded corners=false] (f) at (8,-1.5) {Versioni\\ Intermedie};
+				\node[box, rounded corners=false] (g) at (8,-3) {Versione Finale};
+				
+				\draw[dashed, rounded corners] (2,1) rectangle (6,-4); 
+				\node[below] at (4,-4) {Attività Concorrenti};
+				
+				\draw[->] (a.east) -- (c.west);
+				\draw[->] ($(b.south) +(0.2,0)$) -- ($(c.north) +(0.2,0)$);
+				\draw[<-] ($(b.south) -(0.2,0)$) -- ($(c.north) -(0.2,0)$);
+				\draw[->] ($(c.south) +(0.2,0)$) -- ($(d.north) +(0.2,0)$);
+				\draw[<-] ($(c.south) -(0.2,0)$) -- ($(d.north) -(0.2,0)$);
+				\draw[->] ($(b.east) +(0,0.2)$) -- ($(e.west) +(0,0.2)$);
+				\draw[<-] ($(b.east) -(0,0.2)$) -- ($(e.west) -(0,0.2)$);
+				\draw[->] ($(c.east) +(0,0.2)$) -- ($(f.west) +(0,0.2)$);
+				\draw[<-] ($(c.east) -(0,0.2)$) -- ($(f.west) -(0,0.2)$);
+				\draw[->] (d.east) -- (g.west);
+			\end{tikzpicture}
+			\end{center}
+			Le fasi di Specifica, Sviluppo e Valutazione sono concorrenti e non è detto che avvengano sempre nell'ordine se ho diverse parti di un progetto. Fornisce risultati intermedi che vengono raffinati sulla base del confronto con l'utente il quale rimane coinvolto in tutto il processo. Può essere \textit{plan-driven} e quindi fisso il numero di prodotti intermedi, altrimenti è \textit{agile}.
+			
+			\noindent
+			\textbf{Vantaggi}:
+			\begin{itemize}
+				\item Se i requisiti non sono chiari o vengono cambiati durante la costruzione, posso modificare a run-time gestendo dinamicamente gli aggiornamenti e riducendo quindi il costo.
+				La quantità di documentazione che deve essere rifatta è molto inferiore rispetto al modello a cascata.
+				
+				\item Ho un maggior coinvolgimento del committente il quale riesce a vedere in modo periodico gli sviluppi del progetto e riesce a modificarlo eventualmente.
+				
+				\item Ho una consegna di software utile più rapida al committente.
+			\end{itemize}
+			
+			\noindent
+			\textbf{Svantaggi}:
+			\begin{itemize}
+				\item Il processo non è così visibile come nel modello a cascata. Documento le parti più importanti senza mostrare i cambiamenti. Si hanno quindi fasi intermedie prive di documentazione.
+				
+				\item L'idea di aggiungere parti ad un software produce un degrado del software. Non è più così efficiente e organico come si era pensato inizialmente. Bisogna quindi riorganizzare il software raffinandolo per evitare il peggioramento dell'efficienza; questo però aggiunge costi ulteriori.
+			\end{itemize}
+			
 			\subsubsection{Processi basati sul riuso}
-
+			I sistemi non vengono ricreati da zero, bensì vengono riciclati da componenti già esistenti o da applicazioni COTS (commercial-off-the-shelf systems). Gli elementi riusati possono essere riconfigurati per adattare le loro funzionalità alle richieste dei committenti.
+			È l'approccio standard per costruire la maggior parte dei sistemi commerciali.
+			
+			\begin{tikzpicture}[>=latex, baseline=0.5cm, scale=0.8,every node/.style={scale=0.8}]
+			\node[box,align=center] (a) at (0,0) {Specifica\\ dei Requisiti};
+			\node[box,align=center] (b) at (3.5,0) {Analisi\\ dei Componenti};
+			\node[box,align=center] (c) at (7,0) {Modifica\\ dei Requisiti};
+			\node[box,align=center] (d) at (10.5,0) {Progettazione\\ con Riuso};
+			\node[box,align=center] (e) at (14,0) {Sviluppo\\ e Integrazione};
+			\node[box,align=center] (f) at (14,-2) {Validazione};
+			\node[align=center] (g) at (10.5,-1.5) {Per ogni\\ componente};
+			\node[align=center] (h) at (10.5,-2.5) {Totale};
+			
+			\draw[->] (a.east) -- (b.west);
+			\draw[->] (b.east) -- (c.west);
+			\draw[->] (c.east) -- (d.west);
+			\draw[->] (d.east) -- (e.west);
+			\draw[->] (e.south) -- (f.north);
+			\draw[->] (f.west) -- (g.east);
+			\draw[->] (f.west) -- (h.east);
+			
+			\end{tikzpicture}
+			
+			\vspace*{0.2cm}
+			\textbf{Vantaggi e svantaggi}:
+			\begin{itemize}
+				\item Si riducono i costi e i rischi poiché meno software è sviluppato da zero.
+				\item Consegna e pubblicazione dei sistemi avviene in modo più veloce.
+				\item Compromessi sulle specifiche sono inevitabili, quindi i sistemi potrebbero non soddisfare pienamente i reali bisogni dei committenti.
+				\item Perdita di controllo sull'evoluzione degli elementi del sistema riusati.
+			\end{itemize}
+			
+		\subsection{Attività dei processi}
+		
+		\subsubsection{Specifica del software}
+		La specifica comprende 4 fasi principali:
+		\begin{enumerate}
+			\item \textbf{Studio di fattibilità}: quali costi e quali risorse/competenze bisogna avere per specificare il software. Si sviluppa un modello che simula i costi e si ricava una stima del costo.
+			
+			\item \textbf{Elicitazione(estrazione) e analisi dei requisiti}: si analizza ciò che l'utente utilizza normalmente per estrarre informazione e per fondare le parti del software. Questa fase comprende anche l'intervista di utenti, i quali possono avere attese e esigenze diverse.
+			
+			\item \textbf{Specifica dei requisiti}: si utilizzano formalismi diagrammatici per definire e rappresentare i requisiti.
+			
+			\item \textbf{Validazione dei requisiti}
+			
+		\end{enumerate}
+			
+		\begin{tikzpicture}[>=latex, baseline=0.5cm]
+		\node[box,align=center] (a) at (0,0) {Studio\\di fattibilità};
+		\node[box,align=center] (b) at (3.5,0) {Elicitazione\\e Analisi};
+		\node[box,align=center] (c) at (7,0) {Specifica\\dei requisiti};
+		\node[box,align=center] (d) at (10.5,0) {Validazione\\dei requisiti};
+		
+		\node[align=center] (f) at (0,-2) {Rapporto\\ di fattibilità};
+		\node[align=center] (g) at (3.5,-2) {Modelli\\ di Sistema};
+		\node[align=center] (h) at (7,-2) {Requisiti di\\utente e di sistema};
+		
+		\draw[->] (a.east) -- (b.west);
+		\draw[->] (b.east) -- (c.west);
+		\draw[->] (c.east) -- (d.west);
+		\draw[->] (a.south) -- (f.north);
+		\draw[->] (b.south) -- (g.north);
+		\draw[->] (c.south) -- (h.north);
+		
+		\draw[->] ($ (b.south) -(0.2,0) $) -- ($ (b.south) +(-0.2,-0.5) $) -- ($ (a.south) +(0.2,-0.5) $) --
+			($ (a.south) +(0.2,0) $);
+			
+		\draw[->] ($ (c.south) -(0.2,0) $) -- ($ (c.south) +(-0.2,-0.5) $) -- ($ (b.south) +(0.2,-0.5) $) --
+			($ (b.south) +(0.2,0) $);
+		
+		\end{tikzpicture}
 	
 	\section{Sviluppo agile}
 		\subsection{Introduzione}
