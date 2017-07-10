@@ -473,6 +473,35 @@ rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=bla
 	Questa parte del processo di ingegnerizzazione dei requisiti consiste nel definire delle politiche di gestione in caso di cambio di requisiti del sistema.
 	Il processo di modifica dei requisiti passa attraverso un analisi dei costi di modifica del programma, un'analisi dei delle modifiche da apportare e poi viene avviata la modifica dell'implementazione del prodotto finito.
 	
+	\section{Pattern di progettazione}
+	I pattern di progettazione costituiscono degli schemi di base per progettare alcune porzioni di software con specifiche caratteristiche.
+	I principali sono:
+	\begin{itemize}
+		\item Singleton: è usato per assicurare che una classe abbia una sola istanza per tutto il ciclo di vita del software. Le classi Singleton hanno costruttori privati;
+		
+		\item Observer: è usato per definire una dipendenza uno-a-molti tale che quando un oggetto cambia il suo stato tutti gli altri oggetti vengono notificati e aggiornati di conseguenza;
+		
+		\item Data Transfer Object: è usato per trasferire dati tra un client e un server;
+		
+		\item Adapter: è usato per convertire un interfaccia di una classe in un'altra richiesta dal client, consentendo a diverse classi di operare insieme quando altrimenti ciò non sarebbe possibile;
+		
+		\item Template: è usato per definire la struttura di un algoritmo in una superclasse delegando alcuni passi a una o più sottoclassi;
+		
+		\item Decorator: permette di aggiungere funzionalità ad un oggetto senza modificarne le proprietà;
+		
+		\item Facade: propone dei metodi che nascondono al client la complessità del sistema, poi la classe maschera andrà a chiamare i metodi più complessi all'interno del sistema;
+		
+		\item Factory: si creano oggetti utilizzando un interfaccia comune (semplifica i costruttori);
+		
+		\item Iterator: usato per scorrere sequenzialmente gli elementi di una collezione;
+		
+		\item Proxy: una classe proxy crea un oggetto e lo tiene salvato per evitare di instanziarlo nuovamente per utilizzi futuri;
+		
+		\item Abstract Factory: funge da generatore di factory per più tipi di oggetto.
+		
+		
+	\end{itemize}
+	
 	
 	
 \end{document}
