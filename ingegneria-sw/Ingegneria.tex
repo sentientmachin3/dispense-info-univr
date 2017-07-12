@@ -9,6 +9,7 @@
 	colorlinks = true,
 	linkcolor = black
 }
+\usepackage{pgf-umlcd}
 \usepackage{tikz}
 \usetikzlibrary{patterns}
 \usetikzlibrary{shapes,positioning,calc}
@@ -16,6 +17,10 @@
 \usetikzlibrary{arrows.meta}
 \usepackage{geometry}
 \geometry{a4paper, left=3cm,right=3cm,top=3cm,bottom=3cm}
+
+\renewcommand{\umltextcolor}{black}
+\renewcommand{\umldrawcolor}{black}
+\renewcommand{\umlfillcolor}{white}
 
 \title{Ingegneria del Software}
 \date{}
@@ -476,31 +481,234 @@ rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=bla
 	\section{Pattern di progettazione}
 	I pattern di progettazione costituiscono degli schemi di base per progettare alcune porzioni di software con specifiche caratteristiche.
 	I principali sono:
-	\begin{itemize}
-		\item Singleton: è usato per assicurare che una classe abbia una sola istanza per tutto il ciclo di vita del software. Le classi Singleton hanno costruttori privati;
+	\subsection{Singleton}
+	In molte situazioni è necessario garantire l'esistenza di un solo oggetto di una classe.
+	
+	\noindent
+	Il Singleton è usato per assicurare che una classe abbia una sola istanza per tutto il ciclo di vita del software e un unico punto di accesso globale. Le classi Singleton hanno costruttori privati per evitare la possibilità di istanziare più oggetti della stessa classe. Esiste un metodo statico che fa in modo che nessuna istanza venga creata oltre alla prima restituendo un riferimento a quella esistente.
+	
+	\begin{tikzpicture}[>=latex, baseline=0.5cm]
+		\begin{class}[text width=4cm ]{SingletonPatternDemo}{0,0}
+			\operation{+ main(): void}
+		\end{class}
+		\begin{class}[text width=4.5cm ]{SingleObject}{7,0.5}
+			\attribute{- instance: SingleObject}
+			\operation{- SingleObject}
+			\operation{+ getInstance(): singleObject}
+			\operation{+ showMessage(): void}
+		\end{class}
 		
-		\item Observer: è usato per definire una dipendenza uno-a-molti tale che quando un oggetto cambia il suo stato tutti gli altri oggetti vengono notificati e aggiornati di conseguenza;
+		\draw[->] (SingletonPatternDemo.east) -- ($ (SingleObject.west) + (0,0.08) $) node[above, midway] {asks};
+		\draw[->] (SingleObject.south) -- ++(0,-1) -- ++(-4,0) -- ++(0,2.38) -- ++(1.6,0); 
+		\node at (5,-3.4) {returns};
+	\end{tikzpicture}
+	
+	\subsection{Observer}
+	
+	 L'intento dell'Observer (o Publish/Subscribe) è quello di definire una dipendenza uno-a-molti tale che quando un oggetto (\textbf{Subject}) cambia il suo stato, tutti gli altri oggetti (\textbf{Observers}) che ne dipendono vengono notificati automaticamente e aggiornati di conseguenza. In risposta alla notifica gli Observers chiedono al Subject le informazioni necessarie per sincronizzare il proprio stato con quello nuovo del Subject.
+	 
+	\begin{tikzpicture}[>=latex, scale=0.8, every node/.style={scale=0.8}]
+		\begin{class}[text width=4cm ]{ObserverPatternDemo}{0,3}
+			\operation{+ main(): void}
+		\end{class}
+
+		\begin{abstractclass}[text width=3cm ]{Observer}{-1,0}
+			\attribute{+ subject: Subject}
+			\operation{+ update(): void}
+		\end{abstractclass}
+		\begin{class}[text width=3cm ]{BinaryObserver}{-5,-3}
+			\inherit{Observer}
+			\attribute{+ subject: Subject}
+			\operation{+ update(): void}
+		\end{class}
+		\begin{class}[text width=3cm ]{OctalObserver}{-1,-3}
+			\inherit{Observer}
+			\attribute{+ subject: Subject}
+			\operation{+ update(): void}
+		\end{class}
+		\begin{class}[text width=3cm ]{HexaObserver}{3,-3}
+			\inherit{Observer}
+			\attribute{+ subject: Subject}
+			\operation{+ update(): void}
+		\end{class}
+		\begin{class}[text width=4.5cm ]{Subject}{8,0}
+			\attribute{- observers: List<Observer>}
+			\attribute{-state: int}
+			\operation{+ getState: int}
+			\operation{+ setState: void}
+			\operation{+ notifyAllObservers: void}
+		\end{class}
+		\draw[thick] (-7,0.5) rectangle (11,-5);
 		
-		\item Data Transfer Object: è usato per trasferire dati tra un client e un server;
+		\draw[->] (ObserverPatternDemo.south) -- (0,0.5) node[right, midway] {asks};
+		\draw[->] (Subject.west) -- (Observer.east) node[above, midway] {uses};
+	\end{tikzpicture}
+	
+	\subsection{Data Transfer Object}
+	Quando l'invocazione tra oggetti è \textbf{remota} è più conveniente permettere al client di gestire molti valori in un unica operazione piuttosto che avere invocazioni distinte.
+	
+	\noindent
+	Il pattern DTO è usato quindi per trasferire dati tra un client e un server e permette di gestire più oggetti con una singola invocazione piuttosto che singolarmente. L'oggetto DTO contiene un sottoinsieme dei dati del BusinessObject remoto, non ha metodi comportamentali e permette l'accesso diretto ai dati senza fare get/set.
+	
+	\begin{tikzpicture}[>=latex, baseline=0.5cm, scale=0.9, every node/.style={scale=0.9}]
+		\begin{class}[text width=3.5cm ]{DataTransferObject}{0,0}
+			\operation{}
+		\end{class}
+		\begin{class}[text width=10cm ]{BusinessObject}{9,0}
+			\operation{+ getDataTransferObject(): DataTransferObject}
+			\operation{+ setDataTransferObject(in aDTO: DataTransferObject): void}
+		\end{class}
+		\begin{class}[text width=2cm ]{Client}{0,-2.5}
+			\operation{}
+		\end{class}
+		\draw[->] (Client.north) -- (DataTransferObject.south) node[midway, right] {uses};
+		\draw[->] (BusinessObject.west) -- (DataTransferObject.east) node[midway, above] {uses};
+	\end{tikzpicture}
+	
+	\subsection{Adapter}
+	L'adapter permette di fare da tramite tra due interfacce incompatibili. Converte un interfaccia di una classe in un'altra richiesta dal client, consentendo a diverse classi di operare insieme quando altrimenti ciò non sarebbe possibile. La classe Adapter implementa l'interfaccia, estende la classe esistente e ridefinisce il suo metodo chiamando quello richiesto.
+	
+	\begin{tikzpicture}[>=latex, baseline=0.25cm, scale=0.9, every node/.style={scale=0.9}]
+		\begin{class}[text width=2cm ]{Client}{0,0}
+			\operation{}
+		\end{class}
+		\begin{interface}[text width=3.5cm ]{ThoughtfulInterface}{0,-2}
+			\operation{+ service()}
+		\end{interface}
+		\begin{class}[text width=3cm ]{ExistingClass}{10,-2}
+			\operation{+ usefulMethod()}
+		\end{class}
+		\begin{class}[text width=2.5cm ]{Adapter}{5,-2}
+			\implement{ThoughtfulInterface}
+			\inherit{ExistingClass}
+			\operation{+ service()}
+		\end{class}
 		
-		\item Adapter: è usato per convertire un interfaccia di una classe in un'altra richiesta dal client, consentendo a diverse classi di operare insieme quando altrimenti ciò non sarebbe possibile;
+		\draw[dashed, ->] (Client.south) -- (ThoughtfulInterface.north) node[right, midway] {uses};
+	\end{tikzpicture}
+	
+	\subsection{Template}
+	 Il pattern Template consiste nel definire la struttura di un algoritmo in una superclasse delegando alcuni passi dell'algoritmo a una o più sottoclassi. Le sottoclassi ridefiniscono alcuni passi dell'algoritmo senza dover implementare la struttura dell'algoritmo stesso (\textit{hook}).
+	
+	\begin{tikzpicture}[>=latex]
+		\begin{class}[text width=3cm ]{AbstractClass}{5,0}
+			\operation{primitiveOp1()}
+			\operation{primitiveOp2()}
+		\end{class}
+		\umlnote[text width=3cm, align=left ] (note) at (10,0) {\\...\\
+			if (...)\\
+			then primitiveOp1()\\
+			else primitive Op2()\\
+			...};
+		\begin{class}[text width=3cm ]{ConcreteClass}{0,0}
+			\inherit{AbstractClass}
+			\operation{primitiveOp1()}
+			\operation{primitiveOp2()}
+		\end{class}
+		\draw[dashed] (note.west) -- (AbstractClass.east);
 		
-		\item Template: è usato per definire la struttura di un algoritmo in una superclasse delegando alcuni passi a una o più sottoclassi;
-		
-		\item Decorator: permette di aggiungere funzionalità ad un oggetto senza modificarne le proprietà;
-		
-		\item Facade: propone dei metodi che nascondono al client la complessità del sistema, poi la classe maschera andrà a chiamare i metodi più complessi all'interno del sistema;
-		
-		\item Factory: si creano oggetti utilizzando un interfaccia comune (semplifica i costruttori);
-		
-		\item Iterator: usato per scorrere sequenzialmente gli elementi di una collezione;
-		
-		\item Proxy: una classe proxy crea un oggetto e lo tiene salvato per evitare di instanziarlo nuovamente per utilizzi futuri;
-		
-		\item Abstract Factory: funge da generatore di factory per più tipi di oggetto.
-		
-		
-	\end{itemize}
+	\end{tikzpicture}
+	
+	\subsection{Decorator}
+	Il pattern Decorator permette di aggiungere funzionalità ad un oggetto già esistente senza modificarne le proprietà o la sua struttura. Si crea una classe Decorator che fa da wrapper alla classe originale e aggiunge funzionalità mantenendo i metodi della classe intatti.
+	
+	\begin{tikzpicture}[>=latex, baseline=0.25cm, scale=0.7, every node/.style={scale=0.7}]
+		\begin{interface}[text width=2.5cm ]{Shape}{0,0}
+			\operation{+ draw(): void}
+		\end{interface}
+		\begin{class}[text width=2.5cm ]{Circle}{-2,-3}
+			\inherit{Shape}
+			\operation{+ draw(): void}
+		\end{class}
+		\begin{class}[text width=2.5cm ]{Rectangle}{2,-3}
+			\inherit{Shape}
+			\operation{+ draw(): void}
+		\end{class}
+		\begin{class}[text width=3.5cm ]{ShapeDecorator}{7,0}
+			\attribute{+ shape(): Shape}
+			\operation{+ ShapeDecorator()}
+			\operation{+ draw(): void}
+		\end{class}
+		\begin{class}[text width=4cm ]{RedShapeDecorator}{7,-4}
+			\inherit{ShapeDecorator}
+			\attribute{+ shape(): Shape}
+			\operation{+ RedShapeDecorator()}
+			\operation{+ draw(): void}
+		\end{class}
+		\begin{class}[text width=2cm ]{Client}{12,0}
+			\operation{+ main(): void}
+		\end{class}
+		\draw[->] (ShapeDecorator.west) -- (Shape.east) node[midway, above] {decorates};
+		\draw[->] (Client.west) -- (ShapeDecorator.east) node[midway, above] {asks};
+	\end{tikzpicture}
+	
+	\subsection{Facade}
+	Il pattern Facade propone dei metodi che nascondono al client la complessità del sistema, poi la classe maschera andrà a chiamare i metodi più complessi all'interno del sistema.
+	
+	\subsection{Factory}
+	Consiste nel creare un oggetto senza esporre la logica della creazione al client e si riferisce all'oggetto nuovo creato utilizzando un interfaccia comune.
+	
+	\begin{tikzpicture}[>=latex, baseline=0.5cm, scale=0.7, every node/.style={scale=0.7}]
+		\begin{interface}[text width=3.5cm]{MultiColumnListbox}{2,0}
+			\operation{}	
+		\end{interface}
+		\begin{class}[text width=2cm]{CartUI}{-1,-3}
+			\inherit{MultiColumnListbox}
+			\operation{}	
+		\end{class}
+		\begin{class}[text width=2cm]{CatalogueUI}{2,-3}
+			\inherit{MultiColumnListbox}
+			\operation{}	
+		\end{class}
+		\begin{class}[text width=2cm]{SellUI}{5,-3}
+			\inherit{MultiColumnListbox}
+			\operation{}	
+		\end{class}
+		\begin{class}[text width=2cm]{Client}{13,-4}
+			\operation{}	
+		\end{class}
+		\begin{class}[text width=8cm]{MultiColumnListFactory}{13,0.5}
+			\operation{+ getMultiColumnListbox(): MultiColumnListbox}
+			\attribute{- CartUI: MultiColumnListbox}
+			\attribute{- CatalogueUI: MultiColumnListbox}
+			\attribute{- SellUI: MultiColumnListbox}
+		\end{class}
+		\draw[thick] (-2.5,0.5) rectangle (7,-4.5);
+		\draw[->] (MultiColumnListFactory.west) -- (7,-0.75) node[midway, above] {creates};
+		\draw[->] (Client.north) -- (MultiColumnListFactory.south) node[midway, right] {asks};
+	\end{tikzpicture}
+	
+	\subsection{Iterator}
+	Questo pattern è usato per scorrere sequenzialmente gli elementi di una collezione senza dover conoscere la sua rappresentazione sottostante.
+	
+	\subsection{Abstract Factory} 
+	Il pattern abstract factory lavora attorno ad una super-factory che crea altre factory. È chiamato anche factory di factory. L'interfaccia crea una factory di oggetti senza specificare esplicitamente le loro classi.
+	
+	\subsection{Proxy}
+	Una classe proxy rappresenta le funzionalità di un'altra classe. Creo l'oggetto originale che si interfaccia al mondo esterno.
+	
+	\begin{tikzpicture}[>=latex, baseline=0.25cm, scale=0.7, every node/.style={scale=0.7}]
+		\begin{interface}[text width=3.5cm]{Image}{2,0}
+			\operation{+ display(): void}	
+		\end{interface}
+		\begin{class}[text width=4cm]{RealImage}{-1,-3}
+			\inherit{Image}
+			\operation{+ RealImage()}
+			\operation{+ display(): void}	
+		\end{class}
+		\begin{class}[text width=4cm]{ProxyImage}{5,-3}
+			\inherit{Image}
+			\attribute{+ realImage: RealImage}
+			\operation{+ ProxyImage()}
+			\operation{+ display(): void}	
+		\end{class}
+		\begin{class}[text width=3cm]{Client}{12,-3}
+			\operation{+ main(): void}	
+		\end{class}
+	
+		\draw[->] (Client.west) -- (ProxyImage.east) node[midway, above] {asks};
+	\end{tikzpicture}
+	
 	
 	
 	
