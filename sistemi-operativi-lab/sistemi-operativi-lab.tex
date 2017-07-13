@@ -1,18 +1,26 @@
-\documentclass[a4paper]{article}
+\documentclass[a4paper, 10pt]{article}
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
-\usepackage{utopia}
 \usepackage{bookmark}
 \usepackage{hyperref}
-\usepackage[margin=2.2cm]{geometry}
 \usepackage{fancyhdr}
+\usepackage{frontespizio}
 
 \begin{document}
+		\begin{frontespizio}
+		\Universita{di Verona}
+		\Facolta{Scienze e Ingegneria}
+		\Corso[Laurea]{Informatica}
+		\Annoaccademico{2016/2017}
+		\Titolo{Sistemi Operativi - Laboratorio}
+		\Sottotitolo{Riassunto dei principali argomenti}
+		\NCandidato{Autore}
+		\Candidato[]{Davide Bianchi}
+	\end{frontespizio}
 \hypersetup{hidelinks, colorlinks = true, linkcolor = black}
-\large
-\title{Sistemi operativi - Laboratorio}
 \pagestyle{fancy}
-\maketitle
 \newpage
 \pagenumbering{roman}
 \tableofcontents
