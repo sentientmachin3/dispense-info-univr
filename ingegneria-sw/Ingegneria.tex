@@ -1,6 +1,5 @@
 \documentclass[a4paper, 10pt]{article}
 \usepackage[italian]{babel}
-\usepackage{sans}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
@@ -11,6 +10,7 @@
 }
 \usepackage{tikz}
 \usetikzlibrary{patterns}
+\usepackage{frontespizio}
 \usetikzlibrary{shapes,positioning,calc}
 \usetikzlibrary{shapes.geometric, arrows}
 \usetikzlibrary{shapes.multipart}
@@ -26,9 +26,6 @@
 \renewcommand{\umldrawcolor}{black}
 \renewcommand{\umlfillcolor}{white}
 
-\title{Ingegneria del Software}
-\date{}
-\author{Matteo Danzi \\Davide Bianchi}
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -66,8 +63,17 @@ rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=bla
 }
 
 \begin{document}
-	\maketitle
-	
+	\begin{frontespizio}
+		\Universita{di Verona}
+		\Facolta{Scienze e Ingegneria}
+		\Corso[Laurea]{Informatica}
+		\Annoaccademico{2016/2017}
+		\Titolo{Ingegneria del Software}
+		\Sottotitolo{Riassunto dei principali argomenti}
+		\NCandidati{Autori}
+		\Candidato[]{Davide Bianchi}
+		\Candidato[]{Matteo Danzi}
+	\end{frontespizio}
 	\tableofcontents
 	
 	\newpage
@@ -623,6 +629,7 @@ rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=bla
 	\section{Pattern di progettazione}
 	I pattern di progettazione costituiscono degli schemi di base per progettare alcune porzioni di software con specifiche caratteristiche.
 	I principali sono:
+
 	\subsection{Singleton}
 	In molte situazioni è necessario garantire l'esistenza di un solo oggetto di una classe.
 	
@@ -730,7 +737,7 @@ rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=bla
 	\end{tikzpicture}
 	
 	\subsection{Template}
-	 Il pattern Template consiste nel definire la struttura di un algoritmo in una superclasse delegando alcuni passi dell'algoritmo a una o più sottoclassi. Le sottoclassi ridefiniscono alcuni passi dell'algoritmo senza dover implementare la struttura dell'algoritmo stesso (\textit{hook}).
+	 Il pattern Template consiste nel definire la struttura di un algoritmo in una superclasse delegando alcuni passi dell'algoritmo a una o più sottoclassi. Le sottoclassi ridefiniscono alcuni passi dell'algoritmo senza dover implementare la struttura dell'algoritmo stesso (\textit{hook}). \\
 	
 	\begin{tikzpicture}[>=latex]
 		\begin{class}[text width=3cm ]{AbstractClass}{5,0}
@@ -850,8 +857,12 @@ rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=bla
 	
 		\draw[->] (Client.west) -- (ProxyImage.east) node[midway, above] {asks};
 	\end{tikzpicture}
-	
-	
+	\newpage
+	\section{Credits}
+	\begin{itemize}
+		\item Davide Bianchi (\verb|davideb1912@gmail.com|)
+		\item Matteo Danzi (\verb|matteodanziguitarman@hotmail.it|)
+	\end{itemize}
 	
 	
 \end{document}
