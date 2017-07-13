@@ -1,6 +1,5 @@
 \documentclass[a4paper, 10pt]{article}
 \usepackage[italian]{babel}
-\usepackage{sans}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
@@ -20,15 +19,12 @@
 \usepackage{pgf-umlcd}
 
 \usepackage{geometry}
+\usepackage{frontespizio}
 \geometry{a4paper, left=3cm,right=3cm,top=3cm,bottom=3cm}
 
 \renewcommand{\umltextcolor}{black}
 \renewcommand{\umldrawcolor}{black}
 \renewcommand{\umlfillcolor}{white}
-
-\title{Ingegneria del Software}
-\date{}
-\author{Matteo Danzi \\Davide Bianchi}
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -66,7 +62,18 @@ rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=bla
 }
 
 \begin{document}
-	\maketitle
+	\begin{frontespizio}
+		\Universita{di Verona}
+		\Facolta{Scienze e Ingegneria}
+		\Corso[Laurea]{Informatica}
+		\Annoaccademico{2016/2017}
+		\Titolo{Ingegneria del Software}
+		\Sottotitolo{Riassunto dei principali argomenti}
+		\NCandidati{Autori}
+		\Candidato[]{Davide Bianchi}
+		\Candidato[]{Matteo Danzi}
+	\end{frontespizio}
+	\tableofcontents
 	
 	\tableofcontents
 	
@@ -851,6 +858,30 @@ rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=bla
 		\draw[->] (Client.west) -- (ProxyImage.east) node[midway, above] {asks};
 	\end{tikzpicture}
 	
+	\section{Software testing}
+	La fase di testing del software è pensata per dimostrare che il programma fa quanto richiesto e verificare che non ci siano difetti di sviluppo prima che il software venga rilasciato.
+	
+	\subsection{Test di sviluppo}
+	Il test di sviluppo include tutte le attività di test che sono svolte dal team di sviluppo:
+	\begin{itemize}
+		\item Unit testing;
+		\item Component testing;
+		\item System testing.
+	\end{itemize}
+	
+	\subsubsection{Unit testing}
+	Il test di unità è un processo che permette di sviluppare test individuali per ogni componente del sistema. È largamente usato per trovare difetti nei singoli componenti delle classi, che sarebbe più difficile individuare durante i test finali, specialmente se il software sviluppato è di grandi dimensioni.
+	
+	In caso sia possibile, è bene automatizzare lo unit testing per affidare alla macchina il controllo dei risultati e per evitare di eseguire moltissime istanze di test manualmente. Per automatizzare le fasi di unit testing vengono usati dei test framework (es. JUnit per Java), che implementano classi di test specifiche in cui assemblare i singoli test.
+	
+	Ogni metodo di test è suddiviso in 3 fasi:
+	\begin{itemize}
+		\item Setup del test, in cui vengono creati gli oggetti necessari allo svolgimento del test;
+		\item Chiamata del metodo da testare;
+		\item Generazione dell'asserzione, ovvero nel creare un'ipotesi di risultato che poi viene verificata in fase di esecuzione del test.
+	\end{itemize}
+
+	\subsubsection{Test dei componenti}
 	
 	
 	
