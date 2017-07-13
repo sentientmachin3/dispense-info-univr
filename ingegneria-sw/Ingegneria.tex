@@ -9,12 +9,16 @@
 	colorlinks = true,
 	linkcolor = black
 }
-\usepackage{pgf-umlcd}
 \usepackage{tikz}
 \usetikzlibrary{patterns}
 \usetikzlibrary{shapes,positioning,calc}
 \usetikzlibrary{shapes.geometric, arrows}
+\usetikzlibrary{shapes.multipart}
 \usetikzlibrary{arrows.meta}
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+\usepackage{pgf-umlcd}
+
 \usepackage{geometry}
 \geometry{a4paper, left=3cm,right=3cm,top=3cm,bottom=3cm}
 
@@ -39,6 +43,27 @@
 
 \tikzstyle{box} = [rectangle, 
 rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=black]
+
+
+\tikzset{
+	rect/.style={%
+		draw,%  
+		line width=.4pt,
+		rounded corners,                 
+		rectangle split,
+		rectangle split parts=2,
+		rectangle split,
+		rectangle split part fill={#1,none},
+		every text node part/.style={font=\bfseries},
+	} 
+}
+
+\newcommand{\tabb}[4]{
+	\node[rect=#2, align=left] (#3) at (#1) {\rotatebox{360}{#3}\nodepart{two}#4};
+	\begin{pgfonlayer}{background}
+		\fill[#2!30, rounded corners] (a.south west) rectangle (a.north east);
+	\end{pgfonlayer}
+}
 
 \begin{document}
 	\maketitle
@@ -478,6 +503,123 @@ rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=bla
 	Questa parte del processo di ingegnerizzazione dei requisiti consiste nel definire delle politiche di gestione in caso di cambio di requisiti del sistema.
 	Il processo di modifica dei requisiti passa attraverso un analisi dei costi di modifica del programma, un'analisi dei delle modifiche da apportare e poi viene avviata la modifica dell'implementazione del prodotto finito.
 	
+	\section{Pattern Architetturali}
+	I pattern sono un mezzo per rappresentare condividere e riutilizzare le conoscenze software.
+	Un pattern architetturale è una descrizione stilizzata di una buona pratica di progettazione che è stata provata e testata in diversi ambienti.
+	I pattern dovrebbero includere informazioni su dove sono utili e dove quel dato pattern è da evitare.
+	Possono essere rappresentati usando una descrizione a tabella oppure grafica.
+	
+	\subsection{Model View Controller (MVC)}
+	Separa i moduli di presentazione e interazione dai moduli che contengono i dati. Il sistema è strutturato in tre componenti logiche che interagiscono tra loro. Il \textbf{Model} si occupa della gestione dei dati e delle operazioni sui dati. La componente \textbf{View} definisce l'interfaccia e come i dati vengono presentati all'utente. Il \textbf{Controller} gestisce l'interazione dell'utente con questa interfaccia (key presses, mouse clicks, ecc) e passa queste interazioni al View e al Model.
+	
+	\begin{tikzpicture}[>=latex, baseline=1.5cm]
+		\tabb{9,0}{white}{View}{
+			Interpreta le azioni ricevute dal\\ model\\ Richiede aggiornamenti dal model\\
+			Invia le interazione dell'utente\\ al controller};
+		\tabb{0,0}{white}{Controller}{
+			Passa le azioni dell'utente\\ al model per aggiornarlo\\
+			Seleziona la view opportuna};
+		\tabb{4.5,-4}{white}{Model}{
+			Incapsula lo stato dell'applicazione\\ Notifica al view il cambio di stato};
+		
+		\draw[->] (Controller.south) -- node[left, align=center] {Cambiamento\\ di stato} (0,-4) -- (Model.west) ;
+		\draw[->] (View.south) -- node[right, align=center] {Query\\ di stato} (9,-4) -- (Model.east) ;
+		\draw[->] ($ (Model.north) +(2.5,0) $) -- ($ (View.south) -(2,0) $) node[midway, left, align=center] {Notifica\\ di cambiamento};
+		\draw[->] ($ (Controller.east) +(0,0.5) $) -- ($ (View.west) +(0,0.5) $) node[midway, above, align=center] {Selezione \\della View};
+		\draw[<-] ($ (Controller.east) -(0,0.5) $) -- ($ (View.west) -(0,0.5) $) node[midway, below, align=center] {Interazioni \\dell'utente};
+	\end{tikzpicture}
+	
+	\subsection{Architettura a Strati (Layered)}
+	L'architettura a strati è usata per gestire il modo in cui ci si interfaccia ai sottosistemi.
+	Il sistema viene organizzato in un insieme di strati (layers o macchine astratte) ciascuno dei quali provvede ad un insieme di servizi. Le funzionalità di sono correlate di strato in strato. Ciascuno fornisce servizi allo strato sottostante, fino all'ultimo livello che rappresenta il nucleo delle funzionalità che facilmente verranno usate da tutto il sistema.
+	
+	\begin{center}
+		\begin{tikzpicture}[baseline=0.5cm, >=latex]
+			\node[box,text width=7cm] (a) at (0,0) {User Interface};
+			\node[box, align=center,text width=7cm ] (b) at (0,-1.5) {User Interface management\\ Authentication and authorization};
+			\node[box,text width=7cm ] (c) at (0,-3) {Core business logic/ application functionality \\System utilities};
+			\node[box,text width=7cm ] (d) at (0,-4.5) {System support (O.S., database, ecc)};
+		
+			\draw[->] ($ (a.south) +(1,0) $) -- ($ (b.north) +(1,0) $);
+			\draw[<-] ($ (a.south) -(1,0) $) -- ($ (b.north) -(1,0) $);
+			\draw[->] ($ (b.south) +(1,0) $) -- ($ (c.north) +(1,0) $);
+			\draw[<-] ($ (b.south) -(1,0) $) -- ($ (c.north) -(1,0) $);
+			\draw[->] ($ (c.south) +(1,0) $) -- ($ (d.north) +(1,0) $);
+			\draw[<-] ($ (c.south) -(1,0) $) -- ($ (d.north) -(1,0) $);
+			
+		\end{tikzpicture}
+	\end{center}
+
+	\subsection{Architettura a repository}
+	\textbf{Repository}: archivio in cui sono raccolti dati e informazioni, valorizzati earchiviati sulla base di metadati che ne permettono la rapida individuazione, anche grazie alla creazione di tabelle relazionali. Grazie alla sua peculiare architettura, un repository consente di gestire in modo ottimale anche grandi volumi di dati.
+	
+	\noindent
+	Nel caso in cui due sotto-sistemi debbano scambiarsi dati, solitamente ci sono due sistemi:
+	\begin{itemize}
+		\item I dati scambiati vengono mantenuti in un database centrale o in una repository e possono essere acceduti da tutti i sotto-sistemi
+		\item Ogni sotto-sistema mantiene un database e passa i dati esplicitamente agli altri sotto-sistemi.
+	\end{itemize} 
+	Quando c'è una grande quantità di dati da scambiare, il modello di scambio a repository è il più utilizzato e rappresenta un meccanismo molto efficiente di data sharing.
+	
+	\begin{center}
+	\begin{tikzpicture}[>=latex, baseline=0.5cm, scale=0.9, every node/.style={scale=0.8}]
+		\node[box, text width =5cm] (central) at (5,-2) {Project Repository};
+		\node[box, align=center] (left) at (0,-2) {Design\\translator};
+		\node[box, align=center] (rightup) at (10,-1) {Java\\editor};
+		\node[box, align=center] (rightdwn) at (10,-3) {Python\\editor};
+		\node[box, align=center] (upleft) at (3,0) {UML\\editors};
+		\node[box, align=center] (upright) at (7,0) {Code\\generators};
+		\node[box, align=center] (dwnleft) at (3,-4) {Design\\analyzer};
+		\node[box, align=center] (dwnright) at (7,-4) {Report\\generator};
+		
+		\draw[<->] (central) -- (left); \draw[<->] (central) -- (rightup); 
+		\draw[<->] (central) -- (rightdwn);
+		\draw[<->] (central) -- (upleft); \draw[<->] (central) -- (upright); 
+		\draw[<->] (central) -- (dwnleft); \draw[<->] (central) -- (dwnright);
+	\end{tikzpicture}
+	\end{center}
+	
+	\subsection{Architettura Client Server}
+	Modello di sistema distribuito che presenta come i dati e l'elaborazione sono distribuiti attraverso un range di componenti. In questa architettura le funzionalità del sistema sono organizzate in servizi, con ogni servizio fornito da un server diverso. I Client sono gli utenti che possono accedere ai servizi attraverso i server.
+
+	\begin{tikzpicture}[>=latex, scale=0.9, every node/.style={scale=0.8}]
+		\node[box, text width =12cm] (central) at (4.5,-1.5) {Internet};
+		\node[box, minimum width=1cm, minimum height=0.5cm] (c1) at (0,0) {Client 1};
+		\node[box, minimum width=1cm, minimum height=0.5cm] (c2) at (3,0) {Client 2};
+		\node[box, minimum width=1cm, minimum height=0.5cm] (c3) at (6,0) {Client 3};
+		\node[box, minimum width=1cm, minimum height=0.5cm] (c4) at (9,0) {Client 4};
+		\tabb{0,-3}{white}{Catalog Server}{Library catalogue};
+		\tabb{3,-3}{white}{Video Server}{Film store};
+		\tabb{6,-3}{white}{Picture Server}{Photo store};
+		\tabb{9,-3}{white}{Web Server}{film and photo info};
+		
+		\draw[<->] ($ (central.north) - (4.5,0) $) -- (c1.south);
+		\draw[<->] ($ (central.north) - (1.5,0) $) -- (c2.south);
+		\draw[<->] ($ (central.north) + (1.5,0) $) -- (c3.south);
+		\draw[<->] ($ (central.north) + (4.5,0) $) -- (c4.south);
+		\draw[<->] ($ (central.south) - (4.5,0) $) -- (Catalog Server.north);
+		\draw[<->] ($ (central.south) - (1.5,0) $) -- (Video Server.north);
+		\draw[<->] ($ (central.south) + (1.5,0) $) -- (Picture Server.north);
+		\draw[<->] ($ (central.south) + (4.5,0) $) -- (Web Server.north);
+		
+	\end{tikzpicture}
+	
+	\subsection{Architettura Pipe and Filter}
+	L'elaborazione dei dati nel sistema è organizzata in modo tale che ogni componente (\textbf{Filter}) del processo è discreto e genera in output un tipo di trasformazione dei dati. L'output di un componente è l'input del componente successivo (come in una \textbf{Pipe}).
+	
+	\begin{tikzpicture}[baseline=1.5cm, >=latex, scale=0.9, every node/.style={scale=0.8}]
+		\node[box, rounded corners=false] (start) at (0,-2) {Payments};
+		\node[box] (a) at (0,0) {Identify Payments};
+		\node[box] (b) at (4,1) {Issue receipts};
+		\node[box, rounded corners=false] (c) at (8,1) {Receipts};
+		\node[box] (d) at (4,-1) {Find payments due};
+		\node[box, align=center] (e) at (8,-1) {Issue payment\\ reminder};
+		
+		\draw[->] (start) -- (a);
+		\draw[->] (a) -- (b); \draw[->] (b) -- (c); 
+		\draw[->] (a) -- (d); \draw[->] (d) -- (e); 
+	\end{tikzpicture}
+		
 	\section{Pattern di progettazione}
 	I pattern di progettazione costituiscono degli schemi di base per progettare alcune porzioni di software con specifiche caratteristiche.
 	I principali sono:
