@@ -74,8 +74,7 @@ rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=bla
 		\Candidato[]{Matteo Danzi}
 	\end{frontespizio}
 	\tableofcontents
-	
-	\tableofcontents
+	\thispagestyle{empty}
 	
 	\newpage
 	
@@ -640,7 +639,7 @@ rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=bla
 		\begin{class}[text width=4cm ]{SingletonPatternDemo}{0,0}
 			\operation{+ main(): void}
 		\end{class}
-		\begin{class}[text width=4.5cm ]{SingleObject}{7,0.5}
+		\begin{class}[text width=5cm ]{SingleObject}{7,0.5}
 			\attribute{- instance: SingleObject}
 			\operation{- SingleObject}
 			\operation{+ getInstance(): singleObject}
@@ -648,7 +647,7 @@ rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=bla
 		\end{class}
 		
 		\draw[->] (SingletonPatternDemo.east) -- ($ (SingleObject.west) + (0,0.08) $) node[above, midway] {asks};
-		\draw[->] (SingleObject.south) -- ++(0,-1) -- ++(-4,0) -- ++(0,2.38) -- ++(1.6,0); 
+		\draw[->] (SingleObject.south) -- ++(0,-1) -- ++(-4,0) -- ++(0,2.34) -- ($ (SingleObject.west) + (0,0.08) $); 
 		\node at (5,-3.4) {returns};
 	\end{tikzpicture}
 	
@@ -739,7 +738,7 @@ rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=bla
 	\subsection{Template}
 	 Il pattern Template consiste nel definire la struttura di un algoritmo in una superclasse delegando alcuni passi dell'algoritmo a una o più sottoclassi. Le sottoclassi ridefiniscono alcuni passi dell'algoritmo senza dover implementare la struttura dell'algoritmo stesso (\textit{hook}).
 	
-	\begin{tikzpicture}[>=latex]
+	\begin{tikzpicture}[>=latex, baseline=0.5cm]
 		\begin{class}[text width=3cm ]{AbstractClass}{5,0}
 			\operation{primitiveOp1()}
 			\operation{primitiveOp2()}
@@ -798,14 +797,14 @@ rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=bla
 	Consiste nel creare un oggetto senza esporre la logica della creazione al client e si riferisce all'oggetto nuovo creato utilizzando un interfaccia comune.
 	
 	\begin{tikzpicture}[>=latex, baseline=0.5cm, scale=0.7, every node/.style={scale=0.7}]
-		\begin{interface}[text width=3.5cm]{MultiColumnListbox}{2,0}
+		\begin{interface}[text width=4cm]{MultiColumnListbox}{2,0}
 			\operation{}	
 		\end{interface}
 		\begin{class}[text width=2cm]{CartUI}{-1,-3}
 			\inherit{MultiColumnListbox}
 			\operation{}	
 		\end{class}
-		\begin{class}[text width=2cm]{CatalogueUI}{2,-3}
+		\begin{class}[text width=2.5cm]{CatalogueUI}{2,-3}
 			\inherit{MultiColumnListbox}
 			\operation{}	
 		\end{class}
