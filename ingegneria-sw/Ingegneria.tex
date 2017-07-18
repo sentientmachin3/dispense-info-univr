@@ -908,6 +908,39 @@ rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=bla
 		\item Acceptance test: il software è usato dall'utente per verificare se può definitivamente essere rilasciato.
 	\end{itemize}
 
+\section{Evoluzione del software}
+Far evolvere il software è necessario, in risposta a cambiamenti di requisiti, cambio di tecnologie, ecc.
+
+Bisogna innanzitutto separare l'aspetto di evoluzione da quello di servicing: l'evoluzione è effettuata quando sono necessarie modifiche all'implementazione del software in risposta a modifiche nelle specifiche dei requisiti, il servicing è la fase in cui il software viene modificato per aspetti puramente operazionali, quali bugfix, patch di vulnerabilità, ecc. Quando il software viene ritirato può rimanere usabile ma non essere più mantenuto.
+
+Quando un software deve essere modificato deve essere svolta nuovamente l'analisi dei nuovi requisiti, deve essere fatto un nuovo piano e devono essere reimplementate o modificate le funzionalità coinvolte. L'unico problema che può nascere durante una fase evolutiva di un software può essere quello dell'approccio, ovvero quando due team (quello di implementazione e quello di evoluzione) hanno due sistemi di lavoro diversi (agile vs plan-driven).
+
+\subsection{Sistemi legacy}
+Una trattazione particolare va riservata ai sistemi \textit{legacy}, ovvero quei sistemi che si appoggiano su un software o tecnologia vecchia, ma il cui strato superficiale viene continuamente adattato alle nuove tecnologie (ad esempio, molte banche usano ancora sistemi Cobol abbastanza vecchi, perchè la migrazione a sistemi più recenti è molto costosa e quindi poco conveniente.)
+
+I componenti principali di un sistema legacy sono:
+\begin{itemize}
+	\item Hardware del sistema: probabilmente obsoleto;
+	\item Software di supporto: probabilmente obsoleto, vecchio e non più mantenuto;
+	\item Application software/data: l'insieme di applicazioni fornite all'azienda titolare e i dati sui quali le applicazioni lavorano;
+	\item Livello business: insieme di politiche, regole e processi che sono portati avanti dall'azienda titolare per ottenere i suoi obiettivi.
+\end{itemize}
+
+I sistemi legacy possono essere costosi da cambiare per motivi di documentazione, difficoltà di comprensione causata dalla complessità delle ottimizzazioni oppure a causa di errori o ridondanze nei dati. Le aziende che sono coinvolte in un utilizzo di sistemi legacy possono:
+\begin{itemize}
+	\item Cambiare il sistema e riadattare i loro processi business;
+	\item Continuare a mantenere il sistema;
+	\item Migliorare la mantenibilità del sistema reingegnerizzandolo;
+	\item Rimpiazzare il sistema.
+\end{itemize}
+
+\subsection{Mantenimento del software}
+Ci sono 3 tipi di mantenimento del software:
+\begin{itemize}
+	\item Bug repair: il software viene patchato a causa di bug trovati durante l'utilizzo;
+	\item Adattamento dell'ambiente: il software viene adattato ai nuovi sistemi operativi o ai nuovi hardware;
+	\item Modifica delle funzionalità: il software viene modificato per soddisfare nuove esigenze.
+\end{itemize}
 	
 	
 	
