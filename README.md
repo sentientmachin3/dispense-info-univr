@@ -4,7 +4,7 @@ Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman
 
 ## Corsi inclusi nelle dispense
 - Basi di Dati (Teoria)
-- Ingegneria del Software (parziale)
+- Ingegneria del Software (Teoria)
 - Linguaggi di programmazione
 - Programmazione di Rete (Laboratorio)
-- Sistemi Operativi lab.
+- Sistemi Operativi (Laboratorio)
