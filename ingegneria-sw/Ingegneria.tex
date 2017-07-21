@@ -425,6 +425,15 @@ rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=bla
 		
 		\paragraph{Refactoring} Il refactoring è una procedura (in alcuni punti anche automatizzata) per migliorare la qualità del codice e mantenerlo leggibile e facilmente modificabile, ad esempio riorganizzando la gerarchia delle classi per evitare codice duplicato, tenere un codice pulito per renderlo semplice da capire, usare delle librerie per evitare di sovraccaricare il codice che si scrivere con molte chiamate consecutive.
 		
+		I motivi principali per cui il refactoring può dimostrarsi necessario sono:
+		\begin{itemize}
+			\item Codice duplicato;
+			\item Metodi lunghi;
+			\item Blocchi switch/case;
+			\item Data clumping;
+			\item Codice derivato da speculazioni.
+		\end{itemize}
+		
 		\paragraph{Test-first} Il metodo test-first è basato sull'idea di sviluppare prima il test della feature che la feature stessa, in questo modo vengono a galla molti chiarimenti sulla funzionalità da implementare. Spesso i test di questo tipo sono vengono eseguiti facendo affidamento su un testing framework, ad esempio JUnit, che aiuta lo sviluppatore nella stesura e nell'esecuzione dei test stessi.
 		
 	\subsection{Sistema Scrum}
@@ -908,8 +917,65 @@ rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=bla
 		\item Acceptance test: il software è usato dall'utente per verificare se può definitivamente essere rilasciato.
 	\end{itemize}
 
-	
-	
+\section{Evoluzione del software}
+Far evolvere il software è necessario, in risposta a cambiamenti di requisiti, cambio di tecnologie, ecc.
+
+Bisogna innanzitutto separare l'aspetto di evoluzione da quello di servicing: l'evoluzione è effettuata quando sono necessarie modifiche all'implementazione del software in risposta a modifiche nelle specifiche dei requisiti, il servicing è la fase in cui il software viene modificato per aspetti puramente operazionali, quali bugfix, patch di vulnerabilità, ecc. Quando il software viene ritirato può rimanere usabile ma non essere più mantenuto.
+
+Quando un software deve essere modificato deve essere svolta nuovamente l'analisi dei nuovi requisiti, deve essere fatto un nuovo piano e devono essere reimplementate o modificate le funzionalità coinvolte. L'unico problema che può nascere durante una fase evolutiva di un software può essere quello dell'approccio, ovvero quando due team (quello di implementazione e quello di evoluzione) hanno due sistemi di lavoro diversi (agile vs plan-driven).
+
+\subsection{Sistemi legacy}
+Una trattazione particolare va riservata ai sistemi \textit{legacy}, ovvero quei sistemi che si appoggiano su un software o tecnologia vecchia, ma il cui strato superficiale viene continuamente adattato alle nuove tecnologie (ad esempio, molte banche usano ancora sistemi Cobol abbastanza vecchi, perchè la migrazione a sistemi più recenti è molto costosa e quindi poco conveniente.)
+
+I componenti principali di un sistema legacy sono:
+\begin{itemize}
+	\item Hardware del sistema: probabilmente obsoleto;
+	\item Software di supporto: probabilmente obsoleto, vecchio e non più mantenuto;
+	\item Application software/data: l'insieme di applicazioni fornite all'azienda titolare e i dati sui quali le applicazioni lavorano;
+	\item Livello business: insieme di politiche, regole e processi che sono portati avanti dall'azienda titolare per ottenere i suoi obiettivi.
+\end{itemize}
+
+I sistemi legacy possono essere costosi da cambiare per motivi di documentazione, difficoltà di comprensione causata dalla complessità delle ottimizzazioni oppure a causa di errori o ridondanze nei dati. Le aziende che sono coinvolte in un utilizzo di sistemi legacy possono:
+\begin{itemize}
+	\item Cambiare il sistema e riadattare i loro processi business;
+	\item Continuare a mantenere il sistema;
+	\item Migliorare la mantenibilità del sistema reingegnerizzandolo;
+	\item Rimpiazzare il sistema.
+\end{itemize}
+
+\subsection{Mantenimento del software}
+Ci sono 3 tipi di mantenimento del software:
+\begin{itemize}
+	\item Bug repair: il software viene patchato a causa di bug trovati durante l'utilizzo;
+	\item Adattamento dell'ambiente: il software viene adattato ai nuovi sistemi operativi o ai nuovi hardware;
+	\item Modifica delle funzionalità: il software viene modificato per soddisfare nuove esigenze.
+\end{itemize}
+
+Il costo di mantenimento del software è solitamente maggiore del costo di sviluppo, e aumenta con l'aumentare della complessità del software. 
+
+\subsubsection{Reingegnerizzazione}
+Consiste nel ristrutturare parte o tutto il codice di un sistema legacy senza modificare le sue funzionalità. Potrebbe inoltre essere necessario ristrutturare e ridocumentare il software.
+I principali vantaggi di reingegnerizzare il software sono:
+\begin{itemize}
+	\item Riduzione del rischio, in quanto viene toccata una parte sola del codice;
+	\item Riduzione del costo, dato dal fatto che il costo di reingegnerizzazione è sempre minore del costo di sviluppo.
+\end{itemize}
+
+Il processo di reingegnerizzazione solitamente è composto da:
+\begin{itemize}
+	\item Analisi del codice da modificare;
+	\item Miglioramento della struttura del programma;
+	\item Modularizzazione del programma;
+	\item Reingegnerizzazione del sistema.
+\end{itemize}
+
+\section{Credits}
+Codice tex disponibile su \url{https://github.com/alx79/dispense-info-univr}.
+Questa dispensa è stata scritta da:
+\begin{itemize}
+	\item Davide Bianchi (\verb|davideb1912@gmail.com|)
+	\item Matteo Danzi (\verb|matteodanziguitarman@hotmail.it|)
+\end{itemize}
 	
 	
 	
