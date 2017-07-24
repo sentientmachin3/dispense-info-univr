@@ -1,0 +1,64 @@
+\documentclass[a4paper, 10pt]{article}
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage[sans]{frontespizio}
+\usepackage{hyperref}
+\hypersetup{hidelinks,
+	colorlinks = true,
+	urlcolor = black, 
+	linkcolor = black}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=3cm]{geometry}
+\usepackage{multicol}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{listings}
+\lstset{language = SQL,
+	basicstyle=\ttfamily,
+	showstringspaces=false}
+\usepackage{fancyvrb}
+\pagestyle{fancy}
+
+\begin{document}
+	\begin{frontespizio}
+		\Preambolo{\usepackage{datetime}}
+		\Istituzione{Università degli Studi di Verona}
+		\Divisione{Dipartimento di informatica}
+		\Facolta{Scienze e Ingegneria}
+		\Scuola{Laurea in Informatica}
+		\Titolo{Basi di Dati}
+		\Sottotitolo{Programma di laboratorio}
+		\Candidato{Davide Bianchi}
+		\NCandidato{Autori}
+		\Annoaccademico{2016/2017}
+	\end{frontespizio}
+	
+	\tableofcontents
+	
+	\newpage
+	
+	\section{Gestione base di dati con Postgresql}
+	Di seguito si trova una panoramica dei comandi postgres più comuni per la gestione di una base di dati.
+	
+	\subsection{Comando CREATE TABLE}
+	Il comando \lstinline{CREATE TABLE} è usato per creare tabelle nella base di dati.
+	La sintassi generale è:
+	\begin{lstlisting}
+CREATE TABLE nomeTabella (
+	nomeAttributo dominioAttributo vincoli,
+	...
+);
+	\end{lstlisting}
+	dove \lstinline|nomeAttributo| è il nome dell'attributo nella tabella, \lstinline|dominioAttributo| è il dominio dell'attributo da aggiungere alla tabella.
+	
+	
+	
+\end{document}
