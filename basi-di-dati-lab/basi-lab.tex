@@ -46,7 +46,7 @@
 	\newpage
 	
 	\section{Gestione base di dati con Postgresql}
-	Di seguito si trova una panoramica dei comandi postgres più comuni per la gestione di una base di dati.
+	Di seguito si trova una panoramica dei comandi Postgres più comuni per la gestione di una base di dati.
 	
 	\subsection{Comando CREATE TABLE}
 	Il comando \lstinline{CREATE TABLE} è usato per creare tabelle nella base di dati.
@@ -59,6 +59,51 @@ CREATE TABLE nomeTabella (
 	\end{lstlisting}
 	dove \lstinline|nomeAttributo| è il nome dell'attributo nella tabella, \lstinline|dominioAttributo| è il dominio dell'attributo da aggiungere alla tabella.
 	
+	\subsubsection{Domini elementari}
+	I domini di default disponibili in Postgres sono:
+	\begin{itemize}
+		\item \lstinline|BOOLEAN|: valori booleani (true/false);
+		\item \lstinline|INTEGER|: valori interi a 4 byte;
+		\item \lstinline|SMALLINT|: valori interi a 2 bit;
+		\item \lstinline|NUMERIC(p, s)|: valori decimali approssimati, dove \lstinline|p| è la precisione del numero e \lstinline|s| la scala (numero di cifre decimali dopo la virgola);
+		\item \lstinline|DECIMAL(p, s)|: valori deciamli approssimati, con i parametri uguali a \lstinline|NUMERIC|.
+		\item \lstinline|REAL|: valori in virgola mobile a 6 cifre decimali;
+		\item \lstinline|DOUBLE PRECISION|: valori in virgola mobile approssimati a 15 cifre decimali;
+
+	\end{itemize}
+
+	\subsubsection{Domini di caratteri}
+	\begin{itemize}
+		\item \lstinline|CHARACTER|: singoli caratteri;
+		\item \lstinline|CHARACTER(n)|:stringa di caratteri di lunghezza n;
+		\item \lstinline|VARCHAR|: stringhe di caratteri di lunghezza variabile;
+		\item \lstinline|TEXT|: testo libero (solo Postgres).
+	\end{itemize}
+
+	\subsubsection{Domini di bit/booleani}
+	\begin{itemize}
+		\item \lstinline|BIT|: singoli bit;
+		\item \lstinline|VARBIT(n)|: stringa di bit di lunghezza fissa;
+		\item \lstinline|VARBIT|: stringa di bit di lunghezza arbitraria.
+		\item \lstinline|BOOLEAN|: valori booleani, possono essere solo singoli.
+	\end{itemize}
+	\textbf{Nota:} non sono ammesse stringhe di booleani.
 	
+	\subsubsection{Domini di tempo}
+	\begin{itemize}
+		\item \lstinline|DATE|: date rappresentate tra apici e nel formato \verb|YYYY-MM-DD|;
+		\item \lstinline|TIME(precisione)|: misure di tempo nel formato \verb|hh:mm:ss:[precisione]|;
+		\item \lstinline|INTERVAL|: intervalli di tempo.
+		\item \lstinline|TIME/TIMESTAMP WITH TIME ZONE|: con tutti i dati per il tempo, con indicazioni sul fuso.
+	\end{itemize}
+	
+	\subsection{Comando CREATE DOMAIN}
+	Questo comando è usato per creare un dominio utente \textbf{invariabile nel tempo}.
+	La sintassi è: 
+	\begin{lstlisting}
+CREATE DOMAIN nome AS tipoBase [default]
+	[vincolo]
+	\end{lstlisting}
+	I valori di default e i vincoli sono opzionali.
 	
 \end{document}
