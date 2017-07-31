@@ -6,6 +6,7 @@
 \usepackage{amsfonts}
 \usepackage{amsthm}
 \usepackage{graphicx}
+\usepackage[dvipsnames]{xcolor}
 \usepackage[sans]{frontespizio}
 \usepackage{hyperref}
 \hypersetup{hidelinks,
@@ -15,7 +16,6 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[margin=3cm]{geometry}
-\usepackage{multicol}
 \usepackage{booktabs}
 \usepackage{fancyhdr}
 \usepackage{tikz}
@@ -23,9 +23,15 @@
 \usepackage{listings}
 \lstset{language = SQL,
 	basicstyle=\ttfamily,
-	showstringspaces=false}
+	showstringspaces=false,
+	keywordstyle=\color{blue}\bfseries,
+	morekeywords={REFERENCES, BOOLEAN, REAL, DOUBLE, PRECISION, TEXT, VARBIT},
+	stringstyle=\color{Purple}
+}
 \usepackage{fancyvrb}
 \pagestyle{fancy}
+\lhead{\nouppercase{\leftmark}}
+\rhead{\nouppercase{\rightmark}}
 
 \begin{document}
 	\begin{frontespizio}
@@ -37,12 +43,13 @@
 		\Titolo{Basi di Dati}
 		\Sottotitolo{Programma di laboratorio}
 		\Candidato{Davide Bianchi}
+		\Candidato{Matteo Danzi}
 		\NCandidato{Autori}
 		\Annoaccademico{2016/2017}
 	\end{frontespizio}
-	
+
 	\tableofcontents
-	
+		
 	\newpage
 	
 	\section{Gestione base di dati con Postgresql}
@@ -65,12 +72,13 @@ CREATE TABLE nomeTabella (
 		\item \lstinline|BOOLEAN|: valori booleani (true/false);
 		\item \lstinline|INTEGER|: valori interi a 4 byte;
 		\item \lstinline|SMALLINT|: valori interi a 2 bit;
-		\item \lstinline|NUMERIC(p, s)|: valori decimali approssimati, dove \lstinline|p| è la precisione del numero e \lstinline|s| la scala (numero di cifre decimali dopo la virgola);
+		\item \lstinline|NUMERIC(p, s)|: valori decimali approssimati, dove \lstinline|p| è la precisione del numero (cifre a sinistra e a destra della virgola) e \lstinline|s| la scala (numero di cifre decimali dopo la virgola);
 		\item \lstinline|DECIMAL(p, s)|: valori deciamli approssimati, con i parametri uguali a \lstinline|NUMERIC|.
 		\item \lstinline|REAL|: valori in virgola mobile a 6 cifre decimali;
 		\item \lstinline|DOUBLE PRECISION|: valori in virgola mobile approssimati a 15 cifre decimali;
-
 	\end{itemize}
+	\textbf{Nota:} Se si devono rappresentare importi di denaro che contengono anche
+	decimali, \textbf{MAI} usare \lstinline|REAL| o \lstinline|DOUBLE PRECISION| ma usare \lstinline|NUMERIC|!
 
 	\subsubsection{Domini di caratteri}
 	\begin{itemize}
@@ -105,4 +113,174 @@ CREATE DOMAIN nome AS tipoBase [default]
 	\end{lstlisting}
 	I valori di default e i vincoli sono opzionali.
 	
+	\textbf{Esempio:}
+	\begin{lstlisting}
+CREATE DOMAIN giorniSettimana AS CHAR(3)
+	CHECK ( VALUE IN ('LUN', 'MAR', 'MER', 'GIO', 'VEN', 
+	'SAB', 'DOM'));
+	\end{lstlisting}
+
+	\subsection{Vincoli di attributo e di tabella}
+	Vincoli di attributo/intrarelazionali specificano proprietà che devono
+	essere soddisfatte da ogni tupla di una singola relazione della base di
+	dati.
+	
+	\begin{lstlisting}
+[ CONSTRAINT vincolo ]
+{ NOT NULL |
+  CHECK ( espressione ) [ NO INHERIT ] |
+  DEFAULT valore |
+  UNIQUE |
+  PRIMARY KEY |
+  REFERENCES tabella [ ( attributo ) ]
+    [ ON DELETE azione ] [ ON UPDATE azione ] }
+	\end{lstlisting}
+	
+	Vincoli di tabella:
+	\begin{lstlisting}
+[ CONSTRAINT vincolo ]
+{ CHECK ( espressione ) [ NO INHERIT ] |
+  UNIQUE ( attributo [, ... ]) |
+  PRIMARY KEY ( attributo [, ... ]) |
+  FOREIGN KEY ( attributo [, ... ])
+  REFERENCES reftable [ ( refcolumn [ , ... ]) ]
+	[ ON DELETE azione ] [ ON UPDATE azione ] }
+	\end{lstlisting}
+
+	\begin{itemize}
+		\item \lstinline|NOT NULL|: determina che il valore nullo non è ammesso come
+		valore dell’attributo.
+		\item \lstinline|DEFAULT valore|: specifica un valore di
+		default per un attributo quando un comando di inserimento dati non
+		specifica nessun valore per l’attributo.
+		
+	\textbf{Esempio:}
+	\begin{lstlisting}
+nome VARCHAR (20) NOT NULL,
+cognome VARCHAR (20) NOT NULL DEFAULT ''
+	\end{lstlisting}
+		\item \lstinline|UNIQUE|: impone che i valori di un attributo (o di un insieme di
+		attributi) siano una \textbf{superchiave}.
+		\item \lstinline|PRIMARY KEY|: identifica l’attributo che rappresenta la chiave
+		primaria della relazione:
+		\begin{itemize}
+			\item Si usa una sola volta per tabella.
+			\item Implica il vincolo \lstinline|NOT NULL|.
+		\end{itemize}
+	
+	\textbf{Esempio: }
+	\begin{lstlisting}
+matricola CHAR(6) PRIMARY KEY;
+	\end{lstlisting}
+	oppure su più attributi
+	\begin{lstlisting}
+nome VARCHAR(20),
+cognome VARCHAR(20),
+PRIMARY KEY(nome, cognome)
+	\end{lstlisting}
+	
+	\item \lstinline|CHECK (vincolo)|: specifica un vincolo generico che devono soddisfare le
+	tuple della tabella.
+	\end{itemize}
+	
+	\subsubsection{Vincoli di integrità referenziale}
+		Un vincolo di integrità referenziale si dichiara nella tabella interna e ha
+		due possibili sintassi.
+		\begin{itemize}
+			\item \lstinline|REFERENCES|: \textbf{vincolo di attributo}, da usare quando il vincolo è su un
+			singolo attributo della tabella interna, $ |A| = 1 $.
+			\item \lstinline|FOREIGN KEY|: \textbf{vincolo di tabella} , da usare quando il vincolo coinvolge più attributi della tabella interna, $ |A| > 1 $.
+		\end{itemize}
+		\textbf{Esempio:}
+		\begin{lstlisting}
+CREATE TABLE Interna
+...
+attributo VARCHAR(15) REFERENCES TabellaEsterna (chiave)
+...
+
+...
+piano VARCHAR (10),
+stanza INTEGER,
+FOREIGN KEY (piano, stanza) REFERENCES Ufficio (piano, nStanza)
+		\end{lstlisting}
+		
+	\subsection{Comando ALTER TABLE}
+		La struttura di una tabella si può modificare dopo la sua creazione con il
+		comando \lstinline|ALTER TABLE|.
+		\begin{itemize}
+			\item Aggiunta di un nuovo attributo con \lstinline|ADD COLUMN|:
+			\begin{lstlisting}
+ALTER TABLE impiegato ADD COLUMN stipendio NUMERIC(8,2);
+			\end{lstlisting}
+			\item Rimozione di un attributo con \lstinline|DROP COLUMN|:
+			\begin{lstlisting}
+ALTER TABLE impiegato DROP COLUMN stipendio;
+			\end{lstlisting}
+			\item Modifica di un valore di default di un attributo con \lstinline|ALTER COLUMN|:
+			\begin{lstlisting}
+ALTER TABLE impiegato ALTER COLUMN stipendio
+	SET DEFAULT 1000.00;
+			\end{lstlisting}			
+		\end{itemize}
+		
+	\subsection{Comando INSERT INTO}
+		Una tabella viene popolata con il comando \lstinline|INSERT INTO|:
+		\begin{lstlisting}
+INSERT INTO impiegato (matricola, nome, cognome)
+	VALUES ('A00001', 'Mario', 'Rossi'),
+	       ('A00002', 'Luca', 'Bianchi');
+		\end{lstlisting}
+	
+	\subsection{Comando UPDATE}
+		Una tupla di una tabella può essere modificata con il comando \lstinline|UPDATE|:
+		\begin{lstlisting}
+UPDATE tabella
+	SET attributo = espressione [, ... ]
+	[ WHERE condizione ];
+		\end{lstlisting}
+	\lstinline|condizione| è una espressione booleana che seleziona quali righe
+	aggiornare. Se \lstinline|WHERE| non è presente, tutte le tuple saranno aggiornate.
+	
+	\textbf{Esempio: }
+	\begin{lstlisting}
+UPDATE impiegato
+	SET stipendio = stipendio * 1.10
+	WHERE nomeDipartimento = 'Vendite';
+UPDATE impiegato
+	SET telefono = '+39' || telefono;
+	\end{lstlisting}
+	\textbf{Nota:} L’operatore '||' concatena due espressioni e ritorna la stringa corrisp.
+	
+	\subsection{Comando DELETE}
+		Le tuple di una tabella vengono cancellate con il comando \lstinline|DELETE|:
+		\begin{lstlisting}
+DELETE FROM impiegato WHERE matricola = 'A001';
+		\end{lstlisting}
+		Una tabella viene cancellata con il comando \lstinline|DROP TABLE|.
+		
+	\subsection{Politiche di reazione}
+		In SQL si possono attivare diverse politiche di adeguamento della tabella
+		interna
+		\begin{lstlisting}
+FOREIGN KEY ( column_name [ , ... ]) REFERENCES
+	reftable [ ( refcolumn [ , ... ]) ]
+   ON DELETE reazione ON UPDATE reazione
+		\end{lstlisting}
+		\begin{itemize}
+			\item \lstinline|CASCADE|: la modifica del valore di un attributo riferito nella tabella master
+			si propaga anche in tutte le righe corrispondenti nelle tabelle slave.
+
+			\item \lstinline|SET NULL|: la modifica del valore di un attributo riferito nella tabella
+			master determina che in tutte le righe corrispondenti nelle tabelle slave
+			il valore dell’attributo referente è posto a \lstinline|NULL| (se ammesso).
+
+			\item \lstinline|SET DEFAULT|: la modifica del valore di un attributo riferito nella tabella
+			master determina che in tutte le righe corrispondenti nelle tabelle slave
+			il valore dell’attributo referente è posto al valore di default (se esiste).
+
+			\item \lstinline|NO ACTION|: indica che non si fa nessuna azione. Il vincolo però deve
+			essere sempre valido. Quindi, la modifica del valore di un attributo
+			riferito nella tabella master non viene effettuata.
+		\end{itemize}
+	\subsection{Query sul database}
 \end{document}
