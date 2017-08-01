@@ -5,9 +5,11 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amsthm}
+\usepackage[makeroom]{cancel}
+\usepackage{ulem}
 \usepackage{graphicx}
 \usepackage[dvipsnames]{xcolor}
-\usepackage[sans]{frontespizio}
+\usepackage{frontespizio}
 \usepackage{hyperref}
 \hypersetup{hidelinks,
 	colorlinks = true,
@@ -21,12 +23,14 @@
 \usepackage{tikz}
 \usetikzlibrary{calc}
 \usepackage{listings}
-\lstset{language = SQL,
+\lstset{inputencoding=utf8,
+	language = SQL,
 	basicstyle=\ttfamily,
 	showstringspaces=false,
 	keywordstyle=\color{blue}\bfseries,
-	morekeywords={REFERENCES, BOOLEAN, REAL, DOUBLE, PRECISION, TEXT, VARBIT},
-	stringstyle=\color{Purple}
+	morekeywords={REFERENCES, BOOLEAN, REAL, DOUBLE, PRECISION, TEXT, VARBIT, SIMILAR, TO},
+	stringstyle=\color{Purple},
+	literate={à}{{\`a}}1
 }
 \usepackage{fancyvrb}
 \pagestyle{fancy}
@@ -283,4 +287,234 @@ FOREIGN KEY ( column_name [ , ... ]) REFERENCES
 			riferito nella tabella master non viene effettuata.
 		\end{itemize}
 	\subsection{Query sul database}
+		In SQL, esiste solo un comando per interrogare un base di dati: \lstinline|SELECT|.
+		\begin{lstlisting}
+SELECT [ DISTINCT ]
+[ * | expression [[ AS ] output_name ] [ , ...] ]
+[ FROM from_item [ , ...] ]
+[ WHERE condition ]
+[ GROUP BY grouping_element [ , ...] ]
+[ HAVING condition [ , ...] ]
+[ { UNION | INTERSECT | EXCEPT } [ DISTINCT ]
+	other_select ]
+[ ORDER BY expression [ ASC | DESC | USING operator ]]
+...
+		\end{lstlisting}
+		dove
+		\begin{itemize}
+			\item \lstinline|*| è un’abbreviazione per indicare tutti gli attributi delle tabelle.
+			\item \lstinline|expression| è un’espressione che determina un attributo.
+			\item \lstinline|output_name| è il nome assegnato all’attributo che conterrà il risultato
+			della valutazione dell’espressione \lstinline|expression| nella relazione risultato.
+			\item \lstinline|from_item| è un’espressione che determina una sorgente per gli attributi.
+			\item \lstinline|condition| è un’espressione booleana per selezionare i valori degli
+			attributi.
+			\item \lstinline|grouping_element| è un’espressione per poter eseguire operazioni su
+			più valori di un attributo e considerare il risultato.
+			\item \lstinline|DISTINCT| : se presente richiede l’eliminazione delle tuple duplicate.
+		\end{itemize}
+		
+	\subsubsection{Operatore LIKE e SIMILAR TO}
+		Nella clausola \lstinline|WHERE| può apparire l’operatore \lstinline|LIKE| per il confronto di
+		stringhe. \lstinline|LIKE| è un operatore di pattern matching. I pattern si costruiscono
+		con i caratteri speciali \lstinline|_| (1 carattere qualsiasi) e \lstinline|%| (0 o più caratteri qualsiasi):
+		\begin{lstlisting}
+WHERE attributo [ NOT ] LIKE 'pattern';
+		\end{lstlisting}
+		L’operatore \lstinline|SIMILAR TO| è un \lstinline|LIKE| più espressivo che accetta
+		espressioni regolari (versione SQL) come pattern. Esempi di componenti di
+		espressioni regolari:
+		\begin{itemize}
+			\item \lstinline|_| = 1 carattere qualsiasi. \lstinline|%| = 0 o più caratteri qualsiasi.
+			\item \lstinline|*| = ripetizione del precedente match 0 o più volte. 
+				\lstinline|+| = ripetizione del precedente match UNA o più volte.
+			\item \lstinline|{n,m}| = ripetizione del precedente match almeno n e non più di m volte.
+			\item \lstinline|[...]| = ... è un elenco di caratteri ammissibili
+		\end{itemize}
+		\textbf{Esempio:} Studenti con cognome che inizia con 'A' o 'B', o 'D', o 'N' e finisce con 'a':
+		\begin{lstlisting}
+SELECT cognome, nome, città FROM Studente
+WHERE cognome SIMILAR TO '[ABDN]{1}%a';
+		\end{lstlisting}
+		
+	\subsubsection{Operatore BETWEEN}
+		Nella clausola \lstinline|WHERE| può apparire l’operatore \lstinline|[ NOT ] BETWEEN| per testare
+		l’appartenenza di un valore ad un intervallo.
+		
+		\noindent
+		\textbf{Esempio:} Tutti gli studenti che hanno matricola tra 'IN0002' e 'IN0004'.
+	\begin{lstlisting}
+SELECT cognome, nome, matricola FROM Studente
+WHERE matricola BETWEEN 'IN0002' AND 'IN0004';
+	\end{lstlisting}
+	
+	\subsubsection{Operatore IN}
+		Nella clausola \lstinline|WHERE| può apparire l’operatore \lstinline|[ NOT ] IN| per testare
+		l’appartenenza di un valore ad un insieme.
+	
+		\noindent
+		\textbf{Esempio: }Tutti gli studenti che hanno matricola nell’elenco 'IN0001', 'IN0003' e
+		'IN0005'.
+		\begin{lstlisting}
+SELECT cognome, nome, matricola FROM Studente
+WHERE matricola IN ('IN0001', 'IN0003', 'IN0005');
+		\end{lstlisting}
+	
+	\subsubsection{Operatore IS NULL}
+		Nella clausola \lstinline|WHERE| può apparire l’operatore \lstinline|[ NOT ] IS NULL| per testare
+		se un valore è NOT KNOWN (==NULL) o no.
+	
+		\noindent
+		\textbf{Esempio: }Tutti gli studenti che NON hanno una città.
+\begin{lstlisting}
+SELECT cognome, nome, città FROM Studente
+WHERE città IS NULL;
+\end{lstlisting}
+	\textbf{Nota: }In SQL, \lstinline|NULL| non è uguale a \lstinline|NULL|.
+	NON SI PUÒ usare \lstinline|'='| o \lstinline|'<>'| con il valore NULL!
+	
+	\subsubsection{Operatore ORDER BY}
+		La clausola \lstinline|ORDER BY| ordina le tuple del risultato in ordine rispetto agli
+		attributi specificati.
+		
+		\noindent
+		\textbf{Esempio: }Tutti gli studenti in ordine decrescente rispetto al cognome e crescente
+		(lessicografico) rispetto al nome.
+		\begin{lstlisting}
+SELECT cognome, nome
+FROM Studente
+ORDER BY cognome DESC, nome;
+		\end{lstlisting}
+		
+	\subsubsection{Operatori di aggregazione}
+		Sono operatori che permettono di determinare \textbf{un} valore considerando i
+		valori ottenuti da una \lstinline|SELECT|.
+		Due tipi principali:
+		\begin{itemize}
+			\item \lstinline|COUNT|
+			\item \lstinline|MAX|, \lstinline|MIN|, \lstinline|AVG|, \lstinline|SUM|
+		\end{itemize}
+		Quando si usano gli operatori aggregati, dopo la \lstinline|SELECT| \textit{non} possono
+		comparire espressioni che usano i valori presenti nelle singole tuple
+		perché il risultato è sempre e solo una tupla.
+		\\
+		\lstinline|COUNT| restituisce il numero di tuple significative nel risultato dell’interrogazione:
+		\begin{lstlisting}
+COUNT ({ * | expr | ALL expr | DISTINCT expr }])
+		\end{lstlisting}
+		dove \lstinline|expr| è un’espressione che usa attributi e funzioni di attributi ma non
+		operatori di aggregazione.\\
+		Tre casi comuni:
+		\begin{itemize}
+			\item \lstinline|COUNT(*)| ritorna il numero di tuple nel risultato dell’interrogazione.
+			\item \lstinline|COUNT(expr)| ritorna il numero di tuple in ciascuna delle quali il valore
+			expr è non nullo.
+			\item \lstinline|COUNT(ALL expr)| è un alias a \lstinline|COUNT(expr)| .
+			\item \lstinline|COUNT(DISTINCT expr)| come con \lstinline|COUNT(expr)| ma con l’ulteriore
+			condizione che i valori di \lstinline|expr| sono distinti.
+		\end{itemize}
+		\lstinline|MAX|, \lstinline|MIN|, \lstinline|AVG|, \lstinline|SUM| determinano un valore numerico (\lstinline|SUM|/\lstinline|AVG|) o alfanumerico (\lstinline|MAX|/\lstinline|MIN|)
+		considerando le tuple significative nel risultato dell’interrogazione.
+		
+		\noindent
+		\textbf{Esempi: }\\
+		Calcola la media delle medie degli studenti.
+		\begin{lstlisting}
+SELECT AVG(media)::DECIMAL (5,2)
+FROM Studente;
+		\end{lstlisting}
+		Calcola la media delle medie distinte degli studenti.
+		\begin{lstlisting}
+SELECT AVG(DISTINCT media)::DECIMAL(5,2)
+FROM Studente;
+		\end{lstlisting}
+		
+	\subsubsection{Interrogazioni con raggruppamento}
+		Un raggruppamento è un insieme di tuple che hanno medesimi valori su
+		uno o più attributi caratteristici del raggruppamento.
+		
+		\noindent
+		La clausola \lstinline|GROUP BY attr [, ...]| permette di determinare tutti i
+		raggruppamenti delle tuple della relazione risultato (tuple selezionate
+		con la clausola \lstinline|WHERE| ) in funzione degli attributi dati.
+		In una interrogazione che fa uso di \lstinline|GROUP BY| , possono comparire come
+		argomento della \lstinline|SELECT| solamente gli attributi utilizzati per il
+		raggruppamento e funzioni aggregate valutate sugli altri attributi.
+		
+		\noindent
+		\textbf{Esempi: }\\		
+		Visualizzare tutte le città raggruppate della tabella Studente.
+		\begin{lstlisting}
+SELECT città
+FROM Studente
+GROUP BY città;
+		\end{lstlisting}
+		Visualizzare tutte le città e i cognomi raggruppati.
+		\begin{lstlisting}[mathescape]
+SELECT cognome, LOWER (città)
+FROM Studente
+GROUP BY cognome, LOWER (città);
+		\end{lstlisting}
+		\textbf{Nota1: }NON SI POSSONO SPECIFICARE attributi che non sono raggruppati dopo il
+		\lstinline|SELECT|.
+		
+		\lstset{moredelim=[is][\sout]{|}{|}}
+		\begin{lstlisting}
+SELECT |cognome|, città
+FROM Studente
+GROUP BY città;
+		\end{lstlisting}
+		
+		\noindent
+		\textbf{Nota2: }Si possono specificare espressioni con operatori di aggregazione su attributi
+		non raggruppati.
+		\begin{lstlisting}
+SELECT LOWER(città) AS città,
+  CAST (AVG(media) AS DECIMAL(5,2)) AS media
+FROM Studente
+GROUP BY LOWER(città);
+		\end{lstlisting}
+		
+		\begin{itemize}
+			\item La clausola \lstinline|WHERE| permette di selezionare le righe che devono far parte
+			del risultato.
+			\item La clausola \lstinline|HAVING| permette di selezionare i raggruppamenti che
+			devono far parte del risultato.
+			\item La sintassi è \lstinline|HAVING bool_expr| , dove \lstinline|bool_expr| è un'espressione
+			booleana che può usare gli attributi usati nel \lstinline|GROUP BY| e/o gli altri
+			attributi mediante operatori di aggregazione.
+		\end{itemize}
+		\textbf{Esempi: }\\
+		Visualizzare tutte le città raggruppate che iniziano con ’V’ della tabella
+		Studente.
+		\begin{lstlisting}
+SELECT città
+FROM Studente
+GROUP BY città
+HAVING città LIKE 'V%';
+		\end{lstlisting}
+		Visualizzare tutte le città e i cognomi raggruppati con almeno due studenti
+		con lo stesso cognome.
+		\begin{lstlisting}
+SELECT cognome, LOWER (città)
+FROM Studente
+GROUP BY cognome, LOWER(città)
+HAVING COUNT(cognome)>1;
+		\end{lstlisting}
+		
+		\subsubsection{Comando JOIN}
+			Si è visto che se sono presenti due o più nomi di tabelle, si esegue il
+			prodotto cartesiano tra tutte le tabelle e lo schema del risultato può
+			contenere tutti gli attributi del prodotto cartesiano.
+			Il prodotto cartesiano di due o più tabelle è un \lstinline|CROSS JOIN| .
+			A partire da SQL-2, esistono altri tipi di \lstinline|JOIN| (\lstinline|join_type|):
+			\lstinline|INNER JOIN|, \lstinline|LEFT OUTER JOIN| , \lstinline|RIGHT OUTER JOIN| e \lstinline|FULL OUTER JOIN|.
+			
+			\begin{lstlisting}
+table_name [ NATURAL ] join_type table_name 
+  [ ON join_condition [ , ...]]
+			\end{lstlisting}
+			dove \lstinline|join_condition| è un’espressione booleana che seleziona le tuple del join
+			da aggiungere al risultato. Le tuple selezionate possono essere poi filtrate
+			con la condizione della clausola \lstinline|WHERE|.
 \end{document}
