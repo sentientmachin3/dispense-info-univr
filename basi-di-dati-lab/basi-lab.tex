@@ -7,6 +7,8 @@
 \usepackage{amsthm}
 \usepackage[makeroom]{cancel}
 \usepackage{ulem}
+\usepackage{multicol}
+\setlength{\columnseprule}{0.4pt}
 \usepackage{graphicx}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{frontespizio}
@@ -451,9 +453,9 @@ GROUP BY città;
 		\end{lstlisting}
 		Visualizzare tutte le città e i cognomi raggruppati.
 		\begin{lstlisting}[mathescape]
-SELECT cognome, LOWER (città)
+SELECT cognome, LOWER(città)
 FROM Studente
-GROUP BY cognome, LOWER (città);
+GROUP BY cognome, LOWER(città);
 		\end{lstlisting}
 		\textbf{Nota1: }NON SI POSSONO SPECIFICARE attributi che non sono raggruppati dopo il
 		\lstinline|SELECT|.
@@ -470,7 +472,7 @@ GROUP BY città;
 		non raggruppati.
 		\begin{lstlisting}
 SELECT LOWER(città) AS città,
-  CAST (AVG(media) AS DECIMAL(5,2)) AS media
+  CAST(AVG(media) AS DECIMAL(5,2)) AS media
 FROM Studente
 GROUP BY LOWER(città);
 		\end{lstlisting}
@@ -496,7 +498,7 @@ HAVING città LIKE 'V%';
 		Visualizzare tutte le città e i cognomi raggruppati con almeno due studenti
 		con lo stesso cognome.
 		\begin{lstlisting}
-SELECT cognome, LOWER (città)
+SELECT cognome, LOWER(città)
 FROM Studente
 GROUP BY cognome, LOWER(città)
 HAVING COUNT(cognome)>1;
@@ -517,4 +519,196 @@ table_name [ NATURAL ] join_type table_name
 			dove \lstinline|join_condition| è un’espressione booleana che seleziona le tuple del join
 			da aggiungere al risultato. Le tuple selezionate possono essere poi filtrate
 			con la condizione della clausola \lstinline|WHERE|.
+		
+	\section{Livelli di isolamento}
+		In SQL esistono 4 livelli di isolamento per transazioni concorrenti:
+		\begin{itemize}
+			\item Read Committed
+			\item Repeatable Read
+			\item Serializable
+			\item Read Uncommitted
+		\end{itemize}
+		Prendiamo come esempio la seguente tabella:
+		\lstinline|Web|:
+		\begin{tabular}{cc}
+			\toprule
+			\lstinline|id| & \lstinline|hits| \\
+			\midrule
+			1 & 9 \\
+			2 & 10 \\
+			\midrule
+		\end{tabular}
+		
+		\subsection{Read Committed}
+			È il \textbf{livello di default}, basta scrivere \lstinline|BEGIN;|
+			\begin{itemize}
+				\item \lstinline|SELECT| vede solo i dati registrati (\lstinline|COMMITTED|) in altre transazioni e quelli modificati da comandi precedenti nella stessa transazione.
+				\item \lstinline|UPDATE| e \lstinline|DELETE| vedono i dati come \lstinline|SELECT|
+				\item Se i dati da aggiornare sono stati modificati ma \textbf{non registrati} in transazioni concorrenti, il comando deve:
+				\begin{itemize}
+					\item Attendere il \lstinline|COMMIT| o \lstinline|ROLLBACK| della transazione concorrente.
+					\item Riesaminare le righe per verificare che soddisfano ancora i criteri del comando.
+				\end{itemize}
+			\end{itemize}
+			\textbf{Esempio: Non-repeatable reads}
+			\begin{multicols}{2}
+				\noindent
+				$ T_1 $:
+				\begin{lstlisting}
+BEGIN;
+UPDATE Web SET hits=hits+1;
+
+COMMIT;
+				\end{lstlisting}
+				\columnbreak
+				$ T_2 $:
+				\begin{lstlisting}
+BEGIN;
+
+DELETE FROM Web WHERE hits=10;
+
+				\end{lstlisting}
+			\end{multicols}
+			\lstinline|DELETE| non riesce a cancellare: la riga è quella con \lstinline|id = 2|, che viene aggiornata da \lstinline|UPDATE| il quale sblocca \lstinline|DELETE| fino al \lstinline|COMMIT|. \lstinline|DELETE| riesamina la riga e trova che il criterio non è più soddisfatto.
+			
+		\subsection{Repeatable Read}
+			Differisce da Read Committed per il fatto che i comando di una transazione \textbf{vedono sempre gli stessi dati}. Due \lstinline|SELECT| identiche vedono sempre gli stessi dati.
+			\begin{itemize}
+				\item \lstinline|UPDATE| e \lstinline|DELETE| vedono i dati come \lstinline|SELECT|.
+				\item Se i dati da aggiornare sono stati modificati ma \textbf{non registrati} in transazioni concorrenti, il comando deve attendere: 
+				\begin{itemize}
+					\item il \lstinline|COMMIT| e quindi i dati vengono cambiati e \lstinline|UPDATE| e \lstinline|DELETE| vengono bloccate con errore.
+					\item il \lstinline|ROLLBACK| e quidni \lstinline|UPDATE| e \lstinline|DELETE| possono procedere.
+				\end{itemize}
+			\end{itemize}
+			\textbf{Esempio1: Cattura l'anomalia Non-repeatable reads}
+			\begin{multicols}{2}
+			\noindent
+			$ T_1 $:
+			\begin{lstlisting}
+BEGIN TRANSACTION ISOLATION LEVEL
+  REPEATABLE READ;
+
+UPDATE Web SET hits=hits+1;
+
+COMMIT;
+			\end{lstlisting}
+			\columnbreak
+			$ T_2 $:
+			\begin{lstlisting}
+BEGIN;
+
+DELETE FROM Web WHERE hits=10;
+
+ERROR: could NOT serialize 
+access due to concurrent UPDATE.
+			\end{lstlisting}
+			\end{multicols}
+			\noindent
+			\textbf{Esempio2: Phantom Reads}
+			\begin{multicols}{2}
+			\noindent
+			$ T_1 $:
+			\begin{lstlisting}
+BEGIN TRANSACTION ISOLATION LEVEL
+  REPEATABLE READ;
+ 
+INSERT INTO Web SELECT
+  MAX(hits)+1 FROM Web;
+  
+COMMIT;
+			\end{lstlisting}
+			\columnbreak
+			$ T_2 $:
+			\begin{lstlisting}
+BEGIN TRANSACTION ISOLATION LEVEL
+  REPEATABLE READ;
+
+INSERT INTO Web SELECT
+  MAX(hits)+1 FROM Web;
+
+COMMIT;
+			\end{lstlisting}
+			\end{multicols}
+		La tabella finale contiene due valori 11 e non 11 e 12 (inserimento fantasma).
+		
+	\subsection{Serializable}
+		È \textbf{il più restrittivo} e garantisce che le transazioni siano eseguite \textbf{come se fossero sequenziali tra loro} (in un ordine non prestabilito). Si deve però prevedere la possibilità di transazioni abortite più frequenti per gli aggiornamenti concorrenti tipo Repeatable Read.\\
+		\textbf{Esempio:}
+		\begin{multicols}{2}
+		\noindent
+		$ T_1 $:
+		\begin{lstlisting}
+BEGIN TRANSACTION ISOLATION LEVEL
+  SERIALIZABLE;
+  
+INSERT INTO Web SELECT
+  MAX(hits)+1 FROM Web;
+
+COMMIT;
+		\end{lstlisting}
+		\columnbreak
+		$ T_2 $:
+		\begin{lstlisting}
+BEGIN TRANSACTION ISOLATION LEVEL
+  SERIALIZABLE;
+
+INSERT INTO Web SELECT
+  MAX(hits)+1 FROM Web;
+
+COMMIT;
+		\end{lstlisting}
+		\end{multicols}
+		
+		\newpage
+		
+		La $ T_2 $ riporta il seguente errore:
+		\begin{lstlisting}
+ERROR: could not serialize access due to READ/WRITE dependencies 
+       among transactions
+DETAIL: reason code: canceled ON identification AS a pivot, 
+        during COMMIT attempt
+HINT: the TRANSACTION might succeed if retried.
+		\end{lstlisting}
+	\newpage		
+			
+			
+		
+	\section{Flask}
+	\lstset{language=Python}
+		\subsection{HTTP requests:}
+			\begin{itemize}
+				\item \lstinline|GET|: serve ad un client per \textbf{recuperare} una risorsa dal server (come la richiesta di una pagin web). Eventuali parametri da inviare al server sono specificati nella \textbf{query string} dell'URL.
+				\item \lstinline|POST|: serve ad un client per \textbf{inviare} informazioni al server. La maggior parte dei browser usa post per \textbf{inviare dati delle form ai server}. I dati sono specificati nel corpo della richiesta.
+			\end{itemize}
+		\subsection{Accesso ai parametri della query string di una richiesta GET}
+		\textbf{Query String} rappresentata dalla variabile \lstinline|request.args| di tipo \lstinline|dict|, accessibile direttamente dal metodo associato all'URL:
+		\begin{lstlisting}[frame=tb]
+from flask import Flask, request
+app = Flask(__name__)
+
+@app.route('/login')
+def login():
+	user = request.args['user']
+	role = request.args['role']
+	return ...
+		\end{lstlisting}
+		\subsection{Accesso ai parametri della query string di una richiesta POST}
+		\lstset{language=HTML}
+		\begin{lstlisting}[frame=tb, caption={esempio di form html5}]
+<form action="http://localhost:5000/login" method="post">
+	<label> Name: <input type="text" name="user"/> </label> <br>
+	<label> Role: <input type="text" name="role"/> </label> <br>
+	<input type="submit" value="Invia">
+</form>
+		\end{lstlisting}
+		\lstset{language=Python}
+		I dati di un \lstinline|POST| sono nel dict \lstinline|request.form|
+		\begin{lstlisting}[frame=tb]
+@app.route('/login')
+def login():
+	user = request.form['user']
+	role = request.form['role']
+	return ...
+		\end{lstlisting}
 \end{document}
