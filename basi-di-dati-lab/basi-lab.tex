@@ -13,6 +13,7 @@
 \usepackage[dvipsnames]{xcolor}
 \usepackage{frontespizio}
 \usepackage{hyperref}
+\usepackage{enumitem}
 \hypersetup{hidelinks,
 	colorlinks = true,
 	urlcolor = black, 
@@ -697,8 +698,8 @@ def login():
 		\lstset{language=HTML}
 		\begin{lstlisting}[frame=tb, caption={esempio di form html5}]
 <form action="http://localhost:5000/login" method="post">
-	<label> Name: <input type="text" name="user"/> </label> <br>
-	<label> Role: <input type="text" name="role"/> </label> <br>
+	<label> Name: <input type="text" name="user"/> </label><br>
+	<label> Role: <input type="text" name="role"/> </label><br>
 	<input type="submit" value="Invia">
 </form>
 		\end{lstlisting}
@@ -711,4 +712,53 @@ def login():
 	role = request.form['role']
 	return ...
 		\end{lstlisting}
+		
+		\newpage
+		
+		\subsection{Esempio esercizio d'esame con integrazione HTML}
+			Assumendo di avere una base di dati PostgreSQL che contenga le tabelle di questo tema d'esame, scrivere:
+			\begin{enumerate}[label=(\alph*)]
+				\item Un template JINJA2 per una form HTML 5 che: (1) permetta di acquisire un codice fiscale (controllando il formato), (2) di selezionare una biblioteca dalla lista \lstinline|biblioteche| passata come parametro al template e (3) invii i dati all'URL \lstinline|/prestitiUtente| in modalità GET. Il formato di \lstinline|biblioteche| è \lstinline|[{id, nome}, ...]|.\\
+				Scrivere solo la parte della FORM, non tutto il documento HTML. 
+				
+				\item Un metodo Python che, associato all'URL \lstinline|/prestitiUtente| secondo il framework Flask, (1) legga i parametri codice fiscale e identificatore biblioteca, (2) si connetta alla base di dati 'X' (si assuma di dover specificare solo il nome della base di dati) e recuperi tutti i prestiti (idRisorsa, dataInizio, durata) associati al codice fiscale e biblioteca dati come parametri (scrivere la query!), (3) usi il metodo \lstinline|render_template('view.html', ...)| per pubblicare il risultato passando la lista del risultato. Se il  risultato dell'interrogazione è vuoto, il metodo deve passare il controllo a \lstinline|render_template('nessunPrestito0Errore.html')|.\\
+				Scrivere solo il metodo.
+			\end{enumerate}
+			Soluzione (a):
+			\lstset{language=HTML}
+			\begin{lstlisting}[frame=tb, tabsize=2]
+<form action="/prestitiUtente" method="get">
+	<label for="codicef">Codice fiscale: </label>
+		<input id="codicef" name="cf" type="text" pattern="[A-Z]...">
+	<br>
+	<label for="biblioteca">Biblioteca: </label>
+		<select id="biblioteca" name="biblio">
+			{% for b in biblioteche %}
+			<option value="{{b.id}}"> {{b.nome}} </option>
+			{% endfor %}
+		</select>
+	<input type="submit" value="Invia">
+</form>
+			\end{lstlisting}
+			Soluzione (b):
+			\lstset{language=Python}
+			\begin{lstlisting}[frame=tb, tabsize=2]
+@app.route('/prestitiUtente', methods= ['GET'])
+def getPrestiti():
+	cf = request.args['cf']
+	biblio = request.args['biblio']
+	
+	with psycopg2.connect(database='X') as conn:
+		with conn.cursor as cur:
+			cur.execute("SELECT P.idRisorsa, P.dataInizio, P.durata\
+				FROM Prestito P WHERE P.idUtente = %s AND\
+				P.idBiblioteca = %s", cf, int(biblio))
+			prestiti = cur.fetchall()
+			
+			if not prestiti:
+				return render_template('nessunPrestito0Errore.html')
+				
+			return render_template('view.html', prestiti, cf, biblio)
+			\end{lstlisting}
+			
 \end{document}
