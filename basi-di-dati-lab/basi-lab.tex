@@ -762,4 +762,22 @@ def getPrestiti():
 			return render_template('view.html', prestiti, cf, biblio)
 			\end{lstlisting}
 			
+\newpage
+\section{JDBC}
+JDBC è una libreria di funzioni Java che consente di collegarsi ad un database ed eseguire operazioni.
+Le fasi principali per eseguire una qualsiasi operazione sono:
+
+\begin{enumerate}
+	\item Caricare il driver \textit{org.postgresql.Driver};
+	
+	\item Collegarsi al database sul quale si intende operare;
+	
+	\item Creare gli statement da eseguire;
+	
+	\item Eseguire gli statement e il commit;
+	
+	\item Chiudere le risorse utilizzate.
+\end{enumerate}
+
+			
 \end{document}
