@@ -824,9 +824,11 @@ try {
 	e.printStackTrace();
 }
 \end{lstlisting}
-
 dove \lstinline|connection| è un'istanza della classe \lstinline|Connection|. I punti interrogativi sono usati come segnaposto da rimpiazzare con con i metodi \lstinline|setDate()|, \lstinline|setString()| ecc.
-I metodi set funzionano passando come parametro un indice (da 1), e il valore che si vuole sostituire nella query. In questo modo i punti interrogativi saranno rimpiazzati dai campi passati nei metodi set.
+I metodi set funzionano passando come parametro un indice (da 1), e il valore che si vuole sostituire nella query. In questo modo i punti interrogativi saranno rimpiazzati dai campi passati nei metodi set. \\
+
+\noindent
+\textbf{Nota: le connessioni sono auto-commit, il commit viene eseguito al termine dell'esecuzione di ogni comando.}
 
 \subsection{Accesso ai campi e chiusura risorse}
 \paragraph{Accesso ai dati.}
