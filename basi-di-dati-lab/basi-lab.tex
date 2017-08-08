@@ -778,5 +778,27 @@ Le fasi principali per eseguire una qualsiasi operazione sono:
 	\item Chiudere le risorse utilizzate.
 \end{enumerate}
 
+\subsection{Caricamento del driver}
+Questa fase consente di caricare i moduli che servono per collegarsi al database. Si effettua eseguendo l'opportuna chiamata:
+\lstset{language=Java}
+\begin{lstlisting}
+Class.forName("org.postgresql.Driver");
+\end{lstlisting}
+
+\subsection{Collegamento al database}
+Per collegarsi al database si effettua una chiamata che, passando gli opportuni parametri, ritorna un oggetto di tipo \lstinline|Connection|, che verrà usato per eseguire gli statement nelle prossime fasi.
+
+\begin{lstlisting}
+try {
+	Connection connection = DriverManager.getConnection(
+		[url], [utente], [password]);
+} catch (SQLException e) {
+	System.out.println(e.getMessage());
+}
+\end{lstlisting}
+
+\subsection{Creazione ed esecuzione di statement}
+
+
 			
 \end{document}
