@@ -647,8 +647,6 @@ Merge JOIN (cost=198.11..268.19 ROWS=10 width=488)
 	\lstinline|Merge JOIN| esegue il join ordinando le due tabelle rispetto agli attributi di join. \\
 	
 	Esiste una variante estesa di \lstinline|EXPLAIN|, \lstinline|EXPAIN ANALYZE|, che esegue la query senza registrare le modifiche e mostra una stima verosimile dei tempi di esecuzione.
-	
-=======
 		
 		\subsubsection*{INNER JOIN}
 			Rappresenta il tradizionale $ \Theta $ join dell’algebra relazionale.
@@ -988,8 +986,6 @@ WHERE NumIns = ANY (
 		\textbf{NOTA: } \textit{Non è possibile usare due operatori di aggregazione in cascata!}
 	\newpage
 	
-			
->>>>>>> master
 	\section{Livelli di isolamento}
 		In SQL esistono 4 livelli di isolamento per transazioni concorrenti:
 		\begin{itemize}
@@ -1051,6 +1047,9 @@ DELETE FROM Web WHERE hits=10;
 					\item il \lstinline|ROLLBACK| e quidni \lstinline|UPDATE| e \lstinline|DELETE| possono procedere.
 				\end{itemize}
 			\end{itemize}
+			
+			\newpage
+			\noindent
 			\textbf{Esempio1: Cattura l'anomalia Non-repeatable reads}
 			\begin{multicols}{2}
 			\noindent
@@ -1129,8 +1128,6 @@ INSERT INTO Web SELECT
 COMMIT;
 		\end{lstlisting}
 		\end{multicols}
-		
-		\newpage
 		
 		La $ T_2 $ riporta il seguente errore:
 		\begin{lstlisting}
