@@ -520,7 +520,84 @@ table_name [ NATURAL ] join_type table_name
 			dove \lstinline|join_condition| è un’espressione booleana che seleziona le tuple del join
 			da aggiungere al risultato. Le tuple selezionate possono essere poi filtrate
 			con la condizione della clausola \lstinline|WHERE|.
-		
+			
+	\section{Indici}
+	Gli indici sono strutture dati che permettono di accedere ad una tabella dati in maniera più efficiente. Dato che un indice è completamente scorrelato dalla tabella dati a cui si riferisce, deve sempre essere mantenuto aggiornato in base al contenuto della tabella cui si riferisce. Il costo dell'aggiornamento di un indice può essere significativo quando ci sono molti indici definiti sulla base di dati, per cui è bene usarli con saggezza ed applicarli nella maniera più efficiente possibile.
+	
+	Una buona regola pratica per l'uso di indici, dal momento che costano tempo e memoria, è di applicarli in base alle query eseguite più frequentemente, tenendo anche presente che il sistema deve aggiornare l'indice per ogni operazione \lstinline|INSERT, DELETE| e \lstinline|UPDATE|.
+	
+	\subsection{Comando timing}
+	Il comando \lstinline|\timing| da un 'idea del tempo necessario all'esecuzione di una query.
+	In un prompt di \verb|psql| basta eseguire:
+	\begin{lstlisting}
+=> \timing
+=> select * from tabella;
+	\end{lstlisting}
+
+	\subsection{Comando CREATE INDEX} \label{createindex}
+	\begin{lstlisting}[escapeinside={(*}{*)}]
+CREATE [ UNIQUE ] INDEX [nome]
+ON tabella [ USING method ]
+({ nomeAttr (*| (expression) } [ ASC | DESC ] [ , ...])
+	\end{lstlisting}
+	dove:
+	\begin{itemize}
+		\item \verb|method| è il tipo di indice;
+		\item \verb|nomeAttr| o \verb|expression| indicano su quali colonne o espressioni con colonne si deve creare l'indice;
+		\item \lstinline|ASC/DESC| indica se l'attributo è ascendente o discendente;
+		\item \lstinline|ALTER INDEX| e \lstinline|DROP INDEX| permettono di modificare o rimuovere gli indici.
+	\end{itemize}
+
+	Una volta creato, l'indice è usato dal sistema ogni volta che l'ottimizzatore di query lo ritiene opportuno, ovvero solo quando il vantaggio derivato è di una certa consistenza. Un indice può anche essere utilizzato per ottimizzare l'esecuzione di \lstinline|UPDATE| e \lstinline|DELETE|, se nella clausola \lstinline|WHERE| ci sono attributi indicizzati.
+	
+	\noindent
+	\textbf{Nota: PostgreSQL crea in automatico indici per gli attributi dichiarati come chiave primaria, quindi è inutile indicizzarli.}
+	
+	\subsection{Comando ANALYZE}
+	Il comando \lstinline|ANALYZE| è usato per forzare l'aggiornamento delle statistiche di esecuzione delle query quando uno o più nuovi indici sono creati.
+	\begin{lstlisting}
+CREATE INDEX ie_id_corsostudi ON Inserogato (id_corsostudi) ;
+CREATE INDEX ie_id_insegn ON Inserogato (id_insegn);
+CREATE INDEX ie_aa_C ON Inserogato (annoaccademico);
+CREATE INDEX ie_aa_IT ON Inserogato (annoaccademico varchar_pattern_ops);
+CREATE INDEX cs_nome ON Corsostudi (nome varchar_pattern_ops);
+ANALYZE;
+	\end{lstlisting}
+	
+	\subsection{Tipi di indici}
+	PostgreSQL ammette molti tipi di indice, tra i quali: \textbf{B-tree, hash, GiST, SP-GiST, Gin, Brin}.
+	Ognuno di questi tipi usa una tecnica algoritmica diversa e risulta migliore di altri in alcune situazioni (vedi \ref{createindex} per la specifica del tipo di indice da creare).
+	Se il tipo di indice non è specificato, viene creato un indice di tipo B-tree.
+	
+	 Nello specifico caso dell'indice B-tree, questo viene utilizzato quando l'attributo coinvolto è usato con gli operatori di confronto di valore o con i comandi \lstinline|BETWEEN, IN, IS NULL, IS NOT NULL | e \lstinline|LIKE|.
+	 La keyword \textbf{varchar\_pattern\_ops} è inserita quando si vuole che l'indice consideri anche i pattern del tipo \lstinline|LIKE 'stringa%'|.
+	 
+	 \subsection{Indici multi-attributo}
+	 Se si hanno query con condizioni su coppie o terne, a volte può essere più efficiente l'uso di un indice dichiarato su due attributi rispetto a due indici mono-attributo.
+	 
+
+	 
+	 Ad esempio, con una query come:
+	 \begin{lstlisting}
+SELECT I.nomeins, I.codiceins
+FROM Insegn I
+JOIN InsErogato IE ON I.id = IE.id_insegn
+WHERE IE.annoaccademico = '2006/2007'
+	AND IE.id_corsostudi = 4;
+	 \end{lstlisting}
+	 che controlla gli attributi \verb|annoaccademico| e \verb|id_corsostudi|, è utile usare un indice multi-attributo che indicizzi i due campi:
+	 \begin{lstlisting}
+CREATE INDEX ie_aa_idcs ON Inserogato (annoaccademico, id_corsostudi);
+	 \end{lstlisting}
+	 Non sempre gli indici multi-attributo possono essere usati, come nel caso di espressioni con \lstinline|OR|.
+	 
+ 	\subsection{Comando EXPLAIN}
+	Ogni DBMS ha un ottimizzatore di query che determina un piano di esecuzione per ogni query. Il comando \lstinline|EXPLAIN [query]| permette di vedere il piano di esecuzione della query, facilitando l'analisi dei colli di bottiglia e l'ottimizzazione.
+	
+	Un piano di esecuzione di una query è un albero di nodi di esecuzione, dove le foglie sono \textbf{nodi di scansione}, che restituiscono gli indirizzi di righe della tabella. I possibili tipi di scansione sono 3: sequenziali, indicizzate e bit-mapped. Se una query contiene \lstinline|JOIN, GROUP BY, ORDER BY| o altre operazioni sulle righe, allora ci saranno altri nodi di esecuzione sopra i nodi foglia.
+	
+	
+	
 	\section{Livelli di isolamento}
 		In SQL esistono 4 livelli di isolamento per transazioni concorrenti:
 		\begin{itemize}
