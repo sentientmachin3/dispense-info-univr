@@ -7,8 +7,10 @@
 \usepackage{amsthm}
 \usepackage[makeroom]{cancel}
 \usepackage{ulem}
+\usepackage{parcolumns}
 \usepackage{multicol}
 \setlength{\columnseprule}{0.4pt}
+\usepackage{lipsum}
 \usepackage{graphicx}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{frontespizio}
@@ -520,6 +522,7 @@ table_name [ NATURAL ] join_type table_name
 			dove \lstinline|join_condition| è un’espressione booleana che seleziona le tuple del join
 			da aggiungere al risultato. Le tuple selezionate possono essere poi filtrate
 			con la condizione della clausola \lstinline|WHERE|.
+<<<<<<< HEAD
 			
 	\section{Indici}
 	Gli indici sono strutture dati che permettono di accedere ad una tabella dati in maniera più efficiente. Dato che un indice è completamente scorrelato dalla tabella dati a cui si riferisce, deve sempre essere mantenuto aggiornato in base al contenuto della tabella cui si riferisce. Il costo dell'aggiornamento di un indice può essere significativo quando ci sono molti indici definiti sulla base di dati, per cui è bene usarli con saggezza ed applicarli nella maniera più efficiente possibile.
@@ -645,6 +648,348 @@ Merge JOIN (cost=198.11..268.19 ROWS=10 width=488)
 	
 	Esiste una variante estesa di \lstinline|EXPLAIN|, \lstinline|EXPAIN ANALYZE|, che esegue la query senza registrare le modifiche e mostra una stima verosimile dei tempi di esecuzione.
 	
+=======
+		
+		\subsubsection*{INNER JOIN}
+			Rappresenta il tradizionale $ \Theta $ join dell’algebra relazionale.
+			Combina ciascuna riga $ r_1 $ di $ table_1 $ con ciascuna riga di $ table_2 $ che
+			soddisfa la condizione della clausola \lstinline|ON|.
+			
+			\bigskip
+			\noindent
+			\begin{minipage}{0.6\textwidth}
+				\begin{lstlisting}
+SELECT I.cognome, R.nomeRep, R.sede
+FROM Impiegato I INNER JOIN Reparto R
+     ON I.nomerep = R.nomerep;
+			\end{lstlisting}
+			\end{minipage}\hfilneg\vrule\hfill
+			\begin{minipage}{0.33\textwidth}
+			\begin{tabular}{ll}
+				\toprule
+				\textbf{nomerep} & \textbf{cognome} \\
+				\midrule
+				Acquisti & Rossi \\
+				Vendite & Verdi  \\
+				Finanza &  \\
+				\midrule
+			\end{tabular}
+			\end{minipage}
+			
+		\subsubsection*{LEFT OUTER JOIN}
+			Si esegue un \lstinline|INNER JOIN|. Poi, per ciascuna riga $ r_1 $ di $ table_1 $ che non
+			soddisfa la condizione con qualsiasi riga di $ table_2 $, si aggiunge una riga al
+			risultato con i valori di $ r_1 $ e assegnando \lstinline|NULL| agli altri attributi.
+			
+			\bigskip
+			\noindent
+			\begin{minipage}{0.7\textwidth}
+				\begin{lstlisting}
+INSERT INTO Reparto (nomerep, sede, telefono)
+    VALUES ('Finanza', 'Padova', '02 8028888');
+SELECT R.nomeRep, I.cognome
+FROM Reparto R LEFT OUTER JOIN Impiegato I 
+     ON I.nomerep = R.nomerep;
+			\end{lstlisting}
+			\end{minipage}\hfilneg\vrule\hfill
+			\begin{minipage}{.27\textwidth}
+				\begin{tabular}{ll}
+					\toprule
+					\textbf{cognome} & \textbf{nomerep} \\
+					\midrule
+					Rossi & Vendite \\
+					Verdi & Acquisti \\
+ 					\midrule
+				\end{tabular}
+			\end{minipage}
+		
+			\noindent
+			\textbf{Nota: } Il \lstinline|LEFT OUTER JOIN| non è simmetrico! \\
+			Con le medesime tabelle si possono avere risultati diversi invertendo l’ordine
+			delle tabelle nel join!
+		\subsubsection*{RIGHT OUTER JOIN}
+			Si esegue un \lstinline|INNER JOIN|. Poi, per ciascuna riga $ r_2 $ di $ table_2 $ che non
+			soddisfa la condizione con qualsiasi riga di $ table_1 $, si aggiunge una riga al
+			risultato con i valori di $ r_2 $ e assegnando \lstinline|NULL| agli altri attributi.
+			
+			\bigskip
+			\noindent
+			\begin{minipage}{0.67\textwidth}
+				\begin{lstlisting}
+SELECT I.cognome, R.nomeRep
+FROM Impiegato I RIGHT OUTER JOIN Reparto R 
+     ON I.nomerep = R.nomerep ;
+				\end{lstlisting}
+			\end{minipage}\hfilneg\vrule\hfill
+			\begin{minipage}{.28\textwidth}
+				\begin{tabular}{ll}
+					\toprule
+					\textbf{cognome} & \textbf{nomerep} \\
+					\midrule
+					Rossi & Vendite \\
+					Verdi & Acquisti \\
+					& Finanza \\
+					\midrule
+				\end{tabular}
+				\end{minipage}
+	
+		\subsubsection*{FULL OUTER JOIN}
+			È equivalente a: \lstinline|INNER JOIN + LEFT OUTER JOIN + RIGHT OUTER JOIN| .
+			
+			\noindent
+			\textbf{Nota: }Non è equivalente a \lstinline|CROSS JOIN|!
+			
+	\subsubsection{Interrogazioni nidificate}
+		SQL permette il confronto di un valore (ottenuto come risultato di una
+		espressione valutata sulla singola riga) con il risultato dell’esecuzione di
+		una interrogazione SQL. L’interrogazione che viene usata nel confronto viene definita
+		direttamente nel predicato interno alla clausola \lstinline|WHERE|. \\
+		\textbf{Attenzione: }il confronto è tra un valore di un attributo (valore singolo) e
+		il risultato di una interrogazione (possibile insieme di valori). Quindi:
+		\begin{itemize}
+			\item Gli operatori di confronto tradizionali $ (<, >, <>, =, \dots) $ \textbf{NON} non possono	essere usati.
+			\item Si devono usare dei nuovi operatori, \lstinline|EXISTS|, \lstinline|IN|, 
+			\lstinline|NOT IN|, \lstinline|ALL|, \lstinline|ANY/SOME|, che estendono i tradizionali
+			operatori a questo tipo di confronti.
+		\end{itemize}
+			
+	\subsubsection{Operatore EXISTS}
+		\begin{lstlisting}
+EXISTS (subquery)
+		\end{lstlisting}
+			\noindent
+			\lstinline|(subquery)| è una \lstinline|SELECT|.
+			
+			\noindent
+			\lstinline|EXISTS| ritorna falso se \lstinline|(subquery)| non contiene righe; vero altrimenti.
+			
+			\noindent
+			\lstinline|EXISTS| è significativo quando nella \lstinline|(subquery)| si selezionano righe
+			usando i valori della riga corrente nella \lstinline|SELECT| principale: data binding.
+			
+			\noindent
+			Determinare i nomi degli impiegati che sono diversi tra loro ma di pari lunghezza:
+			\begin{lstlisting}[tabsize=4]
+SELECT I.nome
+FROM Impiegato I
+WHERE EXISTS(
+    SELECT 1 FROM Impiegato Ii WHERE I.nome <> Ii.nome
+		AND CHAR_LENGTH(I.nome) = CHAR_LENGTH(Ii.nome)
+);
+			\end{lstlisting}
+			\lstinline|I.nome| nella subquery è il valore di nome nella riga corrente della \lstinline|SELECT| principale.
+			
+			\noindent
+			\textbf{Nota: } L’operatore \lstinline|NOT| può essere usato in coppia con \lstinline|EXISTS|.
+			\bigskip
+			
+	\subsubsection{Operatore IN}
+		\begin{lstlisting}
+[ ROW ] (expr [ ,...]) IN (subquery)
+		\end{lstlisting}
+		
+		\begin{itemize}
+			\item \lstinline|expr| è un’espressione costruita con un attributo della query principale.
+		Ci possono essere 1 o più espressioni.
+		
+			\item La \lstinline|(subquery)| deve restituire un numero di colonne pari al numero di
+		espressioni in \lstinline|(expr [,...])|.
+		
+			\item I valori dell’espressioni vengono confrontati con i valori di ciascuna riga
+		del risultato di \lstinline|(subquery)|.
+		
+			\item Il confronto ritorna vero se i valori sono uguali ai valori di almeno una
+		riga della subquery.
+		\end{itemize}
+		\textbf{Esempio:} 
+		\begin{lstlisting}
+SELECT I.nome, I.cognome
+FROM Impiegato I
+WHERE ROW (I.nome, I.cognome ) IN (
+    SELECT Ii.nome, Ii.cognome FROM ImpiegatoAltraAzienda Ii
+);
+		\end{lstlisting}
+		
+	\subsubsection{Operatore ANY/SOME}
+		\begin{lstlisting}
+expression operator ANY (subquery)
+expression operator SOME (subquery)
+		\end{lstlisting}
+		\noindent
+		\lstinline|(subquery)| è una \lstinline|SELECT| che deve restituire UNA sola colonna; \\
+		\lstinline|expression| è un’espressione che coinvolge attributi della \lstinline|SELECT|
+		principale.\\
+		\lstinline|operator| è un operatore di confronto, come '\lstinline|=|' o '\lstinline|>=|'.\\
+		\lstinline|ANY| : ritorna vero se \lstinline|expression| è \lstinline|operator| rispetto al valore di una qualsiasi riga del risultato di \lstinline|(subquery)|.\\
+		\lstinline|SOME| è uno sinonimo di \lstinline|ANY|.
+		
+		Visualizzare il nome degli insegnamenti che hanno un numero di crediti
+		inferiore alla media dell’ateneo di un qualsiasi anno accademico:
+		\begin{lstlisting}
+SELECT DISTINCT I.nomeins, IE.crediti
+FROM Insegn I JOIN InsErogato IE ON I.id = IE.id_insegn
+WHERE IE.crediti < ANY (
+    SELECT AVG(crediti) FROM InsErogato
+    GROUP BY annoaccademico
+);
+		\end{lstlisting}
+		
+	\subsubsection{Operatore ALL}
+		\begin{lstlisting}
+expression operator ALL (subquery)
+		\end{lstlisting}
+		\noindent
+		\lstinline|(subquery)| è una \lstinline|SELECT| che deve restituire UNA sola colonna;\\
+		\lstinline|expression| è un’espressione che coinvolge attributi della \lstinline|SELECT|
+		principale.\\
+		\lstinline|operator| è un operatore di confronto, come ’\lstinline|=|’ o ’\lstinline|>=|’.\\
+		\lstinline|ALL| : ritorna vero se \lstinline|expression| è \lstinline|operator| rispetto al valore di ciascuna riga del risultato di \lstinline|(subquery)|.
+		
+		Trovare il nome degli insegnamenti (o moduli) con almeno un docente e
+		crediti maggiori rispetto ai crediti di ciascun insegnamento del corso di laurea
+		con id=6.
+		\begin{lstlisting}
+SELECT DISTINCT I.nomeins, IE.crediti
+FROM Insegn I
+JOIN InsErogato IE ON I.id = IE.id_insegn
+JOIN Docenza D ON IE.id = D.id_inserogato
+WHERE IE.crediti > ALL (
+    SELECT crediti FROM InsErogato
+    WHERE id_corsostudi = 6
+);
+		\end{lstlisting}
+		
+	\subsubsection{Operatori insiemistici UNION/INTERSECT/EXCEPT}
+		Gli operatori insiemistici si possono utilizzare solo al livello più esterno
+		di una query, operando sul risultato di due o più clausole \lstinline|SELECT|.\\
+		Gli operatori insiemistici sono: \lstinline|UNION|, \lstinline|INTERSECT| e \lstinline|EXCEPT|.\\
+		Si possono avere sequenze di \lstinline|UNION/INTERSECT/EXCEPT|
+		\begin{lstlisting}[mathescape]
+query$_1$ { UNION or INTERSECT or EXCEPT } [ ALL ] query$_2$
+		\end{lstlisting}
+		\begin{itemize}
+			\item Gli operatori si possono applicare solo quando $ \textup{query}_1 $ e 
+			$ \textup{query}_2 $ producono risultati con lo stesso numero di colonne e di tipo compatibile
+			fra loro.
+			\item Tutti gli operatori eliminano i duplicati dal risultato a meno che \lstinline|ALL| non
+			sia stato specificato.
+			\item \lstinline|UNION| aggiunge il risultato di $ \textup{query}_2 $ a quello di 
+			$ \textup{query}_1 $ .
+			\item \lstinline|INTERSECT| restituisce le righe che sono presenti sia nel risultato di
+			$ \textup{query}_1 $ sia in quello di $ \textup{query}_2 $ .
+			\item \lstinline|EXCEPT| restituisce le righe di $ \textup{query}_1 $ che non sono presenti nel risultato
+			di $ \textup{query}_2 $ . In pratica esegue la differenza insiemistica.
+		\end{itemize}
+		\noindent
+		\textbf{Esempi: }\\
+		Visualizzare i nomi degli insegnamenti e i nomi dei corsi di laurea che non
+		iniziano per ’A’ mantenendo i duplicati.
+		\begin{lstlisting}
+SELECT nomeins
+FROM Insegn
+WHERE NOT nomeins LIKE 'A%'
+
+UNION ALL
+
+SELECT nome
+FROM CorsoStudi
+WHERE NOT nome LIKE 'A%';
+		\end{lstlisting}
+		Visualizzare i nomi degli insegnamenti che sono anche nomi di corsi di
+		laurea.
+		\begin{lstlisting}
+SELECT nomeins
+FROM Insegn
+
+INTERSECT ALL
+
+SELECT nome
+FROM CorsoStudi;
+		\end{lstlisting}
+		Visualizzare i nomi degli insegnamenti che NON sono anche nomi di corsi di
+		laurea.
+		\begin{lstlisting}
+SELECT nomeins
+FROM Insegn
+
+EXCEPT
+
+SELECT nome
+FROM CorsoStudi ;
+		\end{lstlisting}
+		
+	\subsubsection{Viste}
+		\begin{itemize}
+			\item Le viste sono tabelle "virtuali" il cui contenuto dipende dal contenuto
+			delle altre tabelle della base di dati.
+			\item In SQL le viste vengono definite associando un nome ed una lista di
+			attributi al risultato dell’esecuzione di un’interrogazione.
+			\item Ogni volta che si usa una vista, si esegue la query che la definisce.
+			\item Nell’interrogazione che definisce la vista possono comparire anche altre
+			viste.
+			\item SQL non ammette però:
+			\begin{itemize}
+				\item dipendenze immediate (definire una vista in termini di se stessa) o
+			ricorsive (definire una interrogazione di base e una interrogazione
+			ricorsiva);
+				\item dipendenze transitive circolari ($ V_1 $ definita usando $ V_2 $, $ V_2 $ usando $ V_3 $, $ \dots $, $ V_n $ usando $ V_1 $).
+			\end{itemize}
+		\end{itemize}
+		\begin{lstlisting}
+CREATE [ TEMP ] VIEW nome [ (col_name [ , ...]) ] AS query
+		\end{lstlisting}
+		\noindent
+		\begin{itemize}
+			\item \lstinline|TEMP| : la vista è temporanea. Quando ci si sconnette, la vista viene
+		distrutta. È un’estensione di PostgreSQL. Nella base di dati \lstinline|did2014| si
+		possono fare solo viste temporanee.
+		\item \lstinline|column_name| : nomi delle colonne che compongono la vista. Se non si
+		specificano, si ereditano dalla query.
+		\item \lstinline|query| deve restituire un insieme di attributi pari e nel medesimo ordine
+		a quello specificato con \lstinline|(column_name [, ...])| se presente.
+		\end{itemize}
+		
+		
+		\bigskip
+		
+		\textbf{Esempi: }\\
+		Definire la vista che contiene gli insegnamenti erogati completi di
+		nomeins e codiceins presi dalla tabella Insegn .
+		\begin{lstlisting}
+CREATE TEMP VIEW InsErogatiCompleti AS
+SELECT I.nomeins, I.codiceins, IE.*
+FROM InsErogato IE JOIN Insegn I 
+     ON IE.id_insegn = I.id;
+		\end{lstlisting}
+		
+		\noindent
+		Si vuole determinare qual è il corso di studi con il massimo numero di
+		insegnamenti (esclusi i moduli).
+		Prima si crea una vista:
+	\begin{lstlisting}
+CREATE TEMP VIEW InsCorsoStudi(Nome, NumIns) AS
+  SELECT CS.nome, COUNT(*)
+  FROM CorsoStudi CS JOIN InsErogato IE 
+       ON CS.id = IE.id_corsostudi
+  WHERE IE.modulo = 0
+  GROUP BY CS.nome;
+	\end{lstlisting}
+		Poi la si usa:
+		\begin{lstlisting}
+SELECT Nome, NumIns
+FROM InsCorsoStudi
+WHERE NumIns = ANY (
+    SELECT MAX(NumIns) FROM InsCorsoStudi
+);
+
+		\end{lstlisting}
+		
+		\noindent
+		\textbf{NOTA: } \textit{Non è possibile usare due operatori di aggregazione in cascata!}
+	\newpage
+	
+			
+>>>>>>> master
 	\section{Livelli di isolamento}
 		In SQL esistono 4 livelli di isolamento per transazioni concorrenti:
 		\begin{itemize}
@@ -994,7 +1339,7 @@ public class Main {
 		printMenu();
 		callFunction();
 
-}
+	}
 
 private static void displayData() {
 	Connection connection = getConnection();
@@ -1124,7 +1469,7 @@ private static void callFunction() {
 	} else {
 		System.out.println("Invalid option");
 	}
-	}
+    }
 }
 \end{lstlisting}
 
