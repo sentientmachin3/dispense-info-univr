@@ -531,9 +531,9 @@ table_name [ NATURAL ] join_type table_name
 			\noindent
 			\begin{minipage}{0.6\textwidth}
 					\begin{lstlisting}
-	SELECT I.cognome, R.nomeRep, R.sede
-	FROM Impiegato I INNER JOIN Reparto R
-	     ON I.nomerep = R.nomerep;
+SELECT I.cognome, R.nomeRep, R.sede
+FROM Impiegato I INNER JOIN Reparto R
+     ON I.nomerep = R.nomerep;
 				\end{lstlisting}
 				\end{minipage}\hfilneg\vrule\hfill
 			\begin{minipage}{0.33\textwidth}
@@ -557,11 +557,11 @@ table_name [ NATURAL ] join_type table_name
 			\noindent
 			\begin{minipage}{0.7\textwidth}
 					\begin{lstlisting}
-	INSERT INTO Reparto (nomerep, sede, telefono)
-	    VALUES ('Finanza', 'Padova', '02 8028888');
-	SELECT R.nomeRep, I.cognome
-	FROM Reparto R LEFT OUTER JOIN Impiegato I 
-	     ON I.nomerep = R.nomerep;
+INSERT INTO Reparto (nomerep, sede, telefono)
+   VALUES ('Finanza', 'Padova', '02 8028888');
+SELECT R.nomeRep, I.cognome
+FROM Reparto R LEFT OUTER JOIN Impiegato I 
+     ON I.nomerep = R.nomerep;
 				\end{lstlisting}
 				\end{minipage}\hfilneg\vrule\hfill
 			\begin{minipage}{.27\textwidth}
@@ -588,9 +588,9 @@ table_name [ NATURAL ] join_type table_name
 			\noindent
 			\begin{minipage}{0.67\textwidth}
 					\begin{lstlisting}
-	SELECT I.cognome, R.nomeRep
-	FROM Impiegato I RIGHT OUTER JOIN Reparto R 
-	     ON I.nomerep = R.nomerep ;
+SELECT I.cognome, R.nomeRep
+FROM Impiegato I RIGHT OUTER JOIN Reparto R 
+     ON I.nomerep = R.nomerep;
 					\end{lstlisting}
 				\end{minipage}\hfilneg\vrule\hfill
 			\begin{minipage}{.28\textwidth}
