@@ -521,8 +521,14 @@ table_name [ NATURAL ] join_type table_name
 			da aggiungere al risultato. Le tuple selezionate possono essere poi filtrate
 			con la condizione della clausola \lstinline|WHERE|.
 		
-	\section{Livelli di isolamento}
-		In SQL esistono 4 livelli di isolamento per transazioni concorrenti:
+	\section{Transazioni concorrenti}
+	Una transazione SQL è una sequenza di istruzioni ed è eseguita in maniera atomica.
+	Gli stati intermedi della base di dati durante l'esecuzione della serie di istruzioni della transazione non sono visibili al di fuori della transazione stessa.
+	Se una transazione termina senza errori, le modifiche vengono salvate, in caso contrario lo stato della base di dati rimane quello presente prima dell'inizio della transazione e non viene salvata nessuna modifica.
+	
+	A volte può capitare che le transazioni accedano in modo concorrente alle stesse informazioni nella base di dati, e può non essere garantito il corretto svolgimento delle operazioni; in questo caso vengono impostati dei livelli di isolamento della transazione rispetto alle altre, con diversi effetti sull'accesso concorrente ai dati.
+	
+		In PostgreSQL i livelli di isolamento sono 4:
 		\begin{itemize}
 			\item Read Committed
 			\item Repeatable Read
