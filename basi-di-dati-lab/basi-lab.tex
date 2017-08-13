@@ -1233,7 +1233,177 @@ def getPrestiti():
 			return render_template('view.html', prestiti, cf, biblio)
 			\end{lstlisting}
 			
-\newpage
+		\subsection{Un altro esempio}
+		Qui di seguito un altro esempio di applicazione scritta con Flask, pensata per la gestione delle spese. \\
+		File \verb|controller.py|:
+		\lstset{language=Python}
+		\begin{lstlisting}
+from datetime import datetime, date
+from decimal import Decimal
+from flask import *
+import psycopg2
+
+app = Flask(__name__)
+
+HOST = [nome-host]
+DATABASE = [nome-db]
+USER =[username]
+
+
+def connect():
+	connection = psycopg2.connect(host=HOST, database=DATABASE, 
+		user=USER, password=[password])
+	return connection
+
+
+def get_cursor(connection):
+	return connection.cursor()
+
+
+def insert_data(tup):
+	conn = connect()
+	cursor = conn.cursor()
+	cursor.execute('insert into Spese(date, description, import) values 
+		(%s, %s, %s)', tup)
+	conn.commit()
+	conn.close()
+
+def remove_data(tup):
+	conn = connect()
+	cursor = conn.cursor()
+	cursor.execute('delete from Spese where date=%s and description=%s
+		 and import=%s ', tup)
+	conn.commit()
+	conn.close()
+
+
+@app.route('/', methods=['POST', 'GET'])
+def fill_table():
+	connection = connect()
+	cursor = get_cursor(connection)
+	cursor.execute('select date, description, import from Spese')
+	connection.commit()
+	table = cursor.fetchall()
+	connection.close()
+
+	if request.method == 'POST':
+		if request.form['submit'] == 'Add entry':
+			return redirect(url_for('new_entry'))
+		elif request.form['submit'] == 'Remove entry':
+			return redirect(url_for('remove_entry'))
+
+	return render_template('main_table.html', table=table)
+
+
+@app.route('/new_entry', methods=['POST', 'GET'])
+def new_entry():
+	if request.method == 'POST':
+		if request.form['submit'] == 'Confirm':
+			purchase_date = datetime.strptime(request.form['date'],
+				 '%d/%m/%Y')
+			price = float(request.form['cost'])
+			descr = request.form['descr']
+			insert_data((date(purchase_date.year, 
+				purchase_date.month, purchase_date.day), descr,
+				 Decimal(price)))
+			return redirect(url_for('fill_table'))
+	
+	return render_template('new_entry.html')
+
+
+@app.route('/remove_entry', methods=['POST', 'GET'])
+def remove_entry():
+	if request.method == 'POST':
+		if request.form['submit'] == 'Delete':
+			purchase_date = datetime.strptime(request.form['date'],
+				 '%d/%m/%Y')
+			price = float(request.form['cost'])
+			descr = request.form['descr']
+			remove_data((date(purchase_date.year, 
+				purchase_date.month, purchase_date.day), descr,
+				 Decimal(price)))
+			return redirect(url_for('fill_table'))
+	
+	return render_template('remove_entry.html')
+
+
+if __name__ == '__main__':
+app.run()
+		\end{lstlisting}
+		Qui di seguito le pagine html create e utilizzate (puramente funzionali, non hanno nulla di estetico!). \\
+		File \verb|main_table.html|:
+		\lstset{language=HTML}
+		\begin{lstlisting}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<h1>Gestione spese</h1>
+</head>
+<body>
+<table border="1" cellpadding="5" cellspacing="5" width="500">
+	<tr>
+	<th>Data</th>
+	<th>Descrizione</th>
+	<th>Importo</th>
+	</tr>
+	{% for entry in table %}
+		<tr>
+		<td>{{entry[0]}}</td>
+		<td>{{entry[1]}}</td>
+		<td>{{entry[2]}}</td>
+		</tr>
+	{% endfor %}
+</table>
+
+<form method="post">
+<input type="submit" name="submit" value="Add entry"/>
+<input type="submit" name="submit" value="Remove entry"/>
+</form>
+</body>
+</html>
+		\end{lstlisting}
+		
+		File \verb|new_entry.html|:
+		\begin{lstlisting}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<h1>Add new entry</h1>
+</head>
+<body>
+<form method="post">
+	Data:<input name="date" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}"/> <br>
+	Importo:<input name="cost"/> <br>
+	Descrizione:<input name="descr"/> <br>
+	
+	<input type="submit" name="submit" value="Confirm">
+</form>
+</body>
+</html>
+		\end{lstlisting}
+		
+	File \verb|remove_entry.html|
+	\begin{lstlisting}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<h1>Remove entry</h1>
+</head>
+<body>
+<form method="post">
+	Data:<input name="date" pattern="[0-9]{2}/[0-9]{2}/[0-9]{4}"/> <br>
+	Importo:<input name="cost"/> <br>
+	Descrizione:<input name="descr"/> <br>
+	
+	<input type="submit" name="submit" value="Delete">
+</form>
+</body>
+</html>
+	\end{lstlisting}
+	\newpage
 \section{JDBC}
 JDBC è una libreria di funzioni Java che consente di collegarsi ad un database ed eseguire operazioni.
 Le fasi principali per eseguire una qualsiasi operazione sono:
