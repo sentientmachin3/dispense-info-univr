@@ -31,6 +31,7 @@
 \lstset{inputencoding=utf8,
 	language = SQL,
 	basicstyle=\ttfamily,
+	tabsize=4,
 	showstringspaces=false,
 	keywordstyle=\color{blue}\bfseries,
 	morekeywords={REFERENCES, BOOLEAN, REAL, DOUBLE, PRECISION, TEXT, VARBIT, SIMILAR, TO},
@@ -1049,11 +1050,10 @@ DELETE FROM Web WHERE hits=10;
 				\item Se i dati da aggiornare sono stati modificati ma \textbf{non registrati} in transazioni concorrenti, il comando deve attendere: 
 				\begin{itemize}
 					\item il \lstinline|COMMIT| e quindi i dati vengono cambiati e \lstinline|UPDATE| e \lstinline|DELETE| vengono bloccate con errore.
-					\item il \lstinline|ROLLBACK| e quidni \lstinline|UPDATE| e \lstinline|DELETE| possono procedere.
+					\item il \lstinline|ROLLBACK| e quindi \lstinline|UPDATE| e \lstinline|DELETE| possono procedere.
 				\end{itemize}
 			\end{itemize}
 			
-			\newpage
 			\noindent
 			\textbf{Esempio1: Cattura l'anomalia Non-repeatable reads}
 			\begin{multicols}{2}
@@ -1237,7 +1237,8 @@ def getPrestiti():
 		Qui di seguito un altro esempio di applicazione scritta con Flask, pensata per la gestione delle spese. \\
 		File \verb|controller.py|:
 		\lstset{language=Python}
-		\begin{lstlisting}
+
+		\begin{lstlisting}[frame=tb,tabsize=2]
 from datetime import datetime, date
 from decimal import Decimal
 from flask import *
@@ -1333,7 +1334,7 @@ app.run()
 		Qui di seguito le pagine html create e utilizzate (puramente funzionali, non hanno nulla di estetico!). \\
 		File \verb|main_table.html|:
 		\lstset{language=HTML}
-		\begin{lstlisting}
+		\begin{lstlisting}[frame=tb,tabsize=4]
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1365,7 +1366,7 @@ app.run()
 		\end{lstlisting}
 		
 		File \verb|new_entry.html|:
-		\begin{lstlisting}
+		\begin{lstlisting}[frame=tb,tabsize=4]
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1385,7 +1386,7 @@ app.run()
 		\end{lstlisting}
 		
 	File \verb|remove_entry.html|
-	\begin{lstlisting}
+	\begin{lstlisting}[frame=tb,tabsize=4]
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1499,7 +1500,7 @@ connection.close();
 \subsection{Modulo JDBC completo}
 Qui di seguito viene inserito un modulo jdbc per il controllo della tabella \lstinline|Spese| utilizzata negli esempi precedenti.
 
-\begin{lstlisting}
+\begin{lstlisting}[tabsize=2]
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1513,135 +1514,135 @@ public class Main {
 
 	}
 
-private static void displayData() {
-	Connection connection = getConnection();
-	try {
-		Statement ps = connection.createStatement();
-		ResultSet rs = ps.executeQuery("select * from Spese");
-	printData(rs);
-	} catch (SQLException e) {
-		e.printStackTrace();
-	}
-}
-
-private static void insertData() {
-	Connection connection = getConnection();
-	Scanner scan = new Scanner(System.in);
-	System.out.print("Data:");
-	String dateString = scan.next();
-	SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-	Date date = null;
-	try {
-		date = new Date(format.parse(dateString).getTime());
-	} catch (ParseException e) {
-		System.out.println(e.getMessage());
-	}
-	System.out.print("Prezzo:");
-	float price = Float.parseFloat(scan.next());
-	
-	System.out.print("Descrizione:");
-	String descr = scan.next();
-	
-	try {
-		PreparedStatement ps = connection.prepareStatement(
-		"insert into Spese(data, voce, importo) values(?, ?, ?)");
-		ps.setDate(1, date);
-		ps.setString(2, descr);
-		ps.setFloat(3, price);
-		ps.executeUpdate();
-		System.out.println("Update completed.");
-	} catch (SQLException e) {
-		e.printStackTrace();
-	}	
-}
-
-private static void removeData() {
-	Connection connection = getConnection();
-	Scanner scan = new Scanner(System.in);
-	System.out.print("Data:");
-	String dateString = scan.next();
-	SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
-	Date date = null;
-	try {
-		date = new Date(format.parse(dateString).getTime());
-	} catch (ParseException e) {
-		System.out.println(e.getMessage());
-	}
-	System.out.print("Prezzo:");
-	float price = Float.parseFloat(scan.next());
-	
-	System.out.print("Descrizione:");
-	String descr = scan.next();
-	
-	try {
-		PreparedStatement ps = connection.prepareStatement(
-		"delete from Spese where data=? and voce=? and importo=?");
-		ps.setDate(1, date);
-		ps.setString(2, descr);
-		ps.setFloat(3, price);
-		ps.executeUpdate();
-		System.out.println("Update completed.");
-	} catch (SQLException e) {
-		e.printStackTrace();
-	}
-}
-
-private static void printData(ResultSet rs) {
-	try {
-		System.out.println(
-		String.join("", Collections.nCopies(50, "=")));
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		while (rs.next()) {
-			System.out.println(
-			String.format("| %2s | %10s | %-20s | %10.2f |",
-			 rs.getInt("id"), sdf.format(rs.getDate("data")), 
-			 rs.getString("voce"), rs.getFloat("importo")));
+	private static void displayData() {
+		Connection connection = getConnection();
+		try {
+			Statement ps = connection.createStatement();
+			ResultSet rs = ps.executeQuery("select * from Spese");
+		printData(rs);
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-		System.out.println(String.join("", 
-				Collections.nCopies(50, "=")));
+	}
 	
-	} catch (SQLException e) {
-		e.printStackTrace();
+	private static void insertData() {
+		Connection connection = getConnection();
+		Scanner scan = new Scanner(System.in);
+		System.out.print("Data:");
+		String dateString = scan.next();
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+		Date date = null;
+		try {
+			date = new Date(format.parse(dateString).getTime());
+		} catch (ParseException e) {
+			System.out.println(e.getMessage());
+		}
+		System.out.print("Prezzo:");
+		float price = Float.parseFloat(scan.next());
+		
+		System.out.print("Descrizione:");
+		String descr = scan.next();
+		
+		try {
+			PreparedStatement ps = connection.prepareStatement(
+			"insert into Spese(data, voce, importo) values(?, ?, ?)");
+			ps.setDate(1, date);
+			ps.setString(2, descr);
+			ps.setFloat(3, price);
+			ps.executeUpdate();
+			System.out.println("Update completed.");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}	
 	}
-}
-
-private static void printMenu() {
-	System.out.println(String.join("", Collections.nCopies(50, "=")));
-	System.out.println("1. Display data");
-	System.out.println("2. Insert new outlay");
-	System.out.println("3. Remove outlay");
-	System.out.println(String.join("", Collections.nCopies(50, "=")));
-}
-
-private static Connection getConnection() {
-	try {
-		Class.forName("org.postgresql.Driver");
-		return DriverManager.getConnection(
-		"jdbc:postgresql://dbserver.scienze.univr.it:5432/id864ghl",
-		"id864ghl", "perzona-falza");
-	} catch (ClassNotFoundException | SQLException e) {
-		System.out.println(e.getMessage());
+	
+	private static void removeData() {
+		Connection connection = getConnection();
+		Scanner scan = new Scanner(System.in);
+		System.out.print("Data:");
+		String dateString = scan.next();
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+		Date date = null;
+		try {
+			date = new Date(format.parse(dateString).getTime());
+		} catch (ParseException e) {
+			System.out.println(e.getMessage());
+		}
+		System.out.print("Prezzo:");
+		float price = Float.parseFloat(scan.next());
+		
+		System.out.print("Descrizione:");
+		String descr = scan.next();
+		
+		try {
+			PreparedStatement ps = connection.prepareStatement(
+			"delete from Spese where data=? and voce=? and importo=?");
+			ps.setDate(1, date);
+			ps.setString(2, descr);
+			ps.setFloat(3, price);
+			ps.executeUpdate();
+			System.out.println("Update completed.");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
-
-return null;
-}
-
-private static void callFunction() {
-	Scanner scan = new Scanner(System.in);
-	System.out.print("Choose action:");
-	int option = Integer.parseInt(scan.next());
-	if (option == 0) {
-		System.exit(0);
-	} else if (option == 1) {
-		displayData();
-	} else if (option == 2) {
-		insertData();
-	} else if (option == 3) {
-		removeData();
-	} else {
-		System.out.println("Invalid option");
+	
+	private static void printData(ResultSet rs) {
+		try {
+			System.out.println(
+			String.join("", Collections.nCopies(50, "=")));
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			while (rs.next()) {
+				System.out.println(
+				String.format("| %2s | %10s | %-20s | %10.2f |",
+				 rs.getInt("id"), sdf.format(rs.getDate("data")), 
+				 rs.getString("voce"), rs.getFloat("importo")));
+			}
+			System.out.println(String.join("", 
+					Collections.nCopies(50, "=")));
+		
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
-    }
+	
+	private static void printMenu() {
+		System.out.println(String.join("", Collections.nCopies(50, "=")));
+		System.out.println("1. Display data");
+		System.out.println("2. Insert new outlay");
+		System.out.println("3. Remove outlay");
+		System.out.println(String.join("", Collections.nCopies(50, "=")));
+	}
+	
+	private static Connection getConnection() {
+		try {
+			Class.forName("org.postgresql.Driver");
+			return DriverManager.getConnection(
+			"jdbc:postgresql://dbserver.scienze.univr.it:5432/id864ghl",
+			"id864ghl", "perzona-falza");
+		} catch (ClassNotFoundException | SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	
+	return null;
+	}
+	
+	private static void callFunction() {
+		Scanner scan = new Scanner(System.in);
+		System.out.print("Choose action:");
+		int option = Integer.parseInt(scan.next());
+		if (option == 0) {
+			System.exit(0);
+		} else if (option == 1) {
+			displayData();
+		} else if (option == 2) {
+			insertData();
+		} else if (option == 3) {
+			removeData();
+		} else {
+			System.out.println("Invalid option");
+		}
+  }
 }
 \end{lstlisting}
 
