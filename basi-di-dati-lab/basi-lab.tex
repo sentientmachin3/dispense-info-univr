@@ -54,7 +54,7 @@
 		\Sottotitolo{Programma di laboratorio}
 		\Candidato{Davide Bianchi}
 		\Candidato{Matteo Danzi}
-		\NCandidato{Autori}
+		\NCandidati{Autori}
 		\Annoaccademico{2016/2017}
 	\end{frontespizio}
 
@@ -540,11 +540,10 @@ FROM Impiegato I INNER JOIN Reparto R
 			\begin{minipage}{0.33\textwidth}
 				\begin{tabular}{ll}
 						\toprule
-						\textbf{nomerep} & \textbf{cognome} \\
+						\textbf{cognome} & \textbf{nomerep} \\
 						\midrule
-						Acquisti & Rossi \\
-						Vendite & Verdi  \\
-						Finanza &  \\
+						Rossi & Vendite \\
+						Verdi & Acquisti \\
 						\midrule
 					\end{tabular}
 				\end{minipage}
@@ -567,13 +566,14 @@ FROM Reparto R LEFT OUTER JOIN Impiegato I
 				\end{minipage}\hfilneg\vrule\hfill
 			\begin{minipage}{.27\textwidth}
 					\begin{tabular}{ll}
-							\toprule
-							\textbf{cognome} & \textbf{nomerep} \\
-							\midrule
-							Rossi & Vendite \\
-							Verdi & Acquisti \\
-		 					\midrule
-						\end{tabular}
+						\toprule
+						\textbf{nomerep} & \textbf{cognome} \\
+						\midrule
+						Acquisti & Rossi \\
+						Vendite & Verdi  \\
+						Finanza &  \\
+						\midrule
+					\end{tabular}
 				\end{minipage}
 		
 			\noindent
@@ -1649,7 +1649,7 @@ public class Main {
 
 \section{Credits}
 Davide Bianchi (mail: \url{davideb1912@gmail.com}) \\
-Matteo Danzi (mail: \url{matteodanziguitarman@hotmail.it)}
+Matteo Danzi (mail: \url{matteodanziguitarman@hotmail.it})
 
 
 			
