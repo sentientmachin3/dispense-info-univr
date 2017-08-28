@@ -1450,7 +1450,7 @@ try {
 	e.printStackTrace();
 }
 \end{lstlisting}
-dove \lstinline|connection| è un'istanza della classe \lstinline|Connection|. Se lo statement è un comando di aggiornamento (\lstinline|insert|, \lstinline|update|) si usa il metodo \lstinline|executeUpdate| o \lstinline|executeLargeUpdate|.
+dove \lstinline|connection| è un'istanza della classe \lstinline|Connection|. Se lo statement è un comando di aggiornamento (\lstinline|insert|, \lstinline|update|) si usa il metodo \lstinline|executeUpdate| o \lstinline|executeLargeUpdate| il quale \textit{ritorna il \textbf{numero di righe che sono state modificate}}.
 
 Se gli statement sono complessi e hanno magari una clausola \lstinline|where| con vari confronti, bisogna prima creare un oggetto \lstinline|PreparedStatement|, con la seguente sintassi:
 
@@ -1474,7 +1474,7 @@ I metodi set funzionano passando come parametro un indice (da 1), e il valore ch
 
 \subsection{Accesso ai campi e chiusura risorse}
 \paragraph{Accesso ai dati.}
-All'esecuzione delle query, i dati vengono salvati in un'istanza di \lstinline|ResultSet|, alla quale si può accedere tramite metodi get.
+La query viene eseguita con il metodo \lstinline|executeQuery()| che ritorna un oggetto di tipo \lstinline|ResultSet| il quale contiene lo stato e l'eventuale tabella risultato, alla quale si può accedere tramite metodi get.
 Supponendo di aver eseguito la query:
 \begin{lstlisting}
 ...
