@@ -1296,4 +1296,53 @@
 		
 		\textit{La proprietà di ortogonalità è vera per ogni rotazione, non solo
 		per quelle rispetto agli assi coordinati}.
+		Tutte le rotazioni sono esprimibili con matrici.
+		
+	\subsection{Composizione di trasformazioni di matrici}
+		Le trasformazioni espresse come matrici si compongono
+		usando semplicemente l'algebra delle matrici.
+		Date due trasformazioni rappresentate dalle matrici $A$ e $B$, la
+		composizione di $A$ seguita da $B$ sarà data dalla matrice $BA$.
+
+		\noindent
+		\textbf{Importante}: notare l'ordine delle matrici; siccome si applica la
+		matrice risultante a sinistra del vettore delle coordinate omogenee,
+		la trasformazione che viene effettuata per prima va a destra.
+		La composizione di trasformazione si estende immediatamente
+		al caso di piu di due matrici: $T = T_n \dots T_1$
+
+	\subsection{Non commutatività}
+		Esempio: data una traslazione lungo il vettore $\vec{t}$ ed una rotazione di un angolo lungo
+		l'asse $\vec{z}$, si ottiene un risultato diverso effettuando prima la rotazione e poi la traslazione o
+		viceversa.
+
+		Per rendersene conto basta guardare come viene trasformato nei due casi un punto che in partenza si trova
+		nell'origine.
+
+		\begin{tikzpicture}[>=latex]
+			\draw[thick, ->] (0,-.25) -- (0,2) node[anchor=north east] {y};
+			\draw[thick, ->] (-.25,0) -- (3,0) node[anchor=north west] {x};
+			\draw[ultra thick, ->] (0,0) -- (2,0);
+			\draw[ultra thick, ->] (0,0) -- (1.5,1.5);
+			\draw[->,bend right] (1,0) to (0.65,0.65) node[right, outer sep=4pt] {$ R(\theta) $};
+			\node[below] at (1,0) {$\vec{t}$};
+			\node at (3,2) {$ R(\theta)M_t $};
+			\fill[blue] (1.5,1.5) circle (3pt);
+			\node[left] at (1.5, 1.5) {$ P' $};
+			\fill[blue] (0,0) circle (3pt); 
+			\node at (-0.2,0.2) {$ P $};
+		\end{tikzpicture}
+		\hspace{1.5cm}
+		\begin{tikzpicture}[>=latex]
+			\draw[thick, ->] (0,-.25) -- (0,2) node[anchor=north east] {y};
+			\draw[thick, ->] (-.25,0) -- (3,0) node[anchor=north west] {x};
+			\draw[ultra thick, ->] (0,0) -- (2,0);
+			\draw[->,bend right] (1,0) to (0.65,0.65) node[right, outer sep=4pt] {$ R(\theta) $};
+			\node[below] at (1,0) {$\vec{t}$};
+			\node at (3,2) {$ M_t R(\theta) $};
+			\fill[blue] (0,0) circle (3pt); 
+			\fill[blue] (2,0) circle (3pt); 
+			\node at (-0.2,0.2) {$ P $};
+			\node[above] at (2,0) {$ P' $};
+		\end{tikzpicture}
 \end{document}
