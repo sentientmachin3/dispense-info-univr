@@ -1142,8 +1142,57 @@ DETAIL: reason code: canceled ON identification AS a pivot,
         during COMMIT attempt
 HINT: the TRANSACTION might succeed if retried.
 		\end{lstlisting}
-	\newpage		
-			
+	
+	
+	
+	\section{Psycopg2}
+	\textit{psycopg2} è una libreria Python che consente di collegarsi a database SQL ed eseguire statement di vario genere, il tutto da codice Python ad alto livello.
+	
+	Le operazioni da svolgere per collegarsi ed effettuare le operazioni sono:
+	\begin{itemize}
+		\item Collegarsi al database:
+		\begin{lstlisting}[frame=tb]
+def connect():
+	conn = psycopg2.connect(host=[host],
+		database=[db-name], user=[username], password=[password])
+	return conn
+		\end{lstlisting}
+		\lstinline|conn| è un'istanza della classe \lstinline|Connection|.
+		
+		\item Ottenere un cursore dalla connessione: un cursore è come un buffer che contiene temporaneamente i dati delle operazioni svolte e da svolgere
+		\begin{lstlisting}[frame=tb]
+cursor=conn.cursor()
+		\end{lstlisting}
+		
+		\item Eseguire le operazioni da svolgere con le seguenti chiamate:
+		\begin{lstlisting}[frame=tb]
+cursor.execute([statement],[params])
+conn.commit()
+		\end{lstlisting}
+		dove \lstinline|statement| è lo statement da eseguire sulla base di dati, mentre \lstinline|commit()| esegue effettivamente l'operazione. \lstinline|params| è una o più tuple (o dizionario) che contengono i dati da inserire. Nella stringa dello statement i parametri da sostituire vanno rimpiazzati con dei segnaposto \lstinline|%s|. La libreria si occuperà di fare tutte le conversioni, quindi non servono cast.
+		
+		\item Ottenere i risultati da elaborare con la chiamata di:
+		\begin{lstlisting}[frame=tb]
+conn.fetchone() # legge una sola riga
+conn.fetchmany([numero]) # legge [numero] righe
+conn.fetchall() # legge tutte le righe
+		\end{lstlisting}
+		Se non ci sono tuple, viene ritornato \lstinline|None|  nei primi due casi (\lstinline|numero| è il numero di tuple da leggere dal risultato), una lista vuota nel terzo caso.
+		
+		\item Chiudere le risorse con \lstinline|conn.close()| e \lstinline|cursor.close()|.
+	\end{itemize}
+	
+	In alternativa alla procedura appena illustrata si può usare il costrutto \verb|with| con la seguente sintassi:
+	\begin{lstlisting}[frame=tb]
+with conn.cursor() as cur:
+	cur.execute([statement],[params])
+	...
+	\end{lstlisting}
+	In questo modo \textbf{non serve il commit}, in quanto viene fatto automaticamente al termine dell'esecuzione del corpo del \verb|with|, la connessione invece va chiusa manualmente.
+	
+	Un esempio di come venga usata questa liberia si può trovare nella sezione dedicata a Flask.
+	\newpage
+	
 			
 		
 	\section{Flask}
