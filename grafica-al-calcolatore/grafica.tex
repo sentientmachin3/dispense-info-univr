@@ -11,6 +11,7 @@
 \usepackage{amssymb}
 \usepackage{bm}
 \usepackage{lipsum}
+\usepackage{enumitem}
 \usepackage{hyperref}
 \hypersetup{
 	hidelinks, 
@@ -1453,5 +1454,79 @@
 		Una delle rappresentazioni di Eulero impiega gli angoli roll (rollio),
 		pitch (beccheggio) e yaw (imbardata), di derivazione aeronautica.
 		
+	\subsection{Problemi con angoli Eulero}
+			Ci sono alcuni problemi con le rappresentazioni
+			delle rotazioni
+			\begin{itemize}
+				\item Angoli di Eulero:
+					Rotazioni non univoche:
+					\[
+						(z, x, y) [roll, yaw, pitch] = (90, 45, 45) = (45, 0, -45)
+					\]
+					mandano entrambi l'asse x in direzione $ (1, 1, 1) $
+				\item Gimbal Lock (blocco del giroscopio)
+				\begin{itemize}
+					\item Gimbal è un dispositivo meccanico usato per
+				supportare giroscopi o bussole
+					\item Ci sono configurazioni problematiche
+				\end{itemize}
+				\item Interpolazione di rotazioni: Come calcoliamo il punto medio di una rotazione?
+			\end{itemize}
+	\subsection{Rotazione asse angolo}
+		La rotazione generica asse angolo con asse r si può anche
+		rappresentare con la seguente matrice, dove 
+		$ c = \cos(\alpha) $ e $ s = \sin(\alpha) $:
+		\[
+			R(\alpha,\vec{r}) =
+			\begin{pmatrix}
+				(1-c)r^2_1 + c & (1-c)r_1 r_2 -s r_3 & (1-c) r_1 r_2 + s r_2 & 0 \\
+				(1-c)r_1 r_2 + s r_3  & (1-c)r^2_2 +c & (1-c)r_2 r_2 -s r_1 & 0 \\
+				(1-c)r_1 r_3 -sr_2 & (1-c) r_2 r_3 + s r_1 & (1-c)r^2_3 +c & 0 \\
+				0 & 0 & 0 & 1 
+			\end{pmatrix}
+		\]
+	\subsection{Matrici e proiezioni}
+		\begin{enumerate}[label=\textbullet]
+			\item Abbiamo il nostro mondo dove creare la scena inserendo i
+		modelli: spazio Euclideo.
+			\item Sappiamo trasformare i punti dello spazio traslando, ruotando
+		e scalando.
+			\item Per simulare la formazione delle immagini ci serve un ultimo
+		strumento geometrico: la modellazione della proiezione degli
+		oggetti sul piano immagine.
+			\item Questo si fa con la proiezione prospettica o, in casi
+		semplificati, con la proiezione ortografica o parallela
+			\item Anche queste si possono modellare con matrici, solo che
+		dovranno trasformare uno spazio 3D in uno 2D (espressi in
+		coordinate omogenee). Quindi sono matrici.
+		\end{enumerate}
+	\subsection{La macchina fotografica virtuale}
+		La metafora utilizzata per descrivere le relazioni
+		scena/osservatore è quella della macchina fotografica virtuale
+		(synthetic camera).\\
+		Il modello semplice usato anche in Computer Vision è la
+		\textbf{telecamera pinhole}.
+		\begin{figure}[h!]
+			\includegraphics[width=0.5\textwidth]{virtual}
+		\end{figure}
 		
+		La macchina fotografica	virtuale è costituita da un	parallelepipedo in cui la
+		faccia anteriore presenta un foro di dimensioni	infinitesime (pinhole
+		camera) e sulla faccia posteriore si formano le immagini.
+		
+		\vspace{-0.5cm}
+		\begin{center}
+			\begin{tikzpicture}[>=latex]
+			\draw[->] (0,-1) -- (0,2) node[right] {$ \vec{y} $};
+			\draw[densely dashed] (-3,0) -- (0,0);
+			\draw[->] (0,0) -- (3.5,0) node[below] {$ \vec{z} $};
+			\draw[densely dashed] (-3,-1) -- (3,1);
+			\draw[densely dashed] (-3,1) -- (3,-1);
+			\draw (-3,1) rectangle (0,-1);
+			\draw[|<->|] (-3.2,1) -- (-3.2,-1) node[midway,left] {$ h $};
+			\draw[|<->|] (-3,-1.2) -- (0,-1.2) node[midway,below] {$ d $};
+			\draw[densely dashed, bend right] (2.1,-0.7) to (2.1,0.7); 
+			\node[right] at (2.3,0.3) {$ \theta $};
+			\end{tikzpicture}
+		\end{center}
 \end{document}
