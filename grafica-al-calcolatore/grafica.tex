@@ -18,6 +18,8 @@
 	linkcolor = black
 }
 \usepackage{wrapfig}
+\usepackage{sidecap}
+\usepackage{caption}
 \usepackage{multicol}
 \usepackage{graphicx}
 \usepackage{tikz}
@@ -1345,4 +1347,111 @@
 			\node at (-0.2,0.2) {$ P $};
 			\node[above] at (2,0) {$ P' $};
 		\end{tikzpicture}
+		
+	\subsection{Scalatura}
+		Traslazioni e rotazioni conservano la lunghezza dei vettori e sono un
+		 sottogruppo delle trasformazioni affini chiamato trasformazioni isometriche o rigide.
+		Un altro tipo di trasformazione affine che non preserva le
+		distanze è la \textbf{scalatura}.
+		
+		\noindent
+		Dato un punto $ P = (p_x, p_y, p_z, 1) $ la trasformazione di scala, o scalatura, lo trasforma nel punto $ P' = (s_x p_x, s_y p_y, s_z p_z, 1) $ dove i valori $ (s_x, s_y, s_z) $ sono i fattori di scala lungo gli assi.
+		
+		\noindent
+		Una scalatura è \textit{omogenea} se $ s_x = s_y = s_z = s $ 
+		
+		\begin{itemize}
+			\item vettori semplicemente allungati ($ s>1 $) o accorciati ($ s<1 $).
+			\item Un punto, in una scalatura omogenea, viene invece traslato lungo la
+				retta che passa per l'origine e per il punto stesso.
+		\end{itemize}
+		
+	\subsection{Trasformazioni affini}
+		Una generica matrice che lavora in coordinate omogenee
+		rappresenta una trasformazione affine (12 gradi di libertà non
+		solo traslazione rotazione e scala, ma anche shear)
+		\[
+		\begin{pmatrix}
+			x \\
+			y \\
+			z
+		\end{pmatrix}
+		\mapsto
+		\begin{pmatrix}
+			a & b & c \\
+			d & e & f \\
+			g & h & i
+		\end{pmatrix}
+		\begin{pmatrix}
+			x \\
+			y \\
+			z
+		\end{pmatrix}
+		+
+		\begin{pmatrix}
+			u \\
+			v \\
+			w
+		\end{pmatrix}
+		\]
+		Se t è il vettore di traslazione e R una matrice di rotazione, la
+		trasformazione in coordinate omogenee è:
+		\[
+			\begin{pmatrix}
+				R & t \\
+				0 & 1
+			\end{pmatrix}
+		\]
+	\subsection{Rotazioni generiche e orientazione}
+		Dobbiamo considerare rotazioni attorno a qualunque asse.
+		Comunque, non c'è nessuna perdita di generalità nel definirle
+		solo attorno agli assi passanti per l'origine, dato che le altre le
+		posso ricavare traslando l'origine sull'asse, ruotando e
+		ritraslando l'origine all'indietro.
+		
+		\noindent
+		La rotazione rappresenta un cambio di orientazione
+		L'orientazione rappresenta la posa di un oggetto nello spazio
+		La relazione che c'è tra rotazione (movimento) e orientazione
+		(stato) è analoga a quella tra punto e vettore
+		Anche per le operazioni:
+		\begin{itemize}
+			\item orientazione+rotazione=orientazione
+			\item rotazione+rotazione=rotazione
+		\end{itemize}
+		
+		\begin{SCfigure}[][h!]
+			\includegraphics[width=0.45\textwidth]{bunny}
+			\caption*{
+				\textbf{point} : the 3d location of the bunny \\
+				\textbf{vector} : translational movement\\
+				\textbf{orientation}: the 3d orientation of the bunny\\
+				\textbf{rotation} : circular movement
+			}
+		\end{SCfigure}
+		
+	\subsection{Teorema della rotazione di Eulero}
+		The general displacement of a rigid body with
+		one point fixed is a rotation about some axis.
+		
+		\noindent
+		Qualsiasi rotazione si può esprimere come rotazione di un
+		angolo rispetto a un asse.
+		
+		\noindent
+		Qualsiasi rotazione lascia invariati un vettore invariato (l'asse).
+		
+		\noindent
+		Una rotazione qualsiasi rispetto ad un asse passante per
+		l'origine puo essere decomposta nel prodotto di tre rotazioni
+		rispetto agli assi coordinati; i tre angoli prendono il nome di
+		\textbf{angoli di Eulero}.
+		
+		\noindent
+		La rappresentazione con gli angoli di Eulero non è univoca, a
+		terne diverse può corrispondere la stessa trasformazione.\\
+		Una delle rappresentazioni di Eulero impiega gli angoli roll (rollio),
+		pitch (beccheggio) e yaw (imbardata), di derivazione aeronautica.
+		
+		
 \end{document}
