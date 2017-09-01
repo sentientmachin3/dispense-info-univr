@@ -46,6 +46,7 @@
 \newcommand{\numberset}{\mathbb}
 \newcommand{\R}{\numberset{R}}
 
+\tikzstyle{box} = [rectangle, minimum width=3cm, minimum height=3cm,text centered, draw=black]
 
 \begin{document}
 	\begin{frontespizio}
@@ -1529,4 +1530,142 @@
 			\node[right] at (2.3,0.3) {$ \theta $};
 			\end{tikzpicture}
 		\end{center}
+		
+		Immagini nitide, nessun	problema di luminosità,	l’angolo di vista può essere modificato variando il rapporto tra la distanza focale (d) e la dimensione
+		del piano immagine.\\
+		Per convenzione (e maggiore semplicità) si assume l’esistenza
+		di un piano immagine tra la scena ed il centro di proiezione \\
+		Ne risulta il modello matematico della proiezione prospettica. \\
+		
+	\subsection{Proiezione prospettica}
+		La relazione che lega i punti 3D ai punti sul piano in questa
+		ipotesi è data dalla proiezione prospettica. Con semplici
+		ragionamenti sui triangoli simili si ha che la proiezione di un
+		punto $ P = (P_x, P_y, P_z) $ è data da:
+		\begin{itemize}
+			\item  $ P' = (-\dfrac{P_x d}{P_z}, -\dfrac{P_y d}{P_z}, 1) $ per il piano immagine dietro.
+			\item $ P' = (\dfrac{P_x d}{P_z}, \dfrac{P_y d}{P_z}, 1) $, per il piano immagine davanti.
+		\end{itemize}
+		Possiamo scrivere la proiezione in forma matriciale:
+		\[
+			\vec{P'} =
+			\begin{pmatrix}
+				1 & 0 & 0 & 0 \\
+				0 & 1 & 0 & 0 \\
+				0 & 0 & 1/d & 1 
+			\end{pmatrix}
+			\begin{pmatrix}
+				P_x \\
+				P_y \\
+				P_z \\
+				1
+			\end{pmatrix}
+		\]
+		
+		Da un punto di vista geometrico, la proiezione è
+		definita per mezzo di un insieme di rette di proiezione
+		(i proiettori) aventi origine comune in un centro di
+		proiezione, passanti per tutti i punti dell’oggetto da
+		proiettare ed intersecanti un piano di proiezione.
+		
+		\noindent
+		La proiezione di un segmento è a sua volta un
+		segmento. Non è quindi necessario calcolare i proiettori di tutti i
+		punti di una scena, ma solo quelli relativi ai vertici delle
+		primitive che la descrivono.
+		
+		\noindent
+		Le proiezioni geometriche piane si classificano in:
+		\begin{itemize}
+			\item Proiezioni \textbf{prospettiche} (distanza finita tra il centro ed il piano di
+		proiezione)
+			\item Proiezioni \textbf{parallele} (distanza infinita tra il centro ed il piano di
+		proiezione)
+		\end{itemize}
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.4\textwidth]{proiez}
+			\hspace{0.2cm}
+			\includegraphics[width=0.4\textwidth]{proiez1}
+		\end{figure}
+		Al variare della distanza focale $ d $ si ha che:
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.13\textwidth]{proiez2}
+			\hspace{0.2cm}
+			\includegraphics[width=0.15\textwidth]{proiez3}
+			\hspace{0.2cm}
+			\includegraphics[width=0.15\textwidth]{proiez4}
+			\hspace{0.2cm}
+			\includegraphics[width=0.15\textwidth]{proiez5}
+			\hspace{0.2cm}
+			\includegraphics[width=0.15\textwidth]{proiez6}
+			
+			\begin{tikzpicture}
+				\draw[red, thick] (-4,2.5) -- (-4,3) -- (-5,1) -- (-4,-1) -- (-4,-0.5);
+				\node[box, draw=red, align = left, ] at (-2.5,1) {
+					\footnotesize Più distorsione\\ \footnotesize prospettica\\
+					\\
+					\footnotesize Effetto "\textit{fish-eye}"\\\footnotesize  (grandangolo)};
+				
+				\node[box, draw=red, thick, align = left, ] at (2.5,1) {
+					\footnotesize Proporzioni\\ \footnotesize più mantenute\\
+					\\
+					\footnotesize Effetto "\textit{zoom}"\\\footnotesize (es. vista
+					dal satellite) };
+				
+				\draw[red, thick] (4,2.5) -- (4,3) -- (5,1) -- (4,-1) -- (4,-0.5);
+				\node at (-5.25,3) {$ d $ piccolo};
+				\node at (5.25,3) {$ d $ inifinito};
+			\end{tikzpicture}
+		\end{figure}
+		
+		\newpage
+		Per motivi che capiremo, in grafica si usa in realtà
+		rappresentare la proiezione prospettica con una
+		trasformazione che mappa comunque sullo spazio 3D, quindi
+		una matrice 4x4.
+		
+		\noindent
+		Per passare alla rappresentazione 2D basta poi eliminare la z
+		(che è sempre uguale a $ d $)
+		\[
+			\vec{P'} =
+			\begin{pmatrix}
+				1 & 0 & 0 & 0 \\
+				0 & 1 & 0 & 0 \\
+				0 & 0 & 1 & 0 \\
+				0 & 0 & 1/d & 1
+			\end{pmatrix}
+			\begin{pmatrix}
+				P_x \\
+				P_y \\
+				P_z \\
+				1
+			\end{pmatrix}
+		\]
+		In realtà la coordinata omogenea 2D che ricavo 
+		dall'applicazione della matrice è 
+		\[
+			P' = (P_x, P_y ,P_z/d) 
+		\]
+		L'operazione che trasforma in 
+		\[
+			P' = (\dfrac{P_x d}{P_z}, \dfrac{P_y d}{P_z} ,1)	
+		\]
+		per avere la forma standard dei punti è la cosiddetta divisione.\\
+		Prima della divisione i tre valori possono essere usati per
+		rappresentare l'equivalenza dei diversi punti rispetto alla
+		proiezione.
+		
+		\noindent
+		Definiamo ora possibili strutture dati per modellare gli oggetti
+		nello spazio.
+		
+		\noindent
+		Poi vedremo come modellare anche la formazione delle
+		immagini attraverso il "rendering".
+		
+\section{Modellare gli oggetti nello spazio}
+		
 \end{document}
