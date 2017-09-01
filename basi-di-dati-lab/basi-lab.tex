@@ -1232,6 +1232,10 @@ def login():
 	role = request.form['role']
 	return ...
 		\end{lstlisting}
+		Il metodo \lstinline|route()| associa un metodo a un URL in modalità \lstinline|GET|, per usare lo stesso sistema in modalità \lstinline|POST|, è necessario specificare esplicitamente i metodi che vengono utilizzati:
+		\begin{lstlisting}
+@app.route('/',method=['GET','POST'])
+		\end{lstlisting}
 		
 		\newpage
 		
