@@ -19,15 +19,24 @@
 	linkcolor = black
 }
 \usepackage{wrapfig}
+\usepackage{subfig}
 \usepackage{sidecap}
 \usepackage{caption}
 \usepackage{multicol}
+\usepackage[dvipsnames]{xcolor}
 \usepackage{graphicx}
 \usepackage{tikz}
 \usetikzlibrary{arrows}
 \usetikzlibrary{shapes,positioning,calc}
 \usepackage{geometry}
 \geometry{a4paper, left=3cm,right=3cm,top=3cm,bottom=3cm}
+\usepackage{listings}
+\lstset{
+	language= C,
+	basicstyle=\small\ttfamily,
+	tabsize=4,
+	showstringspaces=false
+	}
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \lhead{\nouppercase{\leftmark}}
@@ -1667,5 +1676,687 @@
 		immagini attraverso il "rendering".
 		
 \section{Modellare gli oggetti nello spazio}
+	\begin{center}
+		\begin{tikzpicture}[>=latex, scale=0.8,  every node/.style={scale=0.8}]
+		\draw[dashed, rounded corners] (10,-4) rectangle (5,-0.5);
+		\node[below] at (7.5, -4) {applicazione interattiva};
+		\node[draw, rectangle, rounded corners, align=center] (a) {mondo reale,\\ modello matematico,\\ artista 3D ...};
+		\node[draw, rectangle, fill=white, rounded corners, align=center, minimum height=1cm, minimum width=3cm] (b) at (4,-1.5) {Geometria};
+		\node[draw, rectangle, rounded corners, align=center, minimum height=1cm, minimum width=3cm] (c)	at (8,-3) {Immagine/i};
 		
-\end{document}
+		\draw[->, rounded corners] (a.east) -- ($ (a) + (4,0) $) node[right,align=left,yshift=0.5cm] {acquisizione 3D (scansione)\\simulazione (elementi finiti)\\modellazione (3DStudioMax, Maya)} -- (b.north);
+		\draw[->, rounded corners] (b.south) -- ++(0,-1) -- ++(-3,0) node[below,align=left] {preprocessing\\(modelling)} -- ($ (b) + (-3,0) $) -- (b.west);
+		\draw[->, rounded corners] (b.east) -- ($ (c) + (0,1.5) $) node[right] {rendering} -- (c.north);
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsection{Geometria Analitica}
+	Premessa: prima di vedere come si modellano gli oggetti,
+	ricordiamo come si definiscono nello spazio Euclideo 3D le
+	figure geometriche importanti dal punto di vista della
+	modellazione grafica e del rendering.
+	
+	\noindent
+	\textbf{Rette}: sono identificabili da un punto qualsiasi $ Q $ che giaccia sulla
+	retta e da una direzione data da un versore $ u $. È facile vedere che
+	sono il luogo dei punti dati da $ P = Q + t\vec{u} \quad t \in \R $\\
+	In termini di componenti si vede facilmente che vale la seguente
+	equazione 
+	\[
+		\dfrac{x - x_Q}{u_x} = \dfrac{y - y_Q}{u_y} = \dfrac{z - z_Q}{u_z}
+	\]
+	 
+	Se si vuole specificare una retta dati due punti $ R $ e $ Q $, basta usare le
+	formule date qui sopra tenendo conto che il versore che identica la
+	retta e dato da: $ \vec{u}=\dfrac{(R-Q)}{|R-Q|} $
+	
+	\noindent
+	\textbf{Semiretta}: basta aggiungere il vincolo $ t \geq 0 $
+	
+	\noindent
+	\textbf{Segmenti}: dati i punti iniziale e finale $ P $ e $ Q $ possiamo scriverli come 
+	$ P = Q + t(R-Q) \quad t \in \left[ 0; 1\right]  $
+	
+	\noindent
+	\textbf{Sfere}: dato centro $ O $ e raggio $ r $, i punti della superficie sferica sono dati
+	dall'equazione $ P = O + r\vec{u} $ con $ \vec{u} $ versore generico.
+	Si dimostra facilmente che, in termini delle coordinate, la
+	superficie sferica è data dall'equazione
+	\[
+		(x - x_0)^2 +(y - y_0)^2 +(z - z_0)^2 = r^2
+	\]
+	
+	\noindent
+	\textbf{Piani}: dati 3 punti non allineati $ P $, $ Q $ ed $ R $ il luogo dei punti che descrive
+	il piano che li comprende è la combinazione affine
+	\[
+		S = \alpha P + \beta Q + \gamma R \quad \alpha,\beta, \gamma \in \R \quad \alpha+\beta+\gamma=1
+	\]
+	Alternativamente si puo definire un piano a partire da un punto $ Q $ che
+	vi appartiene e da un vettore $ \vec{u} $ che ne identica la normale come il luogo
+	dei punti $ P $ tali che $ (P - Q) \vec{u} = 0 $.
+	In termini di coordinate abbiamo
+	\[
+		(x-x')u_x + (y-y')u_y + (z-z')u_z = 0
+	\]
+	Per passare dalla prima alla seconda rappresentazione basta
+	prendere come punto $ Q $ e come vettore $ \vec{u} = (P-Q) \times (R-Q) $
+	
+	\noindent
+	\textbf{Semispazi}: il piano di cui sopra identica due semispazi, uno
+	positivo ed uno negativo:
+	\begin{align*}
+		(P-Q) \vec{u} &> 0 \\
+		(P-Q) \vec{u} &< 0
+	\end{align*}
+	
+	\subsection{Poligoni}
+	
+	\begin{wrapfloat}{figure}{I}{0pt}
+		\includegraphics[width=0.2\textwidth]{poligono}
+	\end{wrapfloat}
+	
+		Un poligono $ P $ è un insieme finito di segmenti (spigoli) di $ \R^2 $ , in
+		cui ogni estremo (vertice) e comune a esattamente due
+		segmenti, che si dicono adiacenti.\\
+		Un poligono è detto semplice se ogni coppia di spigoli non
+		adiacenti ha intersezione vuota.\\
+		\textit{Teorema di Jordan}: Un poligono semplice $ P $ divide il piano in
+		due regioni o facce, una limitata (detta interno di $ P $) ed una
+		illimitata (detta esterno di $ P $).
+		
+		\noindent
+		Per convenzione, un poligono viene rappresentato dalla
+		sequenza dei suoi vertici $ P_1 \dots P_n $ ordinati in modo che l'interno
+		del poligono giaccia alla sinistra della retta orientata da $ P_i $ a
+		$ P_{i+1} $ , ovvero i vertici sono ordinati in senso antiorario.
+		
+		\begin{wrapfigure}{R}{0pt}
+			\includegraphics[width=0.2\textwidth, ]{poliedro}
+		\end{wrapfigure}
+		\noindent
+	\subsection{Poliedri}
+	
+		In $ \R^3 $ un poliedro semplice e denito da un insieme finito di
+		poligoni (facce) tali che ciascuno spigolo di una faccia e condiviso
+		da esattamente un'altra faccia e le facce non si intersecano che
+		negli spigoli.
+		
+	\subsection{Rappresentazione degli oggetti}
+		Gli oggetti che si vogliono rappresentare in una applicazione
+		grafica hanno di solito caratteristiche particolari
+		\begin{itemize}
+			\item Sono finiti
+			\item Sono chiusi (non sempre)
+			\item Sono continui
+		\end{itemize}
+		Le rappresentazioni di oggetti (regioni dello spazio, in
+		generale) si suddividono in
+		\begin{itemize}
+			\item basate sul \textbf{contorno} (boundary): descrivono una regione in
+		termini della superficie che a delimita (boundary representation, o
+		b-rep).
+			\item basate sullo \textbf{spazio occupato} (o volumetriche).
+		\end{itemize}
+		
+		\newpage
+		La rappresentazione più comune è quella di \textbf{maglie(mesh) di triangoli}:
+		
+		\begin{tikzpicture}[>=latex, scale=0.8,  every node/.style={scale=0.8}]
+			\draw[->] (1,-1) -- (1,4) node [right] {x};
+			\draw[->] (1,-1) --(4,-3) node [left] {z};
+			\draw[->] (1,-1) -- (-5,-3) node [right] {y};
+			\draw[ultra thick, fill=blue] (2.5,-1) -- (0,3) -- (-3,-1.5) -- cycle;
+			\fill (0,3) circle (4pt) (a)
+				(2.5,-1) circle (4pt) (b)
+				(-3,-1.5) circle (4pt) (c);
+			\node[yshift=0.2cm,above] at (0,3) {$v_0 = (x_0, y_0, z_0) $};
+			\node[xshift=0.2cm,right] at (2.5,-1) {$v_1 = (x_1, y_1, z_1) $};
+			\node[xshift=-0.2cm,left] at (-3,-1.5) {$v_2 = (x_2, y_2, z_2) $};
+		\end{tikzpicture}
+		
+		\noindent
+		Esistono però delle alternative:
+		\begin{itemize}
+			\item \textbf{Boundary}:
+			Superfici parametriche (lisce, non hanno problemi di "tessellazione"
+			cioè visibilità degli spigoli tra le facce)
+			\item \textbf{Volumetriche}: 
+			\begin{itemize}
+				\item Rappresentazione "voxellizata" (a cubetti)
+				\item Geometria costruttiva solida
+			\end{itemize}
+			\item \textbf{Image based rendering}:
+			\begin{itemize}
+				\item Non si modella effettivamente la scena, ma si memorizzano
+				campionamenti della luce, renedendo però possibile una
+				visualizzazione da più punti di vista, interattiva
+				\item Light fields
+			\end{itemize}
+		\end{itemize}
+		
+		Il vantaggio principale nell’uso di superfici per modellare un
+		oggetto sarebbe l’assenza del problema della tessellazione
+		visibile (cioè approssimo una superficie lisca coi triangoli, ma
+		vedo poi i triangoli evidenti, effetto ridotto di solito con
+		trucchi opportuni nel rendering)\\
+		L'uso di superfici parametriche risulta pesante per applicazioni in
+		tempo reale; per lo più le superfici parametriche utilizzate in fase di modellazione o per
+		rendering non interattivo.\\
+		Negli ultimi tempi le cose sono cambiate ed oggi cominciano
+		ad apparire applicazioni di grafica avanzata che usano superfici
+		curve anche in tempo reale.
+		
+		Esempio: \textbf{curve/superfici di	Bezier}:
+		Dati $ N $ punti di controllo la curva la curva passa per il
+		primo e l'ultimo e approssima gli altri con una funzione da
+		essi dipendente. Con una griglia si generano superfici.
+		
+		\begin{figure}[h!]
+			\includegraphics[scale=0.5]{superf}
+			\hspace{0.2cm}
+			\includegraphics[scale=0.15]{superf1}
+			\hspace{0.2cm}
+			\includegraphics[scale=0.4]{superf2}
+		\end{figure}
+		
+		\subsubsection{Geometria costruttiva solida (CSG)}
+		
+		Altra rappresentazione particolarmente adatta per il modeling
+		(diffusa nel settore CAD), ma poco efficiente per il rendering è quella della
+		\textbf{Geometria costruttiva solida (CSG)}.\\
+		Si tratta, essenzialmente, di costruire degli oggetti geometrici
+		complessi a partire da modelli base con operazioni booleane
+		
+		\noindent
+		\textbf{Operazioni:}
+		\begin{itemize}
+			\item \textbf{Unione}: l’unione $ A \cup B $ è l’insieme dei punti che appartengono
+			ad almeno uno dei due solidi (or non esclusivo).
+			\item \textbf{Differenza}: la differenza $ A \setminus B $ è l’insieme dei punti che
+			appartengono ad $ A $, ma non a $ B $.
+			\item \textbf{Intersezione}: l’intersezione $ A \cap B $ è l’insieme dei punti che
+			appartengono ad $ A $ ed a $ B $ (and).
+			\item Le operazioni CSG possono essere descritte tramite un albero
+			(gerarchia).
+			Ciascun nodo di un albero che non sia una foglia contiene una
+			delle tre operazioni elementari $ \cup $ , $ \cap $ o $ \setminus $.
+			Ciascuna foglia contiene una primitiva.
+		\end{itemize}
+		
+		\subsubsection{Acquisizione dal vero: point clouds}
+			Un modo per generare modelli 3D per mondi virtuali è
+			acquisire dal vero.\\
+			La scansione 3D, oggi tecnologia matura con diverse tecnologie
+			Laser, luce strutturata, visione computazionale.\\
+			Gli scanner (esattamente come le macchine fotografiche in 2D)
+			di fatto non acquisiscono un modello del mondo, ma
+			campionano la geometria (con eventuali attributi, es. colore) in
+			una serie di punti discreti: si parla di \textbf{nuvole di punti (point
+			clouds)}
+		
+		\subsubsection{Partizionamento spaziale (voxel)}
+			Lo spazio viene suddiviso in celle adiacenti dette in 3D voxel
+			(equivalente dei pixel delle immagini): una cella è "piena" se
+			ha intersezione non vuota con la regione, è detta vuota in
+			caso contrario. Oppure contiene un valore di densità (tipico
+			dei dati diagnostici es. TAC)\\
+			Una rappresentazione di una scena complessa ad alta
+			risoluzione richiederebbe l’impiego di un numero enorme
+			numero di voxel, per cui questa rappresentazione è in genere
+			limitata a singoli oggetti.\\
+			Ma le cose stanno cambiando grazie a
+			progressi nell'HW e nel SW.\\
+			Rendering di modelli voxel-based:
+			\begin{itemize}
+				\item Algoritmi ad hoc (tecniche direct volume rendering)
+				\item conversione da voxel a rappresentazione per superfici (triangle-
+				based)
+			\end{itemize}
+			Da una rappresentazione volumetrica voxelizzata si può
+			passare efficientemente a una rappresentazione poligonale
+			della superficie mediante l’algoritmo detto marching cubes.
+		
+		\subsubsection{Rappresentazioni compatte(Octree)}
+			Se ho solo i valori pieno/vuoto, posso rappresentare in modo
+			compatto il volume con una struttura \textbf{octree}.\\
+			Si parte con un cubo contenente la regione e si suddivide
+			ricorsivamente. Ci si ferma ogni volta che un ottante contiene
+			tutte celle piene o tutte celle vuote.\\
+			Più economica rispetto alla enumerazione delle singole celle,
+			poiché grandi aree uniformi (piene o vuote) vengono
+			rappresentate con una sola foglia (anche se nel caso peggiore
+			il numero delle foglie è pari a quello delle celle).
+
+			\includegraphics[scale=0.4]{octree}
+			\hspace{2.5cm}
+			\includegraphics[scale=0.3]{octree2}
+			
+			Le strutture di partizionamento spaziale sono anche utili per
+			"contenere" le geometrie poligonali: come vedremo consente
+			di rendere più semplice la ricerca di intersezioni tra oggetti e
+			con i raggi ottici.
+			
+	\subsection{Maglie poligonali (mesh)}
+		Nella grafica 3D interattiva si usa quasi sempre la modellazione
+		basata su approssimazione poligonale degli oggetti (del loro
+		contorno: è una \textit{boundary representation}).\\
+		Si tratta di approssimare una superficie 2D con un insieme di
+		poligoni convessi opportunamente connessi gli uni agli altri.\\
+		Nella pipeline di rendering si lavora in genere con i soli
+		\textbf{triangoli}:
+		tutte le altre rappresentazioni eventualmente usate nel programma
+		sono convertite prima del rendering in triangoli
+		Possiamo usare la geometria per definire rigorosamente le
+		proprietà dei modelli triangolati.
+		
+		\bigskip
+		\noindent
+		Una \textbf{varietà} $k$-dimensionale $ X $ è un sottoinsieme di $ \R^d$  in cui
+		ogni punto ha un intorno omeomorfo alla sfera aperta di $ \R^k $.\\
+		In generale le superifici degli oggetti solidi (sfere, poliedri, ecc.)
+		sono varietà bidimensionali.\\
+		\textbf{Omeomorfismo}: applicazione biiettiva, continua, con inversa
+		continua. Intuizione: trasformazione senza "strappi".
+		In una varietà $k$-dimensionale con bordo ogni punto ha un intorno
+		omeomorfo alla sfera aperta o alla semisfera aperta di $ \R^k $ .\\
+		Il bordo di $ X $ è l’insieme dei punti che hanno un intorno omeomorfo
+		alla semisfera aperta.
+		Una varietà è sempre una varietà con bordo, eventualmente vuoto.\\
+		Il bordo, se non è vuoto, è a sua volta una varietà $ k-1 $ dimensionale
+		senza bordo.
+		
+		\bigskip
+		Una \textbf{maglia (mesh) triangolare} è un'insieme di triangoli le cui
+		intersezioni siano esclusivamente vertici e lati (spigoli) dei
+		triangoli e che sia anche una varietà bidimensionale con bordo.
+		Due triangoli che condividono un lato si dicono adiacenti
+		I triangoli della maglia si chiamano anche facce.\\
+		La condizione di essere varietà si traduce nei seguenti vincoli
+		sulla struttura:
+		\begin{itemize}
+			\item uno spigolo appartiene al massimo a due triangoli (quelli eventuali
+			che appartengono ad uno solo formano il bordo della maglia)
+			\item se due triangoli incidono sullo stesso vertice allora devono essere
+			raggiungibili l'uno dall'altro attraverso un percorso tra triangoli
+			adiacenti ovvero devono formare un ventaglio o un ombrello.
+		\end{itemize}
+		Si usa il termine condizione 2-manifold (varietà)
+		
+		\begin{tikzpicture}[ scale=0.3,  every node/.style={scale=0.3}]
+			\draw[fill=OliveGreen!90!] (1,0) -- (4.5,-5) -- (5,6) -- cycle;
+			\draw[fill=gray!70!] (12,-1) -- (5,6) -- (-5,-3) -- (1,0) -- cycle;
+			\draw (1,0) -- (5,6);
+			\draw[densely dashed] (4.5,-5) -- (5,6);
+			\fill (5,6) circle (10pt) (a)
+				(1,0) circle (10pt) (b);
+			\draw[ultra thick, red] (5,6) -- (1,0);
+			\node[right, xshift=1cm, text =red] at (5,6) {\Huge \textbf{NO}};
+		\end{tikzpicture}
+		\hspace{2.5cm}
+		\begin{tikzpicture}[ scale=0.3,  every node/.style={scale=0.3}]
+		\draw[fill=OliveGreen!90!] (1,0) -- (4.5,-5) -- (5,6) -- cycle;
+		\draw[fill=gray!70!] (12,-1) -- (5,6) -- (1,0) -- cycle;
+		\draw (1,0) -- (5,6);
+		\draw[densely dashed] (4.5,-5) -- (5,6);
+		\fill (5,6) circle (10pt) (a)
+		(1,0) circle (10pt) (b);
+		\draw[ultra thick, Green] (5,6) -- (1,0);
+		\node[right, xshift=1cm, text =Green] at (5,6) {\Huge \textbf{SI}};
+		\end{tikzpicture}
+		
+		\begin{tikzpicture}[ scale=0.3,  every node/.style={scale=0.3}]
+			\draw[fill=TealBlue!30!] (-5,-3) -- (1,0) -- (5,6) -- cycle;
+			\draw[fill=TealBlue!30!] (4,0) -- (9,-1) -- (5,6.2) -- cycle;
+			\draw[fill=TealBlue!30!] (10,-1.5) -- (5.2,6.3) -- (13,7) -- cycle;
+			\node[above, yshift=1cm, text =red] at (5,6) {\Huge \textbf{NO}};
+		\end{tikzpicture}
+		\hspace{2.5cm}
+		\begin{tikzpicture}[ scale=0.3,  every node/.style={scale=0.3}]
+			\draw[fill=TealBlue!30!] (-5,-3) -- (1,0) -- (5,6) -- cycle;
+			\draw[fill=CornflowerBlue] (1,0) -- (10,-1.5) -- (5,6) -- cycle;
+			\draw[fill=TealBlue!30!] (10,-1.5) -- (5,6) -- (13,7) -- cycle;
+			\node[above, yshift=1cm, text =Green] at (5,6) {\Huge \textbf{SI}};
+		\end{tikzpicture}
+		
+		Il bordo della maglia consiste di uno o	più anelli (sequenza chiusa di spigoli) o
+		loop.\\
+		Se non esistono spigoli di bordo la	maglia è chiusa (come quelle che
+		rappresentano la superficie di una sfera).\\
+		L’\textbf{orientazione} di una faccia è data dall’ordine ciclico (orario o antiorario)
+		dei suoi vertici incidenti. L’orientazione determina il fronte ed il retro della
+		faccia. La convenzione (usata anche da OpenGL) è che la faccia mostra il fronte.
+		
+		\includegraphics[scale=0.5]{orient}
+		\hspace{2.5cm}
+		\begin{tikzpicture}[scale=0.5]
+			\node[above] at (-3,4) {Fronte};
+			\node[above] at (3,4) {Retro};
+			\draw[fill=Gray!80!] (-1,0) -- (-3,3) -- (-4,-2) -- cycle;
+			\draw (1,0) -- (3,3) -- (4,-2) -- cycle;
+			\fill (-1,0) circle (5pt) coordinate [label=below:$V_2$]  (a) 
+				(-3,3) circle (5pt) coordinate [label=above:$V_3$] (b)
+				(-4,-2) circle (5pt) coordinate [label=below:$V_1$] (c)
+				(1,0) circle (5pt) coordinate [label=below:$V_2$] (d)
+				(3,3) circle (5pt) coordinate [label=above:$V_3$] (d)
+				(4,-2) circle (5pt) coordinate [label=below:$V_1$] (d);
+		\end{tikzpicture}
+		
+		\noindent
+		L’orientazione di due facce adiacenti è compatibile se i due
+		vertici del loro spigolo in comune sono in ordine inverso. Vuol
+		dire che l’orientazione non cambia attraversando lo spigolo in
+		comune.\\
+		La maglia si dice \textbf{orientabile} se esiste una scelta
+		dell’orientazione delle facce che rende compatibili tutte le
+		coppie di facce adiacenti.
+		
+			\begin{figure}[h!]
+				\centering
+				\includegraphics[scale=0.5]{moebius}
+				\caption{Non tutte le mesh 2-manifold sono
+					orientabili (es. anello di Moebius)} 
+			\end{figure}
+		
+		Abbiamo definito la maglia triangolare. In maniera analoga si
+		può estendere la definizione a maglie poligonali generiche\\
+		\textbf{Maglie poligonali generiche}: i poligoni possono avere qualsiasi
+		numero di spigoli e non è detto che ci sia un solo tipo di poligono.
+		Sono raramente utilizzate in grafica al calcolatore\\
+		\textbf{Quadrangolari} (quad meshes): gli elementi poligonali sono tutti
+		quadrilateri. Sono alle volte usate, per esempio se si vuole fare il
+		rendering di un terreno descritto da un array di altezze.\\ In una
+		maglia quadrangolare bisogna imporre un vincolo aggiuntivo di
+		planarità per ogni quadrilatero che la compone.\\
+		OpenGL consente di descrivere maglie poligonali generiche, ma
+		per disegnarle li suddivide usualmente in triangoli.
+		
+	\subsubsection{Equazione di Eulero}
+		Se $ V $ è il numero di vertici, $ L $ il numero di spigoli ed $ F $ il numero di
+		facce della maglia poligonale orientabile chiusa di genere G, allora
+		vale la Formula di Eulero $ V - L + F = 2 - 2G $
+		Una superficie ha genere $ G $ se può essere tagliata lungo $ G $
+		linee semplici chiuse senza disconnetterla (intuitivamente,
+		ma non rigorosamente “numero di buchi”).\\
+		l genere di una superficie determina la sua
+		topologia; per una sfera, per esempio, $ G = 0 $,
+		mentre per un toro (una ciambella) $ G = 1 $.\\
+		Più in generale, per una maglia poligonale orientabile (e varietà
+		bidimensionale) vale la formula $ V - L + F = 2(S - G) - B $\\
+		$ S $ numero di componenti connesse, $ B $ è il numero di anelli di bordo.
+		
+	\subsection{Mesh di triangoli}
+		Nella pratica sono il tipo di modello dominante, usato nella gran parte delle applicazioni interattive dato che il rendering è ottimizzato in hardware.\\
+		Generate da modellazione CAD, acquisizione con scanner,
+		ricostruzione da immagini (Computer Vision).\\
+		Il numero di poligoni determina il dettaglio, ma il costo in
+		memoria può essere notevole.
+		
+	\subsection{Costruzione della mesh triangolare}
+		Conversione da altri formati:
+		\begin{itemize}
+			\item Poligoni $ \longrightarrow $ Triangoli
+			\item Superf. Quadriche $ \longrightarrow $ Triangoli
+			\item Campi di altezze o Punti $ \longrightarrow $ Triangoli
+		\end{itemize}
+		Per rappresentare gli oggetti con le proprietà fisiche relativa a
+		colore e riflessione della luce, devo abbinare alla geometria dei
+		valori di proprietà (\textit{attributi})\\
+		Posso definirli:
+		\begin{itemize}
+			\item per vertice: esplicito un attributo per ogni vertice
+			\item per faccia: esplicito un attributo per ogni faccia
+			\item per wedge (vertice di faccia): esplicito tre attributi per ogni faccia
+		\end{itemize}
+		Attributi più comuni: Colore, Normali (versori perpendicolari), coordinate texture.\\
+		Non è sempre semplice modellare le entità da rappresentare
+		con triangoli. Ad esempio: Nuvole, Fiamme, Capelli, pelliccia etc.
+		
+		\bigskip
+		
+		Quando si devono disegnare due triangoli con uno spigolo in
+		comune, questo viene disegnato due volte. Questo introduce
+		un certo grado di ridondanza che può incidere sulle prestazioni.\\
+		Si preferisce quindi raggruppare i triangoli di una maglia in
+		opportuni gruppi che possono essere elaborati in maniere più
+		efficiente. Si possono ad esempio utilizzare:
+		\begin{itemize}
+			\item \textbf{Fan di triangoli}: è un gruppo di triangoli che hanno in comune un
+			vertice. Il primo viene specificato completamente, per i successivi
+			basta dare il nuovo vertice. Efficiente, ma i triangoli che incidono su
+			un vertice sono in genere pochi.
+			\item \textbf{Strip di triangoli}: gruppo di triangoli che posseggono a due a due
+			uno spigolo in comune. Di nuovo il primo triangolo viene specificato
+			normalmente, per i successivi basta specificare il nuovo vertice.
+			Meno efficiente, ma le strip in genere contengono più triangoli delle
+			fan.
+		\end{itemize}
+		Esistono algoritmi per creare queste rappresentazioni dalle
+		mesh.
+		
+	\subsection{Mesh e rendering}
+		Per determinare l’effetto di una qualsiasi trasformazione affine
+		su un oggetto (traslazione, rotazione, scalatura, composizioni
+		varie di queste), basta applicare la trasformazione ai vertici
+		(che sono punti); le informazioni connettive date dagli spigoli
+		non cambiano in questo tipo di trasformazioni.\\
+		Questo rende piuttosto semplice il rendering di oggetti descritti in
+		termini di maglie poligonali. Qualsiasi trasformazione viene eseguita
+		sui vertici, cioè si tratta di applicare trasformazioni affini su punti.\\
+		L’affermazione precedente è vera anche per la proiezione; per vedere
+		come si proietta la forma di una maglia su un piano (l’immagine),
+		basta seguire la proiezione dei vertici.
+		
+	\subsection{Memorizzazione}
+		Alla creazione dei modelli vengono in genere generati nodi,
+		connettività e attributi. Gli algoritmi di processing e rendering
+		devono accedere in vario modo a tale informazione.
+		Esistono diversi modi di rappresentare questa informazione.\\
+		Nei programmi applicativi sono quindi necessarie delle
+		procedure per convertire una rappresentazione in un’altra. \\
+		Progettare ed implementare tali procedure è un ottimo modo
+		per capire nel dettaglio le varie rappresentazioni utilizzate per
+		descrivere maglie poligonali.\\
+		Nei disegni e negli esempi ci concentreremo sul caso di maglia
+		triangolare, ma il discorso è valido in generale per tutti i
+		poligoni convessi.
+	\subsection{Elementi base}
+		\textbf{Vertici}: sono gli elementi 0 dimensionali e sono identificabili
+		con punti nello spazio 3D (essenzialmente tre coordinate);
+		alle volte può essere utile associare ai vertici altre
+		caratteristiche oltre alla posizione (tipo il colore).\\
+		\textbf{Spigoli}: sono elementi 1 dimensionali e rappresentano un
+		segmento che unisce due vertici. Di solito non contengono
+		altre informazioni.\\
+		\textbf{Facce}: sono i poligoni bidimensionali, formati da un certo
+		numero di spigoli e di vertici (dimostrare che sono in numero
+		uguale). I vertici o gli spigoli si usano per identificare la faccia;
+		possono contenere altre informazioni (tipo il colore).\\
+		\textbf{Normali}: è fondamentale sapere quale è l’esterno della
+		superficie e quale l’interno, e qual è l'orientazione locale della
+		superficie; a tal scopo si associa spesso ad una maglia
+		poligonale anche l’informazione sulla normale uscente.\\
+		La normale $ \vec{n} $ ad una faccia è data dal prodotto vettore di due
+		suoi spigoli consecutivi non collineari:\\
+		Attenzione al verso: la normale è uscente dal fronte della faccia\\
+		Per un triangolo $ (V_1 ,V_2 ,V_3 ) $ si ha: $ \vec{n} = (V_3 -V_2)\times(V_1 -V_2 ) $.
+		
+		\includegraphics[scale=0.3]{norm}
+		
+		Attenzione (vedremo in lab): ci servono le normali per
+		calcolare il modello di Phong. Le possiamo calcolare per i
+		modelli, cui poi sono applicate le trasformazioni geometriche e
+		di proiezione.\\
+		Ma se applichiamo trasformazioni generiche ai modelli queste
+		trasformazioni non preservano necessariamente l'ortogonalità
+		di normale e superficie.\\
+		Per trasformare senza questo problema le normali possiamo
+		trasformarle con una matrice diversa.\\
+		Consideriamo un vettore tangente $ \vec{t} $ alla superficie:
+		\begin{align*}
+			\vec{n}\vec{t}^T &= 0 \\
+			\vec{n} M^{-1} M\vec{t} &= 0 \\
+			(M^{-1})^T \vec{n} M\vec{t} &= 0
+		\end{align*}
+		
+		Quindi la normale trasformato da $ (M^{-1})^T\vec{n} $ è perpendicolare alla
+		superficie trasformata. Cioè per evitare problemi si
+		trasformeranno le normali con l'inversa trasposta della matrice
+		di trasformazione del modello.
+		
+	\subsection{Struttura della mesh}
+		I vertici danno informazioni di tipo posizionale, gli spigoli
+		informazioni di tipo connettivo (non c'è informazione spaziale).\\
+		Gli spigoli connettono i vertici, permettendo di introdurre un
+		concetto di “vicinanza” tra vertici e dando le informazioni di
+		tipo topologico (ovvero definiscono un grafo).\\
+		Le facce sono determinate una volta dati i vertici e gli spigoli,
+		quindi non introducono nulla.\\
+		Al più possono avere associati attributi, anche se è raro.\\
+		
+		\bigskip
+		
+		Ci sono vari modi di conservare le informazioni sui modelli.
+		Questi possono differire per
+		\begin{itemize}
+			\item Memoria occupata
+			\item Complessità di implementazione di operazioni di ricerca (es. ricerche
+			di adiacenza
+			\begin{itemize}
+				\item Quali sono i vertici vicini a uno dato?
+				\item Quali sono gli spigoli che contengono un vertice dato?
+				\item Quali sono le facce che contengono uno spigolo?
+				\item ...
+			\end{itemize}
+		\end{itemize}
+		Possibilità di controllo sulla qualità delle superfici (es. manifoldness)
+		
+	\subsection{Lista di triangoli e indexed}
+		\begin{itemize}
+			\item Immediata: specificare tutte le facce della maglia come
+			terne di triplette di coordinate cartesiane
+			\item Spreco di memoria: duplico le coordinate. Meglio usare
+			una struttura indicizzata, con la lista dei vertici e la
+			lista delle facce con i	puntatori ai vertici (indici)
+			\item Normalmente usate in openGL per il rendering
+			\item Non ottimali per le ricerche
+		\end{itemize}
+		\begin{multicols}{2}
+			\begin{lstlisting}
+typedef struct{
+	float v1[3];
+	float v2[3];
+	float v3[3];
+} faccia;
+			\end{lstlisting}
+			\columnbreak
+		\begin{lstlisting}
+typedef struct {
+	float x,y,z;
+} vertice;
+typedef struct {
+	vertice* v1,v2,v3;
+} faccia;
+		\end{lstlisting}
+		\end{multicols}
+		
+		\begin{figure}[h!]
+			\vspace*{-1.2cm}
+			\includegraphics[scale=0.4]{mesh}
+		\end{figure}
+	
+	\subsection{Winged edge (Baugmart 1975)}
+		Si aggiungono dei puntatori allo spigolo per
+		rendere più semplice l’analisi delle incidenze.\\
+		L’elemento base è lo spigolo (edge) con le sue due facce incidenti (wings):
+		\begin{itemize}
+			\item Lo spigolo $ l_2 $ contiene un puntatore ai due
+			vertici su cui incide (b; c), alle due facce su cui
+			incide $ (T_1, T_2) $ ed ai due spigoli uscenti da
+			ciascun vertice
+			\item Un vertice contiene un puntatore ad uno degli
+			spigoli che incide su di esso, più le coordinate
+			(ed altro)
+			\item La faccia contiene un puntatore ad uno degli
+			spigoli che vi incide (ed altro).
+		\end{itemize}
+		La struttura assume che ogni spigolo non di
+		bordo abbia due facce incidenti (manifold).
+		
+		\begin{multicols}{2}
+		\begin{lstlisting}
+typedef	struct{
+	we_vertice* v_ini, v_fin;
+	we_spigolo* vi_sin, vi_dstr;
+	we_spigolo* vf_sin, vf_dstr;
+	we_faccia* f_sin, f_dstr;
+} we_spigolo;
+typedef struct {
+float x, y, z;
+	we_spigolo* spigolo;
+} we_vertice;
+typedef struct {
+	we_spigolo* spigolo;
+} we_faccia;
+		\end{lstlisting}
+		
+		\columnbreak
+		
+		\vspace*{1cm}
+			\includegraphics[scale=0.5]{mesh1}
+		\end{multicols}
+		
+	\subsection{Half edge}
+		Ogni spigolo viene diviso in due spigoli
+		orientati in modo opposto:
+		\begin{itemize}
+			\item Ciascun mezzo spigolo contiene un puntatore
+			al vertice iniziale, alla faccia a cui “appartiene”,
+			al mezzo spigolo successivo (seguendo
+			l’ordinamento) ed al mezzo spigolo gemello
+			\item Ogni vertice, oltre alle coordinate (e attributi)
+			contiene un puntatore ad uno qualsiasi dei
+			mezzi spigoli che esce da tale vertice
+			\item Ogni faccia contiene uno dei suoi mezzi spigoli
+			(oltre ad altre caratteristiche quali, ad
+			esempio, la normale)
+		\end{itemize}
+		Efficiente per le ricerche ed elegante.
+		
+		\begin{multicols}{2}		
+	\begin{lstlisting}
+typedef struct {
+	he_vertice* origine;
+	he_spigolo* gemello;
+	he_faccia* faccia;
+	he_spigolo* successivo;
+} he_spigolo;
+typedef struct {
+	float x, y, z;
+	he_spigolo* spigolo;
+} he_vertice;
+typedef struct {
+	he_spigolo* spigolo;
+} he_faccia;
+	\end{lstlisting}
+		
+		\columnbreak
+		
+		\vspace*{1cm}
+		\includegraphics[scale=0.5]{mesh2}
+	\end{multicols}
+		
+	\noindent
+	\textbf{Note:}\\
+	La stessa applicazione grafica può far uso di più di una
+	struttura dati.\\
+	La rappresentazione con la lista di vertici essendo semplice e
+	leggera è tipicamente usata come formato per i file
+	contenenti la geometria di oggetti.\\
+	Le applicazioni grafiche in genere caricano tali file ed usano
+	l’informazione contenuta in essi per riempire una struttura
+	dati più utile ai fini algoritmici (per esempio la half-edge).
+	
+	
+	\section{Rendering}
+\end{document}	
