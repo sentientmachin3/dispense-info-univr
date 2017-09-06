@@ -9,6 +9,7 @@
 \usepackage{amsthm}
 \usepackage{commath}
 \usepackage{amssymb}
+\usepackage[output-decimal-marker={,}]{siunitx}
 \usepackage{bm}
 \usepackage{lipsum}
 \usepackage{enumitem}
@@ -2359,4 +2360,237 @@ typedef struct {
 	
 	
 	\section{Rendering}
+		Interazione luce-materia.\\
+		La luce raggiunge la superficie. Viene riflessa, ma come? Molti
+		effetti.\\
+		Parte assorbita, parte riemessa, magari in punto diverso visto che
+		può essere riflessa sotto la superficie, anche con ritardo di tempo
+		Modifica lunghezza d'onda.\\
+		Troppo complicato, ma alcuni effetti per essere simulati
+		richiederebbero questo. Fosforescenza, fluorescenza, ecc.
+		
+		\bigskip
+		
+		\noindent
+		In grafica di solito usiamo la \textbf{BRDF} (Bidirectional Reflectance Distribution Function): modelliamo riflessione	come se dipendente da soli 4 parametri.
+		Direzione luce incidente-riflessa, è comunque complicatissimo.
+		Inoltre assumeremo di poter pensare alla luce come composizione di
+		3 fasci monocromatici a frequenze fisse (R,G,B) o di un solo valore di
+		luminosità (ovviamente falso).
+		
+		\noindent
+		La radiazione luminosa è caratterizzata da
+		\begin{itemize}
+			\item distribuzione spettrale, che ne determina il colore
+			\item energia che ne determina l'intensità o luminosità
+			per ora usiamo in modo informale questi termini.
+		\end{itemize}
+		\textbf{Fotometria}: la misura dell’energia trasportata dalle
+		onde elettromagnetiche della gamma ottica (spettro visibile).
+		la fotometria si occupa dell’azione della luce visibile sull’occhio
+		umano.\\
+		
+		\subsection{Radiometria}
+		
+		\textbf{Radiometria}: si occupa di radiazioni estese sull’intero
+		intervallo delle possibili lunghezze d’onda e non considera gli
+		effetti sull’osservatore.
+		Essendo interessati ad un modello oggettivo, definiremo le
+		grandezza radiometriche.\\
+		Assumendo che non ci sia interazione tra le diverse lunghezze
+		d’onda, si può misurare l’energia indipendentemente per un
+		certo numero di lunghezze d’onda campione che servono a
+		rappresentare l’intera distribuzione spettrale.\\
+		Di solito se ne usano 3, per motivi legati al sistema visivo
+		umano, corrispondenti al rosso, verde e blu (RGB).\\
+		Tutte le grandezze che definiremo sono implicitamente
+		spettrali, ovvero riferite ad una singola lunghezza d’onda.
+		
+		\bigskip
+		
+		\noindent
+		Le quantità che misuriamo sono:
+		\begin{itemize}
+			\item Il \textbf{flusso radiante} $ \Phi $ è la velocità alla quale l’energia luminosa viene emessa (o assorbita) da una superficie, ha le dimensioni di una
+			potenza (energia per unità di tempo) e si misura in Watt [W].
+			\item \textbf{Irradianza} $ E(x) $ il rapporto tra il flusso ricevuto da un elemento
+			infinitesimo di superficie in $ x $ e la sua area $ dx $:
+			\[
+				E(x) = \dfrac{d \Phi}{dx}
+			\]
+			\item \textbf{Radiosità} $ B(x) $ il rapporto tra il flusso emesso da un elemento
+			infinitesimo di superficie in $ x $ e la sua area $ dx $:
+			\[
+				B(x) =\dfrac{d\Phi}{dx}
+			\]
+			Irradianza e radiosità sono la stessa grandezza (una densità
+			superficiale di flusso) e si misurano in $ \left[ \si{\watt}/\si{\meter}^2 \right] $. La differenza è
+			che l’\textbf{irradianza è energia ricevuta}, la \textbf{radiosità è energia
+			emessa}. In entrambi i casi, l’energia ricevuta/emessa si considera
+			da/verso tutte le direzioni.
+			\item L’\textbf{intensità radiante} è il flusso radiante emesso in un angolo
+			solido infinitesimo $ d\omega $ lungo una particolare direzione $ \omega $ :
+			\[
+				I(\omega) = \dfrac{d\Phi}{d\omega}
+			\]
+			Si usa soprattutto per descrivere sorgenti luminose puntiformi.\\
+			\item L’\textbf{angolo solido sotteso} da un oggetto rispetto un punto $ P $ è
+			pari all’area della proiezione dell’oggetto su una sfera unitaria
+			centrata in $ P $.
+			\item L’\textbf{angolo solido sotteso} da un elemento infinitesimo di
+			superficie $ dx $ centrato in $ x $ ed orientato con normale $ \vec{n} $,
+			rispetto ad un punto $ y $ distante $ r $ vale: $ d\omega = dx \cos\theta/ r_2 $
+			dove $ \theta $ è l’angolo formato dalla normale $ \vec{n} $ con la congiungente
+			$ y $ ed $ x $.\\
+			Il termine $ dx \cos\theta $ rappresenta l’area proiettata di $ dx $ lungo la
+			congiungente $ y $ ed $ x $. Se poniamo in $ y $ una sorgente di luce
+			puntiforme con intensità radiante $ I $, allora l'irradianza nel punto $ x $ vale:
+			\[
+				E(x) = \dfrac{d\Phi}{dx} = \dfrac{I\cos\theta}{r_2}
+			\]
+			\item \textbf{Radianza} $ L(x,\vec{\omega}) $ nel punto $ x $ in una direzione $ \omega $ è la densità superficiale della intensità radiante in $ x $ lungo la direzione 
+			$ \vec{\omega} $, considerando l’area della superficie proiettata:
+			\[
+				L(x,\vec{\omega}) = \dfrac{dI(\omega)}{dx(\vec{\omega}\cdot\vec{n})}
+			\]
+			L’area proiettata della superficie infinitesima $ dx $
+			è l’area della proiezione di $ dx $ (la cui normale è $ \vec{n} $ ) sul
+			piano perpendicolare a $ \vec{\omega} $, e vale dunque $ dx(\vec{\omega}\cdot\vec{n}) $.\\
+			La direzione $ \vec{\omega} $ è data da due angoli: l’elevazione $ \theta $ (rispetto
+			alla normale alla superficie $ \vec{n} $) e l’azimuth $ \phi $(rispetto ad una
+			direzione fissata sulla superficie.)\\
+			Possiamo dunque scrivere: $ \vec{\omega}\cdot\vec{n} = \cos\theta$.\\
+			La radianza $ L(x,\vec{\omega}) $ è la densità di flusso nel punto $ x $ in una direzione $ \vec{\omega} $, misurata rispetto ad una superficie
+			infinitesima perpendicolare a $ \vec{\omega} $.\\
+			La radianza è pari al il flusso	radiante per unità di angolo
+			solido per unità di area proiettata	lungo la direzione di propagazione, e si misura in 
+			$ \left[ \si{\watt}/(\si{\meter}^2 \cdot \si{\steradian}) \right] $.
+			
+			\begin{center}
+				\includegraphics[scale=0.4]{radianza}
+			\end{center}
+		\end{itemize}
+		
+		\subsubsection{Radianza lungo un raggio}
+			Dati due punti $ x $ e $ y $ (nel vuoto) la radianza che lascia $ x $ verso
+			$ y $ è uguale a quella che raggiunge $ y $ dalla direzione di $ x $: non si
+			attenua con la distanza.\\
+			Il modello che si usa in grafica è quello di raggi luminosi che
+			trasportano una certa quantità di energia luminosa.
+			Nel ray casting, dunque, i raggi luminosi trasportano radianza,
+			ed i pixel registrano il valore della radianza (idealmente).\\
+			Quando informalmente si parla di “intensità” del pixel, si fa
+			riferimento alla radianza.\\
+			In realtà nelle immagini digitali, l'intensità è mappata in un
+			range dinamico limitato (tipicamente 8 bit) e non linearmente
+			per compensare la non linearità della percezione umana.
+			
+			Sia $ \Omega $ la semisfera delle direzioni attorno alla normale in $ x $.\\
+			Dall'equazione scritta prima si ha:
+			\[
+				L(x, \vec{\omega})(\vec{\omega}\cdot \vec{n}) = \dfrac{d^2\Phi}{d\vec{\omega}dx} 
+			\]
+			ed integrando:
+			\[
+				\int_{\Omega} L(x, \vec{\omega})(\vec{\omega}\cdot \vec{n})d\vec{\omega} =
+				\int_{\Omega} \dfrac{d^2\Phi}{d\vec{\omega}dx} d\vec{\omega} =
+				\dfrac{d\Phi}{dx} = B(x)
+			\]
+			Similmente, per l’energia incidente, l’irradianza vale:
+			\[
+				E(x) = \int_{\Omega} L(x, \vec{\omega})(\vec{\omega}\cdot \vec{n})d\vec{\omega}
+			\]
+			\textbf{Nota}: la radianza è definita per unità di area proiettata, mentre la
+			irradianza/radiosità sono definite per unità di area (effettiva).
+			
+	\subsection{BRDF}
+		Ritroviamo quindi la Bidirectional Reflectance Distribution
+		Function (BRDF) che caratterizza il materiale di cui è composta la
+		superficie.
+		La BRDF $ \rho(x, \vec{\omega_i}, \vec{\omega_r}) $, è il rapporto tra la radianza riflessa da $ x $
+		lungo la direzione $ \vec{\omega_r} $ e l'irradianza della luce incidente nel
+		punto $ x $ da un angolo solido infinitesimale $ d\vec{\omega_i} $ centrato in $ \vec{\omega_i} $ :
+		
+		\begin{center}
+			\includegraphics[scale=0.5]{brdf}
+		\end{center}
+		
+		\noindent
+		4 gradi di libertà (due angoli). Sarebbero 5 se considerassimo
+		la dipendenza dalla lunghezza d'onda della luce.
+		E' già una drastica semplificazione.
+		Supponiamo che localmente sia costante (stesso materiale in
+		una regione).
+		Non modella alcuni effetti dei materiali reali:
+	\begin{itemize}
+		\item Dipendenza dalle lunghezze d'onda.
+		\item Fluorescenza: riemissione di energia a frequenze diverse da quelle
+		ricevute, tipicamente visibile da stimolo ultravioletto.
+		\item Fosforescenza: riemissione anche dopo la cessazione dello stimolo
+		Scattering sotto la superficie.
+		\item Occorrerebbe, come detto all'inizio, introdurre funzioni con più gradi
+		di libertà.
+	\end{itemize}
+		Si usa la irradianza e non la radianza per misurare la densità di
+		flusso incidente perché quest’ultima non tiene conto della
+		reale orientazione della superficie.\\
+		Si vede facilmente che l'irradianza è legata alla radianza della
+		luce incidente $ L_i (x, \vec{\omega_i} ) $ da:
+		\[
+			dE(x) = L_i (x, \vec{\omega_i} )(\vec{\omega_i} \cdot \vec{n}) d\vec{\omega_i}
+		\]
+		dove $ P_0 (\vec{\omega_i} \cdot \vec{n}) = \cos\Theta_i $\\
+		Dunque la BRDF si scrive :
+		\[
+			\rho(x, \vec{\omega_i}, \vec{\omega_r}) = 
+			\dfrac{L_r (x, \vec{\omega_r})}{L_i (x, \vec{\omega_i} )(\vec{\omega_i} \cdot \vec{n}) d\vec{\omega_i}}
+		\]
+		Siccome la radianza è definita per unità di area proiettata,
+		moltiplicando per $ (\vec{\omega_i} \cdot \vec{n}) $ la si converte in una misura per
+		unità di area (non proiettata).\\
+		In altri termini, si tiene conto del fatto che la radianza è
+		misurata rispetto ad un’area infinitesima orientata
+		diversamente da quella che in effetti viene illuminata, mentre
+		noi vogliamo esprimere l’effettivo flusso incidente.\\
+		Se consideriamo i contributi di irradianza da tutte le direzioni
+		di incidenza, la radianza totale riflessa nella direzione $ \vec{\omega}_r $, e
+		vale:
+		\[
+			L_r (x, \vec{\omega}_r) = \int_{\vec{\omega}_i \in \Omega} 
+			\rho(x, \vec{\omega_i}, \vec{\omega_r}) L_i (x, \vec{\omega_i} )(\vec{\omega_i} \cdot \vec{n}) d\vec{\omega_i}
+		\]
+		
+		\subsubsection{Diffusione pura}
+			Una superficie Lambertiana (o diffusore perfetto) ha una BRDF
+			costante: $ \rho(x, \vec{\omega_i}, \vec{\omega_r}) = \rho(x) $. 
+			La radianza (riflessa) di tale superficie non dipende dalla direzione.
+			Inoltre:
+			\begin{align*}
+				L_r (x, \vec{\omega_r}) &= \rho(x) \int_{\Omega} L_i (x, \vec{\omega_i} )(\vec{\omega_i} \cdot \vec{n}) d\vec{\omega_i} =
+				\rho(x)E(x) = L(x) \\
+				B(x) &= \int_{\Omega} L (x, \vec{\omega} )(\vec{\omega} \cdot \vec{n}) d\vec{\omega} = L(x) \int_{\Omega} \cos\theta d\vec{\omega} = \rho(x) E(x)\pi
+			\end{align*}
+			$ \rho_d(x)= \pi \rho(x) $ prende il nome di \textbf{albedo}.
+			\begin{itemize}
+				\item L’albedo è la frazione di irradianza $ E(x) $ che viene riflessa come
+				radiosità $ B(x) $. Il resto dell’energia viene assorbito
+				\item Diffusore perfetto: superficie ruvida (es. gesso, coccio) che ripartisce
+				la radianza entrante uniformemente su tutte le direzioni
+			\end{itemize}
+			
+			\bigskip
+			
+			La specifica esatta della BRDF per superfici reali è estramemente
+			difficile da ottenere.\\
+			Nella grafica al calcolatore si usano approssimazioni della
+			BRDF. Le due più semplici e più usate modellano due
+			comportamenti ideali dei materiali: una è appunto la
+			diffusione, l'altra è la riflessione speculare.\\
+			Un riflettore speculare si comporta come uno specchio
+			perfetto, che riflette il raggio incidente lungo una direzione
+			che forma con la normale lo	stesso angolo formato dalla
+			direzione di incidenza.
+			
+			\includegraphics[scale=0.15]{brdf1}
+			
 \end{document}	
