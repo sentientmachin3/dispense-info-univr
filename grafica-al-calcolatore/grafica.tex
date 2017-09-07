@@ -2078,7 +2078,7 @@
 		vale la Formula di Eulero $ V - L + F = 2 - 2G $
 		Una superficie ha genere $ G $ se può essere tagliata lungo $ G $
 		linee semplici chiuse senza disconnetterla (intuitivamente,
-		ma non rigorosamente “numero di buchi”).\\
+		ma non rigorosamente "numero di buchi").\\
 		l genere di una superficie determina la sua
 		topologia; per una sfera, per esempio, $ G = 0 $,
 		mentre per un toro (una ciambella) $ G = 1 $.\\
@@ -2209,7 +2209,7 @@
 		I vertici danno informazioni di tipo posizionale, gli spigoli
 		informazioni di tipo connettivo (non c'è informazione spaziale).\\
 		Gli spigoli connettono i vertici, permettendo di introdurre un
-		concetto di “vicinanza” tra vertici e dando le informazioni di
+		concetto di "vicinanza" tra vertici e dando le informazioni di
 		tipo topologico (ovvero definiscono un grafo).\\
 		Le facce sono determinate una volta dati i vertici e gli spigoli,
 		quindi non introducono nulla.\\
@@ -2312,7 +2312,7 @@ typedef struct {
 		orientati in modo opposto:
 		\begin{itemize}
 			\item Ciascun mezzo spigolo contiene un puntatore
-			al vertice iniziale, alla faccia a cui “appartiene”,
+			al vertice iniziale, alla faccia a cui "appartiene",
 			al mezzo spigolo successivo (seguendo
 			l’ordinamento) ed al mezzo spigolo gemello
 			\item Ogni vertice, oltre alle coordinate (e attributi)
@@ -2479,7 +2479,7 @@ typedef struct {
 			trasportano una certa quantità di energia luminosa.
 			Nel ray casting, dunque, i raggi luminosi trasportano radianza,
 			ed i pixel registrano il valore della radianza (idealmente).\\
-			Quando informalmente si parla di “intensità” del pixel, si fa
+			Quando informalmente si parla di "intensità" del pixel, si fa
 			riferimento alla radianza.\\
 			In realtà nelle immagini digitali, l'intensità è mappata in un
 			range dinamico limitato (tipicamente 8 bit) e non linearmente
@@ -2605,7 +2605,7 @@ typedef struct {
 			colorate per questo: la luce bianca (spettro uniforme) incide
 			sulla superficie e grazie all’assorbimento selettivo delle
 			componenti cromatiche la luce riflessa ha una distribuzione
-			spettrale non uniforme, ovvero è “colorata”.\\
+			spettrale non uniforme, ovvero è "colorata".\\
 		
 	\subsection{Equazione del rendering}
 		La radianza riflessa in direzione $ \vec{\omega}_r $ , dovuta all'irradianza lungo
@@ -2723,12 +2723,12 @@ typedef struct {
 			cromatiche R,G,B. Si calcola l’intensità indipendentemente per
 			ogni componente cromatica, ottenendo un colore. 
 			Nel seguito faremo riferimento ad una singola componente.\\
-			Confondiamo “l’intensità luminosa” $ I $ con la radianza. La $ I $ è il
+			Confondiamo "l’intensità luminosa" $ I $ con la radianza. La $ I $ è il
 			valore che viene assegnato al raggio.\\
 			Sia P il punto della superficie di cui si vuole calcolare il colore.
 			Questo equivale a calcolare l’intensità luminosa $ I_{out} $ lungo la
 			direzione $ \vec{v} $ che congiunge $ P $ con il $ COP $.\\
-			Modelliamo i comportamenti puramente “speculari” e diffusivi
+			Modelliamo i comportamenti puramente "speculari" e diffusivi
 			dei materiali usando le leggi di Lambert e Fresnel.
 			
 		\subsubsection{Legge di Lambert}
@@ -2819,7 +2819,7 @@ typedef struct {
 				I_s^{out} = Ik_s(\vec{n}\cdot\vec{h})^n \quad \textup{dove} \quad 
 				\vec{h} = \dfrac{1 + \vec{v}}{\| 1+\vec{v} \|}
 			\]
-			$ H $ è detto “halfway vector”, ed è il vettore che biseca
+			$ H $ è detto "halfway vector", ed è il vettore che biseca
 			l’angolo formato da $ \vec{l} $ e $ \vec{v} $.\\
 			Il vantaggio della formulazione di Phong-Blinn è che gestisce
 			bene il caso in cui l’angolo tra $ r $ e $ v $ sia $ > \pi/2 $.\\
@@ -2832,7 +2832,7 @@ typedef struct {
 		\subsubsection{Modellazione della componente ambientale}
 			Le inter-riflessioni tra oggetti diversi nella scena non sono
 			trattate nel modello di Phong. 
-			Effetto parzialmente simulato da una componente “ambientale”:
+			Effetto parzialmente simulato da una componente "ambientale":
 			\[
 				I^{out} = I_a k_a
 			\]
@@ -2885,4 +2885,675 @@ typedef struct {
 				termine globale unico, così quando una luce viene spenta (o accesa)
 				l’illuminazione ambientale diminuisce (o aumenta).
 			\end{itemize}
+			
+	\subsection{BRDF di Phong}
+		Vediamo come connettere il modello locale di Phong con
+		l’equazione della radianza, per capire che tipo di
+		approssimazioni sono state fatte.\\
+		Abbiamo introdotto le sorgenti di luce puntuali, che sono
+		distinte dagli oggetti della scena, dunque per tutte le superfici
+		della scena $ L_e = 0 $.\\
+		Per determinare la "intensità" di un punto si deve calcolarne la
+		radianza uscente nella direzione $ \vec{\omega} $ che lo unisce al COP:\\
+		Dobbiamo quindi calcolare:
+		\[
+			L(x, \vec{\omega}) = \int_{\Omega}  L(x, \vec{\omega}_i) 
+			\rho(x, \vec{\omega}_i, \vec{\omega}) (\vec{\omega}_i\cdot\vec{n}) d\vec{\omega}_i
+		\]
+		Ma esiste una sola direzione lungo la quale il contributo
+		all’integrale è diverso da zero: la direzione $ \vec{\omega}_L $ che punta alla
+		sorgente luminosa. Otteniamo dunque:
+		\[
+			L(x, \vec{\omega}) = L(x, \vec{\omega}_L) \rho(x, \vec{\omega}_L, \vec{\omega})
+			(\vec{\omega}_L\cdot\vec{n}) d\vec{\omega}
+		\]
+		Confrontando con il modello di Phong (senza il termine
+		ambientale):
+		\[
+			I^{out} = I \Big( k_d + k_s\dfrac{(\vec{n}\cdot\vec{h})^n}{\vec{n}\cdot\vec{l}}\Big)
+			(\vec{n}\cdot\vec{l})
+		\]
+		e confondendo la radianza uscente $ L(x, \vec{\omega}) $ con la intensità
+		$ I^{out} $ e l'irradianza $ L(x, \vec{\omega}_L )d\vec{\omega} $ con $ I $ si vede che la BRDF di Phong è:
+		\[
+			\rho(x, \vec{\omega}_i, \vec{\omega}_r) =
+			k_d + k_s\dfrac{(\vec{n}\cdot\vec{h})^n}{\vec{n}\cdot\vec{\omega}_i} \quad
+			\textup{dove} \quad
+			\vec{h} = \dfrac{\vec{\omega}_i + \vec{\omega}_r}{\|\vec{\omega}_i + \vec{\omega}_r\|}
+		\]
+		Si può associare ad un oggetto una intensità di \textbf{emissione} $ I_e $
+		da aggiungere all’intensità calcolata con la formula di Phong.\\
+		L’effetto di tale termine è che l’oggetto emette un proprio
+		colore oltre alla luce riflessa dalla sorgente luminosa.\\
+		Da notare che siccome stiamo lavorando con un modello locale, la luce emessa in questo modo da un oggetto influenza l’apparenza solo di quell’oggetto e non l’apparenza
+		degli oggetti vicini (ovviamente poco realistico).\\
+		Ovvero: un corpo emissivo non si comporta come una sorgente luminosa, in questo modello locale.
+		
+		Un modello maggiormente motivato dal punto di vista fisico
+		potrebbe essere quello di Cook-Torrance basato sul modello microfacets della superficie, che descrive la superficie come formata da piccole facce disposte in modo
+		variabile.
+		Il modello di Cook-Torrance differisce da quello di Phong nella
+		componente speculare.
+		\[
+			I_s^{out} = I_s k_s \dfrac{\vec{n}\cdot\vec{l}}{\vec{n}\cdot\vec{v}}FGD
+		\]
+		dove:
+		\begin{itemize}
+			\item $ D(\vec{l}, \vec{v}) $ misura la frazione di microfaccette orientate in modo
+			da dare riflessione speculare da $ \vec{l} $ a $ \vec{v} $.
+			\item $ G(\vec{l}, \vec{v}) $ misura la diminuzione
+			di luce riflessa a causa dell’occlusione da parte di altre
+			microfaccette.
+			\item $ F (\vec{l}, \vec{v}, \lambda) $ è il coefficiente di Fresnel che fornisce la
+			frazione di luce incidente che viene riflessa.
+		\end{itemize}
+		
+	\subsection{Ray Casting}
+		Dovendo assegnare un colore ad ogni pixel, consideriamo il raggio ottico uscente da ciascun pixel.\\
+		Un raggio ottico è una semiretta uscente dal COP che interseca
+		il piano vista.
+		\begin{itemize}
+			\item Se il raggio non interseca alcun oggetto della scena allora gli assegno
+			il colore di sfondo.
+			\item Se il raggio interseca un oggetto, allora devo calcolare l’illuminazione
+			$ I_{out} $ (il colore) nel punto di intersezione ed assegnarlo al pixel.
+			\item Per calcolare il colore applico il modello locale (di Phong).
+			\item Computazionalmente pesante trovare le intersezioni raggio-oggetti.
+			\item Si possono facilmente aggiungere le ombre tracciando il raggio che
+			connette il punto d’intersezione con la sorgente luminosa (shadow
+			ray ): se esso interseca qualche oggetto allora il punto è in ombra.
+		\end{itemize}
+		Il calcolo delle intersezioni si può fare con tutti i tipi di primitiva (e di modelli) visti: Sfere, piani, poligoni, poliedri... È computazionalmente pesante, si possono usare strutture dati per semplificare il problema. Es. strutture dati gerarchiche, volumi di contenimento, octrees, kd trees etc.
+		
+		\bigskip
+		
+		L’eventuale punto di intersezione tra la retta $ P = Q + t\vec{v} $ ed il
+		piano $ (O - P ) \cdot\vec{u} = 0 $ deve soddisfare l’equazione:
+		\[
+			(O - Q - t\vec{v}) \cdot\vec{u} = 0
+		\]
+		Dunque si ottiene per $ t_0 $ la seguente soluzione:
+		\[
+			t_0 = \dfrac{(O - Q) \cdot\vec{u}}{\vec{u}\cdot\vec{v}}
+		\]
+		che ha senso se $ \vec{u}\cdot\vec{v} = 0 $. Infatti se $ \vec{u}\cdot\vec{v} = 0 $ la retta è parallela al piano (e non lo interseca).
+		
+		\textbf{Intersezione retta-poligono}:\\
+		Per prima cosa si fa un test per vedere se la retta interseca il piano contenente il poligono.
+		Quest’ultimo è descrivibile semplicemente da uno dei vertici del poligono e dalla normale a questo. Se la retta non interseca tale piano allora sicuramente non
+		interseca nemmeno il poligono. Nel caso di intersezione bisogna determinare se il punto di
+		intersezione giace o meno nel poligono. Assumiamo che il poligono P sia convesso. In tal caso un punto $ R $ giace all’interno di $ P $ se e solo se $ R $ si trova nel semipiano
+		sinistro di tutte le rette orientate che contengono gli spigoli
+		(la retta orientata da $ P_i $ a $ P_{i+1} \quad \forall i = 1 \dots n  $).
+		
+		[Esercizio: trovare un modo per verificare che $ R $ giace a sinistra della
+		retta orientata $ P Q $ ]
+		
+	\subsubsection{Riduzione della complessità}	
+		Implementare un ray-tracer elementare è molto semplice. Basta controllare l’intersezione di ciascun raggio con ogni primitiva (triangolo). Questo ha un costo lineare nel numero delle
+		primitive ed è praticabile solo per modelli semplici.\\
+		Per raggiungere costo sub-lineare sono necessarie strutture di indicizzazione spaziale, che consentano di limitare a-priori (senza fare il test) il numero delle primitive per le quali il
+		test di intersezione viene effettuato.\\
+		Queste tecniche di sfoltimento si chiamano anche \textbf{pruning}, culling o broad phase (contrapposto al narrow phase dove invece si calcolano le intersezioni (con test stringenti).\\
+		Tipicamente si considerano oggetti convessi. Se non lo sono, si spezzano in parti convesse.
+		
+	\subsubsection{Volumi di contenimento}
+		Si racchiudono gli oggetti in solidi ("volumi") che li
+		contengono (bounding volume), con i quali sia facile testare
+		l’intersezione: se non c’è intersezione con il bounding volume
+		non c’è intersezione con l’oggetto racchiuso.\\
+		Questo non rende sub-lineare la complessità della ricerca delle
+		intersezioni, ma semplifica le operazioni, e dunque sortisce nella
+		pratica un miglioramento dei tempi.\\
+		Tipici volumi di contenimento sono sfere, parallelepipedi con i
+		lati paralleli agli assi cartesiani (AABB, da axis aligned
+		bounding box), oppure parallelepipedi generici (OBB, da
+		oriented bounding box).\\
+		
+		\begin{center}
+			\includegraphics[scale=0.5]{volumi}
+		\end{center}
+		
+	\subsubsection{Partizionamento spaziale}
+		Si suddivide lo spazio in celle, tipicamente cubiche (come una
+		voxelizzazione grossolana). Si visitano le celle intersecate dal raggio (come Bresenham) e
+		solo le primitive contenute in tali celle sono intersecati con il
+		raggio.
+		
+	\subsubsection{Volumi di contenimento gerarchici}
+		Si costruisce una gerarchia di volumi di contenimento, dove al livello più alto si ha un volume che racchiude tutta la scene, ed al livello più basso si hanno volumi di contenimento per i singoli oggetti (o per un numero prefissato di primitive). È una struttura organizzata bottom-up. È stata introdotta proprio per il ray tracing.
+		
+		\begin{center}
+			\includegraphics[scale=0.5]{volumiger}
+		\end{center}
+	
+	\subsubsection{Octree}
+	La costruzione dell’Octree avviene come di consueto: una cella viene suddivisa ricorsivamente fino a che non contiene un numero prefissato di primitive. L’attraversamento (sequenziale) avviene nel seguente modo:
+	\begin{itemize}
+		\item Interseca il raggio con il cubo che racchiude tutta la scena (nodo
+		radice) e trova un punto P sul raggio “leggermente” all’interno.
+		\item Visita l’albero per scoprire a quale cella (foglia) appartiene P .
+		\item Interseca il raggio con le facce della cella per trovare la faccia di
+		uscita.
+		\item La prossima cella è quella adiecente alla faccia di uscita.
+	\end{itemize}
+	Come nel caso della partizione uniforme, solo le primitive contenute nelle celle visitate sono intersecati con il raggio. Il vantaggio è che la divisione si adatta agli oggetti della scena
+	invece di essere fissa ed uniforme.
+	
+	\begin{center}
+		\includegraphics[scale=0.5]{octree3}
+		\hspace{1cm}
+		\includegraphics[scale=0.5]{octree2}
+	\end{center}
+
+	\subsubsection{KD-Tree}
+	La costruzione avviene in modo che ogni piano divida a metà il numero di oggetti rimanenti. L’attraversamento può avvenire in modo sequenziale (come quello visto per l’Octree) oppure in modo ricorsivo, sfruttando la struttura dell’albero. Vediamo quest’ultimo:
+	\begin{quote}
+		Il raggio viene intersecato ricorsivamente con le regioni definite
+		dall'albero. Visitando l’albero, il raggio viene intersecato con la
+		regione corrente e ricorsivamente suddiviso in intervalli. Solo gli
+		oggetti contenuti nelle foglie che alla fine intersecano un
+		intervallo di raggio sono controllati.
+	\end{quote}
+	
+	\subsubsection{Scene}
+	Per fare il rendering:
+	\begin{itemize}
+		\item Creiamo i modelli degli oggetti.
+		\item Li trasformiamo geometricamente e disponiamo nella scena.
+		\item Definiamo la telecamera virtuale.
+		\item Facciamo ray-casting (o rasterizzazione). Concettualmente semplice (computazionalmente meno)
+	\end{itemize}
+	
+	\section{Rasterizzazione}
+	
+	Abbiamo descritto la procedura intuitiva del ray-casting. Abbiamo tuttavia già visto che le applicazioni grafiche usano un metodo diverso. Perché?
+	Anche il solo ray casting con un modello di illuminazione locale è troppo oneroso in termini computazionali, a causa dei calcoli delle
+	intersezioni raggi-oggetti (per non parlare del ray tracing) Si usa un diverso paradigma: la rasterizzazione.
+	Non più modelli generici, ma maglie poligonali, le altre rappresentazioni si possono ricondurre a questa.
+	ray casting è invece trasversale rispetto alla modellazione della scena.
+	
+	Invece che gettare (to cast) raggi sulla scena, proietto la scena (composta di poligoni) sul piano immagine.\\
+	La proiezione di un poligono è ancora un poligono, che ha per vertici le proiezioni dei vertici\\
+	La rasterizzazione è un esempio di rendering in object-order, mentre ray-casting è un esempio di rendering in image-order..
+	\begin{center}
+		\includegraphics[scale=0.5]{raster}
+	\end{center}
+	
+	\subsection{Problemi}
+		Eliminato il calcolo delle intersezioni raggio-oggetto. Ma ho
+		molti altri problemi:
+		\begin{itemize}
+			\item \textbf{Superfici nascoste}: nel ray casting il problema di stabilire quali parti
+			della scena sono visibili e quali nascoste viene implicitamente
+			risolto: è la prima intersezione lungo il raggio che conta. Nella
+			rasterizzazione, quando proietto i poligoni, devo stabilire quali sono
+			visibili (e dunque da disegnare) e quali no.
+			\item \textbf{Clipping}: nel ray casting gli oggetti al di fuori del volume di vista
+			vengono implicitamente scartati. Nella rasterizzazione devo stabilire
+			esplicitamente quali poligoni entrano nel volume di vista e quali no.
+			Quelli a cavallo vanno tagliati.
+			\item \textbf{Scan-conversion}: la proiezione dei poligoni sul piano immagine non
+			tiene conto della natura discreta dell’immagine stessa. Alla fine devo
+			disegnare un poligono su una matrice di pixel, decidendo dunque
+			quali pixel vi appartengono e quali no.
+			\item \textbf{Shading interpolativo}: Nel ray casting il colore di ogni pixel deriva
+			dall’applicazione del modello di illuminazione al corrispondente
+			punto della scena. Nel nuovo paradigma gli unici punti collegati
+			esplicitamente a punti della scena sono i vertici dei poligoni. Per
+			questi ultimi si può assegnare un colore, e per quelli interni bisogna
+			interpolare (abbiamo visto come...).
+			\item \textbf{Effetti globali di illuminazione}: Nel ray casting era facile ottenere le
+			ombre tracciando gli shadow rays. Più in generale, con il ray-tracing
+			si possono ottenere effetti di illuminazione globale che invece nella
+			rasterizzazione richiedono trucchi più o meno elaborati (oppure se
+			ne fa a meno).
+		\end{itemize}
+		La soluzione di questi problemi è implementata nella \textbf{pipeline} in modo efficiente e la rasterizzazione risulta più veloce del ray casting.
+		
+		\bigskip
+		
+		\begin{center}
+			\includegraphics[scale=0.3]{pipeline}
+		\end{center}
+		
+		Avevamo già visto questo schema. Si parte da una lista di primitive (triangoli)
+		Si operano una serie di processi a catena (pipeline), parte in CPU, parte in GPU. La pipeline è divisa in due parti: la prima geometrica, la seconda “raster” che lavora sui pixel dell'immagine (la vera rasterizzazione).
+		
+		\bigskip
+				
+		In OpenGL possiamo considerare la pipeline grafica come una macchina a stati ove si definiscono delle primitive e delle operazioni che le modificano.\\
+		Il programma definisce queste e le passa alla pipeline che dà in ouput le immagini
+		Primitive di due tipi: \textbf{geometriche} e \textbf{raster}. Vediamo ora quali sono le operazioni base per realizzare la visualizzazione di una scena triangolata.
+	
+	
+	\subsection{Pipeline geometrica}
+		Devo 
+		\begin{enumerate}
+			\item mettere assieme gli oggetti della scena
+			\item rappresentare gli oggetti nel sistema di riferimento della telecamera virtuale. \item Proiettarli. 
+			\item Posso applicare le varie trasformazioni geometriche.
+		\end{enumerate}
+		
+		\begin{center}
+			\includegraphics[scale=0.3]{pipelineg}
+		\end{center}
+
+		Quindi metto tutti gli oggetti con trasformazioni “di modellazione” (traslazioni, rotazioni, scalature) in un riferimento “coordinate mondo”. Poi devo \textbf{proiettare} sul piano immagine. Avviene quindi una \textbf{proiezione prospettica o affine}.
+		
+		\begin{center}
+			\includegraphics[scale=0.2]{pipelineg1}
+			\hspace{1cm}
+			\includegraphics[scale=0.2]{pipelineg2}
+		\end{center}
+	
+	\subsection{Trasformazione di vista}
+		Supponiamo di usare la proiezione prospettica. Devo passare in coordinate solidali con la camera (view space, come in figura) e definire cosa “vedo” dato che lavorando in object order devo buttare via il resto (clipping)
+		
+		\begin{multicols}{2}
+			\textbf{Convenzioni:}\\
+			Il piano immagine è davanti alla telecamera a distanza $ 1 $ ($ d $ era solo un fattore di scala globale).\\
+			L’angolo di vista (solido) si assegna mediante l’angolo di vista (verticale) $ \theta $ ed il fattore di aspetto $ a = w/h $ della finestra di vista.
+			
+			\columnbreak
+			
+			\includegraphics[scale=0.5]{pipelineg3}
+			
+		\end{multicols}
+	
+		\noindent
+		\textbf{Volume di vista}\\
+		La piramide di vista, in principio semi-infinita, viene limitata da due piani paralleli al piano di vista: il piano di taglio anteriore (front clippig plane) e quello posteriore (back clipping plane). Il solido risultante è un frustum, e prende il nome specifico di frustum di vista (view frustum), o volume di vista (view volume). Il frustum di vista è la regione di spazio nel mondo che può apparire sulla finestra di vista.
+		
+		\begin{center}
+			\includegraphics[scale=0.15]{pipelineg4}
+		\end{center}
+		Gli oggetti che cadono dentro il volume di vista vengono disegnati. Per proiettarli con $ M $ o ($ M_{\perp} $ ) le coordinate devono essere trasformate nello spazio vista, con una trasformazione rigida, detta trasformazione di vista. Si noti che abbiamo messo il piano vista davanti al centro di proiezione, ma l’asse $ Z $ punta “indietro”, quindi la matrice di proiezione rimane la stessa vista prima (con $ d = 1 $):
+		\[
+			M =
+			\begin{pmatrix}
+				1 & 0 & 0 & 0 \\
+				0 & 1 & 0 & 0 \\
+				0 & 0 & -\dfrac{1}{d} & 0
+			\end{pmatrix}
+		\]
+	
+	
+	\subsection{Trasformazione prospettica}
+		\begin{multicols}{2}
+			La proiezione prospettica $ M $ potrebbe essere applicata ai punti $ P $ (vertici dei triangoli) espressi nello spazio vista ottenendo le coordinate sul piano immagine.
+			Invece si fa una cosa più contorta: si applica la “trasformazione prospettica”, che mappa il frustum in un parallelepipedo retto (volume di vista canonico), poi mappato sul piano immagine con una proiezione ortografica. \\
+			Motivo: semplificare le operazioni di clipping (buttar via ciò che sta fuori).
+			
+			\columnbreak
+			
+			\begin{center}
+				\includegraphics[scale=0.6]{pipelineg5}
+			\end{center}
+			
+		\end{multicols}
+	
+		Consideriamo la matrice $ 4 \times 4 N $, non singolare (simile alla $ M $) (che prende il nome di matrice di trasformazione o di normalizzazione prospettica).
+		\[
+			N =
+			\begin{pmatrix}
+				1 & 0 & 0 & 0 \\
+				0 & 1 & 0 & 0 \\
+				0 & 0 & \alpha & \beta \\
+				0 & 0 & -1 & 0	
+			\end{pmatrix}
+		\]
+		Applicando $ N $ a $ P $ si ottiene la 4-pla $ (x, y, \alpha z + \beta,-z) $ che, dopo la divisione prospettica diventa $ (-x/z,-y/z, -\alpha-\beta/z) $. Le prime due componenti sono identiche alla proiezione standard, ma la terza componente (pseudo-profondità) è diversa: 
+		$ z_s = \alpha z +\beta, -z $. per valori di $ \alpha, \beta $ fissati è una funzione monotona di $ z $. La relazione tra $ z $ e $ z_s $ è non lineare, ma l’ordinamento sulla
+		profondità è conservato.
+	
+		\noindent
+		\textbf{Volume di vista canonico}\\
+		La trasformazione (normalizzazione) prospettica N mappa punti 3D in punti 3D, e scegliendo opportunamente $ \alpha, \beta $ possiamo fare in modo che mappi il frustum di vista in un parallelepipedo con coordinate arbitrarie. Gli oggetti vengono distorti di conseguenza.\\
+		Proiettando questo parallelepipedo ortogonalmente (eliminando la terza coordinata, cioè 
+		$ z_s $ ) si ottiene la proiezione prospettica desiderata. In OpenGL il volume di vista canonico è un cubo:	$\quad -1\leq x\leq 1 \quad -1\leq y\leq 1  \quad -1\leq z\leq 1 $.
+		
+		Nel volume di vista canonico il back clipping plane ha equazione $ z_s = 1 $, ed il front clipping plane $ z_s = -1 $. Nel sistema di riferimento camera il front clipping plane di
+		trova a distanza $ n $ dall’origine ed il back clipping plane a distanza $ f $.\\
+		Vogliamo dunque scegliere $ \alpha, \beta $ in modo che l’intervallo di profondità $ z [-n,-f] $ venga mappato in $ z_s [-1, 1] $ (notare l’inversione di $ z $).
+		Si ottiene:
+		\[
+			\alpha = \dfrac{f + n}{n - f} \quad \beta = -\dfrac{2fn}{n - f}
+		\]
+	
+		Se l’angolo di vista $ \theta = 90 $ ed il fattore d’aspetto $ a = 1 $, allora la matrice $ N $ con $ \alpha , \beta $ calcolati come sopra trasforma il frustum nel volume di vista canonico.
+		Nel caso generale, bisogna considerare $ \theta $ e $ a $, moltiplicando $ N $ per la seguente matrice di scalatura, dove $ \gamma = 1/\tan(\theta/2) $ che ha l’effetto di trasformare la piramide generica in piramide retta a base quadrata. Attenzione: questa matrice agisce anche sulle coordinate $ x $ ed $ y $. La matrice $  $ viene chiamata anche (in terminologia OpenGL)
+		matrice di proiezione (projection matrix) anche se, a rigore, non effettua una proiezione dello spazio 3D, ma una sua trasformazione.
+	
+		\textbf{Caso ortogonale}\\
+		Se invece si vuole effettuare una proiezione ortogonale (ortografica), basta sostituire la trasformazione prospettica con una trasformazione (affine) che mappa il volume di vista
+		(un parallelepipedo in questo caso) nel volume di vista canonico. Nel caso della proiezione ortografica, il volume di vista è già un parallelepipedo, e basta trasformarlo in quello canonico con una opportuna matrice di scalatura.
+	
+	
+	\subsection{Trasformazione viewport}
+		\textbf{Viewport}: porzione del display all’interno della quale viene visualizzato il risultato del rendering. La trasformazione viewport si applica dopo la proiezione
+		ortografica e dipende dalle caratteristiche fisiche del display. Ai punti proiettati dal volume di vista canonico viene applicata una matrice di trasformazione affine che: 
+		\begin{itemize}
+			\item ripristina il fattore di aspetto corretto per l’immagine (distorto dalla trasformazione prospettica)
+			\item scala e trasla l’immagine.
+		\end{itemize}
+	
+		Quindi la pipeline geometrica coinvolge diversi sistemi di riferimento e trasformazioni tra di essi. In ciascuno di essi avvengono delle operazioni, da parte del codice o della pipeline hardware.
+		
+		\begin{center}
+			\includegraphics[scale=0.5]{pipelineg6}
+		\end{center}
+		
+		Nomi
+		I nomi possono variare, ma il senso è quello
+	
+	
+		\textbf{Operazioni}
+		\begin{itemize}
+			\item \textbf{Clipping}: devo eliminare le parti fuori dal frustum e tagliare i
+			poligoni a metà: ricavo lista di poligoni ridotta
+			\item \textbf{Illumination}: calcolo il colore con l'equazione semplificata del
+			rendering sul vertice (alternativa: farlo dopo)
+			\item \textbf{Scan conversion}: trovo i pixel sovrapposti alla proiezione del
+			triangolo: genero i frammenti (pixel)
+			\item \textbf{Illumination/shading}: calcolo il colore del frammento
+			\begin{itemize}
+				\item Interpolando i colori dei vertici
+				\item Oppure calcolando a questo punto l'illuminazione
+			\end{itemize}
+			Rimuovo superfici nascoste (Back-face culling).\\
+			Mappatura texture, effetti di miscelazione di immagini diverse,
+			ecc.
+		\end{itemize}
+
+	\subsection{Clipping}
+		L’operazione di clipping consiste nell’individuare (e rimuovere) le primitive grafiche (o parti di esse) esterne ad una finestra rettangolare o esaedrale oppure, più in generale,
+		esterne ad un poligono o poliedro convesso. In computer graphics si è interessati al clipping rispetto a rettangoli o esaedriClipping (generalità). Non interessa tutto ciò che non è nel view frustumClipping di un punto.\\ 
+		\textbf{Clipping di un punto}: un punto è all’interno del rettangolo di .clipping se e solo se sono soddisfatte le 4 disuguaglianze:
+		$ x_{min} \leq x \leq x_{max} ,\quad y_{min} \leq y \leq y_{max} $
+		
+		\begin{tikzpicture}[scale=0.4]
+			\draw (2,3) rectangle (6,0); 
+			\draw[densely dashed] (0,3) node[left] {$ y = y_{max} $} -- (8,3);
+			\draw[densely dashed] (0,0) node[left] {$ y = y_{min} $} -- (8,0);
+			\draw[densely dashed] (2,-2)node[below] {$ x = x_{min} $}  -- (2,5);
+			\draw[densely dashed] (6,-2)node[below] {$ x = x_{max} $}  -- (6,5);
+			\fill (5,2) circle (5pt) coordinate[label=below right:$ P $];
+		\end{tikzpicture}
+
+	\noindent
+		\textbf{Clipping di un segmento}: necessario analizzare le posizioni dei
+		suoi punti estremi.
+		\begin{itemize}
+			\item Se gli estremi sono entrambi interni al rettangolo di clipping, il
+			segmento è interno;
+			\item Se un estremo è interno e l’altro esterno, allora il segmento
+			interseca il rettangolo di clipping ed è necessario determinare
+			l’intersezione;
+			\item Se entrambi gli estremi sono esterni al rettangolo, il segmento può
+			intersecare o meno il rettangolo di clipping e si rende necessaria
+			una analisi più accurata per individuare le eventuali parti interne
+			del segmento.
+		\end{itemize}
+		
+		\subsubsection{Algoritmi}
+		\textbf{Diretto}: calcolo le intersezioni retta/rettangolo di clipping:
+		inefficiente.\\
+		\textbf{Cohen-Sutherland}: codifica binaria regioni, in base ai codici
+		degli estremi (and logico) capisco le intersezioni.
+		
+		\begin{tikzpicture}[scale=0.4]
+			\draw (2,3) rectangle (6,0); 
+			\draw[densely dashed] (0,3) node[left] {$ y = y_{max} $} -- (8,3);
+			\draw[densely dashed] (0,0) node[left] {$ y = y_{min} $} -- (8,0);
+			\draw[densely dashed] (2,-2)node[below] {$ x = x_{min} $}  -- (2,5);
+			\draw[densely dashed] (6,-2)node[below] {$ x = x_{max} $}  -- (6,5);
+			\node at (1,4) {1001}; \node at (4,4) {1000}; \node at (7,4) {1010}; 
+			\node at (1,1.5) {0001}; \node at (4,1.5) {0000}; \node at (7,1.5) {0010}; 
+			\node at (1,-1) {0101}; \node at (4,-1) {0100}; \node at (7,-1) {0110}; 
+		\end{tikzpicture}
+		
+	\textbf{Segmenti: Liang-Barsky}: Un po' più efficiente. 
+	\begin{itemize}
+		\item Si scrive il segmento in forma parametrica ($ t $ in $ [0 1] $)
+		\[
+			P_0 +(P_1 - P_0)t= P_0 +t\vec{v}
+		\]  
+		\item Si trovano le intersezioni con le rette/piani di clipping. 
+		\item Si calcolano i valori di t di entrata e uscita dalla regione interna. 
+		\item Si trova il segmento dopo clipping prendendo il massimo t dei punti di entrata se >0 e il minimo in uscita (se <1). 
+		\item Direttamente applicabile anche in 3D.
+	\end{itemize}
+	
+	\begin{multicols}{2}
+		\noindent
+		\textbf{Clipping di un poligono}: \\
+		è un’operazione più complessa rispetto al clipping di un
+	segmento per diversi aspetti: 
+	\begin{itemize}
+		\item Dal semplice poligono convesso (A);
+		\item Al poligono concavo che origina più componenti connesse (B);
+		\item In ogni caso il risultato consta di uno o più poligoni e non solo segmenti sconnessi (C).
+	\end{itemize}
+	
+	\columnbreak
+	
+	\begin{tikzpicture}[>=latex, scale=0.55]
+		\draw[fill=Green!50!] (0,4) -- (1,6) -- (3,4) -- cycle;
+		\draw[fill=Green!50!] (6,4) -- (8,4) -- (7,5) -- (6,5) -- cycle;
+		\draw[fill=Green!50!] (0,2) -- (2.5,2) -- (2.5,0.5) -- (0.5,1.5) -- (0.5,0) -- 
+			(2,0) -- (2,-2) -- (0,-2) -- cycle;
+		\draw[fill=Green!50!] (6.5,1) -- (7.5,0.5) -- (7.5,1) -- cycle;
+		\draw[fill=Green!50!] (6,0) rectangle (7,-1);
+		\draw[fill=Green!50!] (1,-3) -- (2,-3) -- (3,-4) -- (1,-4) -- cycle;
+		\draw (7,-3) -- (8,-4) -- (6,-4) ;
+		
+		\draw[thick] (1,5) rectangle (4,3); \draw[thick] (6,5) rectangle (9,3);
+		\draw[thick] (1,1) rectangle (4,-1); \draw[thick] (6,1) rectangle (9,-1);
+		\draw[dashed] (1,-3) rectangle (4,-5); \draw[dashed] (6,-3) rectangle (9,-5);
+		
+		\draw[->] (4.5,4) -- (5.5,4); \draw[->] (4.5,0) -- (5.5,0);
+		
+		\node[below] at (5,3) {A}; \node[below] at (5,-1) {B}; \node[below] at (5,-5) {C};
+	\end{tikzpicture}
+	\end{multicols}
+	
+	\noindent
+	L’approccio \textbf{diretto} consiste nel confrontare ogni lato del poligono con le 4 rette che delimitano il rettangolo di clipping; Questo approccio implica l’esecuzione di operazioni costose (la determinazione di intersezioni) e spesso inutili. 
+	
+	\noindent
+	\textbf{Clipping di un poligono (Sutherland-Hodgman)}:\\
+	Approccio divide et impera; Il problema è ricondotto al clipping di un poligono generico rispetto ad una retta; La procedura è applicata sequenzialmente alle 4 rette che definiscono il Poligono originale rettangolo di clipping.
+	
+	\noindent
+	\textbf{Clipping con bounding box}
+	Altro approccio: calcolo la bounding box della primitiva
+	Considero intersezione tra bounding box e regione di vista
+	Solo se le regioni si intersecano faccio clipping
+	(sull'intersezione).
+	
+	\subsection{Rimozione superfici nascoste (HSR)}
+	Gli oggetti della scena sono generalmente opachi;\\
+	Gli oggetti più vicini all’osservatore possono nascondere (occludere) la vista (totale o parziale) di oggetti più lontani; Il problema della rimozione delle superfici nascoste (\textbf{HSR, Hidden surface removal}) consiste nel determinare le parti della
+	scena non visibili dall’osservatore;\\
+	La rimozione delle superfici nascoste non è solo dipendente dalla disposizione degli oggetti nella scena ma anche dalla relazione esistente tra oggetti e posizione dell’osservatore.\\
+	Quindi in una applicazione interattiva se sposto il punto di vista cambia la visibilità degli oggetti.
+	
+	\bigskip
+	
+	Stiamo analizzando la parte “geometrica” della pipeline grafica. La rimozione però non è necessariamente fatta qui:
+	\begin{itemize}
+		\item Algoritmi che operano in object-space determinano, per ogni primitiva geometrica della scena, le parti della primitiva che non risultano oscurate da altre primitive nella scena. Gli algoritmi operano nello spazio di definizione delle primitive;
+		
+		[Applicazione o Geometry subsystem]
+		
+		\item Algoritmi che operano in image-space determinano, per ogni punto “significativo” del piano di proiezione (ogni pixel del piano del piano immagine), la primitiva geometrica visibile “attraverso” quel punto. Gli algoritmi operano nello spazio immagine della scena proiettata.
+		
+		[Raster subsystem]
+	\end{itemize}
+	
+	
+	\textit{Conviene operare in object space?}\\
+	Nell’ipotesi di una scena 3D composta da k primitive geometriche planari ed opache, si può derivare un generico algoritmo di tipo object-space analizzando gli oggetti a coppie;
+	Fissato un punto di vista, le relazioni spaziali di due primitive geometriche A e B possono essere:
+	\begin{itemize}
+		\item $ A [B] $ oscura $ B [A] $; solo $ A [B] $ è visualizzata;
+		\item $ A $ e $ B $ sono completamente visibili; entrambe le primitive sono
+		visualizzate;
+		\item $ A [B] $ occlude parzialmente $ B [A] $
+	\end{itemize}
+	è necessario individuare le parti visibili di $ B [A] $.
+%	HSR: Object-space
+%	A oscura B: tutti i punti di A
+%	sono più vicini
+%	all’osservatore di tutti i
+%	punti di B e la proiezione di
+%	B sul piano di vista ricade
+%	all’interno della proiezione di
+%	A. Visualizza A;
+%	B oscura A: tutti i punti di B
+%	sono più vicini
+%	all’osservatore di tutti i
+%	punti di A e la proiezione di
+%	A sul piano di vista ricade
+%	all’interno della proiezione di
+%	B. Visualizza B.
+%	A
+%	BHSR: Object-space
+%	A e B non si occludono: le
+%	due proiezioni di A e B sul
+%	piano di vista sono disgiunte;
+%	Visualizza A e B.
+%	A
+%	BHSR: Object-space
+%	A e B si oscurano
+%	parzialmente:
+%	l’intersezione tra le due
+%	proiezioni di A e B sul piano
+%	di vista è non nulla e diversa
+%	sia dalla proiezione di A che
+%	da quella di B.
+%	Individua le parti visibili di
+%	ciascuna primitiva.
+%	A
+%	B
+%	A
+%	BHSR: Object-space
+%	Un possibile algoritmo risolutivo:
+%	Proiettare le k primitive geometriche;
+%	Al generico passo analizzare la i-esima primitiva (i=1, ..., k-1) con le
+%	rimanenti k   –   i in modo da individuare le parti visibili.
+%	La complessità dell’approccio object-space risulta di ordine
+%	O(k 2 )
+%	L’approccio object-space è consigliabile solo quando le
+%	primitive nella scena sono relativamente poche.
+%	Si può aumentare l'efficienza?Sì ricordiamo le tecniche di suddivisione spaziale
+%	Riorganizzare gli oggetti della scena (o le loro proiezioni sul piano
+%	immagine) in gruppi coerenti dal punto di vista spaziale;
+%	Si effettua di solito mediante griglie 2D o 3D che servono a limitare i
+%	confronti in profondità tra le primitive della scena.
+%	Ma per oggetti con molti triangoli resterebbe
+%	Quindi normalmente l'operazione viene fatta a livello in image
+%	space, cioé nella parte di pipeline che vedremo nella prossima
+%	lezione, cioè a livello dei pixelHSR: Image-space
+%	E' quello che normalmente si
+%	fa nella pipeline grafica
+%	In pratica si tratta di
+%	ordinare per profondità le
+%	proiezioni delle primitive su
+%	ciascun pixel dell'immagine
+%	finale e tenere solo la
+%	proiezione che avviene da
+%	più vicino
+%	La rimozione delle superfici
+%	occluse è sempre un
+%	ordinamento per distanza
+%	lungo il proiettoreHSR: Image-space
+%	L’operazione fondamentale dell’approccio image-space è il
+%	calcolo delle intersezioni tra semirette e piani di
+%	appartenenza delle primitive (per ogni semiretta al più k
+%	intersezioni);
+%	Anche se per un display n x m, questa operazione deve essere
+%	eseguita n x m x k volte, la complessità risulta comunque di
+%	ordine O(k)
+%	Sia nell’approccio object-space che in quello image-space la
+%	rimozione delle superfici nascoste è riconducibile ad un
+%	problema di ordinamento (in profondità).Con e senza rimozione superfici
+%	nascosteBack-face culling
+%	Alcune facce invisibili sono più facilmente rimosse
+%	Back-face culling (Eliminazione delle facce posteriori)
+%	Se gli oggetti della scena sono rappresentati da poliedri solidi
+%	chiusi (cioè le facce poligonali dei poliedri delimitano
+%	completamente i volumi dei solidi);
+%	Se ogni faccia poligonale è stata modellata in modo tale che la
+%	normale ad essa sia diretta verso l’esterno del poliedro di
+%	appartenenza;
+%	Se nessuna parte del poliedro viene tagliata dal front clipping
+%	plane ...Back-face culling
+%	Nelle ipotesi precedenti...
+%	Le facce la cui normale
+%	forma angoli superiori a
+%	±90° con la direzione di
+%	vista possono essere visibili;
+%	Le facce la cui normale
+%	forma angoli inferiori a ±90°
+%	con la direzione di vista
+%	certamente non sono
+%	visibili ;Back-face culling
+%	Per ridurre il carico di lavoro richiesto per la rimozione delle
+%	superfici nascoste può essere quindi opportuno eliminare
+%	inizialmente tutti le primitive geometriche la cui normale è
+%	orientata verso il semispazio opposto all’osservatore, non
+%	visibile all’osservatore;
+%	Indicato con  l’angolo tra la normale e l’osservatore, la
+%	primitiva in esame deve essere rimossa se -90°    90°,
+%	cioè se cos   0.
+%	Invece di calcolare la quantità
+%	cos  possiamo valutare il
+%	prodotto scalare n·v  0Back-face culling
+%	Se l’operazione è eseguita in coordinate normalizzate di vista
+%	(dopo aver eseguito la proiezione) la determinazione delle
+%	facce back-facing si riduce ad un controllo del segno della
+%	coordinata z delle normali: ad un segno positivo
+%	corrispondono facce front-facing, ad un segno negativo facce
+%	back-facing;
+%	Questo procedimento (detto back-face culling) consente, in
+%	media, di dimezzare il tempo necessario per il rendering di
+%	oggetti solidi dato che, sempre in media, circa metà delle
+%	facce di un poliedro sono back-facing e quindi la loro
+%	visualizzazione sarebbe comunque inutile.Riepilogo
+%	Spazio Oggetto (object space): dove ciascun singolo oggetto viene
+%	·
+%	·
+%	·
+%	·
+%	definito. Detto anche local space o modeling space
+%	Spazio Mondo (world space): dove si costruisce. Si passa dallo spazio
+%	oggetto allo spazio mondo mediante la trasformazione di modellazione.
+%	Si chiama anche application space.
+%	Spazio Vista (view space): centrato sulla telecamera virtuale, che
+%	definisce, assieme alla finestra di vista ed ai piani di taglio, il frustum di
+%	vista. Detto anche camera space o eye space
+%	Spazio schermo 3-D (3D-screen space): volume di vista canonico, che si
+%	ottiene trasformando il frustum di vista in un parallelepipedo. Molte
+%	operazioni del processo di rendering avvengono qui. Detto anche 3D
+%	normalized device coordinate system (NDC) o normalized projection
+%	coordinate system.
+%	Spazio Immagine (image space): sistema di coordinate nel display fisico
+%	(pixel). Si ottiene proiettando ortogonalmente il volume di vista
+%	canonico ed applicando la trasformazione di viewport. Si chiama anche
+%	(physical) device coordinate system, o screen coordinate system.
+%	
+%	
+%	A questo punto
+%	Abbiamo mappato i triangoli sul piano immagine nella regione
+%	del “sensore” della telecamera virtuale
+%	Abbiamo eliminato le parti esterne al volume di vista (e in
+%	parte eliminato le parti occluse)
+%	Ora dobbiamo sovrapporre i triangoli ai pixel dell'immagine
+%	discretizzata e colorare i pixel corrispondenti sulla base di
+%	modello di illuminazione e caratteristiche della geometria
+%	Questo è compito della seconda parte della pipeline cioè del
+%	cosiddettto “raster” subsystem
+	
 \end{document}	
