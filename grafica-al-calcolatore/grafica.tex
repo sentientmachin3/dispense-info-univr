@@ -2580,7 +2580,7 @@ typedef struct {
 			
 			\bigskip
 			
-			La specifica esatta della BRDF per superfici reali è estramemente
+			La specifica esatta della BRDF per superfici reali è estremamente
 			difficile da ottenere.\\
 			Nella grafica al calcolatore si usano approssimazioni della
 			BRDF. Le due più semplici e più usate modellano due
@@ -2590,7 +2590,299 @@ typedef struct {
 			perfetto, che riflette il raggio incidente lungo una direzione
 			che forma con la normale lo	stesso angolo formato dalla
 			direzione di incidenza.
+			\begin{center}
+				\includegraphics[scale=0.15]{brdf1}
+			\end{center}
 			
-			\includegraphics[scale=0.15]{brdf1}
+		\subsubsection{Diffusione e riflessione speculare}
+			In un materiale opaco (diffusivo) la luce viene riflessa in modo uniforme
+			in tutte le direzioni. \\
+			In un materiale lucido (glossy) il raggio incidente viene disperso in un cono attorno alla direzione di riflessione perfetta.\\
+			Tipicamente le BRDF che si usano in Grafica mescolano
+			diffusione e riflessione speculare.\\
+			Abbiamo omesso la dipendenza dalla lunghezza d’onda, ma la
+			BRDF, in generale, dipende anche da essa: le superfici appaiono
+			colorate per questo: la luce bianca (spettro uniforme) incide
+			sulla superficie e grazie all’assorbimento selettivo delle
+			componenti cromatiche la luce riflessa ha una distribuzione
+			spettrale non uniforme, ovvero è “colorata”.\\
+		
+	\subsection{Equazione del rendering}
+		La radianza riflessa in direzione $ \vec{\omega}_r $ , dovuta all'irradianza lungo
+		una direzione $ \vec{\omega_i} $ è:
+		\[
+			L_r(x, \vec{\omega_r}) = \rho(x,\vec{\omega}_i, \vec{\omega}_r)L_i (x, \vec{\omega_i} )(\vec{\omega_i} \cdot \vec{n})
+		\]
+		La radianza totale riflessa lungo $ \vec{\omega}_r $ , è la somma dei contributi
+		dovuti a tutte le possibili direzioni incidenti, $ \theta $, quindi vale:
+		\[
+			L_r(x, \vec{\omega_r}) = \int_{\Omega} \rho(x, \vec{\omega_i}, \vec{\omega_r}) 
+			L_i (x, \vec{\omega_i} )(\vec{\omega_i} \cdot \vec{n}) d\vec{\omega_i}
+		\]
+		
+		Aggiungendo la radianza emessa $ L $ e $ (x, \vec{\omega}) $ si ottiene l'
+		\textbf{equazione del rendering, o della radianza} (Kaijya, 1987), che
+		esprime la radianza totale che lascia il punto $ x $ nella direzione $ \vec{\omega} $:
+		\[
+			\boxed{L(x, \vec{\omega}) = L_e(x, \vec{\omega}) = 
+			 \int_{\Omega} \rho(x, \vec{\omega_i}, \vec{\omega_r}) 
+			L_i (x, \vec{\omega_i} )(\vec{\omega_i} \cdot \vec{n}) d\vec{\omega_i}}
+		\]
+		La radianza incidente in $ x $ lungo la direzione 
+		$ \vec{\omega}_i , L_i (x, \vec{\omega}_i) $ è uguale alla radianza emessa da un altro punto $ y $ nella direzione sotto cui $ y $ vede $ x $: 
+		$\: L_i (x, \omega_{xy} )= L_i(x, \omega_{yx} ) $ con $ \omega_i = \omega_{xy} $.\\
+		L’angolo solido infinitesimo $ d \vec{\omega} $ sotto cui $ y $ vede $ dx $ vale:
+		\[
+			d\vec{\omega} = dy \cos\theta_{yx} / \|x-y\|^2
+		\]
+		Introduciamo il termine di visibilità $ V(x,y) $ che vale 1 se e
+		solo se $ x $ è visibile da $ y $. Possiamo quindi trasformare
+		l’equazione del rendering da integrale su una semisfera di
+		direzioni ad integrale su tutte le superfici $ S $ della scena:
+		\[
+			L(x, \vec{\omega}) = L_e(x, \vec{\omega}) + \int_{y \in S} \rho(x, \vec{\omega}_{xy}, \vec{\omega}) L(y, \vec{\omega}_{yx}) G(x, y) dy 
+		\]
+		Il termine $ G(x, y) = \dfrac{\cos\theta_{xy}\cos\theta_{yx}}{\| x-y \|^2}V(x,y) $
+		dipende solo dalla geometria della scena.
+		
+		\bigskip
+		\noindent
+		Per determinare il colore del pixel nel ray casting dobbiamo risolvere l'equazione del rendering. E' ricorsiva: $ L $ è a sinistra e anche a destra!\\
+		La radianza in un punto di una superficie è determinata
+		globalmente, poiché dipende non solo dalle sorgenti luminose
+		(primarie) ma anche da tutte le altre superfici presenti nell’ambiente
+		(sorgenti secondarie): computazionalmente assai oneroso.\\
+		La disciplina della grafica al calcolatore è incentrata sulla
+		soluzione di questa equazione.\\
+		Si propongono soluzioni approssimate, in modo più o meno
+		grossolano. Si semplificano sia la BRDF che la ricorsione.\\
+		
+		\noindent
+		Per questo aspetto della ricorsione, i metodi si dividono in locali e globali.
+		\begin{itemize}
+			\item \textbf{Locali}. Si elimina la ricorsione, tenendo conto solo dell’effetto
+			diretto delle sorgenti luminose, trascurando le interriflessioni
+			nell’equazione viene considerata la radianza entrante solo lungo le
+			direzioni corrispondenti a raggi provenienti direttamente dalle
+			sorgenti luminose, la cui radianza è nota (ray casting semplice).
+			\item \textbf{Globali}. Si tiene conto della natura ricorsiva della equazione
+			della radianza, ma si trascurano alcuni fenomeni di
+			interriflessione per rendere il problema trattabile. Esempi:
+			\begin{itemize}
+				\item ray tracing, corretto solo per le riflessioni speculari
+				\item radiosity che modella solo le interriflessioni tra superfici diffusive
+			\end{itemize}
+		\end{itemize}
+		
+		
+	\subsection{Illuminazione globale e locale}
+		Per simulare realmente la fisica della luce:
+		\begin{itemize}
+			\item Occorre avere un modello locale di riflessione del raggio incidente sul
+			materiale.
+			\item Occorre modellare le interriflessioni (globale) che fanno sì
+			che l'illuminazione di ogni punto dipenda da tutta la scena
+		\end{itemize}
+		Intanto cerchiamo di definire un modello approssimato di riflessione.
+		
+		\subsubsection{Modello di Phong}
+			Un modello di illuminazione locale tratta l’interazione tra una
+			sorgente ed una singola superficie, buttando via del tutto la
+			ricorsione.\\
+			Nei modelli locali ciascun punto viene trattato
+			indipendentemente dal resto della scena (no interriflessioni,
+			no ombre, no riflessioni speculari).\\
+			Modello di illuminazione: data la normale alla superficie, il
+			materiale e la direzione di illuminazione, fornisce il colore
+			Il modello di Phong è semplice, abbastanza veloce
+			da funzionare in tempo reale e produce risultati accettabili, per
+			scene semplici.	Può essere usato come base per realizzare algoritmi di illuminazione
+			globale (ray tracing). Può essere usato per il rendering in pipeline di rasterizzazione.
+		
+			\bigskip
+		
+			\noindent
+			Modello dovuto a Phong Bui-Tran, prima metà degli anni '70.
+			Semplifica lo schema fisico di interazione:
+			\begin{itemize}
+				\item Solo sorgenti puntiformi
+				\item Calcolo locale dell’equazione di illuminazione
+				\item No inter-riflessioni
+				\item Approssimazione con due costanti della funzione di riflessione
+				\item Simula il comportamento di materiali opachi
+				\item Non modella la rifrazione: no materiali trasparenti o semi-trasparenti
+				\item Non considera le ombre proiettate
+			\end{itemize}
+			Le formule che seguono sono in un’unica banda cromatica:
+			servono per la produzione di un’immagine a diversi livelli di
+			intensità (toni di grigio) piuttosto che diversi colori.\\
+			Quando si utilizza una rappresentazione a colori RGB
+			l’equazione viene calcolata in modo indipendente per ciascuna
+			delle tre componenti cromatiche.\\
+			La luce viene considerata composta da tre componenti
+			cromatiche R,G,B. Si calcola l’intensità indipendentemente per
+			ogni componente cromatica, ottenendo un colore. 
+			Nel seguito faremo riferimento ad una singola componente.\\
+			Confondiamo “l’intensità luminosa” $ I $ con la radianza. La $ I $ è il
+			valore che viene assegnato al raggio.\\
+			Sia P il punto della superficie di cui si vuole calcolare il colore.
+			Questo equivale a calcolare l’intensità luminosa $ I_{out} $ lungo la
+			direzione $ \vec{v} $ che congiunge $ P $ con il $ COP $.\\
+			Modelliamo i comportamenti puramente “speculari” e diffusivi
+			dei materiali usando le leggi di Lambert e Fresnel.
 			
+		\subsubsection{Legge di Lambert}
+			Materiali molto opachi (es.	gesso e legno) hanno una
+			superficie che, a livello microscopico, ha piccole
+			sfaccettature che riflettono la luce in una direzione casuale.\\
+			Integrando su scala macroscopica: la luce si riflette
+			uniformemente verso tutte le direzioni, con intensità
+			proporzionale al rapporto tra la direzione del raggio incidente e
+			la normale alla superficie in quel punto.
+			
+		\subsubsection{Modellazione della riflessione diffusiva}
+			Sorgenti luminose puntiformi:
+			\begin{itemize}
+				\item posizione nella scena
+				\item intensità della luce emessa
+			\end{itemize}
+			
+			
+			Dipendenza solo dall’angolo tra la direzione della luce vista da $ P $ ,
+			ovvero $ \vec{l} $ e la normale in $ P $, che indichiamo con $ \vec{n} $ e supponiamo
+			di norma unitaria. $ \cos(\theta) = \vec{l} \cdot \vec{n} $.
+			
+			\begin{multicols}{2}
+				\includegraphics[scale=0.3]{diff}
+				
+				\columnbreak
+				
+				\noindent
+				Si approssima la funzione di riflessione diffusa della
+				superficie come una costante $ k_d $ dipendente dal materiale.\\
+				Equazione di illuminazione (solo diffusiva):
+				\[
+					I_d^{out} = Ik_d\cos\theta = Ik_d(\vec{n}\cdot\vec{l})
+				\]
+				Simula il comportamento di alcuni materiali (per esempio il
+				gesso, o il coccio) i quali riflettono la $ \vec{l} $.
+			\end{multicols}
+			La componente diffusiva si considera solo per valori di $ \theta $ compresi tra $ 0 $ e $ \pi/2 $.
+			
+		\subsubsection{Legge di Fresnel}
+			\begin{multicols}{2}
+				Quando un raggio di luce passa da un mezzo ad un altro con
+				diverso indice di rifrazione raggiunta la superficie di
+				separazione parte del raggio viene riflessa e parte trasmessa.\\
+				La somma delle energie dei due raggi è uguale all’energia del
+				raggio originale.\\
+				Se da aria a corpo solido non c’è rifrazione si ha solo
+				riflessione. L’angolo di incidenza è uguale all’angolo di
+				riflessione. Vale per materiali molto lisci e lucidi.
+				
+				\columnbreak
+				
+				\includegraphics[scale=0.25]{fresnel}
+			\end{multicols}
+			
+		\subsubsection{Modellazione della riflessione speculare}
+			Novità sostanziale: riflettore non perfetto\\
+			Approssimazione empirica di una riflessione più realistica
+			rispetto alla legge di Fresnel.\\
+			Conseguenza: \textbf{specular highlight}. Simula superfici lucide in
+			generale.
+			
+			\begin{multicols}{2}
+				
+				Dipendenza dall’angolo $ \alpha $ compreso tra la direzione di
+				riflessione ideale e la direzione di vista.
+				Riflessione massima per $ \alpha = 0 $\\
+				Decadimento più o meno rapido all’aumentare di $ \alpha $.\\
+				
+				\columnbreak
+				
+				\vspace*{-0.8cm}
+				\includegraphics[scale=0.3]{speculare}
+				
+			\end{multicols}
+			Phong (1975) introduce il seguente modello empirico per la
+			componente speculare:
+			\[
+				I_s^{out} = Ik_s (\vec{r}\cdot\vec{v})^n
+			\]
+			ove $ k_s $ è il \textit{coefficiente di riflessione speculare}
+			e $ n $ l’\textit{esponente di riflessione speculare del materiale}.
+			$ n $ modula la lucidità della superficie. Per $ n $ che tende ad infinito si ha una
+			riflessione speculare perfetta.\\
+			La formulazione di Blinn (1977) è leggermente diversa:
+			\[
+				I_s^{out} = Ik_s(\vec{n}\cdot\vec{h})^n \quad \textup{dove} \quad 
+				\vec{h} = \dfrac{1 + \vec{v}}{\| 1+\vec{v} \|}
+			\]
+			$ H $ è detto “halfway vector”, ed è il vettore che biseca
+			l’angolo formato da $ \vec{l} $ e $ \vec{v} $.\\
+			Il vantaggio della formulazione di Phong-Blinn è che gestisce
+			bene il caso in cui l’angolo tra $ r $ e $ v $ sia $ > \pi/2 $.\\
+			L’angolo tra $ \vec{n} $ ed $ \vec{h} $ non è lo stesso che c’è tra $ r $ e $ v $: lo
+			stesso esponente non produce lo stesso effetto.\\
+			Entrambi sono modelli empirici, privi di significato fisico, che
+			hanno il merito di simulare credibilmente superfici lucide.
+			
+			
+		\subsubsection{Modellazione della componente ambientale}
+			Le inter-riflessioni tra oggetti diversi nella scena non sono
+			trattate nel modello di Phong. 
+			Effetto parzialmente simulato da una componente “ambientale”:
+			\[
+				I^{out} = I_a k_a
+			\]
+			\begin{itemize}
+				\item $ I_a $ modella la radiazione luminosa totale emessa nella scena. È costante per tutti i punti di tutti gli oggetti.
+				\item $ k_a $ modella la rieflettività del materiale.
+			\end{itemize}
+			La componente ambientale aggiunge realismo alla scena
+			
+			\begin{center}
+				\includegraphics[scale=0.2]{ambientale}
+			\end{center}
+			Ma da sola non basta!
+			
+			\bigskip
+			
+			Tutti i contributi descritti si vanno a sommare per calcolare l’
+			illuminazione:
+			\[
+				I^{out} = I_a k_a + I(k_d(\vec{n}\cdot\vec{l}) + k_s(\vec{n}\cdot\vec{h})^n)
+			\]
+			Se si stanno considerando i colori, allora sia le intensità della
+			luce che i coefficienti del materiale vanno definiti per ogni
+			componente (r,g,b):
+			\begin{align*}
+				I^{r,out} &= I_a^r k_a^r + I^r(k_d^r(\vec{n}\cdot\vec{l}) + k_s^r(\vec{n}\cdot\vec{h})^n) \\
+				I^{g,out} &= I_a^r k_a^g + I^g(k_d^g(\vec{n}\cdot\vec{l}) + k_s^g(\vec{n}\cdot\vec{h})^n) \\
+				I^{b,out} &= I_a^r k_a^b + I^r(k_d^b(\vec{n}\cdot\vec{l}) + k_s^b(\vec{n}\cdot\vec{h})^n)
+			\end{align*}
+			
+			I coefficienti di diffusione e ambientali di solito sono uguali, la superficie appare del colore specificato dalla terna di coefficienti quando illuminata da luce bianca.
+			Le riflessioni speculari (highlights) invece sono di solito del colore
+			della luce: $ \quad (k_s^r = k_s^g = k_s^b = 1) $.\\
+			
+			\textbf{Note:}
+			\begin{itemize}
+				\item Si parla di modello di Phong, anche se, a rigore, il contributo di Phong
+				riguarda il solo termine speculare.
+				\item Nella forma più generale, prevede tre componenti separate: luce
+				speculare $ I_s $ (riflessa specularmente dalle superfici), luce diffusa $ I_d $
+				(diffusa dalle superfici), e luce ambientale $ I_a $
+				\item Nella trattazione sopra abbiamo assunto $ I_s =I_d = I $.
+				\item Il fatto che una sorgente di luce non emetta luce e basta, ma luce di tre
+				tipi diversi non ha un significato fisico, ma può servire a rendere il
+				modello più flessibile (per simulare effetti globali). Per esempio, la luce
+				ambientale Ia potrà in generale avere un colore diverso dalla $ I $,
+				rendendo magari più realistico l’effetto della mutua illuminazione tra le
+				superfici: in una stanza con le pareti rosse, la luce ambientale è rossa.
+				\item Inoltre, la luce ambientale è associata ad ogni sorgente e non è un
+				termine globale unico, così quando una luce viene spenta (o accesa)
+				l’illuminazione ambientale diminuisce (o aumenta).
+			\end{itemize}
 \end{document}	
