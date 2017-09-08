@@ -24,9 +24,11 @@
 \usepackage{sidecap}
 \usepackage{caption}
 \usepackage{multicol}
-\usepackage[dvipsnames]{xcolor}
+\usepackage[dvipsnames,rgb]{xcolor}
 \usepackage{graphicx}
+\usepackage{standalone}
 \usepackage{tikz}
+\usetikzlibrary{backgrounds}
 \usetikzlibrary{arrows}
 \usetikzlibrary{shapes,positioning,calc}
 \usepackage{geometry}
@@ -432,12 +434,16 @@
 			additiva o sottrattiva di tre colori primari
 			La scelta di \textbf{Rosso Verde Blu} come \textit{primari additivi} e \textbf{Giallo,
 			Magenta e Cyan (e nero)} \textit{sottrattivi} cerca di massimizzare i
-			colori rappresentabili
-		
-			\begin{wrapfloat}{figure}{I}{0pt}
-				\includegraphics[width=0.3\textwidth]{colors}
-			\end{wrapfloat}
-		
+			colori rappresentabili.
+			
+			\begingroup
+			\setlength\intextsep{0pt}
+			\begin{wrapfigure}[13]{I}{0pt}
+				\input{colors}
+				\vspace{-50pt}
+			\end{wrapfigure}
+			
+			
 			\noindent
 			L'uso delle 3 componenti di colore RGB è
 			convenzionale e deriva dalla fisiologia della
@@ -468,11 +474,12 @@
 			coni siano uguali.
 			Può cambiare in funzione dell'illuminazione.
 			
+			
 			\noindent
 			\textbf{Metamerismo}: consiste nella possibilità di ottenere un effetto ottico tale che l'occhio percepisca la stessa sensazione di colore in presenza di luce con distribuzione spettrale diversa dal colore puro in questione.
 			Si tratta di un'illusione ottica basata sulla natura dell'interpretazione del colore da parte dell'occhio umano, è possibile creare la sensazione di un colore "puro", formato, selezionando la sola lunghezza d'onda che genera quella determinata sensazione di colore miscelando a dovere più lunghezze d'onda differenti, un esempio è il bianco di una lampada fluorescente formato da spettri non uniformi, in questo caso la temperatura di colore che si trova sulle confezioni è la temperatura a cui deve essere un corpo nero perché l'occhio umano percepisca la stessa sensazione di colore.
 			Il fenomeno si ha quando colori che appaiono all'occhio identici sotto una certa luce, mostrano tonalità differenti se illuminati con una luce diversa. In sostanza c'è metamerismo quando due colori si equivalgono sotto una fonte di luce, ma risultano differenti ad altre esposizioni.
-			
+			\endgroup
 		\subsubsection{Legge di Grassman}
 			L'uomo è in grado di fare match di colori mischiando 3 (o
 			più) colori detti primari. Se la luce test $ T $ ha un certo colore:
@@ -480,13 +487,14 @@
 				T = aP1 + bP2 + cP3
 			\]
 			il match si verifica lineare.
+			\vspace{-0.25cm}
 			
 		\subsubsection{Funzioni di Matching}
 			Data una terna di colori di base possiamo studiare il matching
 			dei colori sugli osservatori in funzione della frequenza.
 			Componenti colore CIERGB ricavate dall'integrale delle
 			frequenze dello stimolo su tutto il range.
-			
+			\vspace{-0.5cm}
 			\begin{align*}
 				L &= \int \Phi (\lambda) L (\lambda) \diff\lambda \\
 				M &= \int \Phi (\lambda) M (\lambda) \diff\lambda \\
