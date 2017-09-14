@@ -9,8 +9,10 @@
 \usepackage{amsthm}
 \usepackage{commath}
 \usepackage{amssymb}
+\usepackage[output-decimal-marker={,}]{siunitx}
 \usepackage{bm}
 \usepackage{lipsum}
+\usepackage{enumitem}
 \usepackage{hyperref}
 \hypersetup{
 	hidelinks, 
@@ -18,15 +20,26 @@
 	linkcolor = black
 }
 \usepackage{wrapfig}
+\usepackage{subfig}
 \usepackage{sidecap}
 \usepackage{caption}
 \usepackage{multicol}
+\usepackage[dvipsnames,rgb]{xcolor}
 \usepackage{graphicx}
+\usepackage{standalone}
 \usepackage{tikz}
+\usetikzlibrary{backgrounds}
 \usetikzlibrary{arrows}
 \usetikzlibrary{shapes,positioning,calc}
 \usepackage{geometry}
 \geometry{a4paper, left=3cm,right=3cm,top=3cm,bottom=3cm}
+\usepackage{listings}
+\lstset{
+	language= C,
+	basicstyle=\small\ttfamily,
+	tabsize=4,
+	showstringspaces=false
+	}
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \lhead{\nouppercase{\leftmark}}
@@ -45,6 +58,7 @@
 \newcommand{\numberset}{\mathbb}
 \newcommand{\R}{\numberset{R}}
 
+\tikzstyle{box} = [rectangle, minimum width=3cm, minimum height=3cm,text centered, draw=black]
 
 \begin{document}
 	\begin{frontespizio}
@@ -420,12 +434,16 @@
 			additiva o sottrattiva di tre colori primari
 			La scelta di \textbf{Rosso Verde Blu} come \textit{primari additivi} e \textbf{Giallo,
 			Magenta e Cyan (e nero)} \textit{sottrattivi} cerca di massimizzare i
-			colori rappresentabili
-		
-			\begin{wrapfloat}{figure}{I}{0pt}
-				\includegraphics[width=0.3\textwidth]{colors}
-			\end{wrapfloat}
-		
+			colori rappresentabili.
+			
+			\begingroup
+			\setlength\intextsep{0pt}
+			\begin{wrapfigure}[13]{I}{0pt}
+				\input{colors}
+				\vspace{-50pt}
+			\end{wrapfigure}
+			
+			
 			\noindent
 			L'uso delle 3 componenti di colore RGB è
 			convenzionale e deriva dalla fisiologia della
@@ -456,11 +474,12 @@
 			coni siano uguali.
 			Può cambiare in funzione dell'illuminazione.
 			
+			
 			\noindent
 			\textbf{Metamerismo}: consiste nella possibilità di ottenere un effetto ottico tale che l'occhio percepisca la stessa sensazione di colore in presenza di luce con distribuzione spettrale diversa dal colore puro in questione.
 			Si tratta di un'illusione ottica basata sulla natura dell'interpretazione del colore da parte dell'occhio umano, è possibile creare la sensazione di un colore "puro", formato, selezionando la sola lunghezza d'onda che genera quella determinata sensazione di colore miscelando a dovere più lunghezze d'onda differenti, un esempio è il bianco di una lampada fluorescente formato da spettri non uniformi, in questo caso la temperatura di colore che si trova sulle confezioni è la temperatura a cui deve essere un corpo nero perché l'occhio umano percepisca la stessa sensazione di colore.
 			Il fenomeno si ha quando colori che appaiono all'occhio identici sotto una certa luce, mostrano tonalità differenti se illuminati con una luce diversa. In sostanza c'è metamerismo quando due colori si equivalgono sotto una fonte di luce, ma risultano differenti ad altre esposizioni.
-			
+			\endgroup
 		\subsubsection{Legge di Grassman}
 			L'uomo è in grado di fare match di colori mischiando 3 (o
 			più) colori detti primari. Se la luce test $ T $ ha un certo colore:
@@ -468,13 +487,14 @@
 				T = aP1 + bP2 + cP3
 			\]
 			il match si verifica lineare.
+			\vspace{-0.25cm}
 			
 		\subsubsection{Funzioni di Matching}
 			Data una terna di colori di base possiamo studiare il matching
 			dei colori sugli osservatori in funzione della frequenza.
 			Componenti colore CIERGB ricavate dall'integrale delle
 			frequenze dello stimolo su tutto il range.
-			
+			\vspace{-0.5cm}
 			\begin{align*}
 				L &= \int \Phi (\lambda) L (\lambda) \diff\lambda \\
 				M &= \int \Phi (\lambda) M (\lambda) \diff\lambda \\
@@ -1453,5 +1473,2095 @@
 		Una delle rappresentazioni di Eulero impiega gli angoli roll (rollio),
 		pitch (beccheggio) e yaw (imbardata), di derivazione aeronautica.
 		
+	\subsection{Problemi con angoli Eulero}
+			Ci sono alcuni problemi con le rappresentazioni
+			delle rotazioni
+			\begin{itemize}
+				\item Angoli di Eulero:
+					Rotazioni non univoche:
+					\[
+						(z, x, y) [roll, yaw, pitch] = (90, 45, 45) = (45, 0, -45)
+					\]
+					mandano entrambi l'asse x in direzione $ (1, 1, 1) $
+				\item Gimbal Lock (blocco del giroscopio)
+				\begin{itemize}
+					\item Gimbal è un dispositivo meccanico usato per
+				supportare giroscopi o bussole
+					\item Ci sono configurazioni problematiche
+				\end{itemize}
+				\item Interpolazione di rotazioni: Come calcoliamo il punto medio di una rotazione?
+			\end{itemize}
+	\subsection{Rotazione asse angolo}
+		La rotazione generica asse angolo con asse r si può anche
+		rappresentare con la seguente matrice, dove 
+		$ c = \cos(\alpha) $ e $ s = \sin(\alpha) $:
+		\[
+			R(\alpha,\vec{r}) =
+			\begin{pmatrix}
+				(1-c)r^2_1 + c & (1-c)r_1 r_2 -s r_3 & (1-c) r_1 r_2 + s r_2 & 0 \\
+				(1-c)r_1 r_2 + s r_3  & (1-c)r^2_2 +c & (1-c)r_2 r_2 -s r_1 & 0 \\
+				(1-c)r_1 r_3 -sr_2 & (1-c) r_2 r_3 + s r_1 & (1-c)r^2_3 +c & 0 \\
+				0 & 0 & 0 & 1 
+			\end{pmatrix}
+		\]
+	\subsection{Matrici e proiezioni}
+		\begin{enumerate}[label=\textbullet]
+			\item Abbiamo il nostro mondo dove creare la scena inserendo i
+		modelli: spazio Euclideo.
+			\item Sappiamo trasformare i punti dello spazio traslando, ruotando
+		e scalando.
+			\item Per simulare la formazione delle immagini ci serve un ultimo
+		strumento geometrico: la modellazione della proiezione degli
+		oggetti sul piano immagine.
+			\item Questo si fa con la proiezione prospettica o, in casi
+		semplificati, con la proiezione ortografica o parallela
+			\item Anche queste si possono modellare con matrici, solo che
+		dovranno trasformare uno spazio 3D in uno 2D (espressi in
+		coordinate omogenee). Quindi sono matrici.
+		\end{enumerate}
+	\subsection{La macchina fotografica virtuale}
+		La metafora utilizzata per descrivere le relazioni
+		scena/osservatore è quella della macchina fotografica virtuale
+		(synthetic camera).\\
+		Il modello semplice usato anche in Computer Vision è la
+		\textbf{telecamera pinhole}.
+		\begin{figure}[h!]
+			\includegraphics[width=0.5\textwidth]{virtual}
+		\end{figure}
 		
-\end{document}
+		La macchina fotografica	virtuale è costituita da un	parallelepipedo in cui la
+		faccia anteriore presenta un foro di dimensioni	infinitesime (pinhole
+		camera) e sulla faccia posteriore si formano le immagini.
+		
+		\vspace{-0.5cm}
+		\begin{center}
+			\begin{tikzpicture}[>=latex]
+			\draw[->] (0,-1) -- (0,2) node[right] {$ \vec{y} $};
+			\draw[densely dashed] (-3,0) -- (0,0);
+			\draw[->] (0,0) -- (3.5,0) node[below] {$ \vec{z} $};
+			\draw[densely dashed] (-3,-1) -- (3,1);
+			\draw[densely dashed] (-3,1) -- (3,-1);
+			\draw (-3,1) rectangle (0,-1);
+			\draw[|<->|] (-3.2,1) -- (-3.2,-1) node[midway,left] {$ h $};
+			\draw[|<->|] (-3,-1.2) -- (0,-1.2) node[midway,below] {$ d $};
+			\draw[densely dashed, bend right] (2.1,-0.7) to (2.1,0.7); 
+			\node[right] at (2.3,0.3) {$ \theta $};
+			\end{tikzpicture}
+		\end{center}
+		
+		Immagini nitide, nessun	problema di luminosità,	l’angolo di vista può essere modificato variando il rapporto tra la distanza focale (d) e la dimensione
+		del piano immagine.\\
+		Per convenzione (e maggiore semplicità) si assume l’esistenza
+		di un piano immagine tra la scena ed il centro di proiezione \\
+		Ne risulta il modello matematico della proiezione prospettica. \\
+		
+	\subsection{Proiezione prospettica}
+		La relazione che lega i punti 3D ai punti sul piano in questa
+		ipotesi è data dalla proiezione prospettica. Con semplici
+		ragionamenti sui triangoli simili si ha che la proiezione di un
+		punto $ P = (P_x, P_y, P_z) $ è data da:
+		\begin{itemize}
+			\item  $ P' = (-\dfrac{P_x d}{P_z}, -\dfrac{P_y d}{P_z}, 1) $ per il piano immagine dietro.
+			\item $ P' = (\dfrac{P_x d}{P_z}, \dfrac{P_y d}{P_z}, 1) $, per il piano immagine davanti.
+		\end{itemize}
+		Possiamo scrivere la proiezione in forma matriciale:
+		\[
+			\vec{P'} =
+			\begin{pmatrix}
+				1 & 0 & 0 & 0 \\
+				0 & 1 & 0 & 0 \\
+				0 & 0 & 1/d & 1 
+			\end{pmatrix}
+			\begin{pmatrix}
+				P_x \\
+				P_y \\
+				P_z \\
+				1
+			\end{pmatrix}
+		\]
+		
+		Da un punto di vista geometrico, la proiezione è
+		definita per mezzo di un insieme di rette di proiezione
+		(i proiettori) aventi origine comune in un centro di
+		proiezione, passanti per tutti i punti dell’oggetto da
+		proiettare ed intersecanti un piano di proiezione.
+		
+		\noindent
+		La proiezione di un segmento è a sua volta un
+		segmento. Non è quindi necessario calcolare i proiettori di tutti i
+		punti di una scena, ma solo quelli relativi ai vertici delle
+		primitive che la descrivono.
+		
+		\noindent
+		Le proiezioni geometriche piane si classificano in:
+		\begin{itemize}
+			\item Proiezioni \textbf{prospettiche} (distanza finita tra il centro ed il piano di
+		proiezione)
+			\item Proiezioni \textbf{parallele} (distanza infinita tra il centro ed il piano di
+		proiezione)
+		\end{itemize}
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.4\textwidth]{proiez}
+			\hspace{0.2cm}
+			\includegraphics[width=0.4\textwidth]{proiez1}
+		\end{figure}
+		Al variare della distanza focale $ d $ si ha che:
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=0.13\textwidth]{proiez2}
+			\hspace{0.2cm}
+			\includegraphics[width=0.15\textwidth]{proiez3}
+			\hspace{0.2cm}
+			\includegraphics[width=0.15\textwidth]{proiez4}
+			\hspace{0.2cm}
+			\includegraphics[width=0.15\textwidth]{proiez5}
+			\hspace{0.2cm}
+			\includegraphics[width=0.15\textwidth]{proiez6}
+			
+			\begin{tikzpicture}
+				\draw[red, thick] (-4,2.5) -- (-4,3) -- (-5,1) -- (-4,-1) -- (-4,-0.5);
+				\node[box, draw=red, align = left, ] at (-2.5,1) {
+					\footnotesize Più distorsione\\ \footnotesize prospettica\\
+					\\
+					\footnotesize Effetto "\textit{fish-eye}"\\\footnotesize  (grandangolo)};
+				
+				\node[box, draw=red, thick, align = left, ] at (2.5,1) {
+					\footnotesize Proporzioni\\ \footnotesize più mantenute\\
+					\\
+					\footnotesize Effetto "\textit{zoom}"\\\footnotesize (es. vista
+					dal satellite) };
+				
+				\draw[red, thick] (4,2.5) -- (4,3) -- (5,1) -- (4,-1) -- (4,-0.5);
+				\node at (-5.25,3) {$ d $ piccolo};
+				\node at (5.25,3) {$ d $ inifinito};
+			\end{tikzpicture}
+		\end{figure}
+		
+		\newpage
+		Per motivi che capiremo, in grafica si usa in realtà
+		rappresentare la proiezione prospettica con una
+		trasformazione che mappa comunque sullo spazio 3D, quindi
+		una matrice 4x4.
+		
+		\noindent
+		Per passare alla rappresentazione 2D basta poi eliminare la z
+		(che è sempre uguale a $ d $)
+		\[
+			\vec{P'} =
+			\begin{pmatrix}
+				1 & 0 & 0 & 0 \\
+				0 & 1 & 0 & 0 \\
+				0 & 0 & 1 & 0 \\
+				0 & 0 & 1/d & 1
+			\end{pmatrix}
+			\begin{pmatrix}
+				P_x \\
+				P_y \\
+				P_z \\
+				1
+			\end{pmatrix}
+		\]
+		In realtà la coordinata omogenea 2D che ricavo 
+		dall'applicazione della matrice è 
+		\[
+			P' = (P_x, P_y ,P_z/d) 
+		\]
+		L'operazione che trasforma in 
+		\[
+			P' = (\dfrac{P_x d}{P_z}, \dfrac{P_y d}{P_z} ,1)	
+		\]
+		per avere la forma standard dei punti è la cosiddetta divisione.\\
+		Prima della divisione i tre valori possono essere usati per
+		rappresentare l'equivalenza dei diversi punti rispetto alla
+		proiezione.
+		
+		\noindent
+		Definiamo ora possibili strutture dati per modellare gli oggetti
+		nello spazio.
+		
+		\noindent
+		Poi vedremo come modellare anche la formazione delle
+		immagini attraverso il "rendering".
+		
+\section{Modellare gli oggetti nello spazio}
+	\begin{center}
+		\begin{tikzpicture}[>=latex, scale=0.8,  every node/.style={scale=0.8}]
+		\draw[dashed, rounded corners] (10,-4) rectangle (5,-0.5);
+		\node[below] at (7.5, -4) {applicazione interattiva};
+		\node[draw, rectangle, rounded corners, align=center] (a) {mondo reale,\\ modello matematico,\\ artista 3D ...};
+		\node[draw, rectangle, fill=white, rounded corners, align=center, minimum height=1cm, minimum width=3cm] (b) at (4,-1.5) {Geometria};
+		\node[draw, rectangle, rounded corners, align=center, minimum height=1cm, minimum width=3cm] (c)	at (8,-3) {Immagine/i};
+		
+		\draw[->, rounded corners] (a.east) -- ($ (a) + (4,0) $) node[right,align=left,yshift=0.5cm] {acquisizione 3D (scansione)\\simulazione (elementi finiti)\\modellazione (3DStudioMax, Maya)} -- (b.north);
+		\draw[->, rounded corners] (b.south) -- ++(0,-1) -- ++(-3,0) node[below,align=left] {preprocessing\\(modelling)} -- ($ (b) + (-3,0) $) -- (b.west);
+		\draw[->, rounded corners] (b.east) -- ($ (c) + (0,1.5) $) node[right] {rendering} -- (c.north);
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsection{Geometria Analitica}
+	Premessa: prima di vedere come si modellano gli oggetti,
+	ricordiamo come si definiscono nello spazio Euclideo 3D le
+	figure geometriche importanti dal punto di vista della
+	modellazione grafica e del rendering.
+	
+	\noindent
+	\textbf{Rette}: sono identificabili da un punto qualsiasi $ Q $ che giaccia sulla
+	retta e da una direzione data da un versore $ u $. È facile vedere che
+	sono il luogo dei punti dati da $ P = Q + t\vec{u} \quad t \in \R $\\
+	In termini di componenti si vede facilmente che vale la seguente
+	equazione 
+	\[
+		\dfrac{x - x_Q}{u_x} = \dfrac{y - y_Q}{u_y} = \dfrac{z - z_Q}{u_z}
+	\]
+	 
+	Se si vuole specificare una retta dati due punti $ R $ e $ Q $, basta usare le
+	formule date qui sopra tenendo conto che il versore che identica la
+	retta e dato da: $ \vec{u}=\dfrac{(R-Q)}{|R-Q|} $
+	
+	\noindent
+	\textbf{Semiretta}: basta aggiungere il vincolo $ t \geq 0 $
+	
+	\noindent
+	\textbf{Segmenti}: dati i punti iniziale e finale $ P $ e $ Q $ possiamo scriverli come 
+	$ P = Q + t(R-Q) \quad t \in \left[ 0; 1\right]  $
+	
+	\noindent
+	\textbf{Sfere}: dato centro $ O $ e raggio $ r $, i punti della superficie sferica sono dati
+	dall'equazione $ P = O + r\vec{u} $ con $ \vec{u} $ versore generico.
+	Si dimostra facilmente che, in termini delle coordinate, la
+	superficie sferica è data dall'equazione
+	\[
+		(x - x_0)^2 +(y - y_0)^2 +(z - z_0)^2 = r^2
+	\]
+	
+	\noindent
+	\textbf{Piani}: dati 3 punti non allineati $ P $, $ Q $ ed $ R $ il luogo dei punti che descrive
+	il piano che li comprende è la combinazione affine
+	\[
+		S = \alpha P + \beta Q + \gamma R \quad \alpha,\beta, \gamma \in \R \quad \alpha+\beta+\gamma=1
+	\]
+	Alternativamente si puo definire un piano a partire da un punto $ Q $ che
+	vi appartiene e da un vettore $ \vec{u} $ che ne identica la normale come il luogo
+	dei punti $ P $ tali che $ (P - Q) \vec{u} = 0 $.
+	In termini di coordinate abbiamo
+	\[
+		(x-x')u_x + (y-y')u_y + (z-z')u_z = 0
+	\]
+	Per passare dalla prima alla seconda rappresentazione basta
+	prendere come punto $ Q $ e come vettore $ \vec{u} = (P-Q) \times (R-Q) $
+	
+	\noindent
+	\textbf{Semispazi}: il piano di cui sopra identica due semispazi, uno
+	positivo ed uno negativo:
+	\begin{align*}
+		(P-Q) \vec{u} &> 0 \\
+		(P-Q) \vec{u} &< 0
+	\end{align*}
+	
+	\subsection{Poligoni}
+	
+	\begin{wrapfloat}{figure}{I}{0pt}
+		\includegraphics[width=0.2\textwidth]{poligono}
+	\end{wrapfloat}
+	
+		Un poligono $ P $ è un insieme finito di segmenti (spigoli) di $ \R^2 $ , in
+		cui ogni estremo (vertice) e comune a esattamente due
+		segmenti, che si dicono adiacenti.\\
+		Un poligono è detto semplice se ogni coppia di spigoli non
+		adiacenti ha intersezione vuota.\\
+		\textit{Teorema di Jordan}: Un poligono semplice $ P $ divide il piano in
+		due regioni o facce, una limitata (detta interno di $ P $) ed una
+		illimitata (detta esterno di $ P $).
+		
+		\noindent
+		Per convenzione, un poligono viene rappresentato dalla
+		sequenza dei suoi vertici $ P_1 \dots P_n $ ordinati in modo che l'interno
+		del poligono giaccia alla sinistra della retta orientata da $ P_i $ a
+		$ P_{i+1} $ , ovvero i vertici sono ordinati in senso antiorario.
+		
+		\begin{wrapfigure}{R}{0pt}
+			\includegraphics[width=0.2\textwidth, ]{poliedro}
+		\end{wrapfigure}
+		\noindent
+	\subsection{Poliedri}
+	
+		In $ \R^3 $ un poliedro semplice e denito da un insieme finito di
+		poligoni (facce) tali che ciascuno spigolo di una faccia e condiviso
+		da esattamente un'altra faccia e le facce non si intersecano che
+		negli spigoli.
+		
+	\subsection{Rappresentazione degli oggetti}
+		Gli oggetti che si vogliono rappresentare in una applicazione
+		grafica hanno di solito caratteristiche particolari
+		\begin{itemize}
+			\item Sono finiti
+			\item Sono chiusi (non sempre)
+			\item Sono continui
+		\end{itemize}
+		Le rappresentazioni di oggetti (regioni dello spazio, in
+		generale) si suddividono in
+		\begin{itemize}
+			\item basate sul \textbf{contorno} (boundary): descrivono una regione in
+		termini della superficie che a delimita (boundary representation, o
+		b-rep).
+			\item basate sullo \textbf{spazio occupato} (o volumetriche).
+		\end{itemize}
+		
+		\newpage
+		La rappresentazione più comune è quella di \textbf{maglie(mesh) di triangoli}:
+		
+		\begin{tikzpicture}[>=latex, scale=0.8,  every node/.style={scale=0.8}]
+			\draw[->] (1,-1) -- (1,4) node [right] {x};
+			\draw[->] (1,-1) --(4,-3) node [left] {z};
+			\draw[->] (1,-1) -- (-5,-3) node [right] {y};
+			\draw[ultra thick, fill=blue] (2.5,-1) -- (0,3) -- (-3,-1.5) -- cycle;
+			\fill (0,3) circle (4pt) (a)
+				(2.5,-1) circle (4pt) (b)
+				(-3,-1.5) circle (4pt) (c);
+			\node[yshift=0.2cm,above] at (0,3) {$v_0 = (x_0, y_0, z_0) $};
+			\node[xshift=0.2cm,right] at (2.5,-1) {$v_1 = (x_1, y_1, z_1) $};
+			\node[xshift=-0.2cm,left] at (-3,-1.5) {$v_2 = (x_2, y_2, z_2) $};
+		\end{tikzpicture}
+		
+		\noindent
+		Esistono però delle alternative:
+		\begin{itemize}
+			\item \textbf{Boundary}:
+			Superfici parametriche (lisce, non hanno problemi di "tessellazione"
+			cioè visibilità degli spigoli tra le facce)
+			\item \textbf{Volumetriche}: 
+			\begin{itemize}
+				\item Rappresentazione "voxellizata" (a cubetti)
+				\item Geometria costruttiva solida
+			\end{itemize}
+			\item \textbf{Image based rendering}:
+			\begin{itemize}
+				\item Non si modella effettivamente la scena, ma si memorizzano
+				campionamenti della luce, renedendo però possibile una
+				visualizzazione da più punti di vista, interattiva
+				\item Light fields
+			\end{itemize}
+		\end{itemize}
+		
+		Il vantaggio principale nell’uso di superfici per modellare un
+		oggetto sarebbe l’assenza del problema della tessellazione
+		visibile (cioè approssimo una superficie lisca coi triangoli, ma
+		vedo poi i triangoli evidenti, effetto ridotto di solito con
+		trucchi opportuni nel rendering)\\
+		L'uso di superfici parametriche risulta pesante per applicazioni in
+		tempo reale; per lo più le superfici parametriche utilizzate in fase di modellazione o per
+		rendering non interattivo.\\
+		Negli ultimi tempi le cose sono cambiate ed oggi cominciano
+		ad apparire applicazioni di grafica avanzata che usano superfici
+		curve anche in tempo reale.
+		
+		Esempio: \textbf{curve/superfici di	Bezier}:
+		Dati $ N $ punti di controllo la curva la curva passa per il
+		primo e l'ultimo e approssima gli altri con una funzione da
+		essi dipendente. Con una griglia si generano superfici.
+		
+		\begin{figure}[h!]
+			\includegraphics[scale=0.5]{superf}
+			\hspace{0.2cm}
+			\includegraphics[scale=0.15]{superf1}
+			\hspace{0.2cm}
+			\includegraphics[scale=0.4]{superf2}
+		\end{figure}
+		
+		\subsubsection{Geometria costruttiva solida (CSG)}
+		
+		Altra rappresentazione particolarmente adatta per il modeling
+		(diffusa nel settore CAD), ma poco efficiente per il rendering è quella della
+		\textbf{Geometria costruttiva solida (CSG)}.\\
+		Si tratta, essenzialmente, di costruire degli oggetti geometrici
+		complessi a partire da modelli base con operazioni booleane
+		
+		\noindent
+		\textbf{Operazioni:}
+		\begin{itemize}
+			\item \textbf{Unione}: l’unione $ A \cup B $ è l’insieme dei punti che appartengono
+			ad almeno uno dei due solidi (or non esclusivo).
+			\item \textbf{Differenza}: la differenza $ A \setminus B $ è l’insieme dei punti che
+			appartengono ad $ A $, ma non a $ B $.
+			\item \textbf{Intersezione}: l’intersezione $ A \cap B $ è l’insieme dei punti che
+			appartengono ad $ A $ ed a $ B $ (and).
+			\item Le operazioni CSG possono essere descritte tramite un albero
+			(gerarchia).
+			Ciascun nodo di un albero che non sia una foglia contiene una
+			delle tre operazioni elementari $ \cup $ , $ \cap $ o $ \setminus $.
+			Ciascuna foglia contiene una primitiva.
+		\end{itemize}
+		
+		\subsubsection{Acquisizione dal vero: point clouds}
+			Un modo per generare modelli 3D per mondi virtuali è
+			acquisire dal vero.\\
+			La scansione 3D, oggi tecnologia matura con diverse tecnologie
+			Laser, luce strutturata, visione computazionale.\\
+			Gli scanner (esattamente come le macchine fotografiche in 2D)
+			di fatto non acquisiscono un modello del mondo, ma
+			campionano la geometria (con eventuali attributi, es. colore) in
+			una serie di punti discreti: si parla di \textbf{nuvole di punti (point
+			clouds)}
+		
+		\subsubsection{Partizionamento spaziale (voxel)}
+			Lo spazio viene suddiviso in celle adiacenti dette in 3D voxel
+			(equivalente dei pixel delle immagini): una cella è "piena" se
+			ha intersezione non vuota con la regione, è detta vuota in
+			caso contrario. Oppure contiene un valore di densità (tipico
+			dei dati diagnostici es. TAC)\\
+			Una rappresentazione di una scena complessa ad alta
+			risoluzione richiederebbe l’impiego di un numero enorme
+			numero di voxel, per cui questa rappresentazione è in genere
+			limitata a singoli oggetti.\\
+			Ma le cose stanno cambiando grazie a
+			progressi nell'HW e nel SW.\\
+			Rendering di modelli voxel-based:
+			\begin{itemize}
+				\item Algoritmi ad hoc (tecniche direct volume rendering)
+				\item conversione da voxel a rappresentazione per superfici (triangle-
+				based)
+			\end{itemize}
+			Da una rappresentazione volumetrica voxelizzata si può
+			passare efficientemente a una rappresentazione poligonale
+			della superficie mediante l’algoritmo detto marching cubes.
+		
+		\subsubsection{Rappresentazioni compatte(Octree)}
+			Se ho solo i valori pieno/vuoto, posso rappresentare in modo
+			compatto il volume con una struttura \textbf{octree}.\\
+			Si parte con un cubo contenente la regione e si suddivide
+			ricorsivamente. Ci si ferma ogni volta che un ottante contiene
+			tutte celle piene o tutte celle vuote.\\
+			Più economica rispetto alla enumerazione delle singole celle,
+			poiché grandi aree uniformi (piene o vuote) vengono
+			rappresentate con una sola foglia (anche se nel caso peggiore
+			il numero delle foglie è pari a quello delle celle).
+
+			\includegraphics[scale=0.4]{octree}
+			\hspace{2.5cm}
+			\includegraphics[scale=0.3]{octree2}
+			
+			Le strutture di partizionamento spaziale sono anche utili per
+			"contenere" le geometrie poligonali: come vedremo consente
+			di rendere più semplice la ricerca di intersezioni tra oggetti e
+			con i raggi ottici.
+			
+	\subsection{Maglie poligonali (mesh)}
+		Nella grafica 3D interattiva si usa quasi sempre la modellazione
+		basata su approssimazione poligonale degli oggetti (del loro
+		contorno: è una \textit{boundary representation}).\\
+		Si tratta di approssimare una superficie 2D con un insieme di
+		poligoni convessi opportunamente connessi gli uni agli altri.\\
+		Nella pipeline di rendering si lavora in genere con i soli
+		\textbf{triangoli}:
+		tutte le altre rappresentazioni eventualmente usate nel programma
+		sono convertite prima del rendering in triangoli
+		Possiamo usare la geometria per definire rigorosamente le
+		proprietà dei modelli triangolati.
+		
+		\bigskip
+		\noindent
+		Una \textbf{varietà} $k$-dimensionale $ X $ è un sottoinsieme di $ \R^d$  in cui
+		ogni punto ha un intorno omeomorfo alla sfera aperta di $ \R^k $.\\
+		In generale le superifici degli oggetti solidi (sfere, poliedri, ecc.)
+		sono varietà bidimensionali.\\
+		\textbf{Omeomorfismo}: applicazione biiettiva, continua, con inversa
+		continua. Intuizione: trasformazione senza "strappi".
+		In una varietà $k$-dimensionale con bordo ogni punto ha un intorno
+		omeomorfo alla sfera aperta o alla semisfera aperta di $ \R^k $ .\\
+		Il bordo di $ X $ è l’insieme dei punti che hanno un intorno omeomorfo
+		alla semisfera aperta.
+		Una varietà è sempre una varietà con bordo, eventualmente vuoto.\\
+		Il bordo, se non è vuoto, è a sua volta una varietà $ k-1 $ dimensionale
+		senza bordo.
+		
+		\bigskip
+		Una \textbf{maglia (mesh) triangolare} è un'insieme di triangoli le cui
+		intersezioni siano esclusivamente vertici e lati (spigoli) dei
+		triangoli e che sia anche una varietà bidimensionale con bordo.
+		Due triangoli che condividono un lato si dicono adiacenti
+		I triangoli della maglia si chiamano anche facce.\\
+		La condizione di essere varietà si traduce nei seguenti vincoli
+		sulla struttura:
+		\begin{itemize}
+			\item uno spigolo appartiene al massimo a due triangoli (quelli eventuali
+			che appartengono ad uno solo formano il bordo della maglia)
+			\item se due triangoli incidono sullo stesso vertice allora devono essere
+			raggiungibili l'uno dall'altro attraverso un percorso tra triangoli
+			adiacenti ovvero devono formare un ventaglio o un ombrello.
+		\end{itemize}
+		Si usa il termine condizione 2-manifold (varietà)
+		
+		\begin{tikzpicture}[ scale=0.3,  every node/.style={scale=0.3}]
+			\draw[fill=OliveGreen!90!] (1,0) -- (4.5,-5) -- (5,6) -- cycle;
+			\draw[fill=gray!70!] (12,-1) -- (5,6) -- (-5,-3) -- (1,0) -- cycle;
+			\draw (1,0) -- (5,6);
+			\draw[densely dashed] (4.5,-5) -- (5,6);
+			\fill (5,6) circle (10pt) (a)
+				(1,0) circle (10pt) (b);
+			\draw[ultra thick, red] (5,6) -- (1,0);
+			\node[right, xshift=1cm, text =red] at (5,6) {\Huge \textbf{NO}};
+		\end{tikzpicture}
+		\hspace{2.5cm}
+		\begin{tikzpicture}[ scale=0.3,  every node/.style={scale=0.3}]
+		\draw[fill=OliveGreen!90!] (1,0) -- (4.5,-5) -- (5,6) -- cycle;
+		\draw[fill=gray!70!] (12,-1) -- (5,6) -- (1,0) -- cycle;
+		\draw (1,0) -- (5,6);
+		\draw[densely dashed] (4.5,-5) -- (5,6);
+		\fill (5,6) circle (10pt) (a)
+		(1,0) circle (10pt) (b);
+		\draw[ultra thick, Green] (5,6) -- (1,0);
+		\node[right, xshift=1cm, text =Green] at (5,6) {\Huge \textbf{SI}};
+		\end{tikzpicture}
+		
+		\begin{tikzpicture}[ scale=0.3,  every node/.style={scale=0.3}]
+			\draw[fill=TealBlue!30!] (-5,-3) -- (1,0) -- (5,6) -- cycle;
+			\draw[fill=TealBlue!30!] (4,0) -- (9,-1) -- (5,6.2) -- cycle;
+			\draw[fill=TealBlue!30!] (10,-1.5) -- (5.2,6.3) -- (13,7) -- cycle;
+			\node[above, yshift=1cm, text =red] at (5,6) {\Huge \textbf{NO}};
+		\end{tikzpicture}
+		\hspace{2.5cm}
+		\begin{tikzpicture}[ scale=0.3,  every node/.style={scale=0.3}]
+			\draw[fill=TealBlue!30!] (-5,-3) -- (1,0) -- (5,6) -- cycle;
+			\draw[fill=CornflowerBlue] (1,0) -- (10,-1.5) -- (5,6) -- cycle;
+			\draw[fill=TealBlue!30!] (10,-1.5) -- (5,6) -- (13,7) -- cycle;
+			\node[above, yshift=1cm, text =Green] at (5,6) {\Huge \textbf{SI}};
+		\end{tikzpicture}
+		
+		Il bordo della maglia consiste di uno o	più anelli (sequenza chiusa di spigoli) o
+		loop.\\
+		Se non esistono spigoli di bordo la	maglia è chiusa (come quelle che
+		rappresentano la superficie di una sfera).\\
+		L’\textbf{orientazione} di una faccia è data dall’ordine ciclico (orario o antiorario)
+		dei suoi vertici incidenti. L’orientazione determina il fronte ed il retro della
+		faccia. La convenzione (usata anche da OpenGL) è che la faccia mostra il fronte.
+		
+		\includegraphics[scale=0.5]{orient}
+		\hspace{2.5cm}
+		\begin{tikzpicture}[scale=0.5]
+			\node[above] at (-3,4) {Fronte};
+			\node[above] at (3,4) {Retro};
+			\draw[fill=Gray!80!] (-1,0) -- (-3,3) -- (-4,-2) -- cycle;
+			\draw (1,0) -- (3,3) -- (4,-2) -- cycle;
+			\fill (-1,0) circle (5pt) coordinate [label=below:$V_2$]  (a) 
+				(-3,3) circle (5pt) coordinate [label=above:$V_3$] (b)
+				(-4,-2) circle (5pt) coordinate [label=below:$V_1$] (c)
+				(1,0) circle (5pt) coordinate [label=below:$V_2$] (d)
+				(3,3) circle (5pt) coordinate [label=above:$V_3$] (d)
+				(4,-2) circle (5pt) coordinate [label=below:$V_1$] (d);
+		\end{tikzpicture}
+		
+		\noindent
+		L’orientazione di due facce adiacenti è compatibile se i due
+		vertici del loro spigolo in comune sono in ordine inverso. Vuol
+		dire che l’orientazione non cambia attraversando lo spigolo in
+		comune.\\
+		La maglia si dice \textbf{orientabile} se esiste una scelta
+		dell’orientazione delle facce che rende compatibili tutte le
+		coppie di facce adiacenti.
+		
+			\begin{figure}[h!]
+				\centering
+				\includegraphics[scale=0.5]{moebius}
+				\caption{Non tutte le mesh 2-manifold sono
+					orientabili (es. anello di Moebius)} 
+			\end{figure}
+		
+		Abbiamo definito la maglia triangolare. In maniera analoga si
+		può estendere la definizione a maglie poligonali generiche\\
+		\textbf{Maglie poligonali generiche}: i poligoni possono avere qualsiasi
+		numero di spigoli e non è detto che ci sia un solo tipo di poligono.
+		Sono raramente utilizzate in grafica al calcolatore\\
+		\textbf{Quadrangolari} (quad meshes): gli elementi poligonali sono tutti
+		quadrilateri. Sono alle volte usate, per esempio se si vuole fare il
+		rendering di un terreno descritto da un array di altezze.\\ In una
+		maglia quadrangolare bisogna imporre un vincolo aggiuntivo di
+		planarità per ogni quadrilatero che la compone.\\
+		OpenGL consente di descrivere maglie poligonali generiche, ma
+		per disegnarle li suddivide usualmente in triangoli.
+		
+	\subsubsection{Equazione di Eulero}
+		Se $ V $ è il numero di vertici, $ L $ il numero di spigoli ed $ F $ il numero di
+		facce della maglia poligonale orientabile chiusa di genere G, allora
+		vale la Formula di Eulero $ V - L + F = 2 - 2G $
+		Una superficie ha genere $ G $ se può essere tagliata lungo $ G $
+		linee semplici chiuse senza disconnetterla (intuitivamente,
+		ma non rigorosamente "numero di buchi").\\
+		l genere di una superficie determina la sua
+		topologia; per una sfera, per esempio, $ G = 0 $,
+		mentre per un toro (una ciambella) $ G = 1 $.\\
+		Più in generale, per una maglia poligonale orientabile (e varietà
+		bidimensionale) vale la formula $ V - L + F = 2(S - G) - B $\\
+		$ S $ numero di componenti connesse, $ B $ è il numero di anelli di bordo.
+		
+	\subsection{Mesh di triangoli}
+		Nella pratica sono il tipo di modello dominante, usato nella gran parte delle applicazioni interattive dato che il rendering è ottimizzato in hardware.\\
+		Generate da modellazione CAD, acquisizione con scanner,
+		ricostruzione da immagini (Computer Vision).\\
+		Il numero di poligoni determina il dettaglio, ma il costo in
+		memoria può essere notevole.
+		
+	\subsection{Costruzione della mesh triangolare}
+		Conversione da altri formati:
+		\begin{itemize}
+			\item Poligoni $ \longrightarrow $ Triangoli
+			\item Superf. Quadriche $ \longrightarrow $ Triangoli
+			\item Campi di altezze o Punti $ \longrightarrow $ Triangoli
+		\end{itemize}
+		Per rappresentare gli oggetti con le proprietà fisiche relativa a
+		colore e riflessione della luce, devo abbinare alla geometria dei
+		valori di proprietà (\textit{attributi})\\
+		Posso definirli:
+		\begin{itemize}
+			\item per vertice: esplicito un attributo per ogni vertice
+			\item per faccia: esplicito un attributo per ogni faccia
+			\item per wedge (vertice di faccia): esplicito tre attributi per ogni faccia
+		\end{itemize}
+		Attributi più comuni: Colore, Normali (versori perpendicolari), coordinate texture.\\
+		Non è sempre semplice modellare le entità da rappresentare
+		con triangoli. Ad esempio: Nuvole, Fiamme, Capelli, pelliccia etc.
+		
+		\bigskip
+		
+		Quando si devono disegnare due triangoli con uno spigolo in
+		comune, questo viene disegnato due volte. Questo introduce
+		un certo grado di ridondanza che può incidere sulle prestazioni.\\
+		Si preferisce quindi raggruppare i triangoli di una maglia in
+		opportuni gruppi che possono essere elaborati in maniere più
+		efficiente. Si possono ad esempio utilizzare:
+		\begin{itemize}
+			\item \textbf{Fan di triangoli}: è un gruppo di triangoli che hanno in comune un
+			vertice. Il primo viene specificato completamente, per i successivi
+			basta dare il nuovo vertice. Efficiente, ma i triangoli che incidono su
+			un vertice sono in genere pochi.
+			\item \textbf{Strip di triangoli}: gruppo di triangoli che posseggono a due a due
+			uno spigolo in comune. Di nuovo il primo triangolo viene specificato
+			normalmente, per i successivi basta specificare il nuovo vertice.
+			Meno efficiente, ma le strip in genere contengono più triangoli delle
+			fan.
+		\end{itemize}
+		Esistono algoritmi per creare queste rappresentazioni dalle
+		mesh.
+		
+	\subsection{Mesh e rendering}
+		Per determinare l’effetto di una qualsiasi trasformazione affine
+		su un oggetto (traslazione, rotazione, scalatura, composizioni
+		varie di queste), basta applicare la trasformazione ai vertici
+		(che sono punti); le informazioni connettive date dagli spigoli
+		non cambiano in questo tipo di trasformazioni.\\
+		Questo rende piuttosto semplice il rendering di oggetti descritti in
+		termini di maglie poligonali. Qualsiasi trasformazione viene eseguita
+		sui vertici, cioè si tratta di applicare trasformazioni affini su punti.\\
+		L’affermazione precedente è vera anche per la proiezione; per vedere
+		come si proietta la forma di una maglia su un piano (l’immagine),
+		basta seguire la proiezione dei vertici.
+		
+	\subsection{Memorizzazione}
+		Alla creazione dei modelli vengono in genere generati nodi,
+		connettività e attributi. Gli algoritmi di processing e rendering
+		devono accedere in vario modo a tale informazione.
+		Esistono diversi modi di rappresentare questa informazione.\\
+		Nei programmi applicativi sono quindi necessarie delle
+		procedure per convertire una rappresentazione in un’altra. \\
+		Progettare ed implementare tali procedure è un ottimo modo
+		per capire nel dettaglio le varie rappresentazioni utilizzate per
+		descrivere maglie poligonali.\\
+		Nei disegni e negli esempi ci concentreremo sul caso di maglia
+		triangolare, ma il discorso è valido in generale per tutti i
+		poligoni convessi.
+	\subsection{Elementi base}
+		\textbf{Vertici}: sono gli elementi 0 dimensionali e sono identificabili
+		con punti nello spazio 3D (essenzialmente tre coordinate);
+		alle volte può essere utile associare ai vertici altre
+		caratteristiche oltre alla posizione (tipo il colore).\\
+		\textbf{Spigoli}: sono elementi 1 dimensionali e rappresentano un
+		segmento che unisce due vertici. Di solito non contengono
+		altre informazioni.\\
+		\textbf{Facce}: sono i poligoni bidimensionali, formati da un certo
+		numero di spigoli e di vertici (dimostrare che sono in numero
+		uguale). I vertici o gli spigoli si usano per identificare la faccia;
+		possono contenere altre informazioni (tipo il colore).\\
+		\textbf{Normali}: è fondamentale sapere quale è l’esterno della
+		superficie e quale l’interno, e qual è l'orientazione locale della
+		superficie; a tal scopo si associa spesso ad una maglia
+		poligonale anche l’informazione sulla normale uscente.\\
+		La normale $ \vec{n} $ ad una faccia è data dal prodotto vettore di due
+		suoi spigoli consecutivi non collineari:\\
+		Attenzione al verso: la normale è uscente dal fronte della faccia\\
+		Per un triangolo $ (V_1 ,V_2 ,V_3 ) $ si ha: $ \vec{n} = (V_3 -V_2)\times(V_1 -V_2 ) $.
+		
+		\includegraphics[scale=0.3]{norm}
+		
+		Attenzione (vedremo in lab): ci servono le normali per
+		calcolare il modello di Phong. Le possiamo calcolare per i
+		modelli, cui poi sono applicate le trasformazioni geometriche e
+		di proiezione.\\
+		Ma se applichiamo trasformazioni generiche ai modelli queste
+		trasformazioni non preservano necessariamente l'ortogonalità
+		di normale e superficie.\\
+		Per trasformare senza questo problema le normali possiamo
+		trasformarle con una matrice diversa.\\
+		Consideriamo un vettore tangente $ \vec{t} $ alla superficie:
+		\begin{align*}
+			\vec{n}\vec{t}^T &= 0 \\
+			\vec{n} M^{-1} M\vec{t} &= 0 \\
+			(M^{-1})^T \vec{n} M\vec{t} &= 0
+		\end{align*}
+		
+		Quindi la normale trasformato da $ (M^{-1})^T\vec{n} $ è perpendicolare alla
+		superficie trasformata. Cioè per evitare problemi si
+		trasformeranno le normali con l'inversa trasposta della matrice
+		di trasformazione del modello.
+		
+	\subsection{Struttura della mesh}
+		I vertici danno informazioni di tipo posizionale, gli spigoli
+		informazioni di tipo connettivo (non c'è informazione spaziale).\\
+		Gli spigoli connettono i vertici, permettendo di introdurre un
+		concetto di "vicinanza" tra vertici e dando le informazioni di
+		tipo topologico (ovvero definiscono un grafo).\\
+		Le facce sono determinate una volta dati i vertici e gli spigoli,
+		quindi non introducono nulla.\\
+		Al più possono avere associati attributi, anche se è raro.\\
+		
+		\bigskip
+		
+		Ci sono vari modi di conservare le informazioni sui modelli.
+		Questi possono differire per
+		\begin{itemize}
+			\item Memoria occupata
+			\item Complessità di implementazione di operazioni di ricerca (es. ricerche
+			di adiacenza
+			\begin{itemize}
+				\item Quali sono i vertici vicini a uno dato?
+				\item Quali sono gli spigoli che contengono un vertice dato?
+				\item Quali sono le facce che contengono uno spigolo?
+				\item ...
+			\end{itemize}
+		\end{itemize}
+		Possibilità di controllo sulla qualità delle superfici (es. manifoldness)
+		
+	\subsection{Lista di triangoli e indexed}
+		\begin{itemize}
+			\item Immediata: specificare tutte le facce della maglia come
+			terne di triplette di coordinate cartesiane
+			\item Spreco di memoria: duplico le coordinate. Meglio usare
+			una struttura indicizzata, con la lista dei vertici e la
+			lista delle facce con i	puntatori ai vertici (indici)
+			\item Normalmente usate in openGL per il rendering
+			\item Non ottimali per le ricerche
+		\end{itemize}
+		\begin{multicols}{2}
+			\begin{lstlisting}
+typedef struct{
+	float v1[3];
+	float v2[3];
+	float v3[3];
+} faccia;
+			\end{lstlisting}
+			\columnbreak
+		\begin{lstlisting}
+typedef struct {
+	float x,y,z;
+} vertice;
+typedef struct {
+	vertice* v1,v2,v3;
+} faccia;
+		\end{lstlisting}
+		\end{multicols}
+		
+		\begin{figure}[h!]
+			\vspace*{-1.2cm}
+			\includegraphics[scale=0.4]{mesh}
+		\end{figure}
+	
+	\subsection{Winged edge (Baugmart 1975)}
+		Si aggiungono dei puntatori allo spigolo per
+		rendere più semplice l’analisi delle incidenze.\\
+		L’elemento base è lo spigolo (edge) con le sue due facce incidenti (wings):
+		\begin{itemize}
+			\item Lo spigolo $ l_2 $ contiene un puntatore ai due
+			vertici su cui incide (b; c), alle due facce su cui
+			incide $ (T_1, T_2) $ ed ai due spigoli uscenti da
+			ciascun vertice
+			\item Un vertice contiene un puntatore ad uno degli
+			spigoli che incide su di esso, più le coordinate
+			(ed altro)
+			\item La faccia contiene un puntatore ad uno degli
+			spigoli che vi incide (ed altro).
+		\end{itemize}
+		La struttura assume che ogni spigolo non di
+		bordo abbia due facce incidenti (manifold).
+		
+		\begin{multicols}{2}
+		\begin{lstlisting}
+typedef	struct{
+	we_vertice* v_ini, v_fin;
+	we_spigolo* vi_sin, vi_dstr;
+	we_spigolo* vf_sin, vf_dstr;
+	we_faccia* f_sin, f_dstr;
+} we_spigolo;
+typedef struct {
+float x, y, z;
+	we_spigolo* spigolo;
+} we_vertice;
+typedef struct {
+	we_spigolo* spigolo;
+} we_faccia;
+		\end{lstlisting}
+		
+		\columnbreak
+		
+		\vspace*{1cm}
+			\includegraphics[scale=0.5]{mesh1}
+		\end{multicols}
+		
+	\subsection{Half edge}
+		Ogni spigolo viene diviso in due spigoli
+		orientati in modo opposto:
+		\begin{itemize}
+			\item Ciascun mezzo spigolo contiene un puntatore
+			al vertice iniziale, alla faccia a cui "appartiene",
+			al mezzo spigolo successivo (seguendo
+			l’ordinamento) ed al mezzo spigolo gemello
+			\item Ogni vertice, oltre alle coordinate (e attributi)
+			contiene un puntatore ad uno qualsiasi dei
+			mezzi spigoli che esce da tale vertice
+			\item Ogni faccia contiene uno dei suoi mezzi spigoli
+			(oltre ad altre caratteristiche quali, ad
+			esempio, la normale)
+		\end{itemize}
+		Efficiente per le ricerche ed elegante.
+		
+		\begin{multicols}{2}		
+	\begin{lstlisting}
+typedef struct {
+	he_vertice* origine;
+	he_spigolo* gemello;
+	he_faccia* faccia;
+	he_spigolo* successivo;
+} he_spigolo;
+typedef struct {
+	float x, y, z;
+	he_spigolo* spigolo;
+} he_vertice;
+typedef struct {
+	he_spigolo* spigolo;
+} he_faccia;
+	\end{lstlisting}
+		
+		\columnbreak
+		
+		\vspace*{1cm}
+		\includegraphics[scale=0.5]{mesh2}
+	\end{multicols}
+		
+	\noindent
+	\textbf{Note:}\\
+	La stessa applicazione grafica può far uso di più di una
+	struttura dati.\\
+	La rappresentazione con la lista di vertici essendo semplice e
+	leggera è tipicamente usata come formato per i file
+	contenenti la geometria di oggetti.\\
+	Le applicazioni grafiche in genere caricano tali file ed usano
+	l’informazione contenuta in essi per riempire una struttura
+	dati più utile ai fini algoritmici (per esempio la half-edge).
+	
+	
+	\section{Rendering}
+		Interazione luce-materia.\\
+		La luce raggiunge la superficie. Viene riflessa, ma come? Molti
+		effetti.\\
+		Parte assorbita, parte riemessa, magari in punto diverso visto che
+		può essere riflessa sotto la superficie, anche con ritardo di tempo
+		Modifica lunghezza d'onda.\\
+		Troppo complicato, ma alcuni effetti per essere simulati
+		richiederebbero questo. Fosforescenza, fluorescenza, ecc.
+		
+		\bigskip
+		
+		\noindent
+		In grafica di solito usiamo la \textbf{BRDF} (Bidirectional Reflectance Distribution Function): modelliamo riflessione	come se dipendente da soli 4 parametri.
+		Direzione luce incidente-riflessa, è comunque complicatissimo.
+		Inoltre assumeremo di poter pensare alla luce come composizione di
+		3 fasci monocromatici a frequenze fisse (R,G,B) o di un solo valore di
+		luminosità (ovviamente falso).
+		
+		\noindent
+		La radiazione luminosa è caratterizzata da
+		\begin{itemize}
+			\item distribuzione spettrale, che ne determina il colore
+			\item energia che ne determina l'intensità o luminosità
+			per ora usiamo in modo informale questi termini.
+		\end{itemize}
+		\textbf{Fotometria}: la misura dell’energia trasportata dalle
+		onde elettromagnetiche della gamma ottica (spettro visibile).
+		la fotometria si occupa dell’azione della luce visibile sull’occhio
+		umano.\\
+		
+		\subsection{Radiometria}
+		
+		\textbf{Radiometria}: si occupa di radiazioni estese sull’intero
+		intervallo delle possibili lunghezze d’onda e non considera gli
+		effetti sull’osservatore.
+		Essendo interessati ad un modello oggettivo, definiremo le
+		grandezza radiometriche.\\
+		Assumendo che non ci sia interazione tra le diverse lunghezze
+		d’onda, si può misurare l’energia indipendentemente per un
+		certo numero di lunghezze d’onda campione che servono a
+		rappresentare l’intera distribuzione spettrale.\\
+		Di solito se ne usano 3, per motivi legati al sistema visivo
+		umano, corrispondenti al rosso, verde e blu (RGB).\\
+		Tutte le grandezze che definiremo sono implicitamente
+		spettrali, ovvero riferite ad una singola lunghezza d’onda.
+		
+		\bigskip
+		
+		\noindent
+		Le quantità che misuriamo sono:
+		\begin{itemize}
+			\item Il \textbf{flusso radiante} $ \Phi $ è la velocità alla quale l’energia luminosa viene emessa (o assorbita) da una superficie, ha le dimensioni di una
+			potenza (energia per unità di tempo) e si misura in Watt [W].
+			\item \textbf{Irradianza} $ E(x) $ il rapporto tra il flusso ricevuto da un elemento
+			infinitesimo di superficie in $ x $ e la sua area $ dx $:
+			\[
+				E(x) = \dfrac{d \Phi}{dx}
+			\]
+			\item \textbf{Radiosità} $ B(x) $ il rapporto tra il flusso emesso da un elemento
+			infinitesimo di superficie in $ x $ e la sua area $ dx $:
+			\[
+				B(x) =\dfrac{d\Phi}{dx}
+			\]
+			Irradianza e radiosità sono la stessa grandezza (una densità
+			superficiale di flusso) e si misurano in $ \left[ \si{\watt}/\si{\meter}^2 \right] $. La differenza è
+			che l’\textbf{irradianza è energia ricevuta}, la \textbf{radiosità è energia
+			emessa}. In entrambi i casi, l’energia ricevuta/emessa si considera
+			da/verso tutte le direzioni.
+			\item L’\textbf{intensità radiante} è il flusso radiante emesso in un angolo
+			solido infinitesimo $ d\omega $ lungo una particolare direzione $ \omega $ :
+			\[
+				I(\omega) = \dfrac{d\Phi}{d\omega}
+			\]
+			Si usa soprattutto per descrivere sorgenti luminose puntiformi.\\
+			\item L’\textbf{angolo solido sotteso} da un oggetto rispetto un punto $ P $ è
+			pari all’area della proiezione dell’oggetto su una sfera unitaria
+			centrata in $ P $.
+			\item L’\textbf{angolo solido sotteso} da un elemento infinitesimo di
+			superficie $ dx $ centrato in $ x $ ed orientato con normale $ \vec{n} $,
+			rispetto ad un punto $ y $ distante $ r $ vale: $ d\omega = dx \cos\theta/ r_2 $
+			dove $ \theta $ è l’angolo formato dalla normale $ \vec{n} $ con la congiungente
+			$ y $ ed $ x $.\\
+			Il termine $ dx \cos\theta $ rappresenta l’area proiettata di $ dx $ lungo la
+			congiungente $ y $ ed $ x $. Se poniamo in $ y $ una sorgente di luce
+			puntiforme con intensità radiante $ I $, allora l'irradianza nel punto $ x $ vale:
+			\[
+				E(x) = \dfrac{d\Phi}{dx} = \dfrac{I\cos\theta}{r_2}
+			\]
+			\item \textbf{Radianza} $ L(x,\vec{\omega}) $ nel punto $ x $ in una direzione $ \omega $ è la densità superficiale della intensità radiante in $ x $ lungo la direzione 
+			$ \vec{\omega} $, considerando l’area della superficie proiettata:
+			\[
+				L(x,\vec{\omega}) = \dfrac{dI(\omega)}{dx(\vec{\omega}\cdot\vec{n})}
+			\]
+			L’area proiettata della superficie infinitesima $ dx $
+			è l’area della proiezione di $ dx $ (la cui normale è $ \vec{n} $ ) sul
+			piano perpendicolare a $ \vec{\omega} $, e vale dunque $ dx(\vec{\omega}\cdot\vec{n}) $.\\
+			La direzione $ \vec{\omega} $ è data da due angoli: l’elevazione $ \theta $ (rispetto
+			alla normale alla superficie $ \vec{n} $) e l’azimuth $ \phi $(rispetto ad una
+			direzione fissata sulla superficie.)\\
+			Possiamo dunque scrivere: $ \vec{\omega}\cdot\vec{n} = \cos\theta$.\\
+			La radianza $ L(x,\vec{\omega}) $ è la densità di flusso nel punto $ x $ in una direzione $ \vec{\omega} $, misurata rispetto ad una superficie
+			infinitesima perpendicolare a $ \vec{\omega} $.\\
+			La radianza è pari al il flusso	radiante per unità di angolo
+			solido per unità di area proiettata	lungo la direzione di propagazione, e si misura in 
+			$ \left[ \si{\watt}/(\si{\meter}^2 \cdot \si{\steradian}) \right] $.
+			
+			\begin{center}
+				\includegraphics[scale=0.4]{radianza}
+			\end{center}
+		\end{itemize}
+		
+		\subsubsection{Radianza lungo un raggio}
+			Dati due punti $ x $ e $ y $ (nel vuoto) la radianza che lascia $ x $ verso
+			$ y $ è uguale a quella che raggiunge $ y $ dalla direzione di $ x $: non si
+			attenua con la distanza.\\
+			Il modello che si usa in grafica è quello di raggi luminosi che
+			trasportano una certa quantità di energia luminosa.
+			Nel ray casting, dunque, i raggi luminosi trasportano radianza,
+			ed i pixel registrano il valore della radianza (idealmente).\\
+			Quando informalmente si parla di "intensità" del pixel, si fa
+			riferimento alla radianza.\\
+			In realtà nelle immagini digitali, l'intensità è mappata in un
+			range dinamico limitato (tipicamente 8 bit) e non linearmente
+			per compensare la non linearità della percezione umana.
+			
+			Sia $ \Omega $ la semisfera delle direzioni attorno alla normale in $ x $.\\
+			Dall'equazione scritta prima si ha:
+			\[
+				L(x, \vec{\omega})(\vec{\omega}\cdot \vec{n}) = \dfrac{d^2\Phi}{d\vec{\omega}dx} 
+			\]
+			ed integrando:
+			\[
+				\int_{\Omega} L(x, \vec{\omega})(\vec{\omega}\cdot \vec{n})d\vec{\omega} =
+				\int_{\Omega} \dfrac{d^2\Phi}{d\vec{\omega}dx} d\vec{\omega} =
+				\dfrac{d\Phi}{dx} = B(x)
+			\]
+			Similmente, per l’energia incidente, l’irradianza vale:
+			\[
+				E(x) = \int_{\Omega} L(x, \vec{\omega})(\vec{\omega}\cdot \vec{n})d\vec{\omega}
+			\]
+			\textbf{Nota}: la radianza è definita per unità di area proiettata, mentre la
+			irradianza/radiosità sono definite per unità di area (effettiva).
+			
+	\subsection{BRDF}
+		Ritroviamo quindi la Bidirectional Reflectance Distribution
+		Function (BRDF) che caratterizza il materiale di cui è composta la
+		superficie.
+		La BRDF $ \rho(x, \vec{\omega_i}, \vec{\omega_r}) $, è il rapporto tra la radianza riflessa da $ x $
+		lungo la direzione $ \vec{\omega_r} $ e l'irradianza della luce incidente nel
+		punto $ x $ da un angolo solido infinitesimale $ d\vec{\omega_i} $ centrato in $ \vec{\omega_i} $ :
+		
+		\begin{center}
+			\includegraphics[scale=0.5]{brdf}
+		\end{center}
+		
+		\noindent
+		4 gradi di libertà (due angoli). Sarebbero 5 se considerassimo
+		la dipendenza dalla lunghezza d'onda della luce.
+		E' già una drastica semplificazione.
+		Supponiamo che localmente sia costante (stesso materiale in
+		una regione).
+		Non modella alcuni effetti dei materiali reali:
+	\begin{itemize}
+		\item Dipendenza dalle lunghezze d'onda.
+		\item Fluorescenza: riemissione di energia a frequenze diverse da quelle
+		ricevute, tipicamente visibile da stimolo ultravioletto.
+		\item Fosforescenza: riemissione anche dopo la cessazione dello stimolo
+		Scattering sotto la superficie.
+		\item Occorrerebbe, come detto all'inizio, introdurre funzioni con più gradi
+		di libertà.
+	\end{itemize}
+		Si usa la irradianza e non la radianza per misurare la densità di
+		flusso incidente perché quest’ultima non tiene conto della
+		reale orientazione della superficie.\\
+		Si vede facilmente che l'irradianza è legata alla radianza della
+		luce incidente $ L_i (x, \vec{\omega_i} ) $ da:
+		\[
+			dE(x) = L_i (x, \vec{\omega_i} )(\vec{\omega_i} \cdot \vec{n}) d\vec{\omega_i}
+		\]
+		dove $ P_0 (\vec{\omega_i} \cdot \vec{n}) = \cos\Theta_i $\\
+		Dunque la BRDF si scrive :
+		\[
+			\rho(x, \vec{\omega_i}, \vec{\omega_r}) = 
+			\dfrac{L_r (x, \vec{\omega_r})}{L_i (x, \vec{\omega_i} )(\vec{\omega_i} \cdot \vec{n}) d\vec{\omega_i}}
+		\]
+		Siccome la radianza è definita per unità di area proiettata,
+		moltiplicando per $ (\vec{\omega_i} \cdot \vec{n}) $ la si converte in una misura per
+		unità di area (non proiettata).\\
+		In altri termini, si tiene conto del fatto che la radianza è
+		misurata rispetto ad un’area infinitesima orientata
+		diversamente da quella che in effetti viene illuminata, mentre
+		noi vogliamo esprimere l’effettivo flusso incidente.\\
+		Se consideriamo i contributi di irradianza da tutte le direzioni
+		di incidenza, la radianza totale riflessa nella direzione $ \vec{\omega}_r $, e
+		vale:
+		\[
+			L_r (x, \vec{\omega}_r) = \int_{\vec{\omega}_i \in \Omega} 
+			\rho(x, \vec{\omega_i}, \vec{\omega_r}) L_i (x, \vec{\omega_i} )(\vec{\omega_i} \cdot \vec{n}) d\vec{\omega_i}
+		\]
+		
+		\subsubsection{Diffusione pura}
+			Una superficie Lambertiana (o diffusore perfetto) ha una BRDF
+			costante: $ \rho(x, \vec{\omega_i}, \vec{\omega_r}) = \rho(x) $. 
+			La radianza (riflessa) di tale superficie non dipende dalla direzione.
+			Inoltre:
+			\begin{align*}
+				L_r (x, \vec{\omega_r}) &= \rho(x) \int_{\Omega} L_i (x, \vec{\omega_i} )(\vec{\omega_i} \cdot \vec{n}) d\vec{\omega_i} =
+				\rho(x)E(x) = L(x) \\
+				B(x) &= \int_{\Omega} L (x, \vec{\omega} )(\vec{\omega} \cdot \vec{n}) d\vec{\omega} = L(x) \int_{\Omega} \cos\theta d\vec{\omega} = \rho(x) E(x)\pi
+			\end{align*}
+			$ \rho_d(x)= \pi \rho(x) $ prende il nome di \textbf{albedo}.
+			\begin{itemize}
+				\item L’albedo è la frazione di irradianza $ E(x) $ che viene riflessa come
+				radiosità $ B(x) $. Il resto dell’energia viene assorbito
+				\item Diffusore perfetto: superficie ruvida (es. gesso, coccio) che ripartisce
+				la radianza entrante uniformemente su tutte le direzioni
+			\end{itemize}
+			
+			\bigskip
+			
+			La specifica esatta della BRDF per superfici reali è estremamente
+			difficile da ottenere.\\
+			Nella grafica al calcolatore si usano approssimazioni della
+			BRDF. Le due più semplici e più usate modellano due
+			comportamenti ideali dei materiali: una è appunto la
+			diffusione, l'altra è la riflessione speculare.\\
+			Un riflettore speculare si comporta come uno specchio
+			perfetto, che riflette il raggio incidente lungo una direzione
+			che forma con la normale lo	stesso angolo formato dalla
+			direzione di incidenza.
+			\begin{center}
+				\includegraphics[scale=0.15]{brdf1}
+			\end{center}
+			
+		\subsubsection{Diffusione e riflessione speculare}
+			In un materiale opaco (diffusivo) la luce viene riflessa in modo uniforme
+			in tutte le direzioni. \\
+			In un materiale lucido (glossy) il raggio incidente viene disperso in un cono attorno alla direzione di riflessione perfetta.\\
+			Tipicamente le BRDF che si usano in Grafica mescolano
+			diffusione e riflessione speculare.\\
+			Abbiamo omesso la dipendenza dalla lunghezza d’onda, ma la
+			BRDF, in generale, dipende anche da essa: le superfici appaiono
+			colorate per questo: la luce bianca (spettro uniforme) incide
+			sulla superficie e grazie all’assorbimento selettivo delle
+			componenti cromatiche la luce riflessa ha una distribuzione
+			spettrale non uniforme, ovvero è "colorata".\\
+		
+	\subsection{Equazione del rendering}
+		La radianza riflessa in direzione $ \vec{\omega}_r $ , dovuta all'irradianza lungo
+		una direzione $ \vec{\omega_i} $ è:
+		\[
+			L_r(x, \vec{\omega_r}) = \rho(x,\vec{\omega}_i, \vec{\omega}_r)L_i (x, \vec{\omega_i} )(\vec{\omega_i} \cdot \vec{n})
+		\]
+		La radianza totale riflessa lungo $ \vec{\omega}_r $ , è la somma dei contributi
+		dovuti a tutte le possibili direzioni incidenti, $ \theta $, quindi vale:
+		\[
+			L_r(x, \vec{\omega_r}) = \int_{\Omega} \rho(x, \vec{\omega_i}, \vec{\omega_r}) 
+			L_i (x, \vec{\omega_i} )(\vec{\omega_i} \cdot \vec{n}) d\vec{\omega_i}
+		\]
+		
+		Aggiungendo la radianza emessa $ L $ e $ (x, \vec{\omega}) $ si ottiene l'
+		\textbf{equazione del rendering, o della radianza} (Kaijya, 1987), che
+		esprime la radianza totale che lascia il punto $ x $ nella direzione $ \vec{\omega} $:
+		\[
+			\boxed{L(x, \vec{\omega}) = L_e(x, \vec{\omega}) = 
+			 \int_{\Omega} \rho(x, \vec{\omega_i}, \vec{\omega_r}) 
+			L_i (x, \vec{\omega_i} )(\vec{\omega_i} \cdot \vec{n}) d\vec{\omega_i}}
+		\]
+		La radianza incidente in $ x $ lungo la direzione 
+		$ \vec{\omega}_i , L_i (x, \vec{\omega}_i) $ è uguale alla radianza emessa da un altro punto $ y $ nella direzione sotto cui $ y $ vede $ x $: 
+		$\: L_i (x, \omega_{xy} )= L_i(x, \omega_{yx} ) $ con $ \omega_i = \omega_{xy} $.\\
+		L’angolo solido infinitesimo $ d \vec{\omega} $ sotto cui $ y $ vede $ dx $ vale:
+		\[
+			d\vec{\omega} = dy \cos\theta_{yx} / \|x-y\|^2
+		\]
+		Introduciamo il termine di visibilità $ V(x,y) $ che vale 1 se e
+		solo se $ x $ è visibile da $ y $. Possiamo quindi trasformare
+		l’equazione del rendering da integrale su una semisfera di
+		direzioni ad integrale su tutte le superfici $ S $ della scena:
+		\[
+			L(x, \vec{\omega}) = L_e(x, \vec{\omega}) + \int_{y \in S} \rho(x, \vec{\omega}_{xy}, \vec{\omega}) L(y, \vec{\omega}_{yx}) G(x, y) dy 
+		\]
+		Il termine $ G(x, y) = \dfrac{\cos\theta_{xy}\cos\theta_{yx}}{\| x-y \|^2}V(x,y) $
+		dipende solo dalla geometria della scena.
+		
+		\bigskip
+		\noindent
+		Per determinare il colore del pixel nel ray casting dobbiamo risolvere l'equazione del rendering. E' ricorsiva: $ L $ è a sinistra e anche a destra!\\
+		La radianza in un punto di una superficie è determinata
+		globalmente, poiché dipende non solo dalle sorgenti luminose
+		(primarie) ma anche da tutte le altre superfici presenti nell’ambiente
+		(sorgenti secondarie): computazionalmente assai oneroso.\\
+		La disciplina della grafica al calcolatore è incentrata sulla
+		soluzione di questa equazione.\\
+		Si propongono soluzioni approssimate, in modo più o meno
+		grossolano. Si semplificano sia la BRDF che la ricorsione.\\
+		
+		\noindent
+		Per questo aspetto della ricorsione, i metodi si dividono in locali e globali.
+		\begin{itemize}
+			\item \textbf{Locali}. Si elimina la ricorsione, tenendo conto solo dell’effetto
+			diretto delle sorgenti luminose, trascurando le interriflessioni
+			nell’equazione viene considerata la radianza entrante solo lungo le
+			direzioni corrispondenti a raggi provenienti direttamente dalle
+			sorgenti luminose, la cui radianza è nota (ray casting semplice).
+			\item \textbf{Globali}. Si tiene conto della natura ricorsiva della equazione
+			della radianza, ma si trascurano alcuni fenomeni di
+			interriflessione per rendere il problema trattabile. Esempi:
+			\begin{itemize}
+				\item ray tracing, corretto solo per le riflessioni speculari
+				\item radiosity che modella solo le interriflessioni tra superfici diffusive
+			\end{itemize}
+		\end{itemize}
+		
+		
+	\subsection{Illuminazione globale e locale}
+		Per simulare realmente la fisica della luce:
+		\begin{itemize}
+			\item Occorre avere un modello locale di riflessione del raggio incidente sul
+			materiale.
+			\item Occorre modellare le interriflessioni (globale) che fanno sì
+			che l'illuminazione di ogni punto dipenda da tutta la scena
+		\end{itemize}
+		Intanto cerchiamo di definire un modello approssimato di riflessione.
+		
+		\subsubsection{Modello di Phong}
+			Un modello di illuminazione locale tratta l’interazione tra una
+			sorgente ed una singola superficie, buttando via del tutto la
+			ricorsione.\\
+			Nei modelli locali ciascun punto viene trattato
+			indipendentemente dal resto della scena (no interriflessioni,
+			no ombre, no riflessioni speculari).\\
+			Modello di illuminazione: data la normale alla superficie, il
+			materiale e la direzione di illuminazione, fornisce il colore
+			Il modello di Phong è semplice, abbastanza veloce
+			da funzionare in tempo reale e produce risultati accettabili, per
+			scene semplici.	Può essere usato come base per realizzare algoritmi di illuminazione
+			globale (ray tracing). Può essere usato per il rendering in pipeline di rasterizzazione.
+		
+			\bigskip
+		
+			\noindent
+			Modello dovuto a Phong Bui-Tran, prima metà degli anni '70.
+			Semplifica lo schema fisico di interazione:
+			\begin{itemize}
+				\item Solo sorgenti puntiformi
+				\item Calcolo locale dell’equazione di illuminazione
+				\item No inter-riflessioni
+				\item Approssimazione con due costanti della funzione di riflessione
+				\item Simula il comportamento di materiali opachi
+				\item Non modella la rifrazione: no materiali trasparenti o semi-trasparenti
+				\item Non considera le ombre proiettate
+			\end{itemize}
+			Le formule che seguono sono in un’unica banda cromatica:
+			servono per la produzione di un’immagine a diversi livelli di
+			intensità (toni di grigio) piuttosto che diversi colori.\\
+			Quando si utilizza una rappresentazione a colori RGB
+			l’equazione viene calcolata in modo indipendente per ciascuna
+			delle tre componenti cromatiche.\\
+			La luce viene considerata composta da tre componenti
+			cromatiche R,G,B. Si calcola l’intensità indipendentemente per
+			ogni componente cromatica, ottenendo un colore. 
+			Nel seguito faremo riferimento ad una singola componente.\\
+			Confondiamo "l’intensità luminosa" $ I $ con la radianza. La $ I $ è il
+			valore che viene assegnato al raggio.\\
+			Sia P il punto della superficie di cui si vuole calcolare il colore.
+			Questo equivale a calcolare l’intensità luminosa $ I_{out} $ lungo la
+			direzione $ \vec{v} $ che congiunge $ P $ con il $ COP $.\\
+			Modelliamo i comportamenti puramente "speculari" e diffusivi
+			dei materiali usando le leggi di Lambert e Fresnel.
+			
+		\subsubsection{Legge di Lambert}
+			Materiali molto opachi (es.	gesso e legno) hanno una
+			superficie che, a livello microscopico, ha piccole
+			sfaccettature che riflettono la luce in una direzione casuale.\\
+			Integrando su scala macroscopica: la luce si riflette
+			uniformemente verso tutte le direzioni, con intensità
+			proporzionale al rapporto tra la direzione del raggio incidente e
+			la normale alla superficie in quel punto.
+			
+		\subsubsection{Modellazione della riflessione diffusiva}
+			Sorgenti luminose puntiformi:
+			\begin{itemize}
+				\item posizione nella scena
+				\item intensità della luce emessa
+			\end{itemize}
+			
+			
+			Dipendenza solo dall’angolo tra la direzione della luce vista da $ P $ ,
+			ovvero $ \vec{l} $ e la normale in $ P $, che indichiamo con $ \vec{n} $ e supponiamo
+			di norma unitaria. $ \cos(\theta) = \vec{l} \cdot \vec{n} $.
+			
+			\begin{multicols}{2}
+				\includegraphics[scale=0.3]{diff}
+				
+				\columnbreak
+				
+				\noindent
+				Si approssima la funzione di riflessione diffusa della
+				superficie come una costante $ k_d $ dipendente dal materiale.\\
+				Equazione di illuminazione (solo diffusiva):
+				\[
+					I_d^{out} = Ik_d\cos\theta = Ik_d(\vec{n}\cdot\vec{l})
+				\]
+				Simula il comportamento di alcuni materiali (per esempio il
+				gesso, o il coccio) i quali riflettono la $ \vec{l} $.
+			\end{multicols}
+			La componente diffusiva si considera solo per valori di $ \theta $ compresi tra $ 0 $ e $ \pi/2 $.
+			
+		\subsubsection{Legge di Fresnel}
+			\begin{multicols}{2}
+				Quando un raggio di luce passa da un mezzo ad un altro con
+				diverso indice di rifrazione raggiunta la superficie di
+				separazione parte del raggio viene riflessa e parte trasmessa.\\
+				La somma delle energie dei due raggi è uguale all’energia del
+				raggio originale.\\
+				Se da aria a corpo solido non c’è rifrazione si ha solo
+				riflessione. L’angolo di incidenza è uguale all’angolo di
+				riflessione. Vale per materiali molto lisci e lucidi.
+				
+				\columnbreak
+				
+				\includegraphics[scale=0.25]{fresnel}
+			\end{multicols}
+			
+		\subsubsection{Modellazione della riflessione speculare}
+			Novità sostanziale: riflettore non perfetto\\
+			Approssimazione empirica di una riflessione più realistica
+			rispetto alla legge di Fresnel.\\
+			Conseguenza: \textbf{specular highlight}. Simula superfici lucide in
+			generale.
+			
+			\begin{multicols}{2}
+				
+				Dipendenza dall’angolo $ \alpha $ compreso tra la direzione di
+				riflessione ideale e la direzione di vista.
+				Riflessione massima per $ \alpha = 0 $\\
+				Decadimento più o meno rapido all’aumentare di $ \alpha $.\\
+				
+				\columnbreak
+				
+				\vspace*{-0.8cm}
+				\includegraphics[scale=0.3]{speculare}
+				
+			\end{multicols}
+			Phong (1975) introduce il seguente modello empirico per la
+			componente speculare:
+			\[
+				I_s^{out} = Ik_s (\vec{r}\cdot\vec{v})^n
+			\]
+			ove $ k_s $ è il \textit{coefficiente di riflessione speculare}
+			e $ n $ l’\textit{esponente di riflessione speculare del materiale}.
+			$ n $ modula la lucidità della superficie. Per $ n $ che tende ad infinito si ha una
+			riflessione speculare perfetta.\\
+			La formulazione di Blinn (1977) è leggermente diversa:
+			\[
+				I_s^{out} = Ik_s(\vec{n}\cdot\vec{h})^n \quad \textup{dove} \quad 
+				\vec{h} = \dfrac{1 + \vec{v}}{\| 1+\vec{v} \|}
+			\]
+			$ H $ è detto "halfway vector", ed è il vettore che biseca
+			l’angolo formato da $ \vec{l} $ e $ \vec{v} $.\\
+			Il vantaggio della formulazione di Phong-Blinn è che gestisce
+			bene il caso in cui l’angolo tra $ r $ e $ v $ sia $ > \pi/2 $.\\
+			L’angolo tra $ \vec{n} $ ed $ \vec{h} $ non è lo stesso che c’è tra $ r $ e $ v $: lo
+			stesso esponente non produce lo stesso effetto.\\
+			Entrambi sono modelli empirici, privi di significato fisico, che
+			hanno il merito di simulare credibilmente superfici lucide.
+			
+			
+		\subsubsection{Modellazione della componente ambientale}
+			Le inter-riflessioni tra oggetti diversi nella scena non sono
+			trattate nel modello di Phong. 
+			Effetto parzialmente simulato da una componente "ambientale":
+			\[
+				I^{out} = I_a k_a
+			\]
+			\begin{itemize}
+				\item $ I_a $ modella la radiazione luminosa totale emessa nella scena. È costante per tutti i punti di tutti gli oggetti.
+				\item $ k_a $ modella la rieflettività del materiale.
+			\end{itemize}
+			La componente ambientale aggiunge realismo alla scena
+			
+			\begin{center}
+				\includegraphics[scale=0.2]{ambientale}
+			\end{center}
+			Ma da sola non basta!
+			
+			\bigskip
+			
+			Tutti i contributi descritti si vanno a sommare per calcolare l’
+			illuminazione:
+			\[
+				I^{out} = I_a k_a + I(k_d(\vec{n}\cdot\vec{l}) + k_s(\vec{n}\cdot\vec{h})^n)
+			\]
+			Se si stanno considerando i colori, allora sia le intensità della
+			luce che i coefficienti del materiale vanno definiti per ogni
+			componente (r,g,b):
+			\begin{align*}
+				I^{r,out} &= I_a^r k_a^r + I^r(k_d^r(\vec{n}\cdot\vec{l}) + k_s^r(\vec{n}\cdot\vec{h})^n) \\
+				I^{g,out} &= I_a^r k_a^g + I^g(k_d^g(\vec{n}\cdot\vec{l}) + k_s^g(\vec{n}\cdot\vec{h})^n) \\
+				I^{b,out} &= I_a^r k_a^b + I^r(k_d^b(\vec{n}\cdot\vec{l}) + k_s^b(\vec{n}\cdot\vec{h})^n)
+			\end{align*}
+			
+			I coefficienti di diffusione e ambientali di solito sono uguali, la superficie appare del colore specificato dalla terna di coefficienti quando illuminata da luce bianca.
+			Le riflessioni speculari (highlights) invece sono di solito del colore
+			della luce: $ \quad (k_s^r = k_s^g = k_s^b = 1) $.\\
+			
+			\textbf{Note:}
+			\begin{itemize}
+				\item Si parla di modello di Phong, anche se, a rigore, il contributo di Phong
+				riguarda il solo termine speculare.
+				\item Nella forma più generale, prevede tre componenti separate: luce
+				speculare $ I_s $ (riflessa specularmente dalle superfici), luce diffusa $ I_d $
+				(diffusa dalle superfici), e luce ambientale $ I_a $
+				\item Nella trattazione sopra abbiamo assunto $ I_s =I_d = I $.
+				\item Il fatto che una sorgente di luce non emetta luce e basta, ma luce di tre
+				tipi diversi non ha un significato fisico, ma può servire a rendere il
+				modello più flessibile (per simulare effetti globali). Per esempio, la luce
+				ambientale Ia potrà in generale avere un colore diverso dalla $ I $,
+				rendendo magari più realistico l’effetto della mutua illuminazione tra le
+				superfici: in una stanza con le pareti rosse, la luce ambientale è rossa.
+				\item Inoltre, la luce ambientale è associata ad ogni sorgente e non è un
+				termine globale unico, così quando una luce viene spenta (o accesa)
+				l’illuminazione ambientale diminuisce (o aumenta).
+			\end{itemize}
+			
+	\subsection{BRDF di Phong}
+		Vediamo come connettere il modello locale di Phong con
+		l’equazione della radianza, per capire che tipo di
+		approssimazioni sono state fatte.\\
+		Abbiamo introdotto le sorgenti di luce puntuali, che sono
+		distinte dagli oggetti della scena, dunque per tutte le superfici
+		della scena $ L_e = 0 $.\\
+		Per determinare la "intensità" di un punto si deve calcolarne la
+		radianza uscente nella direzione $ \vec{\omega} $ che lo unisce al COP:\\
+		Dobbiamo quindi calcolare:
+		\[
+			L(x, \vec{\omega}) = \int_{\Omega}  L(x, \vec{\omega}_i) 
+			\rho(x, \vec{\omega}_i, \vec{\omega}) (\vec{\omega}_i\cdot\vec{n}) d\vec{\omega}_i
+		\]
+		Ma esiste una sola direzione lungo la quale il contributo
+		all’integrale è diverso da zero: la direzione $ \vec{\omega}_L $ che punta alla
+		sorgente luminosa. Otteniamo dunque:
+		\[
+			L(x, \vec{\omega}) = L(x, \vec{\omega}_L) \rho(x, \vec{\omega}_L, \vec{\omega})
+			(\vec{\omega}_L\cdot\vec{n}) d\vec{\omega}
+		\]
+		Confrontando con il modello di Phong (senza il termine
+		ambientale):
+		\[
+			I^{out} = I \Big( k_d + k_s\dfrac{(\vec{n}\cdot\vec{h})^n}{\vec{n}\cdot\vec{l}}\Big)
+			(\vec{n}\cdot\vec{l})
+		\]
+		e confondendo la radianza uscente $ L(x, \vec{\omega}) $ con la intensità
+		$ I^{out} $ e l'irradianza $ L(x, \vec{\omega}_L )d\vec{\omega} $ con $ I $ si vede che la BRDF di Phong è:
+		\[
+			\rho(x, \vec{\omega}_i, \vec{\omega}_r) =
+			k_d + k_s\dfrac{(\vec{n}\cdot\vec{h})^n}{\vec{n}\cdot\vec{\omega}_i} \quad
+			\textup{dove} \quad
+			\vec{h} = \dfrac{\vec{\omega}_i + \vec{\omega}_r}{\|\vec{\omega}_i + \vec{\omega}_r\|}
+		\]
+		Si può associare ad un oggetto una intensità di \textbf{emissione} $ I_e $
+		da aggiungere all’intensità calcolata con la formula di Phong.\\
+		L’effetto di tale termine è che l’oggetto emette un proprio
+		colore oltre alla luce riflessa dalla sorgente luminosa.\\
+		Da notare che siccome stiamo lavorando con un modello locale, la luce emessa in questo modo da un oggetto influenza l’apparenza solo di quell’oggetto e non l’apparenza
+		degli oggetti vicini (ovviamente poco realistico).\\
+		Ovvero: un corpo emissivo non si comporta come una sorgente luminosa, in questo modello locale.
+		
+		Un modello maggiormente motivato dal punto di vista fisico
+		potrebbe essere quello di Cook-Torrance basato sul modello microfacets della superficie, che descrive la superficie come formata da piccole facce disposte in modo
+		variabile.
+		Il modello di Cook-Torrance differisce da quello di Phong nella
+		componente speculare.
+		\[
+			I_s^{out} = I_s k_s \dfrac{\vec{n}\cdot\vec{l}}{\vec{n}\cdot\vec{v}}FGD
+		\]
+		dove:
+		\begin{itemize}
+			\item $ D(\vec{l}, \vec{v}) $ misura la frazione di microfaccette orientate in modo
+			da dare riflessione speculare da $ \vec{l} $ a $ \vec{v} $.
+			\item $ G(\vec{l}, \vec{v}) $ misura la diminuzione
+			di luce riflessa a causa dell’occlusione da parte di altre
+			microfaccette.
+			\item $ F (\vec{l}, \vec{v}, \lambda) $ è il coefficiente di Fresnel che fornisce la
+			frazione di luce incidente che viene riflessa.
+		\end{itemize}
+		
+	\subsection{Ray Casting}
+		Dovendo assegnare un colore ad ogni pixel, consideriamo il raggio ottico uscente da ciascun pixel.\\
+		Un raggio ottico è una semiretta uscente dal COP che interseca
+		il piano vista.
+		\begin{itemize}
+			\item Se il raggio non interseca alcun oggetto della scena allora gli assegno
+			il colore di sfondo.
+			\item Se il raggio interseca un oggetto, allora devo calcolare l’illuminazione
+			$ I_{out} $ (il colore) nel punto di intersezione ed assegnarlo al pixel.
+			\item Per calcolare il colore applico il modello locale (di Phong).
+			\item Computazionalmente pesante trovare le intersezioni raggio-oggetti.
+			\item Si possono facilmente aggiungere le ombre tracciando il raggio che
+			connette il punto d’intersezione con la sorgente luminosa (shadow
+			ray ): se esso interseca qualche oggetto allora il punto è in ombra.
+		\end{itemize}
+		Il calcolo delle intersezioni si può fare con tutti i tipi di primitiva (e di modelli) visti: Sfere, piani, poligoni, poliedri... È computazionalmente pesante, si possono usare strutture dati per semplificare il problema. Es. strutture dati gerarchiche, volumi di contenimento, octrees, kd trees etc.
+		
+		\bigskip
+		
+		L’eventuale punto di intersezione tra la retta $ P = Q + t\vec{v} $ ed il
+		piano $ (O - P ) \cdot\vec{u} = 0 $ deve soddisfare l’equazione:
+		\[
+			(O - Q - t\vec{v}) \cdot\vec{u} = 0
+		\]
+		Dunque si ottiene per $ t_0 $ la seguente soluzione:
+		\[
+			t_0 = \dfrac{(O - Q) \cdot\vec{u}}{\vec{u}\cdot\vec{v}}
+		\]
+		che ha senso se $ \vec{u}\cdot\vec{v} = 0 $. Infatti se $ \vec{u}\cdot\vec{v} = 0 $ la retta è parallela al piano (e non lo interseca).
+		
+		\textbf{Intersezione retta-poligono}:\\
+		Per prima cosa si fa un test per vedere se la retta interseca il piano contenente il poligono.
+		Quest’ultimo è descrivibile semplicemente da uno dei vertici del poligono e dalla normale a questo. Se la retta non interseca tale piano allora sicuramente non
+		interseca nemmeno il poligono. Nel caso di intersezione bisogna determinare se il punto di
+		intersezione giace o meno nel poligono. Assumiamo che il poligono P sia convesso. In tal caso un punto $ R $ giace all’interno di $ P $ se e solo se $ R $ si trova nel semipiano
+		sinistro di tutte le rette orientate che contengono gli spigoli
+		(la retta orientata da $ P_i $ a $ P_{i+1} \quad \forall i = 1 \dots n  $).
+		
+		[Esercizio: trovare un modo per verificare che $ R $ giace a sinistra della
+		retta orientata $ P Q $ ]
+		
+	\subsubsection{Riduzione della complessità}	
+		Implementare un ray-tracer elementare è molto semplice. Basta controllare l’intersezione di ciascun raggio con ogni primitiva (triangolo). Questo ha un costo lineare nel numero delle
+		primitive ed è praticabile solo per modelli semplici.\\
+		Per raggiungere costo sub-lineare sono necessarie strutture di indicizzazione spaziale, che consentano di limitare a-priori (senza fare il test) il numero delle primitive per le quali il
+		test di intersezione viene effettuato.\\
+		Queste tecniche di sfoltimento si chiamano anche \textbf{pruning}, culling o broad phase (contrapposto al narrow phase dove invece si calcolano le intersezioni (con test stringenti).\\
+		Tipicamente si considerano oggetti convessi. Se non lo sono, si spezzano in parti convesse.
+		
+	\subsubsection{Volumi di contenimento}
+		Si racchiudono gli oggetti in solidi ("volumi") che li
+		contengono (bounding volume), con i quali sia facile testare
+		l’intersezione: se non c’è intersezione con il bounding volume
+		non c’è intersezione con l’oggetto racchiuso.\\
+		Questo non rende sub-lineare la complessità della ricerca delle
+		intersezioni, ma semplifica le operazioni, e dunque sortisce nella
+		pratica un miglioramento dei tempi.\\
+		Tipici volumi di contenimento sono sfere, parallelepipedi con i
+		lati paralleli agli assi cartesiani (AABB, da axis aligned
+		bounding box), oppure parallelepipedi generici (OBB, da
+		oriented bounding box).\\
+		
+		\begin{center}
+			\includegraphics[scale=0.5]{volumi}
+		\end{center}
+		
+	\subsubsection{Partizionamento spaziale}
+		Si suddivide lo spazio in celle, tipicamente cubiche (come una
+		voxelizzazione grossolana). Si visitano le celle intersecate dal raggio (come Bresenham) e
+		solo le primitive contenute in tali celle sono intersecati con il
+		raggio.
+		
+	\subsubsection{Volumi di contenimento gerarchici}
+		Si costruisce una gerarchia di volumi di contenimento, dove al livello più alto si ha un volume che racchiude tutta la scene, ed al livello più basso si hanno volumi di contenimento per i singoli oggetti (o per un numero prefissato di primitive). È una struttura organizzata bottom-up. È stata introdotta proprio per il ray tracing.
+		
+		\begin{center}
+			\includegraphics[scale=0.5]{volumiger}
+		\end{center}
+	
+	\subsubsection{Octree}
+	La costruzione dell’Octree avviene come di consueto: una cella viene suddivisa ricorsivamente fino a che non contiene un numero prefissato di primitive. L’attraversamento (sequenziale) avviene nel seguente modo:
+	\begin{itemize}
+		\item Interseca il raggio con il cubo che racchiude tutta la scena (nodo
+		radice) e trova un punto P sul raggio “leggermente” all’interno.
+		\item Visita l’albero per scoprire a quale cella (foglia) appartiene P .
+		\item Interseca il raggio con le facce della cella per trovare la faccia di
+		uscita.
+		\item La prossima cella è quella adiecente alla faccia di uscita.
+	\end{itemize}
+	Come nel caso della partizione uniforme, solo le primitive contenute nelle celle visitate sono intersecati con il raggio. Il vantaggio è che la divisione si adatta agli oggetti della scena
+	invece di essere fissa ed uniforme.
+	
+	\begin{center}
+		\includegraphics[scale=0.5]{octree3}
+		\hspace{1cm}
+		\includegraphics[scale=0.5]{octree2}
+	\end{center}
+
+	\subsubsection{KD-Tree}
+	La costruzione avviene in modo che ogni piano divida a metà il numero di oggetti rimanenti. L’attraversamento può avvenire in modo sequenziale (come quello visto per l’Octree) oppure in modo ricorsivo, sfruttando la struttura dell’albero. Vediamo quest’ultimo:
+	\begin{quote}
+		Il raggio viene intersecato ricorsivamente con le regioni definite
+		dall'albero. Visitando l’albero, il raggio viene intersecato con la
+		regione corrente e ricorsivamente suddiviso in intervalli. Solo gli
+		oggetti contenuti nelle foglie che alla fine intersecano un
+		intervallo di raggio sono controllati.
+	\end{quote}
+	
+	\subsubsection{Scene}
+	Per fare il rendering:
+	\begin{itemize}
+		\item Creiamo i modelli degli oggetti.
+		\item Li trasformiamo geometricamente e disponiamo nella scena.
+		\item Definiamo la telecamera virtuale.
+		\item Facciamo ray-casting (o rasterizzazione). Concettualmente semplice (computazionalmente meno)
+	\end{itemize}
+	
+	\section{Rasterizzazione}
+	
+	Abbiamo descritto la procedura intuitiva del ray-casting. Abbiamo tuttavia già visto che le applicazioni grafiche usano un metodo diverso. Perché?
+	Anche il solo ray casting con un modello di illuminazione locale è troppo oneroso in termini computazionali, a causa dei calcoli delle
+	intersezioni raggi-oggetti (per non parlare del ray tracing) Si usa un diverso paradigma: la rasterizzazione.
+	Non più modelli generici, ma maglie poligonali, le altre rappresentazioni si possono ricondurre a questa.
+	ray casting è invece trasversale rispetto alla modellazione della scena.
+	
+	Invece che gettare (to cast) raggi sulla scena, proietto la scena (composta di poligoni) sul piano immagine.\\
+	La proiezione di un poligono è ancora un poligono, che ha per vertici le proiezioni dei vertici\\
+	La rasterizzazione è un esempio di rendering in object-order, mentre ray-casting è un esempio di rendering in image-order..
+	\begin{center}
+		\includegraphics[scale=0.5]{raster}
+	\end{center}
+	
+	\subsection{Problemi}
+		Eliminato il calcolo delle intersezioni raggio-oggetto. Ma ho
+		molti altri problemi:
+		\begin{itemize}
+			\item \textbf{Superfici nascoste}: nel ray casting il problema di stabilire quali parti
+			della scena sono visibili e quali nascoste viene implicitamente
+			risolto: è la prima intersezione lungo il raggio che conta. Nella
+			rasterizzazione, quando proietto i poligoni, devo stabilire quali sono
+			visibili (e dunque da disegnare) e quali no.
+			\item \textbf{Clipping}: nel ray casting gli oggetti al di fuori del volume di vista
+			vengono implicitamente scartati. Nella rasterizzazione devo stabilire
+			esplicitamente quali poligoni entrano nel volume di vista e quali no.
+			Quelli a cavallo vanno tagliati.
+			\item \textbf{Scan-conversion}: la proiezione dei poligoni sul piano immagine non
+			tiene conto della natura discreta dell’immagine stessa. Alla fine devo
+			disegnare un poligono su una matrice di pixel, decidendo dunque
+			quali pixel vi appartengono e quali no.
+			\item \textbf{Shading interpolativo}: Nel ray casting il colore di ogni pixel deriva
+			dall’applicazione del modello di illuminazione al corrispondente
+			punto della scena. Nel nuovo paradigma gli unici punti collegati
+			esplicitamente a punti della scena sono i vertici dei poligoni. Per
+			questi ultimi si può assegnare un colore, e per quelli interni bisogna
+			interpolare (abbiamo visto come...).
+			\item \textbf{Effetti globali di illuminazione}: Nel ray casting era facile ottenere le
+			ombre tracciando gli shadow rays. Più in generale, con il ray-tracing
+			si possono ottenere effetti di illuminazione globale che invece nella
+			rasterizzazione richiedono trucchi più o meno elaborati (oppure se
+			ne fa a meno).
+		\end{itemize}
+		La soluzione di questi problemi è implementata nella \textbf{pipeline} in modo efficiente e la rasterizzazione risulta più veloce del ray casting.
+		
+		\bigskip
+		
+		\begin{center}
+			\includegraphics[scale=0.3]{pipeline}
+		\end{center}
+		
+		Avevamo già visto questo schema. Si parte da una lista di primitive (triangoli)
+		Si operano una serie di processi a catena (pipeline), parte in CPU, parte in GPU. La pipeline è divisa in due parti: la prima geometrica, la seconda “raster” che lavora sui pixel dell'immagine (la vera rasterizzazione).
+		
+		\bigskip
+				
+		In OpenGL possiamo considerare la pipeline grafica come una macchina a stati ove si definiscono delle primitive e delle operazioni che le modificano.\\
+		Il programma definisce queste e le passa alla pipeline che dà in ouput le immagini
+		Primitive di due tipi: \textbf{geometriche} e \textbf{raster}. Vediamo ora quali sono le operazioni base per realizzare la visualizzazione di una scena triangolata.
+	
+	
+	\subsection{Pipeline geometrica}
+		Devo 
+		\begin{enumerate}
+			\item mettere assieme gli oggetti della scena
+			\item rappresentare gli oggetti nel sistema di riferimento della telecamera virtuale. \item Proiettarli. 
+			\item Posso applicare le varie trasformazioni geometriche.
+		\end{enumerate}
+		
+		\begin{center}
+			\includegraphics[scale=0.3]{pipelineg}
+		\end{center}
+
+		Quindi metto tutti gli oggetti con trasformazioni “di modellazione” (traslazioni, rotazioni, scalature) in un riferimento “coordinate mondo”. Poi devo \textbf{proiettare} sul piano immagine. Avviene quindi una \textbf{proiezione prospettica o affine}.
+		
+		\begin{center}
+			\includegraphics[scale=0.2]{pipelineg1}
+			\hspace{1cm}
+			\includegraphics[scale=0.2]{pipelineg2}
+		\end{center}
+	
+	\subsection{Trasformazione di vista}
+		Supponiamo di usare la proiezione prospettica. Devo passare in coordinate solidali con la camera (view space, come in figura) e definire cosa “vedo” dato che lavorando in object order devo buttare via il resto (clipping)
+		
+		\begin{multicols}{2}
+			\textbf{Convenzioni:}\\
+			Il piano immagine è davanti alla telecamera a distanza $ 1 $ ($ d $ era solo un fattore di scala globale).\\
+			L’angolo di vista (solido) si assegna mediante l’angolo di vista (verticale) $ \theta $ ed il fattore di aspetto $ a = w/h $ della finestra di vista.
+			
+			\columnbreak
+			
+			\includegraphics[scale=0.5]{pipelineg3}
+			
+		\end{multicols}
+	
+		\noindent
+		\textbf{Volume di vista}\\
+		La piramide di vista, in principio semi-infinita, viene limitata da due piani paralleli al piano di vista: il piano di taglio anteriore (front clippig plane) e quello posteriore (back clipping plane). Il solido risultante è un frustum, e prende il nome specifico di frustum di vista (view frustum), o volume di vista (view volume). Il frustum di vista è la regione di spazio nel mondo che può apparire sulla finestra di vista.
+		
+		\begin{center}
+			\includegraphics[scale=0.15]{pipelineg4}
+		\end{center}
+		Gli oggetti che cadono dentro il volume di vista vengono disegnati. Per proiettarli con $ M $ o ($ M_{\perp} $ ) le coordinate devono essere trasformate nello spazio vista, con una trasformazione rigida, detta trasformazione di vista. Si noti che abbiamo messo il piano vista davanti al centro di proiezione, ma l’asse $ Z $ punta “indietro”, quindi la matrice di proiezione rimane la stessa vista prima (con $ d = 1 $):
+		\[
+			M =
+			\begin{pmatrix}
+				1 & 0 & 0 & 0 \\
+				0 & 1 & 0 & 0 \\
+				0 & 0 & -\dfrac{1}{d} & 0
+			\end{pmatrix}
+		\]
+	
+	
+	\subsection{Trasformazione prospettica}
+		\begin{multicols}{2}
+			La proiezione prospettica $ M $ potrebbe essere applicata ai punti $ P $ (vertici dei triangoli) espressi nello spazio vista ottenendo le coordinate sul piano immagine.
+			Invece si fa una cosa più contorta: si applica la “trasformazione prospettica”, che mappa il frustum in un parallelepipedo retto (volume di vista canonico), poi mappato sul piano immagine con una proiezione ortografica. \\
+			Motivo: semplificare le operazioni di clipping (buttar via ciò che sta fuori).
+			
+			\columnbreak
+			
+			\begin{center}
+				\includegraphics[scale=0.6]{pipelineg5}
+			\end{center}
+			
+		\end{multicols}
+	
+		Consideriamo la matrice $ 4 \times 4 N $, non singolare (simile alla $ M $) (che prende il nome di matrice di trasformazione o di normalizzazione prospettica).
+		\[
+			N =
+			\begin{pmatrix}
+				1 & 0 & 0 & 0 \\
+				0 & 1 & 0 & 0 \\
+				0 & 0 & \alpha & \beta \\
+				0 & 0 & -1 & 0	
+			\end{pmatrix}
+		\]
+		Applicando $ N $ a $ P $ si ottiene la 4-pla $ (x, y, \alpha z + \beta,-z) $ che, dopo la divisione prospettica diventa $ (-x/z,-y/z, -\alpha-\beta/z) $. Le prime due componenti sono identiche alla proiezione standard, ma la terza componente (pseudo-profondità) è diversa: 
+		$ z_s = \alpha z +\beta, -z $. per valori di $ \alpha, \beta $ fissati è una funzione monotona di $ z $. La relazione tra $ z $ e $ z_s $ è non lineare, ma l’ordinamento sulla
+		profondità è conservato.
+	
+		\noindent
+		\textbf{Volume di vista canonico}\\
+		La trasformazione (normalizzazione) prospettica N mappa punti 3D in punti 3D, e scegliendo opportunamente $ \alpha, \beta $ possiamo fare in modo che mappi il frustum di vista in un parallelepipedo con coordinate arbitrarie. Gli oggetti vengono distorti di conseguenza.\\
+		Proiettando questo parallelepipedo ortogonalmente (eliminando la terza coordinata, cioè 
+		$ z_s $ ) si ottiene la proiezione prospettica desiderata. In OpenGL il volume di vista canonico è un cubo:	$\quad -1\leq x\leq 1 \quad -1\leq y\leq 1  \quad -1\leq z\leq 1 $.
+		
+		Nel volume di vista canonico il back clipping plane ha equazione $ z_s = 1 $, ed il front clipping plane $ z_s = -1 $. Nel sistema di riferimento camera il front clipping plane di
+		trova a distanza $ n $ dall’origine ed il back clipping plane a distanza $ f $.\\
+		Vogliamo dunque scegliere $ \alpha, \beta $ in modo che l’intervallo di profondità $ z [-n,-f] $ venga mappato in $ z_s [-1, 1] $ (notare l’inversione di $ z $).
+		Si ottiene:
+		\[
+			\alpha = \dfrac{f + n}{n - f} \quad \beta = -\dfrac{2fn}{n - f}
+		\]
+	
+		Se l’angolo di vista $ \theta = 90 $ ed il fattore d’aspetto $ a = 1 $, allora la matrice $ N $ con $ \alpha , \beta $ calcolati come sopra trasforma il frustum nel volume di vista canonico.
+		Nel caso generale, bisogna considerare $ \theta $ e $ a $, moltiplicando $ N $ per la seguente matrice di scalatura, dove $ \gamma = 1/\tan(\theta/2) $ che ha l’effetto di trasformare la piramide generica in piramide retta a base quadrata. Attenzione: questa matrice agisce anche sulle coordinate $ x $ ed $ y $. La matrice $  $ viene chiamata anche (in terminologia OpenGL)
+		matrice di proiezione (projection matrix) anche se, a rigore, non effettua una proiezione dello spazio 3D, ma una sua trasformazione.
+	
+		\textbf{Caso ortogonale}\\
+		Se invece si vuole effettuare una proiezione ortogonale (ortografica), basta sostituire la trasformazione prospettica con una trasformazione (affine) che mappa il volume di vista
+		(un parallelepipedo in questo caso) nel volume di vista canonico. Nel caso della proiezione ortografica, il volume di vista è già un parallelepipedo, e basta trasformarlo in quello canonico con una opportuna matrice di scalatura.
+	
+	
+	\subsection{Trasformazione viewport}
+		\textbf{Viewport}: porzione del display all’interno della quale viene visualizzato il risultato del rendering. La trasformazione viewport si applica dopo la proiezione
+		ortografica e dipende dalle caratteristiche fisiche del display. Ai punti proiettati dal volume di vista canonico viene applicata una matrice di trasformazione affine che: 
+		\begin{itemize}
+			\item ripristina il fattore di aspetto corretto per l’immagine (distorto dalla trasformazione prospettica)
+			\item scala e trasla l’immagine.
+		\end{itemize}
+	
+		Quindi la pipeline geometrica coinvolge diversi sistemi di riferimento e trasformazioni tra di essi. In ciascuno di essi avvengono delle operazioni, da parte del codice o della pipeline hardware.
+		
+		\begin{center}
+			\includegraphics[scale=0.5]{pipelineg6}
+		\end{center}
+		
+		Nomi
+		I nomi possono variare, ma il senso è quello
+	
+	
+		\textbf{Operazioni}
+		\begin{itemize}
+			\item \textbf{Clipping}: devo eliminare le parti fuori dal frustum e tagliare i
+			poligoni a metà: ricavo lista di poligoni ridotta
+			\item \textbf{Illumination}: calcolo il colore con l'equazione semplificata del
+			rendering sul vertice (alternativa: farlo dopo)
+			\item \textbf{Scan conversion}: trovo i pixel sovrapposti alla proiezione del
+			triangolo: genero i frammenti (pixel)
+			\item \textbf{Illumination/shading}: calcolo il colore del frammento
+			\begin{itemize}
+				\item Interpolando i colori dei vertici
+				\item Oppure calcolando a questo punto l'illuminazione
+			\end{itemize}
+			Rimuovo superfici nascoste (Back-face culling).\\
+			Mappatura texture, effetti di miscelazione di immagini diverse,
+			ecc.
+		\end{itemize}
+
+	\subsection{Clipping}
+		L’operazione di clipping consiste nell’individuare (e rimuovere) le primitive grafiche (o parti di esse) esterne ad una finestra rettangolare o esaedrale oppure, più in generale,
+		esterne ad un poligono o poliedro convesso. In computer graphics si è interessati al clipping rispetto a rettangoli o esaedriClipping (generalità). Non interessa tutto ciò che non è nel view frustumClipping di un punto.\\ 
+		\textbf{Clipping di un punto}: un punto è all’interno del rettangolo di .clipping se e solo se sono soddisfatte le 4 disuguaglianze:
+		$ x_{min} \leq x \leq x_{max} ,\quad y_{min} \leq y \leq y_{max} $
+		
+		\begin{tikzpicture}[scale=0.4]
+			\draw (2,3) rectangle (6,0); 
+			\draw[densely dashed] (0,3) node[left] {$ y = y_{max} $} -- (8,3);
+			\draw[densely dashed] (0,0) node[left] {$ y = y_{min} $} -- (8,0);
+			\draw[densely dashed] (2,-2)node[below] {$ x = x_{min} $}  -- (2,5);
+			\draw[densely dashed] (6,-2)node[below] {$ x = x_{max} $}  -- (6,5);
+			\fill (5,2) circle (5pt) coordinate[label=below right:$ P $];
+		\end{tikzpicture}
+
+	\noindent
+		\textbf{Clipping di un segmento}: necessario analizzare le posizioni dei
+		suoi punti estremi.
+		\begin{itemize}
+			\item Se gli estremi sono entrambi interni al rettangolo di clipping, il
+			segmento è interno;
+			\item Se un estremo è interno e l’altro esterno, allora il segmento
+			interseca il rettangolo di clipping ed è necessario determinare
+			l’intersezione;
+			\item Se entrambi gli estremi sono esterni al rettangolo, il segmento può
+			intersecare o meno il rettangolo di clipping e si rende necessaria
+			una analisi più accurata per individuare le eventuali parti interne
+			del segmento.
+		\end{itemize}
+		
+		\subsubsection{Algoritmi}
+		\textbf{Diretto}: calcolo le intersezioni retta/rettangolo di clipping:
+		inefficiente.\\
+		\textbf{Cohen-Sutherland}: codifica binaria regioni, in base ai codici
+		degli estremi (and logico) capisco le intersezioni.
+		
+		\begin{tikzpicture}[scale=0.4]
+			\draw (2,3) rectangle (6,0); 
+			\draw[densely dashed] (0,3) node[left] {$ y = y_{max} $} -- (8,3);
+			\draw[densely dashed] (0,0) node[left] {$ y = y_{min} $} -- (8,0);
+			\draw[densely dashed] (2,-2)node[below] {$ x = x_{min} $}  -- (2,5);
+			\draw[densely dashed] (6,-2)node[below] {$ x = x_{max} $}  -- (6,5);
+			\node at (1,4) {1001}; \node at (4,4) {1000}; \node at (7,4) {1010}; 
+			\node at (1,1.5) {0001}; \node at (4,1.5) {0000}; \node at (7,1.5) {0010}; 
+			\node at (1,-1) {0101}; \node at (4,-1) {0100}; \node at (7,-1) {0110}; 
+		\end{tikzpicture}
+		
+	\textbf{Segmenti: Liang-Barsky}: Un po' più efficiente. 
+	\begin{itemize}
+		\item Si scrive il segmento in forma parametrica ($ t $ in $ [0 1] $)
+		\[
+			P_0 +(P_1 - P_0)t= P_0 +t\vec{v}
+		\]  
+		\item Si trovano le intersezioni con le rette/piani di clipping. 
+		\item Si calcolano i valori di t di entrata e uscita dalla regione interna. 
+		\item Si trova il segmento dopo clipping prendendo il massimo t dei punti di entrata se >0 e il minimo in uscita (se <1). 
+		\item Direttamente applicabile anche in 3D.
+	\end{itemize}
+	
+	\begin{multicols}{2}
+		\noindent
+		\textbf{Clipping di un poligono}: \\
+		è un’operazione più complessa rispetto al clipping di un
+	segmento per diversi aspetti: 
+	\begin{itemize}
+		\item Dal semplice poligono convesso (A);
+		\item Al poligono concavo che origina più componenti connesse (B);
+		\item In ogni caso il risultato consta di uno o più poligoni e non solo segmenti sconnessi (C).
+	\end{itemize}
+	
+	\columnbreak
+	
+	\begin{tikzpicture}[>=latex, scale=0.55]
+		\draw[fill=Green!50!] (0,4) -- (1,6) -- (3,4) -- cycle;
+		\draw[fill=Green!50!] (6,4) -- (8,4) -- (7,5) -- (6,5) -- cycle;
+		\draw[fill=Green!50!] (0,2) -- (2.5,2) -- (2.5,0.5) -- (0.5,1.5) -- (0.5,0) -- 
+			(2,0) -- (2,-2) -- (0,-2) -- cycle;
+		\draw[fill=Green!50!] (6.5,1) -- (7.5,0.5) -- (7.5,1) -- cycle;
+		\draw[fill=Green!50!] (6,0) rectangle (7,-1);
+		\draw[fill=Green!50!] (1,-3) -- (2,-3) -- (3,-4) -- (1,-4) -- cycle;
+		\draw (7,-3) -- (8,-4) -- (6,-4) ;
+		
+		\draw[thick] (1,5) rectangle (4,3); \draw[thick] (6,5) rectangle (9,3);
+		\draw[thick] (1,1) rectangle (4,-1); \draw[thick] (6,1) rectangle (9,-1);
+		\draw[dashed] (1,-3) rectangle (4,-5); \draw[dashed] (6,-3) rectangle (9,-5);
+		
+		\draw[->] (4.5,4) -- (5.5,4); \draw[->] (4.5,0) -- (5.5,0);
+		
+		\node[below] at (5,3) {A}; \node[below] at (5,-1) {B}; \node[below] at (5,-5) {C};
+	\end{tikzpicture}
+	\end{multicols}
+	
+	\noindent
+	L’approccio \textbf{diretto} consiste nel confrontare ogni lato del poligono con le 4 rette che delimitano il rettangolo di clipping; Questo approccio implica l’esecuzione di operazioni costose (la determinazione di intersezioni) e spesso inutili. 
+	
+	\noindent
+	\textbf{Clipping di un poligono (Sutherland-Hodgman)}:\\
+	Approccio divide et impera; Il problema è ricondotto al clipping di un poligono generico rispetto ad una retta; La procedura è applicata sequenzialmente alle 4 rette che definiscono il Poligono originale rettangolo di clipping.
+	
+	\noindent
+	\textbf{Clipping con bounding box}
+	Altro approccio: calcolo la bounding box della primitiva
+	Considero intersezione tra bounding box e regione di vista
+	Solo se le regioni si intersecano faccio clipping
+	(sull'intersezione).
+	
+	\subsection{Rimozione superfici nascoste (HSR)}
+	Gli oggetti della scena sono generalmente opachi;\\
+	Gli oggetti più vicini all’osservatore possono nascondere (occludere) la vista (totale o parziale) di oggetti più lontani; Il problema della rimozione delle superfici nascoste (\textbf{HSR, Hidden surface removal}) consiste nel determinare le parti della
+	scena non visibili dall’osservatore;\\
+	La rimozione delle superfici nascoste non è solo dipendente dalla disposizione degli oggetti nella scena ma anche dalla relazione esistente tra oggetti e posizione dell’osservatore.\\
+	Quindi in una applicazione interattiva se sposto il punto di vista cambia la visibilità degli oggetti.
+	
+	\bigskip
+	
+	Stiamo analizzando la parte “geometrica” della pipeline grafica. La rimozione però non è necessariamente fatta qui:
+	\begin{itemize}
+		\item Algoritmi che operano in object-space determinano, per ogni primitiva geometrica della scena, le parti della primitiva che non risultano oscurate da altre primitive nella scena. Gli algoritmi operano nello spazio di definizione delle primitive;
+		
+		[Applicazione o Geometry subsystem]
+		
+		\item Algoritmi che operano in image-space determinano, per ogni punto “significativo” del piano di proiezione (ogni pixel del piano del piano immagine), la primitiva geometrica visibile “attraverso” quel punto. Gli algoritmi operano nello spazio immagine della scena proiettata.
+		
+		[Raster subsystem]
+	\end{itemize}
+	
+	
+	\textit{Conviene operare in object space?}\\
+	Nell’ipotesi di una scena 3D composta da k primitive geometriche planari ed opache, si può derivare un generico algoritmo di tipo object-space analizzando gli oggetti a coppie;
+	Fissato un punto di vista, le relazioni spaziali di due primitive geometriche A e B possono essere:
+	\begin{itemize}
+		\item $ A [B] $ oscura $ B [A] $; solo $ A [B] $ è visualizzata;
+		\item $ A $ e $ B $ sono completamente visibili; entrambe le primitive sono
+		visualizzate;
+		\item $ A [B] $ occlude parzialmente $ B [A] $
+	\end{itemize}
+	è necessario individuare le parti visibili di $ B [A] $.
+%	HSR: Object-space
+%	A oscura B: tutti i punti di A
+%	sono più vicini
+%	all’osservatore di tutti i
+%	punti di B e la proiezione di
+%	B sul piano di vista ricade
+%	all’interno della proiezione di
+%	A. Visualizza A;
+%	B oscura A: tutti i punti di B
+%	sono più vicini
+%	all’osservatore di tutti i
+%	punti di A e la proiezione di
+%	A sul piano di vista ricade
+%	all’interno della proiezione di
+%	B. Visualizza B.
+%	A
+%	BHSR: Object-space
+%	A e B non si occludono: le
+%	due proiezioni di A e B sul
+%	piano di vista sono disgiunte;
+%	Visualizza A e B.
+%	A
+%	BHSR: Object-space
+%	A e B si oscurano
+%	parzialmente:
+%	l’intersezione tra le due
+%	proiezioni di A e B sul piano
+%	di vista è non nulla e diversa
+%	sia dalla proiezione di A che
+%	da quella di B.
+%	Individua le parti visibili di
+%	ciascuna primitiva.
+%	A
+%	B
+%	A
+%	BHSR: Object-space
+%	Un possibile algoritmo risolutivo:
+%	Proiettare le k primitive geometriche;
+%	Al generico passo analizzare la i-esima primitiva (i=1, ..., k-1) con le
+%	rimanenti k   –   i in modo da individuare le parti visibili.
+%	La complessità dell’approccio object-space risulta di ordine
+%	O(k 2 )
+%	L’approccio object-space è consigliabile solo quando le
+%	primitive nella scena sono relativamente poche.
+%	Si può aumentare l'efficienza?Sì ricordiamo le tecniche di suddivisione spaziale
+%	Riorganizzare gli oggetti della scena (o le loro proiezioni sul piano
+%	immagine) in gruppi coerenti dal punto di vista spaziale;
+%	Si effettua di solito mediante griglie 2D o 3D che servono a limitare i
+%	confronti in profondità tra le primitive della scena.
+%	Ma per oggetti con molti triangoli resterebbe
+%	Quindi normalmente l'operazione viene fatta a livello in image
+%	space, cioé nella parte di pipeline che vedremo nella prossima
+%	lezione, cioè a livello dei pixelHSR: Image-space
+%	E' quello che normalmente si
+%	fa nella pipeline grafica
+%	In pratica si tratta di
+%	ordinare per profondità le
+%	proiezioni delle primitive su
+%	ciascun pixel dell'immagine
+%	finale e tenere solo la
+%	proiezione che avviene da
+%	più vicino
+%	La rimozione delle superfici
+%	occluse è sempre un
+%	ordinamento per distanza
+%	lungo il proiettoreHSR: Image-space
+%	L’operazione fondamentale dell’approccio image-space è il
+%	calcolo delle intersezioni tra semirette e piani di
+%	appartenenza delle primitive (per ogni semiretta al più k
+%	intersezioni);
+%	Anche se per un display n x m, questa operazione deve essere
+%	eseguita n x m x k volte, la complessità risulta comunque di
+%	ordine O(k)
+%	Sia nell’approccio object-space che in quello image-space la
+%	rimozione delle superfici nascoste è riconducibile ad un
+%	problema di ordinamento (in profondità).Con e senza rimozione superfici
+%	nascosteBack-face culling
+%	Alcune facce invisibili sono più facilmente rimosse
+%	Back-face culling (Eliminazione delle facce posteriori)
+%	Se gli oggetti della scena sono rappresentati da poliedri solidi
+%	chiusi (cioè le facce poligonali dei poliedri delimitano
+%	completamente i volumi dei solidi);
+%	Se ogni faccia poligonale è stata modellata in modo tale che la
+%	normale ad essa sia diretta verso l’esterno del poliedro di
+%	appartenenza;
+%	Se nessuna parte del poliedro viene tagliata dal front clipping
+%	plane ...Back-face culling
+%	Nelle ipotesi precedenti...
+%	Le facce la cui normale
+%	forma angoli superiori a
+%	±90° con la direzione di
+%	vista possono essere visibili;
+%	Le facce la cui normale
+%	forma angoli inferiori a ±90°
+%	con la direzione di vista
+%	certamente non sono
+%	visibili ;Back-face culling
+%	Per ridurre il carico di lavoro richiesto per la rimozione delle
+%	superfici nascoste può essere quindi opportuno eliminare
+%	inizialmente tutti le primitive geometriche la cui normale è
+%	orientata verso il semispazio opposto all’osservatore, non
+%	visibile all’osservatore;
+%	Indicato con  l’angolo tra la normale e l’osservatore, la
+%	primitiva in esame deve essere rimossa se -90°    90°,
+%	cioè se cos   0.
+%	Invece di calcolare la quantità
+%	cos  possiamo valutare il
+%	prodotto scalare n·v  0Back-face culling
+%	Se l’operazione è eseguita in coordinate normalizzate di vista
+%	(dopo aver eseguito la proiezione) la determinazione delle
+%	facce back-facing si riduce ad un controllo del segno della
+%	coordinata z delle normali: ad un segno positivo
+%	corrispondono facce front-facing, ad un segno negativo facce
+%	back-facing;
+%	Questo procedimento (detto back-face culling) consente, in
+%	media, di dimezzare il tempo necessario per il rendering di
+%	oggetti solidi dato che, sempre in media, circa metà delle
+%	facce di un poliedro sono back-facing e quindi la loro
+%	visualizzazione sarebbe comunque inutile.Riepilogo
+%	Spazio Oggetto (object space): dove ciascun singolo oggetto viene
+%	·
+%	·
+%	·
+%	·
+%	definito. Detto anche local space o modeling space
+%	Spazio Mondo (world space): dove si costruisce. Si passa dallo spazio
+%	oggetto allo spazio mondo mediante la trasformazione di modellazione.
+%	Si chiama anche application space.
+%	Spazio Vista (view space): centrato sulla telecamera virtuale, che
+%	definisce, assieme alla finestra di vista ed ai piani di taglio, il frustum di
+%	vista. Detto anche camera space o eye space
+%	Spazio schermo 3-D (3D-screen space): volume di vista canonico, che si
+%	ottiene trasformando il frustum di vista in un parallelepipedo. Molte
+%	operazioni del processo di rendering avvengono qui. Detto anche 3D
+%	normalized device coordinate system (NDC) o normalized projection
+%	coordinate system.
+%	Spazio Immagine (image space): sistema di coordinate nel display fisico
+%	(pixel). Si ottiene proiettando ortogonalmente il volume di vista
+%	canonico ed applicando la trasformazione di viewport. Si chiama anche
+%	(physical) device coordinate system, o screen coordinate system.
+%	
+%	
+%	A questo punto
+%	Abbiamo mappato i triangoli sul piano immagine nella regione
+%	del “sensore” della telecamera virtuale
+%	Abbiamo eliminato le parti esterne al volume di vista (e in
+%	parte eliminato le parti occluse)
+%	Ora dobbiamo sovrapporre i triangoli ai pixel dell'immagine
+%	discretizzata e colorare i pixel corrispondenti sulla base di
+%	modello di illuminazione e caratteristiche della geometria
+%	Questo è compito della seconda parte della pipeline cioè del
+%	cosiddettto “raster” subsystem
+	
+\end{document}	
