@@ -1,0 +1,133 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage[italian]{babel}
+\usepackage{sans}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{frontespizio}
+\usepackage{fancyhdr}
+\usepackage{txfonts}
+\usepackage[margin=3cm]{geometry}
+\usepackage{fancyvrb}
+\usepackage{multicol}
+\usepackage{hyperref}
+\hypersetup{hidelinks,
+	colorlinks = true,
+	urlcolor = black, 
+	linkcolor = black}
+
+\pagestyle{fancy}
+\lhead{\nouppercase{\leftmark}}
+\rhead{\nouppercase{\rightmark}}
+\chead{}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+
+\begin{document}
+	\begin{frontespizio}
+		\Istituzione{Università degli Studi di Verona}
+		\Divisione{Dipartimento di informatica}
+		\Scuola{Ultima modifica: \today }
+		\Titolo{Sicurezza di Rete}
+		\Sottotitolo{Riassunto dei principali argomenti}
+		\Candidato{Davide Bianchi}
+		\Candidato{Matteo Danzi}
+		\NCandidato{Autori}
+		\Annoaccademico{2016/2017}
+	\end{frontespizio}
+	
+	\tableofcontents
+	
+	\newpage
+	
+
+	\begin{multicols}{2}
+		\begin{abstract}
+			Questa dispensa è scritta per la parte teorica del corso di Programmazione e sicurezza di Rete. Il codice \LaTeX è disponibile a \url{https://github.com/alx79/dispense-info-univr.git}
+		\end{abstract}
+		\section{Introduzione}
+		Il fatto di garantire una protezione a determinati assets implica il garantire di alcune proprietà:
+		\begin{enumerate}
+			\item Confidenzialità: un utente non dovrebbe venire a conoscenza di cose che non è autorizzato a conoscere (riservatezza dei dati, privacy);
+			
+			\item Disponibilità: rendere disponibili ad un utente autorizzato le informazioni che può avere e che richiede;
+			
+			\item Integrità: impedire l'alterazione di dati e informazioni in maniera diretta o indiretta (anche in seguito a incidenti);
+			
+			\item Autenticità: ad un utente deve essere garantita l'autenticità delle informazioni che riceve;
+			
+			\item Tracciabilità: le azioni di un utente devono essere tracciate in modo univoco, in modo evitare eventuali casi di ripudiablità.
+		\end{enumerate}
+		
+		Ciò che può compromette le caratteristiche sopra elencate sono le minacce e gli attacchi. Viene definita \textit{minaccia} una possibile violazione della sicurezza, mentre invece un \textit{attacco} è una violazione effettiva della sicurezza.
+		
+		Gli attacchi possono essere sostanzialmente di 4 tipologie:
+		\begin{itemize}
+			\item \textit{attivi}: tentativi di alterare il funzionamento di un sistema;
+			\item \textit{passivi:} tentativi di carpire informazioni senza intaccare i meccanismi del sistema;
+			\item \textit{interni:} effettuati da un'entità interna al sistema;
+			\item \textit{esterni:} effettuati da un'entità esterna al sistema.
+		\end{itemize}
+		
+		Gli attacchi (o le minacce) sono suddivisi in classi:
+		\begin{itemize}
+			\item \textit{disclosure:} accesso non autorizzato alle informazioni;
+			\item \textit{deception:} accettazione di dati falsi;
+			\item \textit{disruption:} interruzione o prevenzione di informazioni corrette;
+			\item \textit{usurpation:} controllo non autorizzato di alcune parti del sistema.
+		\end{itemize}
+		
+		\section{Crittografia e integrità}
+		Lo scopo storico della crittografia è quello di garantire la privacy, ossia come garantire che un'informazione ricevuta provenga effettivamente dall'utente che ci si aspetta l'abbia mandata.
+		
+		\subsection{Funzioni Hash}
+		Una funzione hash è una funzione che trasforma un messaggio di lunghezza arbitraria in uno di lunghezza fissa (viene chiamato \textit{hash} o \textit{digest} del messaggio originale). Le funzioni hash attualmente più utilizzate sono MD5 e SHA.
+		
+		Per soddisfare le condizioni di sicurezza, gli algoritmi che gestiscono le funzioni hash dovrebbero avere le seguenti caratteristiche:
+		\begin{itemize}
+			\item \textit{coerenti}: a input uguali corrispondono output uguali;
+			\item \textit{casuali}: per impedire l'interpretazione del messaggio originale;
+			\item \textit{univoci}: la probabilità che due messaggi generino due hash uguali deve essere remota;
+			\item \textit{non invertibili}: deve essere impossibile (o computazionalmente complesso) risalire dal digest al messaggio originale.
+		\end{itemize}
+	
+		Le funzioni hash vengono anche usate come fingerprint per verificare che nessuno sia intervenuto sul messaggio originale (altrimenti i due digest sarebbero diversi, vedi esempio).
+		
+		Ora daremo un esempio di come possa avvenire una comunicazione sfruttando le funzioni hash.
+		Alcune definizioni:
+		\begin{itemize}
+			\item \textit{m} è il messaggio in chiaro;
+			\item $H(m)$ è l'hash del messaggio;
+			\item $c(x)$ è la funzione di cifratura;
+			\item \textit{A} e \textit{B} sono due utenti.
+		\end{itemize}
+		Indichiamo inoltre come $H_A(m)$ l'hash del messaggio scritto da \textit{A}.
+		
+		\paragraph{Esempio.} \textit{A} scrive un messaggio e ne utilizza il testo come input di una funzione di hash, che genera il digest $H_A(m)$. \textit{A} poi manda $c(m + H_A(m))$ a \textit{B}. 
+		
+		\textit{B} decifra e separa il contenuto del messaggio cifrato che ha ricevuto, e calcola con la funzione di hash un hash denominato $H_B(m)$. Se vale \[ H_B(m) = H_A(m) \] il messaggio è autentico.
+		
+		Se i due utenti non sono interessati a mantenere occultato il messaggio, viene utilizzato un \textit{MAC} (Message Authentication Code), un segreto condiviso conosciuto da entrambi gli utenti. In questo caso viene mandato al destinatario il pacchetto con \[ m + H_A(m + s) \] 
+		
+		Usando un MAC si ha anche garanzia di autenticità, grazie al segreto condiviso. Qui sorge un nuovo problema: come poter scambiare con l'altro utente un segreto condiviso su un canale protetto? Per ovviare a questo problema è stato proposto un meccanismo di \textit{firma digitale}, che \textbf{non usa chiavi segrete}.
+		
+		
+		
+		
+		
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	\end{multicols}
+\end{document}
