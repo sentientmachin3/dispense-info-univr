@@ -43,7 +43,7 @@
 
 	\begin{multicols}{2}
 		\begin{abstract}
-			Questa dispensa è scritta per la parte teorica del corso di Programmazione e sicurezza di Rete. Il codice \LaTeX è disponibile a \url{https://github.com/alx79/dispense-info-univr.git}
+			Questa dispensa è scritta per la parte teorica del corso di Programmazione e sicurezza di Rete. Non sono inclusi gli argomenti: SDN e la parte riguardante le tecnologie di comunicazione in rete (fibra, cavi ETH ecc.) Il codice \LaTeX è disponibile a \url{https://github.com/alx79/dispense-info-univr.git}
 		\end{abstract}
 		\section{Introduzione}
 		Il fatto di garantire una protezione a determinati assets implica il garantire di alcune proprietà:
@@ -76,8 +76,48 @@
 			\item \textit{disruption:} interruzione o prevenzione di informazioni corrette;
 			\item \textit{usurpation:} controllo non autorizzato di alcune parti del sistema.
 		\end{itemize}
+	
+		\section{Cenni di crittografia}
+		La crittografia è una scienza che si occupa di nascondere un'informazione rendendola sicura in modo che un terzo utente non autorizzato possa avervi accesso.
 		
-		\section{Crittografia e integrità}
+		Un algoritmo crittografico è una funzione che prende in ingresso un messaggio in chiaro (\textit{plaintext}) e produce un testo cifrato (\textit{ciphertext}). Gli algoritmi crittografici sono di due categorie:
+		\begin{itemize}
+			\item a chiave \textit{simmetrica}: le chiavi di cifratura e decifratura sono uguali;
+			\item a chiave \textit{asimmetrica}: vengono usate due chiavi differenti, una chiave è pubblica, l'altra è privata.
+		\end{itemize}
+	
+		Ogni algoritmo crittografico deve essere robusto, vale a dire:
+		\begin{itemize}
+			\item deve essere difficile ottenere il testo in chiaro senza chiave da quello cifrato;
+			\item dato un testo cifrato e uno in chiaro ottenere la chiave di cifratura.
+		\end{itemize}
+	
+		Bisogna tenere sempre a mente che \textbf{nessun algoritmo crittografico è assolutamente sicuro}, quindi un algoritmo di dice \textit{computazionalmente sicuro} se il costo necessario a violarlo è superiore a quello dell'informazione contenuta, oppure il tempo necessario a violarlo è superiore al tempo di vita dell'informazione.
+		
+		In ogni caso, per analizzare un algoritmo crittografico, bisogna mantenere presente che la segretezza deve risiedere nella chiave, non nella struttura dell'algoritmo.
+		
+		\subsection{Crittografia a chiave simmetrica}
+		La crittografia a chiave simmetrica utilizza una chiave condivisa e gli stessi algoritmi per cifrare e decifrare le informazioni (ovviamente la chiave deve essere scambiata su canali sicuri).
+		Un classico esempio di cifrario a chiave simmetrica è il \textbf{cifrario di Cesare}, che usa come chiave un alfabeto non ordinato. In questo caso è facile ottenere la chiave perchè si può procedere con l'analisi delle frequenze, ovvero il l'analisi di quanto spesso in un testo si presenta una stessa sillaba.
+		
+		Un altro esempio di cifrario a chiave simmetrica è costituito dai cifrari a blocchi, che permutano k bit. Le permutazioni possono poi venire combinate per ottenere schemi più complessi.
+		
+		Alcuni esempi di agloritmi a chiave simmetrica sono:
+		\begin{itemize}
+			\item DES: chiavi a 56 bit, ormai obsoleto;
+			\item Triplo-DES: un DES applicato 3 volte con chiavi diverse (di lunghezza 112 o 168 bit);
+			\item AES: usa chiavi a 128, 192 o 256 bit.
+		\end{itemize}
+	
+		Tutti questi algoritmi sono soggetti al problema della distribuzione delle chiavi. Nel 1976 due crittologi (Diffie e Hellman) propongono un sistema che supera questo problema, perchè \textbf{non condivide chiavi}.
+	
+	
+		
+		
+		
+		
+		
+		\section{Integrità}
 		Lo scopo storico della crittografia è quello di garantire la privacy, ossia come garantire che un'informazione ricevuta provenga effettivamente dall'utente che ci si aspetta l'abbia mandata.
 		
 		\subsection{Funzioni Hash}
