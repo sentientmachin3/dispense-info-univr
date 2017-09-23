@@ -23,6 +23,8 @@
 \cfoot{\thepage}
 \rfoot{}
 
+\newcommand{\mail}[1]{\href{mailto:#1}{\texttt{#1}}}
+
 \begin{document}
 	\begin{frontespizio}
 		\Istituzione{Università degli Studi di Verona}
@@ -110,6 +112,26 @@
 		\end{itemize}
 	
 		Tutti questi algoritmi sono soggetti al problema della distribuzione delle chiavi. Nel 1976 due crittologi (Diffie e Hellman) propongono un sistema che supera questo problema, perchè \textbf{non condivide chiavi}.
+		
+		\subsection{Crittografia a chiave asimmetrica}
+		In questo tipo di crittografia ogni utente ha una coppia di chiavi, una \textbf{pubblica}, che viene resa nota, e una \textbf{privata}, che viene mantenuta segreta. L'idea è che il messaggio venga cifrato con la chiave pubblica del destinatario, che potrà poi decifrarlo con la sua chiave privata.
+		
+		L'uso di algoritmi a chiave asimmetrica comporta i seguenti vantaggi:
+		\begin{itemize}
+			\item non è più necessario scambiarsi chiavi;
+			\item la stessa chiave pubblica può essere usata da più utenti.
+		\end{itemize}
+	
+		I requisiti principali di un sistema crittografico di questo tipo sono:
+		\begin{itemize}
+			\item deve essere semplice la generazione delle chiavi;
+			\item devono essere semplici le operazioni di cifratura/decifratura quando si ha la chiave;
+			\item deve essere difficile ricavare la chiave privata da quella pubblica;
+			\item deve essere difficile ricavare il testo in chiaro avendo il testo cifrato e la chiave pubblica.
+		\end{itemize}
+		Un esempio di algoritmo simmetrico è RSA, che si basa sulla difficoltà di scomporre un numero in fattori primi. Le chiavi usate da RSA hanno le dimensioni di $2^{10}$ bit. \\
+		
+		Gli algoritmi asimmetrici richiedono molte più risorse degli algoritmi a chiave simmetrica (sono infatti anche molto più lenti), e vengono usati per scambiarsi una chiave di sessione che verrà poi usata da un algoritmo simmetrico sicuro, computazionalmente più efficiente.
 	
 	
 		
@@ -170,4 +192,9 @@
 	
 	
 	\end{multicols}
+
+	\section{Credits}
+	Davide Bianchi (mail: \mail{davideb1912@gmail.com}) \\
+	Matteo Danzi (mail: \mail{matteodanziguitarman@hotmail.it)}
+	
 \end{document}
