@@ -10,3 +10,4 @@ Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman
 - Linguaggi di programmazione
 - Programmazione di Rete (Laboratorio)
 - Sistemi Operativi (Laboratorio)
+- Sicurezza di Rete (In progress, teoria)
