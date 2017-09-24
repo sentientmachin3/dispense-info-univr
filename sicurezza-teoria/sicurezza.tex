@@ -132,12 +132,6 @@
 		Un esempio di algoritmo simmetrico è RSA, che si basa sulla difficoltà di scomporre un numero in fattori primi. Le chiavi usate da RSA hanno le dimensioni di $2^{10}$ bit. \\
 		
 		Gli algoritmi asimmetrici richiedono molte più risorse degli algoritmi a chiave simmetrica (sono infatti anche molto più lenti), e vengono usati per scambiarsi una chiave di sessione che verrà poi usata da un algoritmo simmetrico sicuro, computazionalmente più efficiente.
-	
-	
-		
-		
-		
-		
 		
 		\section{Integrità}
 		Lo scopo storico della crittografia è quello di garantire la privacy, ossia come garantire che un'informazione ricevuta provenga effettivamente dall'utente che ci si aspetta l'abbia mandata.
@@ -172,6 +166,30 @@
 		Se i due utenti non sono interessati a mantenere occultato il messaggio, viene utilizzato un \textit{MAC} (Message Authentication Code), un segreto condiviso conosciuto da entrambi gli utenti. In questo caso viene mandato al destinatario il pacchetto con \[ m + H_A(m + s) \] 
 		
 		Usando un MAC si ha anche garanzia di autenticità, grazie al segreto condiviso. Qui sorge un nuovo problema: come poter scambiare con l'altro utente un segreto condiviso su un canale protetto? Per ovviare a questo problema è stato proposto un meccanismo di \textit{firma digitale}, che \textbf{non usa chiavi segrete}.
+		
+		\section{Autenticità}
+		Il meccanismo di firma digitale è applicato con un algoritmo a chiave asimmetrica combinato con una funzione hash.
+		
+		La firma di un documento procede nel seguente modo:
+		\begin{enumerate}
+			\item Viene calcolato l'hash del messaggio;
+			\item Viene firmato l'hash del messaggio con la chiave privata del mittente;
+			\item Si manda al destinatario la hash firmata del messaggio e il messaggio.
+		\end{enumerate}
+	
+		Per la verifica dell'autenticità della firma digitale si procede così:
+		\begin{enumerate}
+			\item Si decifra l'hash firmato ricevuto usando la chiave pubblica del mittente;
+			\item Si calcola l'hash del messaggio ricevuto;
+			\item Si comparano l'hash calcolato con quello ottenuto decifrando l'hash firmato: se combaciano, la firma è autentica.
+		\end{enumerate}
+	
+		Con un meccanismo così descritto, sorge questo problema: come è possibile verificare che la chiave che si sta usando per decifrare il messaggio ricevuto sia proprio quella del mittente? Potrebbe essere quella di un malintenzionato che si spaccia per il mittente.
+		
+		Per ovviare a questo problema sono nati i certificati, che appunto certificano che una chiave è proprio quella dell'utente con cui si sta comunicando. La certificazione si ottiene mediante una CA (\textit{certification authority}). I certificati sono emessi secondo uno standard, e contengono come campi i dati relativi all'utente, un numero seriale e un periodo di validità (vedi slide per completezza). I certificati vengono gestiti da una PKI (\textit{public key infrastructure}) gerarchica.
+		
+		\section{Autenticazione}
+		L'autenticazione è un servizio di sicurezza usato per garantire l'identità degli interlocutori.
 		
 		
 		
