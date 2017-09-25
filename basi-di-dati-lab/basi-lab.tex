@@ -1259,7 +1259,7 @@ def login():
 	<br>
 	<label for="biblioteca">Biblioteca: </label>
 		<select id="biblioteca" name="biblio">
-			{% for b in biblioteche %}
+			{% for b in biblio %}
 			<option value="{{b.id}}"> {{b.nome}} </option>
 			{% endfor %}
 		</select>
@@ -1284,7 +1284,8 @@ def getPrestiti():
 			if not prestiti:
 				return render_template('nessunPrestito0Errore.html')
 				
-			return render_template('view.html', prestiti, cf, biblio)
+			return render_template('view.html', prestiti=prestiti, 
+				cf=cf, biblio=biblio)
 			\end{lstlisting}
 			
 		\subsection{Un altro esempio}
