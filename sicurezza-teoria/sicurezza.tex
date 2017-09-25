@@ -1,0 +1,200 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage[italian]{babel}
+\usepackage{sans}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{frontespizio}
+\usepackage{fancyhdr}
+\usepackage{txfonts}
+\usepackage[margin=3cm]{geometry}
+\usepackage{fancyvrb}
+\usepackage{multicol}
+\usepackage{hyperref}
+\hypersetup{hidelinks,
+	colorlinks = true,
+	urlcolor = black, 
+	linkcolor = black}
+
+\pagestyle{fancy}
+\lhead{\nouppercase{\leftmark}}
+\rhead{\nouppercase{\rightmark}}
+\chead{}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+
+\newcommand{\mail}[1]{\href{mailto:#1}{\texttt{#1}}}
+
+\begin{document}
+	\begin{frontespizio}
+		\Istituzione{Università degli Studi di Verona}
+		\Divisione{Dipartimento di informatica}
+		\Scuola{Ultima modifica: \today }
+		\Titolo{Sicurezza di Rete}
+		\Sottotitolo{Riassunto dei principali argomenti}
+		\Candidato{Davide Bianchi}
+		\Candidato{Matteo Danzi}
+		\NCandidato{Autori}
+		\Annoaccademico{2016/2017}
+	\end{frontespizio}
+	
+	\tableofcontents
+	
+	\newpage
+	
+
+	\begin{multicols}{2}
+		\begin{abstract}
+			Questa dispensa è scritta per la parte teorica del corso di Programmazione e sicurezza di Rete. Non sono inclusi gli argomenti: SDN e la parte riguardante le tecnologie di comunicazione in rete (fibra, cavi ETH ecc.) Il codice \LaTeX è disponibile a \url{https://github.com/alx79/dispense-info-univr.git}
+		\end{abstract}
+		\section{Introduzione}
+		Il fatto di garantire una protezione a determinati assets implica il garantire di alcune proprietà:
+		\begin{enumerate}
+			\item Confidenzialità: un utente non dovrebbe venire a conoscenza di cose che non è autorizzato a conoscere (riservatezza dei dati, privacy);
+			
+			\item Disponibilità: rendere disponibili ad un utente autorizzato le informazioni che può avere e che richiede;
+			
+			\item Integrità: impedire l'alterazione di dati e informazioni in maniera diretta o indiretta (anche in seguito a incidenti);
+			
+			\item Autenticità: ad un utente deve essere garantita l'autenticità delle informazioni che riceve;
+			
+			\item Tracciabilità: le azioni di un utente devono essere tracciate in modo univoco, in modo evitare eventuali casi di ripudiablità.
+		\end{enumerate}
+		
+		Ciò che può compromette le caratteristiche sopra elencate sono le minacce e gli attacchi. Viene definita \textit{minaccia} una possibile violazione della sicurezza, mentre invece un \textit{attacco} è una violazione effettiva della sicurezza.
+		
+		Gli attacchi possono essere sostanzialmente di 4 tipologie:
+		\begin{itemize}
+			\item \textit{attivi}: tentativi di alterare il funzionamento di un sistema;
+			\item \textit{passivi:} tentativi di carpire informazioni senza intaccare i meccanismi del sistema;
+			\item \textit{interni:} effettuati da un'entità interna al sistema;
+			\item \textit{esterni:} effettuati da un'entità esterna al sistema.
+		\end{itemize}
+		
+		Gli attacchi (o le minacce) sono suddivisi in classi:
+		\begin{itemize}
+			\item \textit{disclosure:} accesso non autorizzato alle informazioni;
+			\item \textit{deception:} accettazione di dati falsi;
+			\item \textit{disruption:} interruzione o prevenzione di informazioni corrette;
+			\item \textit{usurpation:} controllo non autorizzato di alcune parti del sistema.
+		\end{itemize}
+	
+		\section{Cenni di crittografia}
+		La crittografia è una scienza che si occupa di nascondere un'informazione rendendola sicura in modo che un terzo utente non autorizzato possa avervi accesso.
+		
+		Un algoritmo crittografico è una funzione che prende in ingresso un messaggio in chiaro (\textit{plaintext}) e produce un testo cifrato (\textit{ciphertext}). Gli algoritmi crittografici sono di due categorie:
+		\begin{itemize}
+			\item a chiave \textit{simmetrica}: le chiavi di cifratura e decifratura sono uguali;
+			\item a chiave \textit{asimmetrica}: vengono usate due chiavi differenti, una chiave è pubblica, l'altra è privata.
+		\end{itemize}
+	
+		Ogni algoritmo crittografico deve essere robusto, vale a dire:
+		\begin{itemize}
+			\item deve essere difficile ottenere il testo in chiaro senza chiave da quello cifrato;
+			\item dato un testo cifrato e uno in chiaro ottenere la chiave di cifratura.
+		\end{itemize}
+	
+		Bisogna tenere sempre a mente che \textbf{nessun algoritmo crittografico è assolutamente sicuro}, quindi un algoritmo di dice \textit{computazionalmente sicuro} se il costo necessario a violarlo è superiore a quello dell'informazione contenuta, oppure il tempo necessario a violarlo è superiore al tempo di vita dell'informazione.
+		
+		In ogni caso, per analizzare un algoritmo crittografico, bisogna mantenere presente che la segretezza deve risiedere nella chiave, non nella struttura dell'algoritmo.
+		
+		\subsection{Crittografia a chiave simmetrica}
+		La crittografia a chiave simmetrica utilizza una chiave condivisa e gli stessi algoritmi per cifrare e decifrare le informazioni (ovviamente la chiave deve essere scambiata su canali sicuri).
+		Un classico esempio di cifrario a chiave simmetrica è il \textbf{cifrario di Cesare}, che usa come chiave un alfabeto non ordinato. In questo caso è facile ottenere la chiave perchè si può procedere con l'analisi delle frequenze, ovvero il l'analisi di quanto spesso in un testo si presenta una stessa sillaba.
+		
+		Un altro esempio di cifrario a chiave simmetrica è costituito dai cifrari a blocchi, che permutano k bit. Le permutazioni possono poi venire combinate per ottenere schemi più complessi.
+		
+		Alcuni esempi di agloritmi a chiave simmetrica sono:
+		\begin{itemize}
+			\item DES: chiavi a 56 bit, ormai obsoleto;
+			\item Triplo-DES: un DES applicato 3 volte con chiavi diverse (di lunghezza 112 o 168 bit);
+			\item AES: usa chiavi a 128, 192 o 256 bit.
+		\end{itemize}
+	
+		Tutti questi algoritmi sono soggetti al problema della distribuzione delle chiavi. Nel 1976 due crittologi (Diffie e Hellman) propongono un sistema che supera questo problema, perchè \textbf{non condivide chiavi}.
+		
+		\subsection{Crittografia a chiave asimmetrica}
+		In questo tipo di crittografia ogni utente ha una coppia di chiavi, una \textbf{pubblica}, che viene resa nota, e una \textbf{privata}, che viene mantenuta segreta. L'idea è che il messaggio venga cifrato con la chiave pubblica del destinatario, che potrà poi decifrarlo con la sua chiave privata.
+		
+		L'uso di algoritmi a chiave asimmetrica comporta i seguenti vantaggi:
+		\begin{itemize}
+			\item non è più necessario scambiarsi chiavi;
+			\item la stessa chiave pubblica può essere usata da più utenti.
+		\end{itemize}
+	
+		I requisiti principali di un sistema crittografico di questo tipo sono:
+		\begin{itemize}
+			\item deve essere semplice la generazione delle chiavi;
+			\item devono essere semplici le operazioni di cifratura/decifratura quando si ha la chiave;
+			\item deve essere difficile ricavare la chiave privata da quella pubblica;
+			\item deve essere difficile ricavare il testo in chiaro avendo il testo cifrato e la chiave pubblica.
+		\end{itemize}
+		Un esempio di algoritmo simmetrico è RSA, che si basa sulla difficoltà di scomporre un numero in fattori primi. Le chiavi usate da RSA hanno le dimensioni di $2^{10}$ bit. \\
+		
+		Gli algoritmi asimmetrici richiedono molte più risorse degli algoritmi a chiave simmetrica (sono infatti anche molto più lenti), e vengono usati per scambiarsi una chiave di sessione che verrà poi usata da un algoritmo simmetrico sicuro, computazionalmente più efficiente.
+	
+	
+		
+		
+		
+		
+		
+		\section{Integrità}
+		Lo scopo storico della crittografia è quello di garantire la privacy, ossia come garantire che un'informazione ricevuta provenga effettivamente dall'utente che ci si aspetta l'abbia mandata.
+		
+		\subsection{Funzioni Hash}
+		Una funzione hash è una funzione che trasforma un messaggio di lunghezza arbitraria in uno di lunghezza fissa (viene chiamato \textit{hash} o \textit{digest} del messaggio originale). Le funzioni hash attualmente più utilizzate sono MD5 e SHA.
+		
+		Per soddisfare le condizioni di sicurezza, gli algoritmi che gestiscono le funzioni hash dovrebbero avere le seguenti caratteristiche:
+		\begin{itemize}
+			\item \textit{coerenti}: a input uguali corrispondono output uguali;
+			\item \textit{casuali}: per impedire l'interpretazione del messaggio originale;
+			\item \textit{univoci}: la probabilità che due messaggi generino due hash uguali deve essere remota;
+			\item \textit{non invertibili}: deve essere impossibile (o computazionalmente complesso) risalire dal digest al messaggio originale.
+		\end{itemize}
+	
+		Le funzioni hash vengono anche usate come fingerprint per verificare che nessuno sia intervenuto sul messaggio originale (altrimenti i due digest sarebbero diversi, vedi esempio).
+		
+		Ora daremo un esempio di come possa avvenire una comunicazione sfruttando le funzioni hash.
+		Alcune definizioni:
+		\begin{itemize}
+			\item \textit{m} è il messaggio in chiaro;
+			\item $H(m)$ è l'hash del messaggio;
+			\item $c(x)$ è la funzione di cifratura;
+			\item \textit{A} e \textit{B} sono due utenti.
+		\end{itemize}
+		Indichiamo inoltre come $H_A(m)$ l'hash del messaggio scritto da \textit{A}.
+		
+		\paragraph{Esempio.} \textit{A} scrive un messaggio e ne utilizza il testo come input di una funzione di hash, che genera il digest $H_A(m)$. \textit{A} poi manda $c(m + H_A(m))$ a \textit{B}. 
+		
+		\textit{B} decifra e separa il contenuto del messaggio cifrato che ha ricevuto, e calcola con la funzione di hash un hash denominato $H_B(m)$. Se vale \[ H_B(m) = H_A(m) \] il messaggio è autentico.
+		
+		Se i due utenti non sono interessati a mantenere occultato il messaggio, viene utilizzato un \textit{MAC} (Message Authentication Code), un segreto condiviso conosciuto da entrambi gli utenti. In questo caso viene mandato al destinatario il pacchetto con \[ m + H_A(m + s) \] 
+		
+		Usando un MAC si ha anche garanzia di autenticità, grazie al segreto condiviso. Qui sorge un nuovo problema: come poter scambiare con l'altro utente un segreto condiviso su un canale protetto? Per ovviare a questo problema è stato proposto un meccanismo di \textit{firma digitale}, che \textbf{non usa chiavi segrete}.
+		
+		
+		
+		
+		
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	\end{multicols}
+
+	\section{Credits}
+	Davide Bianchi (mail: \mail{davideb1912@gmail.com}) \\
+	Matteo Danzi (mail: \mail{matteodanziguitarman@hotmail.it)}
+	
+\end{document}

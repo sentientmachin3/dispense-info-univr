@@ -1736,6 +1736,55 @@ rounded corners, minimum width=2.6cm, minimum height=1cm,text centered, draw=bla
 			\end{tikzpicture}
 			
 			
+	\subsection*{Traduzione dal modello ER al modello relazionale}
+	Quando si traduce uno schema ER in uno schema relazione per renderlo implementabile si deve tener conto delle seguenti regole: 
+	
+	\bigskip
+	\begin{tabular}{cc}
+		\toprule
+		Modello ER & Traduzione \\
+		\midrule
+		\begin{tikzpicture}
+		\node (e) at (0,0) [entità] {E};
+		\node[inner sep=0pt] (a) at (2,0.25) {\textbullet};
+		\node[right] at (2,0.25) {a};
+		\node[inner sep=0pt] (b) at (2,-0.25) {$\circ$};
+		\node[right] at (2,-0.25) {b};
+		\node[inner sep=0pt] (c) at (0,-1) {$\circ$};
+		\node[right] at (0,-1) {c};
+		\draw (e) -- (a);
+		\draw (e) -- (b);
+		\draw (e) -- (c);
+		\end{tikzpicture} &
+		
+		E(\underline{a},b,c) \\
+		
+		\midrule
+		\begin{tikzpicture}
+		\node (e) at (0,0) [entità] {E};
+		\node[inner sep=0pt] (a) at (3,0.5) {$\circ$};
+		\node[right] at (3,0.5) {a};
+		\node[inner sep=0pt] (b) at (3,0) {$\circ$};
+		\node[right] at (3,0) {b};
+		\node[inner sep=0pt] (c) at (0,-1) {$\circ$};
+		\node[right] at (0,-1) {c$(0,1)$};
+		\node[inner sep=0pt] (d) at (2,-0.5) {\textbullet};
+		\draw (p) -- (a);
+		\draw (p) -- (b);
+		\draw (p) -- (c);
+		\draw (d) -- (2,0.34);
+		\end{tikzpicture} &
+		
+		E(\underline{a,b},c$^*$)
+		
+		
+		
+		
+		
+		
+	\end{tabular}
+	
+			
 			
 		
 	\newpage
