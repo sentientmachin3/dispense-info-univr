@@ -6,7 +6,7 @@
 \usepackage{frontespizio}
 \usepackage{fancyhdr}
 \usepackage{txfonts}
-\usepackage[margin=3cm]{geometry}
+\usepackage[margin=2.5cm]{geometry}
 \usepackage{fancyvrb}
 \usepackage{multicol}
 \usepackage{hyperref}
@@ -190,6 +190,41 @@
 		
 		\section{Autenticazione}
 		L'autenticazione è un servizio di sicurezza usato per garantire l'identità degli interlocutori.
+		
+		Si possono distinguere 4 modalità di autenticazione:
+		\begin{itemize}
+			\item \textit{locale}: l'utente accede in locale al servizio, che effettua l'autenticazione;
+			\item \textit{diretta}: l'utente accede da remoto al servizio, che effettua direttamente l'autenticazione;
+			\item \textit{indiretta}: l'utente accede da remoto ai servizi, che si appoggiano su un sistema di autenticazione separato;
+			\item \textit{off-line}: i servizi possono prendere decisioni autonome, senza contattare ogni volta l'autorità di autenticazione.
+		\end{itemize}
+	
+	\subsection{Autenticazione diretta}
+	L'autenticazione diretta prevede uno scambio diretto della password. Per evitare registrazioni della password da parte di terzi, si usano delle "sfide" a cui l'utente che si autentica deve rispondere per dare prova della sua identità.
+	
+	\subsection{Autenticazione indiretta}
+	L'autenticazione indiretta si basa su un sistema di autenticazione esterno,  e gli altri sistemi si appoggiano su di esso. Esempi di questo tipo di servizi sono \textbf{Radius} e \textbf{Kerberos}. Spesso sono implementati come sistemi SSO, per garantire con un solo login l'accesso a tutti i servizi di un certo dominio amministrativo.
+	
+	L'autenticazione basata su sistemi di questo tipo funziona nel seguente modo:
+	\begin{enumerate}
+		\item l'utente effettua il login sul server SSO;
+		\item l'utente riceve dal server SSO un token di autenticazione;
+		\item il token viene mandato dall'utente al server dove il servizio che necessita di autenticazione risiede;
+		\item il server con il servizio confronta il token ricevuto confrontandolo con il server SSO;
+		\item il server SSO conferma il token;
+		\item il server con il servizio manda il contenuto necessario al client che ha a questo punto eseguito il login.
+	\end{enumerate}
+
+	\subsection{Autenticazione offline}
+	L'autenticazione offline è basata sull'uso di certificati digitali distribuiti da una CA, che associano l'identità di un utente ad una chiave pubblica.
+	
+	Per ottenere un certificato digitale, l'utente deve generare sul proprio pc, tramite un opportuno browser, una coppia di chiavi. L'utente deve poi mandare alla CA la chiave pubblica insieme ad una richiesta di certificato, che lo manda di persona ad un \textit{Local Validation Point} (LVP). Completato questo passaggio, la CA manda il certificato all'utente per mail e inserisce la chiave nell'elenco delle chiavi pubbliche certificate.
+	
+	L'intera sequenza di operazioni viene svolta all'interno di una PKI (\textit{Public Key Infrastructure}), ovvero una gerarchia di CA che si certificano a cascata.
+	
+	\section{Autorizzazione}
+	L'autorizzazione è il servizio di controllo dell'accesso volto a garantire che solo gli utenti autorizzati possano avere accesso ai relativi file.
+		
 		
 		
 		
