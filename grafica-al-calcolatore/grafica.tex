@@ -58,6 +58,7 @@
 \newcommand{\numberset}{\mathbb}
 \newcommand{\R}{\numberset{R}}
 
+
 \tikzstyle{box} = [rectangle, minimum width=3cm, minimum height=3cm,text centered, draw=black]
 
 \begin{document}
@@ -615,7 +616,7 @@
 		terna di direzioni ortogonali
 		
 		\subsection{Scalari}
-			Gli scalari S costituiscono un corpo (tipicamente useremo IR)
+			Gli scalari S costituiscono un corpo (tipicamente useremo $ \R $)
 			con due operazioni, somma e moltiplicazione, che soddisfano
 			le seguenti relazioni:
 			
@@ -1030,7 +1031,7 @@
 		Si tratta di un caso particolare di prodotto denominato
 		\textbf{esterno}; in tre dimensioni particolarmente semplice:
 		\[
-		\vec{u}\times\vec{v} = (u_y v_z - u_y v_y,\: u_z v_x - u_x v_z,\: u_x v_y - u_y v_x)
+		\vec{u}\times\vec{v} = (u_y v_z - u_z v_y,\: u_z v_x - u_x v_z,\: u_x v_y - u_y v_x)
 		\]
 		Si dimostra che il prodotto vettore di due vettori $ \vec{u} $ e $ \vec{v} $ è un
 		vettore ortogonale al piano contenente i due vettori e di
@@ -3159,6 +3160,7 @@ typedef struct {
 		Supponiamo di usare la proiezione prospettica. Devo passare in coordinate solidali con la camera (view space, come in figura) e definire cosa “vedo” dato che lavorando in object order devo buttare via il resto (clipping)
 		
 		\begin{multicols}{2}
+			\noindent
 			\textbf{Convenzioni:}\\
 			Il piano immagine è davanti alla telecamera a distanza $ 1 $ ($ d $ era solo un fattore di scala globale).\\
 			L’angolo di vista (solido) si assegna mediante l’angolo di vista (verticale) $ \theta $ ed il fattore di aspetto $ a = w/h $ della finestra di vista.
@@ -3411,13 +3413,11 @@ typedef struct {
 		\item $ A [B] $ occlude parzialmente $ B [A] $
 	\end{itemize}
 	è necessario individuare le parti visibili di $ B [A] $.
-%	HSR: Object-space
-%	A oscura B: tutti i punti di A
-%	sono più vicini
-%	all’osservatore di tutti i
-%	punti di B e la proiezione di
-%	B sul piano di vista ricade
-%	all’interno della proiezione di
+	
+%	\noindent
+%	\textbf{HSR: Object-space}
+%	
+%	A oscura B: tutti i punti di A sono più vicini all’osservatore di tutti i punti di B e la proiezione di B sul piano di vista ricade all’interno della proiezione di
 %	A. Visualizza A;
 %	B oscura A: tutti i punti di B
 %	sono più vicini
@@ -3530,27 +3530,28 @@ typedef struct {
 %	oggetti solidi dato che, sempre in media, circa metà delle
 %	facce di un poliedro sono back-facing e quindi la loro
 %	visualizzazione sarebbe comunque inutile.Riepilogo
-%	Spazio Oggetto (object space): dove ciascun singolo oggetto viene
-%	·
-%	·
-%	·
-%	·
-%	definito. Detto anche local space o modeling space
-%	Spazio Mondo (world space): dove si costruisce. Si passa dallo spazio
-%	oggetto allo spazio mondo mediante la trasformazione di modellazione.
-%	Si chiama anche application space.
-%	Spazio Vista (view space): centrato sulla telecamera virtuale, che
-%	definisce, assieme alla finestra di vista ed ai piani di taglio, il frustum di
-%	vista. Detto anche camera space o eye space
-%	Spazio schermo 3-D (3D-screen space): volume di vista canonico, che si
-%	ottiene trasformando il frustum di vista in un parallelepipedo. Molte
-%	operazioni del processo di rendering avvengono qui. Detto anche 3D
-%	normalized device coordinate system (NDC) o normalized projection
-%	coordinate system.
-%	Spazio Immagine (image space): sistema di coordinate nel display fisico
-%	(pixel). Si ottiene proiettando ortogonalmente il volume di vista
-%	canonico ed applicando la trasformazione di viewport. Si chiama anche
-%	(physical) device coordinate system, o screen coordinate system.
+
+	\subsection{Spazi di coordinate}
+	
+	\begin{itemize}
+		\item \textbf{Spazio Oggetto} (object space): dove ciascun singolo oggetto viene
+		definito. Detto anche local space o modeling space
+		\item \textbf{Spazio Mond}o (world space): dove si costruisce. Si passa dallo spazio
+		oggetto allo spazio mondo mediante la trasformazione di modellazione.
+		Si chiama anche application space.
+		\item \textbf{Spazio Vista} (view space): centrato sulla telecamera virtuale, che
+		definisce, assieme alla finestra di vista ed ai piani di taglio, il frustum di
+		vista. Detto anche camera space o eye space
+		\item \textbf{Spazio schermo 3-D} (3D-screen space): volume di vista canonico, che si
+		ottiene trasformando il frustum di vista in un parallelepipedo. Molte
+		operazioni del processo di rendering avvengono qui. Detto anche 3D
+		normalized device coordinate system (NDC) o normalized projection
+		coordinate system.
+		\item \textbf{Spazio Immagine} (image space): sistema di coordinate nel display fisico
+		(pixel). Si ottiene proiettando ortogonalmente il volume di vista
+		canonico ed applicando la trasformazione di viewport. Si chiama anche
+		(physical) device coordinate system, o screen coordinate system.
+	\end{itemize}
 %	
 %	
 %	A questo punto
