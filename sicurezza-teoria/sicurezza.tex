@@ -224,6 +224,28 @@
 	
 	\section{Autorizzazione}
 	L'autorizzazione è il servizio di controllo dell'accesso volto a garantire che solo gli utenti autorizzati possano avere accesso ai relativi file.
+	
+	Per attuare un controllo degli accessi efficiente ci si serve di politiche (che definiscono l'attribuzione dei privilegi ai soggetti) e meccanismi (che specificano le relazioni soggetto-oggetto). Per assegnare in maniera più affidabile possibile i privilegi, ci si affida a due principi:
+	\begin{itemize}
+		\item \textbf{privilegio minimo}: ogni utente dovrebbe avere solo i privilegi minimi necessari a compiere le azioni che deve svolgere;
+		\item \textbf{separazione dei compiti}: ogni utente dovrebbe avere privilegi tali da impedirgli di sovvertire il sistema.
+	\end{itemize}
+\subsection{Meccanismi di controllo dell'accesso}
+\subsubsection{Matrice di controllo dell'accesso}
+	È una matrice che contiene i soggetti come righe e gli oggetti come colonne. In ogni cella della matrice sono inseriti i privilegi per quella data copia soggetto/oggetto. A lungo andare, se i soggetti e gli oggetti sono numerosi, possono sorgere problemi di scalabilità.
+	
+	\subsubsection{Access Control List (ACL)}
+	È una variante della matrice sopra descritta, in cui si memorizza la matrice per colonne, e in ogni cella si mettono i soggetti che possono interagire con l'oggetto nella colonna relativa e con i permessi concessi.
+	
+	\subsubsection{Capabilities}
+	È il duale della ACL: per ogni soggetto si salvano la lista degli oggetti con i relativi permessi, cosa che permette di gestire in maniera efficiente i permessi associati al singolo utente.
+	
+	\subsection{Politiche per il controllo dell'accesso}
+	\subsubsection{Discretionary Access Control - DAC}
+		È un approccio in cui i singoli utenti possono modificare i permessi dei file che sono sotto il loro controllo (ci si basa sul concetto di \textit{ownership}). Il modello DAC è flessibile ma non permette di controllare la diffusione dell'informazione (infatti un utente con permessi su un oggetto potrebbe mandarlo ad uno che non li ha).
+	
+	\subsubsection{Mandatory Access Control - MAC}
+	In questo modello la politica di controllo dell'accesso è regolata dal sistema in maniera centralizzata, non dai singoli utenti. Il sistema decide quindi quali permessi dare a quali utenti. È un sistema più robusto ma meno flessibile.
 		
 		
 		
