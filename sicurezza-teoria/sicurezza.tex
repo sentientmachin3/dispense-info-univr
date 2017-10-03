@@ -6,7 +6,7 @@
 \usepackage{frontespizio}
 \usepackage{fancyhdr}
 \usepackage{txfonts}
-\usepackage[margin=3cm]{geometry}
+\usepackage[margin=2.5cm]{geometry}
 \usepackage{fancyvrb}
 \usepackage{multicol}
 \usepackage{hyperref}
@@ -132,12 +132,6 @@
 		Un esempio di algoritmo simmetrico è RSA, che si basa sulla difficoltà di scomporre un numero in fattori primi. Le chiavi usate da RSA hanno le dimensioni di $2^{10}$ bit. \\
 		
 		Gli algoritmi asimmetrici richiedono molte più risorse degli algoritmi a chiave simmetrica (sono infatti anche molto più lenti), e vengono usati per scambiarsi una chiave di sessione che verrà poi usata da un algoritmo simmetrico sicuro, computazionalmente più efficiente.
-	
-	
-		
-		
-		
-		
 		
 		\section{Integrità}
 		Lo scopo storico della crittografia è quello di garantire la privacy, ossia come garantire che un'informazione ricevuta provenga effettivamente dall'utente che ci si aspetta l'abbia mandata.
@@ -172,6 +166,100 @@
 		Se i due utenti non sono interessati a mantenere occultato il messaggio, viene utilizzato un \textit{MAC} (Message Authentication Code), un segreto condiviso conosciuto da entrambi gli utenti. In questo caso viene mandato al destinatario il pacchetto con \[ m + H_A(m + s) \] 
 		
 		Usando un MAC si ha anche garanzia di autenticità, grazie al segreto condiviso. Qui sorge un nuovo problema: come poter scambiare con l'altro utente un segreto condiviso su un canale protetto? Per ovviare a questo problema è stato proposto un meccanismo di \textit{firma digitale}, che \textbf{non usa chiavi segrete}.
+		
+		\section{Autenticità}
+		Il meccanismo di firma digitale è applicato con un algoritmo a chiave asimmetrica combinato con una funzione hash.
+		
+		La firma di un documento procede nel seguente modo:
+		\begin{enumerate}
+			\item Viene calcolato l'hash del messaggio;
+			\item Viene firmato l'hash del messaggio con la chiave privata del mittente;
+			\item Si manda al destinatario la hash firmata del messaggio e il messaggio.
+		\end{enumerate}
+	
+		Per la verifica dell'autenticità della firma digitale si procede così:
+		\begin{enumerate}
+			\item Si decifra l'hash firmato ricevuto usando la chiave pubblica del mittente;
+			\item Si calcola l'hash del messaggio ricevuto;
+			\item Si comparano l'hash calcolato con quello ottenuto decifrando l'hash firmato: se combaciano, la firma è autentica.
+		\end{enumerate}
+	
+		Con un meccanismo così descritto, sorge questo problema: come è possibile verificare che la chiave che si sta usando per decifrare il messaggio ricevuto sia proprio quella del mittente? Potrebbe essere quella di un malintenzionato che si spaccia per il mittente.
+		
+		Per ovviare a questo problema sono nati i certificati, che appunto certificano che una chiave è proprio quella dell'utente con cui si sta comunicando. La certificazione si ottiene mediante una CA (\textit{certification authority}). I certificati sono emessi secondo uno standard, e contengono come campi i dati relativi all'utente, un numero seriale e un periodo di validità (vedi slide per completezza). I certificati vengono gestiti da una PKI (\textit{public key infrastructure}) gerarchica.
+		
+		\section{Autenticazione}
+		L'autenticazione è un servizio di sicurezza usato per garantire l'identità degli interlocutori.
+		
+		Si possono distinguere 4 modalità di autenticazione:
+		\begin{itemize}
+			\item \textit{locale}: l'utente accede in locale al servizio, che effettua l'autenticazione;
+			\item \textit{diretta}: l'utente accede da remoto al servizio, che effettua direttamente l'autenticazione;
+			\item \textit{indiretta}: l'utente accede da remoto ai servizi, che si appoggiano su un sistema di autenticazione separato;
+			\item \textit{off-line}: i servizi possono prendere decisioni autonome, senza contattare ogni volta l'autorità di autenticazione.
+		\end{itemize}
+	
+	\subsection{Autenticazione diretta}
+	L'autenticazione diretta prevede uno scambio diretto della password. Per evitare registrazioni della password da parte di terzi, si usano delle "sfide" a cui l'utente che si autentica deve rispondere per dare prova della sua identità.
+	
+	\subsection{Autenticazione indiretta}
+	L'autenticazione indiretta si basa su un sistema di autenticazione esterno,  e gli altri sistemi si appoggiano su di esso. Esempi di questo tipo di servizi sono \textbf{Radius} e \textbf{Kerberos}. Spesso sono implementati come sistemi SSO, per garantire con un solo login l'accesso a tutti i servizi di un certo dominio amministrativo.
+	
+	L'autenticazione basata su sistemi di questo tipo funziona nel seguente modo:
+	\begin{enumerate}
+		\item l'utente effettua il login sul server SSO;
+		\item l'utente riceve dal server SSO un token di autenticazione;
+		\item il token viene mandato dall'utente al server dove il servizio che necessita di autenticazione risiede;
+		\item il server con il servizio confronta il token ricevuto confrontandolo con il server SSO;
+		\item il server SSO conferma il token;
+		\item il server con il servizio manda il contenuto necessario al client che ha a questo punto eseguito il login.
+	\end{enumerate}
+
+	\subsection{Autenticazione offline}
+	L'autenticazione offline è basata sull'uso di certificati digitali distribuiti da una CA, che associano l'identità di un utente ad una chiave pubblica.
+	
+	Per ottenere un certificato digitale, l'utente deve generare sul proprio pc, tramite un opportuno browser, una coppia di chiavi. L'utente deve poi mandare alla CA la chiave pubblica insieme ad una richiesta di certificato, che lo manda di persona ad un \textit{Local Validation Point} (LVP). Completato questo passaggio, la CA manda il certificato all'utente per mail e inserisce la chiave nell'elenco delle chiavi pubbliche certificate.
+	
+	L'intera sequenza di operazioni viene svolta all'interno di una PKI (\textit{Public Key Infrastructure}), ovvero una gerarchia di CA che si certificano a cascata.
+	
+	\section{Autorizzazione}
+	L'autorizzazione è il servizio di controllo dell'accesso volto a garantire che solo gli utenti autorizzati possano avere accesso ai relativi file.
+	
+	Per attuare un controllo degli accessi efficiente ci si serve di politiche (che definiscono l'attribuzione dei privilegi ai soggetti) e meccanismi (che specificano le relazioni soggetto-oggetto). Per assegnare in maniera più affidabile possibile i privilegi, ci si affida a due principi:
+	\begin{itemize}
+		\item \textbf{privilegio minimo}: ogni utente dovrebbe avere solo i privilegi minimi necessari a compiere le azioni che deve svolgere;
+		\item \textbf{separazione dei compiti}: ogni utente dovrebbe avere privilegi tali da impedirgli di sovvertire il sistema.
+	\end{itemize}
+\subsection{Meccanismi di controllo dell'accesso}
+\subsubsection{Matrice di controllo dell'accesso}
+	È una matrice che contiene i soggetti come righe e gli oggetti come colonne. In ogni cella della matrice sono inseriti i privilegi per quella data copia soggetto/oggetto. A lungo andare, se i soggetti e gli oggetti sono numerosi, possono sorgere problemi di scalabilità.
+	
+	\subsubsection{Access Control List (ACL)}
+	È una variante della matrice sopra descritta, in cui si memorizza la matrice per colonne, e in ogni cella si mettono i soggetti che possono interagire con l'oggetto nella colonna relativa e con i permessi concessi.
+	
+	\subsubsection{Capabilities}
+	È il duale della ACL: per ogni soggetto si salvano la lista degli oggetti con i relativi permessi, cosa che permette di gestire in maniera efficiente i permessi associati al singolo utente.
+	
+	\subsection{Politiche per il controllo dell'accesso}
+	\subsubsection{Discretionary Access Control - DAC}
+		È un approccio in cui i singoli utenti possono modificare i permessi dei file che sono sotto il loro controllo (ci si basa sul concetto di \textit{ownership}). Il modello DAC è flessibile ma non permette di controllare la diffusione dell'informazione (infatti un utente con permessi su un oggetto potrebbe mandarlo ad uno che non li ha).
+	
+	\subsubsection{Mandatory Access Control - MAC}
+	In questo modello la politica di controllo dell'accesso è regolata dal sistema in maniera centralizzata, non dai singoli utenti. Il sistema decide quindi quali permessi dare a quali utenti. È un sistema più robusto ma meno flessibile.
+		
+		
+	\subsection{Gruppi}
+	Per rendere più efficiente l'organizzazione dei permessi si possono raggruppare gli utenti di un sistema in gruppi di utenti, per semplificare l'associazione di determinati oggetti a determinate categorie di utenti (che sono appunto raggruppati).
+	
+	\section{Intrusion detection systems}
+	
+	\section{Firewall}
+	
+	\section{Sicurezza delle mail}
+	
+	\section{Sicurezza a livello di trasporto}
+	
+	\section{Sicurezza di wireless LAN}
 		
 		
 		
