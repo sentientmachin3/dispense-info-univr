@@ -252,6 +252,55 @@
 	Per rendere più efficiente l'organizzazione dei permessi si possono raggruppare gli utenti di un sistema in gruppi di utenti, per semplificare l'associazione di determinati oggetti a determinate categorie di utenti (che sono appunto raggruppati).
 	
 	\section{Intrusion detection systems}
+	Gli IDS sono strumenti hardware o software che permettono di rilevare possibili situazioni di intrusione. Possono essere a livello di host (HIDS) a livello di rete (NIDS).
+	
+	Le caratteristiche che un IDS ideale dovrebbe avere sono di:
+	\begin{itemize}
+		\item Essere accurato;
+		\item scoprire la più ampia gamma di intrusioni;
+		\item scoprirle velocemente, se non in real-time;
+		\item presentare i report delle analisi in maniera semplice.
+	\end{itemize}
+
+	I problemi principali per gli IDS sono la presenza di falsi negativi e positivi, che possono trarre in inganno o causare notevole danno, in caso di intrusioni non segnalate. 
+	
+	Il principio su cui si basano gli IDS è costruito sul fatto che un utente in situzioni normali svolge determinate azioni non più di un certo numero di volte, con processi che compiono solo le azioni permesse.
+	
+	\subsection{Modelli di IDS}
+	I modelli su cui gli IDS sono implementati sono:
+	\begin{itemize}
+		\item \textit{Detection di anomalie}: sequenze di azioni inusuali che potrebbero essere tentativi di intrusione;
+		\item \textit{Detection di uso malevolo}: si sa a priori quali azoni possono indicare intrusioni;
+		\item \textit{Detection in base a specifiche}: si conoscono le situazioni derivanti da intrusioni;
+	\end{itemize}
+
+	\subsubsection{Detection di anomalie}
+	Si verifica quando occorrono determinate situazioni che non sono nei parametri attesi, e sono verificate tramite:
+	\begin{enumerate}
+		\item metrica \textit{a soglia}: lo svolgimento della stessa azione (es. login) troppe volte desta sospetto;
+		\item \textit{momenti statistici}: l'analizzatore calcola la deviazione standard e se i risultati cadono fuori da un certo intervallo si segnala una possibile intrusione;
+		\item \textit{modelli di Markov}: la storia passata influenza quella attuale; il sistema viene addestrato a riconoscere sequenze di eventi che gli utenti normali (dai quali il sistema viene addestrato) non svolgono.
+	\end{enumerate}
+
+\subsubsection{Detection di uso malevolo}
+Si controlla se una certa sequenza di azioni compare in un "catalogo" di azioni che potrebbero indicare un uso non autorizzato del sistema. In caso ci sia equivalenza tra le due sequenze, vi è una possibile intrusione. Ovviamente non vengono riconosciute sequenze non note.
+
+\subsubsection{Detection in base a specifiche}
+Si controlla se una sequenza di azioni viola delle specifiche in base alla quali il programma/sistema dovrebbe funzionare.
+
+\subsection{Architettura di un IDS}
+Un IDS è tipicamente composto da 3 entità che cooperano:
+\begin{enumerate}
+	\item \textit{Agente}: ottiene e manipola informazioni e le notifica al direttore;
+	\item \textit{Direttore}: colleziona le informazione dagli agenti e le analizza per verificare la presenza di un eventuale attacco. DI norma gira su un sistema separato per non interferire nelle performance dei sistemi monitorati;
+	\item \textit{Esecutore}: ottiene i risultati elaborati dal direttore e decide come muoversi;
+\end{enumerate}
+
+\subsection{Risposte alle intrusioni}
+L'esecutore decide come rispondere alla possibile intrusione: le tecniche sono molte, ma la più usata è il \textbf{jailing}, ovvero il far credere all'attaccante che l'intrusione sia andata a buon fine, restringendolo ad un dominio dove non possa fare danni.
+
+\subsection{Falsi positivi e negativi}
+In caso di rilevamento di una possibile intrusione, è bene svolgere più volte lo stesso test, valutare le probabilità e muoversi con cautela, per minimizzare la possibilità di riscontrare un falso positivo (parvenza di intrusione) o un falso negativo (intrusione che non viene segnalata).
 	
 	\section{Firewall}
 	
