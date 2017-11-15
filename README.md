@@ -3,6 +3,7 @@ Collezione di codice LaTex di dispense scritte per alcuni corsi della Laurea in 
 Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman@hotmail.it`.
 
 ## Corsi inclusi nelle dispense
+#### TRIENNALE:
 - Basi di Dati (Teoria)
 - Basi di Dati (Laboratorio)
 - Grafica al calcolatore (In progress)
@@ -11,3 +12,6 @@ Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman
 - Programmazione di Rete (Laboratorio)
 - Sistemi Operativi (Laboratorio)
 - Sicurezza di Rete (In progress, teoria)
+
+#### MAGISTRALE
+- Linguaggi

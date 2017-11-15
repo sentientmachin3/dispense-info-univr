@@ -1,0 +1,126 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{frontespizio}
+\usepackage{hyperref}
+\hypersetup{hidelinks,
+	colorlinks = true,
+	urlcolor = black, 
+	linkcolor = black}
+\usepackage[margin=3cm]{geometry}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{semantic}
+
+
+\begin{document}
+	\begin{frontespizio}
+		\Preambolo{\usepackage{datetime}}
+		\Istituzione{Università degli Studi di Verona}
+		\Divisione{Dipartimento di informatica}
+		\Titolo{Linguaggi di programmazione}
+		\Scuola{}
+		\Sottotitolo{Riassunto dei principali argomenti}
+		\Candidato{Davide Bianchi}
+		\NCandidato{Autore}
+		\Annoaccademico{2017/2018}
+	\end{frontespizio}
+	
+	\tableofcontents
+	\newpage
+	
+	\section{Introduzione}
+	Un linguaggio di programmazione è composto da: \begin{itemize}
+		\item \textit{Sintassi:} insieme di regole di scrittura del linguaggio;
+		\item \textit{Semantica:} descrizione del comportamento del programma a tempo di esecuzione;
+		\item \textit{Pragmatica:} descrizione delle caratteristiche del linguaggio, delle sue funzionalità ecc.
+	\end{itemize}
+
+	Gli stili per dare la semantica di un linguaggio sono 3:
+	\begin{itemize}
+		\item \textit{Operazionale}: la semantica è data con sistemi di transizione, fornendo i passi della computazione passo passo;
+		\item \textit{Denotazionale}: il significato di un programma è dato dalla struttura di un insieme;
+		\item \textit{Assiomatica}: il significato è dato attraverso regole assiomatiche o qualche tipo di logica.
+	\end{itemize}
+
+	\section{Esempio di linguaggio basilare}
+	La semantica operazionale di un linguaggio è data attraverso un sistema di regole di inferenza, date come segue: \begin{align*}
+	(Assioma)\ \frac{-}{(Conclusione)} \qquad (Regola)\ \frac{(Hyp_1)\ (Hyp_2)\ ...\ (Hyp_n)}{(Conclusione)}
+	\end{align*}  
+	
+	Introduciamo la sintassi di un linguaggio basato solo su espressioni aritmetiche:
+	\begin{align*}
+		E :=\ n\ |\ E\ |\ E+E\ |\ E*E\ ...
+	\end{align*}
+	
+	La valutazione di programmi generati con questa sintassi può procedere in due modi:
+	\begin{itemize}
+		\item \textit{Small step:} la semantica fornisce il sistema per procedere nell'esecuzione, passo dopo passo;
+		\item \textit{Big step:} la semantica va subito al risultato finale.
+	\end{itemize}
+
+	\subsection{Semantica big-step}
+	Forniamo la semantica big-step per il linguaggio dato sopra:
+	\begin{align*}
+		\inference[B-Num]{-}{n \Downarrow n} \qquad \inference[B-Add]{E_1 \Downarrow n_1\ E_2 \Downarrow n_2}{E_1 + E_2 \Downarrow n_3}\ n_3 = add(n_1, n_2)
+	\end{align*}
+	
+	\subsubsection{Esempio}
+	\begin{align*}
+		\inference[B-Add]{\inference[B-Num]{-}{3 \Downarrow 3} & \inference[B-Add]{\inference[B-Num]{-}{2 \Downarrow 2} & \inference[B-Num]{-}{1 \Downarrow 1}} {2 + 1 \Downarrow 3}}{3 + (2 + 1) \Downarrow 6}
+	\end{align*}
+	
+	\subsection{Semantica small-step}
+	Indichiamo con $E_1 \rightarrowtriangle E_2$ lo svolgimento di un solo passo di semantica.
+	\begin{align*} 
+	&\inference[S-Left]{E_1 \rightarrowtriangle E_1'}{E_1 + E_2 \rightarrowtriangle E_1' + E_2} \\
+	&\inference[S-N.Right]{E_2 \rightarrowtriangle E_2'}{n_1 + E_2 \rightarrowtriangle n_1 + E_2'} \\
+	&\inference[S-Add]{-}{n_1 + n_2 \rightarrowtriangle n_3} n_3 = add(n_1, n_2)
+	\end{align*}
+	Con queste regole l'ordine di valutazione degli statement è fisso, procede sempre da sinistra verso destra.
+	Diamo un'alternativa:
+	\begin{align*}
+		&\inference[S-Left]{E_1 \rightarrowtriangle_{ch} E_2}{E_1 + E_2 \rightarrowtriangle_{ch} E_1' + E_2} \\
+		&\inference[S-Right]{E_2 \rightarrowtriangle_{ch} E_2'}{E_1 + E_2 \rightarrowtriangle_{ch} E_1 + E_2'} \\
+		&\inference[S-Add]{-}{n_1 + n_2 \rightarrowtriangle_{ch} n_3} n_3 = add(n_1, n_2)
+	\end{align*}
+	In questo caso l'ordine di valutazione è arbitrario.
+	La notazione utilizzata in generale è la seguente:
+	\begin{itemize}
+		\item la relazione $\rightarrowtriangle^k$, con $k \in \mathbb{N}$, indica una sequenza di n passi applicando la semantica small-step;
+		\item la relazione $\rightarrowtriangle^\ast$, indica una sequenza di derivazione lunga un certo numero di passi. Questa relazione è riflessiva ed è la chiusura transitiva di $\rightarrowtriangle$.
+	\end{itemize}
+
+\section{Linguaggio imperativo}
+Definiamo la sintassi di un semplice linguaggio imperativo:
+\begin{align*}
+	b &:= true\ |\ false \\
+	n &:= \lbrace ... -1, 0, 1, 2, ...\rbrace\\
+	l &:= \lbrace l_0, l_1, ... \rbrace \\
+	op &:= +\ |\ \geq \\
+	e &:= n\ |\ b\ |\ e\ op\ e\ |\ \text{if } e \text{ then } e \text{ else } e\ |\ l:=e\ |\ !l\ |\ skip\ |\ e;e\ |\ \text{while } e \text{ do }\ e
+\end{align*}
+
+\textbf{Nota:} lo statement $!l$ indica l'intero memorizzato al momento alla locazione $l$. Inoltre il linguaggio non è tipato, quindi sono ammesse le sintassi come $2 \geq\ true$.
+
+\subsection{Memoria}
+La memoria è necessaria per poter valutare gli statement di lettura da una locazione. In particolare definiamo \begin{align*}
+ dom(f) &= \lbrace a \in A\ |\ \exists b \in B\ s.t.\ f(a)=b  \\
+ ran(f) &= \lbrace b \in B\ |\ \exists a \in A\ s.t.\ f(a)=b
+ \end{align*}
+ 
+ Lo store del linguaggio imperativo in questione è un insieme di funzioni parziali che vanno dalle locazioni di memoria nei numeri interi: \[ s: \mathbb{L} \to \mathbb{Z} \]
+ 
+ L'aggiornamento della memoria funziona come segue: \[ s \lbrack l \rightarrow n \rbrack (l') = \begin{cases}
+ n &\text{if } l=l' \\
+ s(l') &\text{altrimenti}
+ \end{cases} \]
+	
+\end{document}
