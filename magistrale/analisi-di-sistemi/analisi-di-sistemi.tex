@@ -1,0 +1,83 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{frontespizio}
+\usepackage{hyperref}
+\hypersetup{hidelinks,
+	colorlinks = true,
+	urlcolor = black, 
+	linkcolor = black}
+\usepackage[margin=3cm]{geometry}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{stmaryrd}
+\usepackage[strict]{changepage}
+
+
+\begin{document}
+	\begin{frontespizio}
+		\Preambolo{\usepackage{datetime}}
+		\Istituzione{Università degli Studi di Verona}
+		\Divisione{Dipartimento di informatica}
+		\Titolo{Analisi di Sistemi informatici}
+		\Scuola{}
+		\Sottotitolo{Riassunto dei principali argomenti}
+		\Candidato{Davide Bianchi}
+		\NCandidato{Autore}
+		\Annoaccademico{2017/2018}
+	\end{frontespizio}
+	
+	\tableofcontents
+	\newpage
+	
+	\section{Introduzione}
+	Argomenti contenuti:
+	\begin{itemize}
+		\item Interpretazione astratta
+		\item Analisi statica
+		\item Analisi dinamica
+	\end{itemize}
+
+	\section{Preliminari matematici}
+	\subsection{Ordini parziali}
+	\subsection{Reticoli}
+	\subsection{Teoremi di punto fisso}
+	
+	\section{Interpretazione astratta}
+	Lo scopo è quello di trovare un'approssimazione di una semantica $\langle P \rangle$ di $\llbracket P \rrbracket$ tale per cui valgano:
+	\begin{itemize}
+		\item \textit{correttezza:} $\llbracket P \rrbracket \subseteq \langle P \rangle$;
+		\item \textit{decidibilità:} $\langle P \rangle \subseteq Q$ è decidibile ($Q$ è un insieme di semantiche che soddisfa la proprietà di interesse).
+	\end{itemize}
+
+	Se entrambe le proprietà sono soddisfatte, allora vale che \[ (\langle P \rangle \subseteq Q) \Rightarrow (\llbracket P \rrbracket \subseteq Q) \]
+	
+	La semantica è data da una coppia $\langle D, f \rangle$ dove $D$ è una coppia $\langle D, \leq_D$ rappresentante un dominio semantico e $f: D \to D$ è una funzione di trasferimento con una soluzione a punto fisso.
+	
+	Dato un oggetto concreto, definiamo:
+	\begin{itemize}
+		\item un \textbf{oggetto astratto} come una rappresentazione matematica sovra-approssimata del corrispondente concreto;
+		\item un \textbf{dominio astratto} come un insieme di oggetti astratti con delle operazioni astratte, che approssimano quelle concrete;
+		\item una funzione di \textbf{astrazione} $\alpha$ che mappa oggetti concreti in oggetti astratti;
+		\item una funzione di \textbf{concretizzazione} $\gamma$ che mappa oggetti astratti in oggetti concreti.
+	\end{itemize}
+	
+	La caratteristica peculiare delle astrazioni è che solo alcune proprietà vengono osservate con esattezza, le altre vengono solo approssimate. In sostanza, dato un dominio astratto $A$, gli elementi di $A$ sono osservati con esattezza, gli altri sono approssimati o l'informazione è persa del tutto.
+	
+	\paragraph{Proprietà.} L'insieme delle proprietà $P(\Sigma)$ di oggetti in $\Sigma$ è l'insieme di elementi che gode di quella proprietà. Questo insieme di proprietà costituisce un reticolo completo \[ \langle P(\Sigma), \subseteq, \emptyset, \cup, \cap, \neg \rangle \] dove:
+	\begin{itemize}
+		\item $\subseteq$ è l'implicazione logica;
+		\item $\Sigma$ è \verb|true|;
+		\item $\cup$ è la disgiunzione (oggetti che godono di $P$ o di $Q$ appartengono a $P \cup Q$);
+		\item $\cap$ è la congiunzione (oggetti che godono di $P$ e di $Q$ appartengono a $P \cap Q$);
+		\item $\neg$ è la negazione (oggetti che non godono di $P$ stanno in $\Sigma \setminus P$).
+	\end{itemize}
+	
+
+	
+\end{document}
