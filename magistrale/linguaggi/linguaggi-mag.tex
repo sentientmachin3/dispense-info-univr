@@ -15,9 +15,9 @@
 \usepackage{booktabs}
 \usepackage{fancyhdr}
 \usepackage{listings}
-\usepackage{amssymb}
 \usepackage{stmaryrd}
 \usepackage{semantic}
+\usepackage[strict]{changepage}
 
 
 \begin{document}
@@ -112,8 +112,8 @@ Definiamo la sintassi di un semplice linguaggio imperativo:
 
 \subsection{Memoria}
 La memoria è necessaria per poter valutare gli statement di lettura da una locazione. In particolare definiamo \begin{align*}
- dom(f) &= \lbrace a \in A\ |\ \exists b \in B\ s.t.\ f(a)=b  \\
- ran(f) &= \lbrace b \in B\ |\ \exists a \in A\ s.t.\ f(a)=b
+ dom(f) &= \lbrace a \in A\ |\ \exists b \in B\ s.t.\ f(a)=b \rbrace  \\
+ ran(f) &= \lbrace b \in B\ |\ \exists a \in A\ s.t.\ f(a)=b \rbrace
  \end{align*}
  
  Lo store del linguaggio imperativo in questione è un insieme di funzioni parziali che vanno dalle locazioni di memoria nei numeri interi: \[ s: \mathbb{L} \to \mathbb{Z} \]
@@ -122,5 +122,41 @@ La memoria è necessaria per poter valutare gli statement di lettura da una loca
  n &\text{if } l=l' \\
  s(l') &\text{altrimenti}
  \end{cases} \]
+ 
+ \subsection{Sistemi di transizione}
+ Le semantiche operazionali sono date attraverso sistemi di transizione, ovvero strutture composte da: \begin{itemize}
+ 	\item un insieme $Config$ di configurazioni;
+ 	\item una relazione binaria $\rightarrowtriangle\ \subseteq Config \times Config$;
+ \end{itemize}
+
+Per indicare un generale passo di semantica si usa la notazione \[ \langle e, s \rangle \rightarrowtriangle \langle e', s' \rangle \]
+che rappresenta una trasformazione di un programma $e$ con una memoria $s$ in un programma $e'$ con memoria associata $s'$.
+I singoli passi di computazione sono singole applicazioni di regole della semantica.
+
+\subsection{Semantica small-step su un linguaggio imperativo}
+\begin{adjustwidth}{-1.3cm}{}
+\begin{align*}
+	&\inference[(op+)]{-}{\langle n_1 + n_2, s \rangle \rightarrowtriangle \langle n, s \rangle}\ n = add(n_1, n_2)
+	&\inference[(op-geq\text{\footnote{Problemi con \LaTeX implicano l'uso di un nome diverso}})]{-}{\langle n_1 \geq n_2, s \rangle \rightarrowtriangle \langle b, s \rangle}\ b = geq(n_1, n_2) \\
+		& &\\
+	&\inference[(op1)]{\langle e_1, s \rangle \rightarrowtriangle \langle e_1', s' \rangle}{\langle e_1 \text{ op } e_2, s \rangle \rightarrowtriangle \langle e_1' \text{ op } e_2, s' \rangle}  &\inference[(op2)]{\langle e_2, s \rangle \rightarrowtriangle \langle e_2', s' \rangle}{ \langle v \text{ op } e_2, s \rangle \rightarrowtriangle \langle v \text{ op } e_2', s' \rangle} \\
+		& &\\
+	&\inference[(deref)]{-}{\langle !l, s \rangle \rightarrowtriangle \langle n,s \rangle}\text{ if } l \in dom(s) \text{ and } s(l)=n &\inference[(assign1)]{-}{\langle l:=n,s \rangle \rightarrowtriangle \langle skip, s\lbrack l \to n\rbrack \rangle}\ \text{if } e \in dom(s) \\
+		& &\\ 
+	&\inference[(assign2)]{\langle e, s \rangle \rightarrowtriangle \langle e', s' \rangle}{\langle l:=e,s \rangle \rightarrowtriangle \langle l := e', s' \rangle} &\inference[(if-tt)]{-}{\langle \text{if true then } e_1 \text{ else } e_2, s \rangle \rightarrowtriangle \langle e_1, s \rangle} \\
+	& & \\
+	&\inference[(if-ff)]{-}{\langle \text{if false then } e_1 \text{ else } e_2, s \rangle \rightarrowtriangle \langle e_2, s \rangle} &\inference[(if)]{\langle e, s \rangle \rightarrowtriangle \langle e', s' \rangle}{\langle \text{if } e \text{ then } e_1 \text{ else } e_2, s \rangle \rightarrowtriangle \langle \text{if } e' \text{ then } e_1 \text{ else } e_2, s' \rangle} \\
+	& & \\
+	&\inference[(seq)]{\langle e_1, s \rangle \rightarrowtriangle \langle e_1', s' \rangle}{\langle e_1;e_2, s \rangle \rightarrowtriangle \langle e_1';e_2, s' \rangle} & \inference[(seq.skip)]{-}{\langle skip; e_2, s \rangle \rightarrowtriangle \langle e_2,s \rangle} \\
+	\end{align*}
+	\begin{align*}
+	& \inference[(while)]{-}{ \langle \text{while } e \text{ do } e_1,s \rangle \rightarrowtriangle \langle \text{if } e \text{ then } (e_1; \text{while } e \text{ do } e_1) \text{ else } skip,s \rangle} \\
+\end{align*}
+\end{adjustwidth}
+
+\subsection{Esecuzione di programmi e proprietà}
+
+
+
 	
 \end{document}
