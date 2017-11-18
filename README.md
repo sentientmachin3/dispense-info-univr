@@ -15,3 +15,4 @@ Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman
 
 #### MAGISTRALE
 - Linguaggi
+- Analisi di Sistemi Informatici
