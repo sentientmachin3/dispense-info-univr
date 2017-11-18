@@ -18,6 +18,7 @@
 \usepackage{stmaryrd}
 \usepackage[strict]{changepage}
 \usepackage{galois}
+\usepackage{libertine}
 
 \newcommand{\parts}[1]{\mathcal{P}(#1)}
 \newcommand{\galoistuple}{\langle C, \alpha, \gamma , A \rangle}
@@ -121,7 +122,7 @@
 		\item $\gamma$ non perde informazione.
 	\end{itemize}
 
-	\begin{definit}
+	\begin{definit}[Connessione di Galois]
 		Dati due poset $\langle A , \leq_A \rangle$ e $\langle C , \leq_C \rangle$, e due funzioni monotone $\alpha: C \to A$ e $\gamma: A \to C$, diciamo che $\galoistuple$ è una connessione di Galois se:
 		\begin{itemize}
 			\item $\forall c \in \mathcal{C}: c \leq_C \gamma(\alpha(c))$
@@ -147,5 +148,12 @@
 		\alpha(c) &= \bigwedge \lbrace a \in A \vert c \leq_C \gamma(a) \rbrace \\
 		\gamma(a) &= \bigvee \lbrace c \in C \vert \alpha(c) \leq_A a \rbrace
 	\end{align*}
+	
+	\subsection{Famiglie di Moore}
+	\begin{definit}[Famiglia di Moore]
+		Sia $L$ un reticolo completo. $X \subseteq L$ è una famiglia di Moore di $L$ se \[ X = \mathcal{M}(X) = \Big\{ \bigwedge S\ \vert\ S \subseteq X \Big\} \] dove \[ \bigwedge \emptyset = \top \in \mathcal{M}(X) \]
+	\end{definit}
+	
+	Da questa definizione segue che, ipotizzando che ogni proprietà concreta abbia una migliore astrazione $\overline{P} \in A$, implica che il dominio $A$ è una famiglia di Moore.
 	
 \end{document}

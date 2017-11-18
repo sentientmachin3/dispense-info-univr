@@ -19,6 +19,7 @@
 \usepackage{semantic}
 \usepackage[strict]{changepage}
 
+\newtheorem{thm}{Teorema}[section]
 
 \begin{document}
 	\begin{frontespizio}
@@ -155,7 +156,16 @@ I singoli passi di computazione sono singole applicazioni di regole della semant
 \end{adjustwidth}
 
 \subsection{Esecuzione di programmi e proprietà}
+L'esecuzione di programmi con questa semantica consiste nel trovare una memoria $s'$ tale per cui valga che \[ \langle P, s \rangle \rightarrowtriangle^\ast \langle v, s' \rangle \] ovvero che si raggiunga una configurazione terminale in un certo numero di passi.
 
+Illustriamo inoltre due importanti proprietà:
+\begin{thm}[Strong normalization]
+	Per ogni memoria $s$ e ogni programma $P$  esiste una qualche memoria $s'$ tale che \[ \langle P,s \rangle \rightarrowtriangle^\ast \langle v,s' \rangle  \]
+\end{thm}
+
+\begin{thm}[Determinatezza]
+	Se $\langle e,s \rangle  \rightarrowtriangle \langle e_1, s_1 \rangle $ e $\langle e,s \rangle  \rightarrowtriangle \langle e_2, s_2 \rangle $ allora $\langle e_1, s_1 \rangle = \langle e_2, s_2 \rangle$.
+\end{thm}
 
 
 	
