@@ -24,6 +24,7 @@
 \newcommand{\galoistuple}{\langle C, \alpha, \gamma , A \rangle}
 
 \newtheorem{definit}{Definizione}[subsection]
+\newtheorem{thm}{Teorema}[subsection]
 
 
 \begin{document}
@@ -41,14 +42,7 @@
 	
 	\tableofcontents
 	\newpage
-	
-	\section{Introduzione}
-	Argomenti contenuti:
-	\begin{itemize}
-		\item Interpretazione astratta
-		\item Analisi statica
-		\item Analisi dinamica
-	\end{itemize}
+
 
 	\section{Preliminari matematici}
 	\subsection{Ordini parziali}
@@ -134,14 +128,14 @@
 	Una connessione e un'inserzione di Galois sono rappresentate rispettivamente come \[  C \galois{\alpha}{\gamma} A \qquad C \galoiS{\alpha}{\gamma} A \]
 	La funzione $\alpha$ è detta \textit{aggiunta sinistra}, mentre la funzione $\gamma$ è detta \textit{aggiunta destra}.
 	
-	\begin{definit}
+	\begin{thm}
 		Data una connessione di Galois $ C \galois{\alpha}{\gamma} A$, sono equivalenti:
 		\begin{itemize}
 			\item $C \galoiS{\alpha}{\gamma} A$;
 			\item $\alpha$ è suriettiva;
 			\item $\gamma$ è iniettiva.
 		\end{itemize}
-	\end{definit}
+	\end{thm}
 
 	Inoltre, dati due domini astratti, non esistono due coppie $(\alpha, \gamma)$ che formino una connessione di Galois; quindi la connessione di Galois tra due domini è \textbf{unica}, e le funzioni sono identificabili attraverso:
 	\begin{align*}
@@ -155,5 +149,64 @@
 	\end{definit}
 	
 	Da questa definizione segue che, ipotizzando che ogni proprietà concreta abbia una migliore astrazione $\overline{P} \in A$, implica che il dominio $A$ è una famiglia di Moore.
+	
+	\subsection{Upper closure operator}
+	\begin{definit}[Upper closure operator]
+		Una funzione $f:P \to P$ su un poset $\langle P, \leq_P \rangle $ è un upper closure operator (uco) se soddisfa le seguenti proprietà:\begin{itemize}
+			\item estensività: $\forall x \in P: x \leq_P \rho(x)$
+			\item monotonia: $\forall x,y \in P: (x \leq_P y) \Rightarrow (\rho(x) \leq_P \rho(y)$
+			\item idempotenza: $\forall x \in P: \rho(x) = \rho(\rho(x))$
+		\end{itemize}
+	\end{definit}
+
+	I lower closure operator sono definiti in modo duale, specificando che $\rho$ deve essere \textit{riduttiva}, ovvero che $\forall x \in P: x \geq_P \rho(x)$.
+	
+	\begin{thm}
+		Data una connessione di Galois $C \galois{\alpha}{\gamma} A$ si ha che $\gamma \circ \alpha$ è un uco e $\alpha \circ \gamma $ è un lco.
+	\end{thm}
+	\begin{thm}
+		$C \galoiS{\alpha}{\gamma} A$ se e solo se $A$ è isomorfo \footnote{Con isomorofismo si intendono reticoli con la stessa struttura.} ad una Moore family di $C$.
+	\end{thm}
+	\begin{thm}
+		Sia $\rho \in uco(c)$. Allora $\forall A \simeq \rho(C)$ si ha che $\exists \alpha, \gamma : C \galoiS{\alpha}{\gamma} A$
+	\end{thm}
+	
+	\subsection{Reticolo delle interpretazioni astratte}
+	I vari domini astratti possono essere comparati sulla base della loro precisione. In generale si può dire che un dominio astratto $A_1$ è più preciso di $A_2$ (indicato attraverso $A_1 \sqsubseteq A_2$) quando \[ \forall a_2 \in A_2, \exists a_1 \in A_1 \quad \text{ tali che } \quad \gamma_1(a_1) = \gamma_2(a_2) \] ovvero quando \[ \gamma(A_2) \subseteq \gamma(A_1) \]
+	
+	Collegando agli uco, possiamo dire che \[ A_1 \sqsubseteq A_2 \Leftrightarrow \rho_1 \sqsubseteq \rho_2 \Leftrightarrow \rho_2(C) \subseteq \rho_1(C) \]
+	
+	\begin{definit}[Reticolo delle int. astratte]
+		Se $C$ è un reticolo completo o un cpo, allora \[ \langle uco(C), \sqsubseteq, \sqcup, \sqcap, \lambda x.\top, \lambda x.x \rangle \] è un reticolo completo dove $\forall \rho, \eta \in uco(C), \{ \rho_i \}_{i \in I} \subseteq uco(C)$ e $x \in C$:\begin{itemize}
+			\item $\rho \sqsubseteq \eta \Leftrightarrow \forall y \in C.\rho(y) \leq \eta(y) \Leftrightarrow \eta(C) \subseteq \rho(C)$
+			
+			\item $ \displaystyle \Big( \bigsqcap_{i \in I} \rho_i \Big)(x) = \bigwedge_{i \in I} \rho_i(x)$
+			
+			\item $ \displaystyle \Big( \bigsqcup_{i \in I} \rho_i \Big)(x) = x \Leftrightarrow \forall i \in I. \rho_i(x)=x$
+			
+			\item $\lambda x.\top, \lambda x.x$ sono rispettivamente top e bottom. 
+		\end{itemize}
+	\end{definit}
+
+	\subsection{Computazioni astratte e concrete}
+	\begin{definit}[Correttezza]
+		Data un'inserzione di Galois $C \galoiS{\alpha}{\gamma} A$, una funzione concreta $f: C \to C$ e una funzione astratta $f^\sharp: A \to A$ diciamo che $f^\sharp$ è un'approssimazione corretta di $f$ se \[ \forall c \in C: \alpha(f(c)) \leq_A f^\sharp(\alpha(c)) \quad \text{backward} \] o equivalentemente \[ \forall a \in A: f(\gamma(a)) \leq_C \gamma(f^\sharp(a) \quad \text{forward} \]
+	\end{definit}
+	
+	Rinforzando la definizione e imponendo uguaglianza si perde l'equivalenza delle due espressioni sopra. 
+	\begin{definit}[Completezza]
+		Data un'inserzione di Galois $C \galoiS{\alpha}{\gamma} A$, una funzione concreta $f: C \to C$ e una funzione astratta $f^\sharp: A \to A$ diciamo che $f^\sharp$ è: \begin{itemize}
+			\item backward-completa per $f$ se  $\forall c \in C: \alpha(f(c)) = f^\sharp(\alpha(c))$
+			\item forward-completa per $f$ se $\forall a \in A: f(\gamma(a)) = \gamma(f^\sharp(a)$
+		\end{itemize}
+	\end{definit}
+	
+	La definizione rappresenta una situazione ideale in cui non si ha perdita di precisione durante il calcolo astratto. Inoltre la backward-completezza lavora sull'astrazione dell'input delle operazioni, la forward-completezza sull'output.
+	
+	
+	
+	
+	
+	
 	
 \end{document}
