@@ -203,6 +203,83 @@
 	
 	La definizione rappresenta una situazione ideale in cui non si ha perdita di precisione durante il calcolo astratto. Inoltre la backward-completezza lavora sull'astrazione dell'input delle operazioni, la forward-completezza sull'output.
 	
+	Le definizioni di completezza possono essere date anche usando gli uco: \begin{itemize}
+		\item $\rho \in uco(C)$ è backward-completo per $f$ se $\rho \circ f = \rho \circ f \circ \rho$
+		\item $\rho \in uco(C)$ è forward-completo per $f$ se $f \circ \rho = \rho \circ f \circ \rho$
+	\end{itemize}
+
+	Inoltre quando $\rho$ è sia backward che forward-completo allora vale che $\rho \circ f = f \circ \rho$.
+	
+	\begin{thm}
+		Data $C \galoiS{\alpha}{\gamma} A$, una funzione concreta $f : C \to C$  e una funzione astratta $f^\sharp: A \to A$ allora  \[ \forall c \in C: \alpha(f(c)) \leq_A f^\sharp(\alpha(c)) \Leftrightarrow \alpha \circ f \circ \gamma \sqsubseteq f^\sharp \]
+	\end{thm}
+
+	\begin{definit}[Best correct approximation]
+		Data $C \galoiS{\alpha}{\gamma} A$ e una funzione concreta $f : C \to C$ allora $\alpha \circ f \circ \gamma : A \to A$ è la best correct approximation di $f$ in $A$.
+	\end{definit}
+
+	\subsection{Accelerazione della convergenza}
+	\subsubsection{Widening}
+	Un widening \[ \nabla \in P \times P \to P  \] su un poset $ \langle P, \leq_P \rangle $ è una funzione che soddisfa:
+	\begin{itemize}
+		\item $\forall x,y \in P : x \sqsubseteq (x \nabla y ) \wedge y \sqsubseteq (x \nabla y)$
+		\item per ogni catena ascendente $x_0 \sqsubseteq x_1 \sqsubseteq ... \sqsubseteq x_n$ la catena definita come $y_0 = x_0, ..., y_{n+1} = y_n \nabla x_{n+1}$ non è strettamente crescente.
+	\end{itemize}
+	
+	Dato che in interpretazione astratta è necessario garantire/accelerare la convergenza, viene usato il widening (che si sostituisce al least upper bound), dal momento che anche il calcolo astratto può divergere.
+	Il risultato di un widening è un post-puntofisso  di $F^\nabla$, ovvero una sovra-approssimazione del punto fisso più piccolo di f $lfp^\sqsubseteq F$. 
+	
+	Ad esempio, il widening su intervalli funziona come segue:
+	\begin{align*}
+	\lbrack a, b \rbrack\ \nabla\ \lbrack c, d \rbrack = \lbrack e, f \rbrack \qquad \text{ tale che}
+	\end{align*}
+	
+	\begin{align*}
+	e = 
+	\begin{cases}
+	-\infty &\text{ se } c < a \\
+	a &\text{ altrimenti}
+	\end{cases}
+	\text{ e } f = 
+	\begin{cases}
+	+\infty &\text{ se } b < d\\
+	b &\text{ altrimenti }
+	\end{cases}
+	\end{align*}
+	
+	\subsubsection{Narrowing}
+	Dato che il widening raggiunge un post-fixpoint, piuò capitare che si abbiano eccessive perdite di informazione, in questo caso viene usato il narrowing.
+	
+	\begin{definit}
+		Il narrowing è una funzione $ \triangle : P \times P \to P$ tale che:
+		\begin{itemize}
+			\item $\forall x, y \in \mathcal{P}: y \leq x \implies y \leq x\ \triangle\ y \leq x$
+			\item Per ogni catena discendente $x_0 \geq x_1 \geq ...$, la catena discendente $y_0=x_0, ..., y_{i+1} = y_i\ \triangle\ x_{i+1}$ non è strettamente decrescente.
+		\end{itemize}
+	\end{definit}
+
+	Per gli intervalli il narrowing funziona come segue:
+	\begin{align*}
+	\lbrack a, b \rbrack\ \triangle\ \lbrack c, d \rbrack = \lbrack e, f \rbrack \qquad \text{ tale che}
+	\end{align*}
+	\begin{align*}
+	e = 
+	\begin{cases}
+	c &\text{ se } a = -\infty \\
+	a &\text{ altrimenti}
+	\end{cases}
+	\text{ e } f = 
+	\begin{cases}
+	d &\text{ se } b = +\infty\\
+	b &\text{ altrimenti }
+	\end{cases}
+	\end{align*}
+	
+	
+	
+	
+	
+	
 	
 	
 	
