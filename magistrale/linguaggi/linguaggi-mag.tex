@@ -18,9 +18,11 @@
 \usepackage{stmaryrd}
 \usepackage{semantic}
 \usepackage[strict]{changepage}
+\usepackage{libertine}
 
 \newtheorem{thm}{Teorema}[section]
 
+\newcommand{\sem}[1]{\llbracket #1 \rrbracket}
 \begin{document}
 	\begin{frontespizio}
 		\Preambolo{\usepackage{datetime}}
@@ -134,7 +136,7 @@ Per indicare un generale passo di semantica si usa la notazione \[ \langle e, s 
 che rappresenta una trasformazione di un programma $e$ con una memoria $s$ in un programma $e'$ con memoria associata $s'$.
 I singoli passi di computazione sono singole applicazioni di regole della semantica.
 
-\subsection{Semantica small-step su un linguaggio imperativo}
+\subsection{Semantica small-step su un linguaggio imperativo} \label{rules}
 \begin{adjustwidth}{-1.3cm}{}
 \begin{align*}
 	&\inference[(op+)]{-}{\langle n_1 + n_2, s \rangle \rightarrowtriangle \langle n, s \rangle}\ n = add(n_1, n_2)
@@ -142,7 +144,7 @@ I singoli passi di computazione sono singole applicazioni di regole della semant
 		& &\\
 	&\inference[(op1)]{\langle e_1, s \rangle \rightarrowtriangle \langle e_1', s' \rangle}{\langle e_1 \text{ op } e_2, s \rangle \rightarrowtriangle \langle e_1' \text{ op } e_2, s' \rangle}  &\inference[(op2)]{\langle e_2, s \rangle \rightarrowtriangle \langle e_2', s' \rangle}{ \langle v \text{ op } e_2, s \rangle \rightarrowtriangle \langle v \text{ op } e_2', s' \rangle} \\
 		& &\\
-	&\inference[(deref)]{-}{\langle !l, s \rangle \rightarrowtriangle \langle n,s \rangle}\text{ if } l \in dom(s) \text{ and } s(l)=n &\inference[(assign1)]{-}{\langle l:=n,s \rangle \rightarrowtriangle \langle skip, s\lbrack l \to n\rbrack \rangle}\ \text{if } e \in dom(s) \\
+	&\inference[(deref)]{-}{\langle !l, s \rangle \rightarrowtriangle \langle n,s \rangle}\text{ if } l \in dom(s) \text{ and } s(l)=n &\inference[(assign1)]{-}{\langle l:=n,s \rangle \rightarrowtriangle \langle skip, s\lbrack l \to n\rbrack \rangle}\ \text{if } l \in dom(s) \\
 		& &\\ 
 	&\inference[(assign2)]{\langle e, s \rangle \rightarrowtriangle \langle e', s' \rangle}{\langle l:=e,s \rangle \rightarrowtriangle \langle l := e', s' \rangle} &\inference[(if-tt)]{-}{\langle \text{if true then } e_1 \text{ else } e_2, s \rangle \rightarrowtriangle \langle e_1, s \rangle} \\
 	& & \\
@@ -166,6 +168,34 @@ Illustriamo inoltre due importanti proprietà:
 \begin{thm}[Determinatezza]
 	Se $\langle e,s \rangle  \rightarrowtriangle \langle e_1, s_1 \rangle $ e $\langle e,s \rangle  \rightarrowtriangle \langle e_2, s_2 \rangle $ allora $\langle e_1, s_1 \rangle = \langle e_2, s_2 \rangle$.
 \end{thm}
+
+\subsection{Funzione di valutazione della semantica}
+Date le regole nella sezione \ref{rules}, possiamo dire che in generale, per valutare una porzione di programma, viene applicata la regola \[ \sem{-}: Exp \to (Store \rightharpoonup Store) \]
+dove, data una generica espressione $e$, la funzione $\sem{ \cdot}$ prende una memoria e ne ritorna una aggiornata dopo la valutazione di $e$.
+
+\[ \sem{e}(s) = \begin{cases}
+s' &\text{se } \langle e,s \rangle \rightarrowtriangle \langle e',s' \rangle \\
+undefined &\text{altrimenti}
+\end{cases} \]
+
+\subsection{Possibili varianti del linguaggio}
+Nel linguaggio illustrato possono essere introdotte anche diverse varianti.
+
+\subsubsection{Inversione dell'ordine di valutazione}
+È possibile ad esempio introdurre un ordine di valutazione \textit{right-to-left}, ossia:
+\begin{align*}
+	&\inference[(op1b)]{\langle e_2,s \rangle \to \langle e_2', s' \rangle}{\langle e_1 + e_2, s \rangle \rightarrowtriangle \langle e_1 + e_2', s' \rangle}
+	&\inference[(op2b)]{\langle e_1,s \rangle \to \langle e_1', s' \rangle}{\langle e_1 + v, s \rangle \rightarrowtriangle \langle e_1' + v, s' \rangle}
+\end{align*}
+Aggiungendo queste due regole alla semantica ovviamente salta la regola della determinatezza.
+
+\subsubsection{Regole di assegnamento}
+Una piccola variante alla regola dell'assegnamento: \begin{align*}
+	&\inference[(assign1b)]{-}{\langle l:=n,s \rangle \rightarrowtriangle \langle n, s\lbrack l \to n\rbrack \rangle}\ \text{if } l \in dom(s)
+	&\inference[(seq.skip.b)]{-}{\langle v;e_2, s \rangle \rightarrowtriangle \langle e_2, s \rangle}
+\end{align*}
+
+\subsubsection{Inizializzazione della memoria}
 
 
 	

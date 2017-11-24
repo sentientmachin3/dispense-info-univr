@@ -220,7 +220,7 @@
 
 	\subsection{Accelerazione della convergenza}
 	\subsubsection{Widening}
-	Un widening \[ \nabla \in P \times P \to P  \] su un poset $ \langle P, \leq_P \rangle $ è una funzione che soddisfa:
+	Un widening \[ \nabla : P \times P \to P  \] su un poset $ \langle P, \leq_P \rangle $ è una funzione che soddisfa:
 	\begin{itemize}
 		\item $\forall x,y \in P : x \sqsubseteq (x \nabla y ) \wedge y \sqsubseteq (x \nabla y)$
 		\item per ogni catena ascendente $x_0 \sqsubseteq x_1 \sqsubseteq ... \sqsubseteq x_n$ la catena definita come $y_0 = x_0, ..., y_{n+1} = y_n \nabla x_{n+1}$ non è strettamente crescente.
@@ -274,6 +274,8 @@
 	b &\text{ altrimenti }
 	\end{cases}
 	\end{align*}
+	
+	
 	
 	
 	
