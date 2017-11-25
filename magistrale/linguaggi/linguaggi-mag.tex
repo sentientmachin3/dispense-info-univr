@@ -23,6 +23,8 @@
 \newtheorem{thm}{Teorema}[section]
 
 \newcommand{\sem}[1]{\llbracket #1 \rrbracket}
+\newcommand{\type}{\Gamma \vdash}
+
 \begin{document}
 	\begin{frontespizio}
 		\Preambolo{\usepackage{datetime}}
@@ -196,7 +198,68 @@ Una piccola variante alla regola dell'assegnamento: \begin{align*}
 \end{align*}
 
 \subsubsection{Inizializzazione della memoria}
+Possibili varianti a livello di inizializzazione della memoria potrebbero essere: \begin{itemize}
+	\item inizializzare implicitamente tutte le locazioni a 0;
+	\item permettere assegnamenti ad una locazione $l$ tale che $l \notin dom(s)$ per inizializzare quella locazione.
+\end{itemize}
+
+\subsubsection{Valori memorizzabili}
+Altre estensioni relative alla memoria (qui definita staticamente, ovvero l'insieme delle locazioni possibili è fisso) possono includere: \begin{itemize}
+	\item la possibilità di memorizzare anche altri tipi di dato (non solo interi come in questo caso);
+	\item la possibilità di avere una memoria definita dinamicamente, quindi dare la possiblità di avere sempre nuove locazioni disponibili oltre a quelle già in uso.
+\end{itemize}
+
+\subsection{Type systems}
+Un type system è una struttura i cui usi principali sono: \begin{itemize}
+	\item descrivere quando i programmi sono sensati;
+	\item prevenire certi tipi di errore;
+	\item strutturare i programmi;
+	\item dare delle linee guida per la progettazione del linguaggio;
+	\item dare informazioni utili per la fase di ottimizzazione da parte del compilatore;
+	\item rinforzare alcune proprietà di \emph{sicurezza} del programma.
+\end{itemize}
+
+Definiamo la funzione \[ \Gamma \vdash e : T \]
+che sostanzialmente assegna il tipo $T$ all'espressione $e$, per qualche tipo $T$ del linguaggio.
+
+Aggiungiamo al linguaggio i tipi delle espressioni $T$ e i tipi delle locazioni $T_{loc}$:
+\begin{align*}
+	T ::=\ & int\ \vert\ bool\ \vert\ unit \\
+	T_{loc} ::=\ & intref
+\end{align*}
+
+\subsubsection{Regole di tipaggio}
+\begin{align*}
+	&\inference[(int)]{-}{\type n : int}\ \text{per } n \in \mathbb{Z}  &\inference[(bool)]{-}{\type b : bool}\ \text{per } b \in \lbrace true, false \rbrace \\
+	& & \\
+	&\inference[(op+)]{\type e_1 : int \quad \type e_2:int}{\type e_1 + e_2 : int} &\inference[(op-geq)]{\type e_1 : int \quad \type e_2:int}{\type e_1 \geq e_2 : bool} \\
+	&&\\
+	&\inference[(if)]{\type e_1:bool \quad \type e_2:T \quad \type e_3:T}{\type \text{if } e_1 \text{ then } e_2 \text{ else } e_3:T} &\inference[(assign)]{\type e:int}{\type l:=e:unit}\ \text{se } \Gamma(l) = intref \\
+	&& \\
+	&\inference[(deref)]{-}{\type !l:int}\ \text{se } \Gamma(l) = intref &\inference[(skip)]{-}{\type skip:unit} \\
+	&& \\
+	&\inference[(seq)]{\type e_1:unit \type e_2:T}{\type e_1;e_2:T} &\inference[(while)]{\type e_1:bool \quad \type e_2:unit}{\type \text{while } e_1 \text{ do } e_2:unit}
+\end{align*}
+\textbf{Nota:} le regole di tipaggio sono \textit{syntax-directed}, ovvero per ogni regola della sintassi astratta si ha una regola di tipaggio.
 
 
-	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \end{document}
