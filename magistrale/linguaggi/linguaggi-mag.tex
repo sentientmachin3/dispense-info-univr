@@ -40,6 +40,7 @@
 	
 	\tableofcontents
 	\newpage
+	\pagestyle{fancy}
 	
 	\section{Introduzione}
 	Un linguaggio di programmazione è composto da: \begin{itemize}
@@ -238,10 +239,57 @@ Aggiungiamo al linguaggio i tipi delle espressioni $T$ e i tipi delle locazioni 
 	&& \\
 	&\inference[(deref)]{-}{\type !l:int}\ \text{se } \Gamma(l) = intref &\inference[(skip)]{-}{\type skip:unit} \\
 	&& \\
-	&\inference[(seq)]{\type e_1:unit \type e_2:T}{\type e_1;e_2:T} &\inference[(while)]{\type e_1:bool \quad \type e_2:unit}{\type \text{while } e_1 \text{ do } e_2:unit}
+	&\inference[(seq)]{\type e_1:unit \quad \type e_2:T}{\type e_1;e_2:T} &\inference[(while)]{\type e_1:bool \quad \type e_2:unit}{\type \text{while } e_1 \text{ do } e_2:unit}
+	&& \\
 \end{align*}
 \textbf{Nota:} le regole di tipaggio sono \textit{syntax-directed}, ovvero per ogni regola della sintassi astratta si ha una regola di tipaggio.
 
+\subsubsection{Proprietà di tipaggio}
+\begin{thm}[Progress]
+	Se $\type e:T$ e $dom(\Gamma) \subseteq dom(s)$ allora $e$ è un valore oppure esiste una coppia $\langle e',s' \rangle$ tale che \[ \langle e,s \rangle \rightarrowtriangle \langle e',s' \rangle \]
+\end{thm}
+
+\begin{thm}[Type preservation]
+	Se $\type e:T$ e $dom(\Gamma) \subseteq dom(s)$ e $\langle e,s \rangle \rightarrowtriangle \langle e',s' \rangle$ allora si ha che $ \type e':T$ e $dom(\Gamma) \subseteq dom(s') $
+\end{thm}
+
+Mettendo insieme le due proprietà sopra, si ottiene una nuova proprietà, esplicativa del fatto che programmi ben tipati non vanno mai in deadlock.
+
+\begin{thm}[Safety]
+	Se $\type e:T$, $dom(\Gamma) \subseteq dom(s)$ e $\langle e,s \rangle \rightarrowtriangle^\ast \langle e',s' \rangle$ allora $e'$ è un valore oppure esiste una coppia $\langle e'', s'' \rangle$ tale che $\langle e',s' \rangle \rightarrowtriangle \langle e'',s'' \rangle$
+\end{thm}
+
+\begin{thm}[Type inference]
+	Dati $\Gamma$, $e$, può essere trovato il tipo $T$ tale che $\type e:T$ oppure può essere provato che $T$ non esiste.
+\end{thm}
+
+\begin{thm}[Decidibilità del type-checking]
+	Dati $\Gamma$, $e$, $T$, è decidibile $\type e:T$
+\end{thm}
+
+\begin{thm}[Unicità del tipaggio]
+	Se vale che $\type e:T$ e $\type e:T'$ allora $T=T'$.
+\end{thm}
+
+\section{Forme di induzione}
+L'induzione è una tecnica formale che consente di provare delle proprietà su determinate categorie di oggetti, sfruttando la natura di questi oggetti.
+Esistono 3 tipi di induzione:
+\begin{itemize}
+	\item matematica;
+	\item strutturale;
+	\item rule induction\footnote{Appena avrò una traduzione valida la metterò.}.
+\end{itemize}
+
+\subsection{Induzione matematica}
+È la forma di induzione più semplice, consiste infatti nel dimostrare una proprietà $P(-)$ su numeri naturali procedendo nel modo seguente:
+\begin{enumerate}
+\item \textbf{Caso base:} provare che $P(0)$ è vera, usando qualche procedimento matematico;
+\item \textbf{Caso induttivo:}\begin{enumerate}
+	\item assumere che l'ipotesi induttiva valga, ovvero che valga $P(k)$;
+	\item dall'ipotesi induttiva dimmostrare che vale $P(k+1)$, usando qualche procedimento matematico.
+\end{enumerate}
+\end{enumerate}
+Se i punti precedenti sono veri, allora $P(n)$ è vera per ogni numero naturale.
 
 
 
@@ -259,7 +307,10 @@ Aggiungiamo al linguaggio i tipi delle espressioni $T$ e i tipi delle locazioni 
 
 
 
+\section{Aspetti funzionali}
 
+\section{Dati e memoria variabile}
 
+\section{Sotto-tipaggio}
 
 \end{document}
