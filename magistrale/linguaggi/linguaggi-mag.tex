@@ -20,6 +20,7 @@
 \usepackage[strict]{changepage}
 \usepackage{libertine}
 
+
 \newtheorem{thm}{Teorema}[section]
 
 \newcommand{\sem}[1]{\llbracket #1 \rrbracket}
@@ -77,11 +78,15 @@
 	\begin{align*}
 		\inference[B-Num]{-}{n \Downarrow n} \qquad \inference[B-Add]{E_1 \Downarrow n_1\ E_2 \Downarrow n_2}{E_1 + E_2 \Downarrow n_3}\ n_3 = add(n_1, n_2)
 	\end{align*}
-	
+	La semantica big-step fornisce immediatamente il risultato, dando subito il valore finale dell'espressione che si sta valutando.
 	\subsubsection{Esempio}
 	\begin{align*}
 		\inference[B-Add]{\inference[B-Num]{-}{3 \Downarrow 3} & \inference[B-Add]{\inference[B-Num]{-}{2 \Downarrow 2} & \inference[B-Num]{-}{1 \Downarrow 1}} {2 + 1 \Downarrow 3}}{3 + (2 + 1) \Downarrow 6}
 	\end{align*}
+	
+	\begin{thm}[Determinatezza per semantica big-step] $E \Downarrow m$ e $E \Downarrow n$ implica $m=n$.
+		
+	\end{thm}
 	
 	\subsection{Semantica small-step}
 	Indichiamo con $E_1 \rightarrowtriangle E_2$ lo svolgimento di un solo passo di semantica.
@@ -103,6 +108,13 @@
 		\item la relazione $\rightarrowtriangle^k$, con $k \in \mathbb{N}$, indica una sequenza di n passi applicando la semantica small-step;
 		\item la relazione $\rightarrowtriangle^\ast$, indica una sequenza di derivazione lunga un certo numero di passi. Questa relazione è riflessiva ed è la chiusura transitiva di $\rightarrowtriangle$.
 	\end{itemize}
+	
+	\begin{thm}[Determinatezza per semantica small-step] Definiamo:
+		\begin{itemize}
+			\item \textbf{strong determinacy:} $E \rightarrowtriangle F$ e $E \rightarrowtriangle G$ implica $F=G$;
+			\item \textbf{weak determinacy:} $E \rightarrowtriangle^\ast m$ e $E \rightarrowtriangle^\ast n$ implica $m=n$;
+		\end{itemize}
+	\end{thm}
 
 \section{Linguaggio imperativo}
 Definiamo la sintassi di un semplice linguaggio imperativo:
@@ -290,6 +302,26 @@ Esistono 3 tipi di induzione:
 \end{enumerate}
 \end{enumerate}
 Se i punti precedenti sono veri, allora $P(n)$ è vera per ogni numero naturale.
+
+\subsection{Induzione strutturale}
+\subsubsection{Induzione strutturale su numeri naturali}
+Per dimostrare una proprietà $P$ su numeri naturali basta applicare il seguente metodo: \begin{itemize}
+	\item \textbf{Caso base:} dimostrare che vale $P(0)$;
+	\item \textbf{Caso induttivo:} dimostrare che è vera $P(succ(K))$ assumendo come ipotesi induttiva che valga $P(K)$ per qualche $K \in \mathbb{N}$.
+\end{itemize}
+
+L'induzione strutturale consiste quindi nell'assumere che l'ipotesi induttiva valga per la \textit{sottostruttura} di $succ(K)$.
+
+\subsubsection{Induzione strutturale su strutture complesse}
+Prendiamo come esempio la costruzione di alberi binari. Diamo la seguente grammatica per costruire gli alberi: \[ T::= leaf\ |\ tree(T,T) \]
+
+In tal caso partiamo col presupposto che: \begin{itemize}
+		\item \textbf{Caso base:} una foglia sia un albero binario;
+		\item \textbf{Caso induttivo:} se $L$ e $R$ sono alberi binari, allora lo è anche $tree(L,R)$.
+\end{itemize}
+
+\subsection{Rule induction}
+L'idea di base della rule induction consiste nell'ignorare la struttura di ciò che si deriva per fare induzione sulla dimensione dell'albero di derivazione.
 
 
 
