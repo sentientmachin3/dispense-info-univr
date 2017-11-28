@@ -1,13 +1,12 @@
 \documentclass[a4paper, 10pt]{article}
 \usepackage[italian]{babel}
-\usepackage{sans}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amsthm}
 \usepackage{graphicx}
-\usepackage[sans]{frontespizio}
+\usepackage{frontespizio}
 \usepackage{hyperref}
 \hypersetup{hidelinks,
 	colorlinks = true,
@@ -27,6 +26,8 @@
 	basicstyle=\ttfamily,
 	mathescape	}
 \usepackage{fancyvrb}
+\usepackage{libertine}
+
 \pagestyle{fancy}
 \lhead{\nouppercase{\leftmark}}
 \rhead{\nouppercase{\rightmark}}
@@ -339,7 +340,7 @@
 		\item \textbf{Pragmatica}: 
 		È lo studio delle relazioni tra la lingua ed il contesto, che sono fondamentali per la comprensione della lingua stessa. Si analizza in che modo frasi corrette e sensate vengono usate.
 		Frasi con lo stesso significato possono essere usate in modo diverso da utenti diversi a seconda del contesto.
-		La pragmatica non viene definita a priori una volta sola, ma evolve con l'uso che viene fatto del linguaggio, tende più alle metodologie di progettazione del software fornisce un adeguato stile di programmazione.
+		La pragmatica non viene definita a priori una volta sola, ma evolve con l'uso che viene fatto del linguaggio.
 		\item \textbf{Semantica}:
 		Riguarda la relazione tra segni e significato, si tratta di attribuire significato alle frasi e quindi \textbf{interpretare}, cioè definire cosa significa una frase corretta sintatticamente.
 		Il significato è un'entità autonoma che esiste indipendentemente dai segni che usiamo per descriverlo.
@@ -349,7 +350,7 @@
 			\item Semantica denotazionale 
 			\item Semantica assiomatica
 		\end{itemize}
-		È difficile trovare equilibrio tra esattezza e flessibilità in modo da rimuovere ambiguità, ma ance lasciare spazio all'implementazione. Spesso si usa il linguaggio naturale.
+		È difficile trovare equilibrio tra esattezza e flessibilità in modo da rimuovere ambiguità, ma anche lasciare spazio all'implementazione. Spesso si usa il linguaggio naturale.
 	\end{enumerate}
 	
 	La semantica operazionale descrive l'esecuzione di un programma attraverso \textbf{transizioni} definite direttamente sul linguaggio del programma.
@@ -467,7 +468,7 @@
 	Le operazioni di aggiornamento degli ambienti $\rho[\rho'] \in Env_{I \cup I'}$ e $\rho,\rho' \in Env_{I \cup I'}$ sono definite come per le memorie.
 	
 	\subsubsection{Generatore di locazioni}
-	Per dichiarare nuove variabili è necessario definire una funzione che ad ogni nuovo identificatore associ un locazione di memoria non utilizzata. Supponiamo quindi di poter ordinare le locazioni dello stesso tipo, associando ad ognuna di esse un valore naturale quando vengono utilizzate.
+	Per dichiarare nuove variabili è necessario definire una funzione che ad ogni nuovo identificatore associ una locazione di memoria non utilizzata. Supponiamo quindi di poter ordinare le locazioni dello stesso tipo, associando ad ognuna di esse un valore naturale quando vengono utilizzate.
 	
 	Un generatore di locazioni è una funzione 
 	\[
@@ -490,7 +491,7 @@
 	\[
 	TEnv_I:I \to DTyp
 	\] 
-	ha metavariabile $\Delta$ e $DTyp$ è l'insieme dei tipi denotabili. Le operazioni d aggiornamento degli ambienti statici sono definiti come per le memorie.
+	ha metavariabile $\Delta$ e $DTyp$ è l'insieme dei tipi denotabili. Le operazioni di aggiornamento degli ambienti statici sono definiti come per le memorie.
 	
 	\subsubsection{Compatibilità di ambienti}
 	Sia $\rho : I$ un ambiente dinamico e $\Delta:I$ un ambiente statico con $I\subseteq Id$. Gli ambienti $\rho$ e $\Delta$ sono compatibili ($\rho : \Delta$) se e soltanto se 
@@ -509,7 +510,7 @@
 	\subsubsection{Binding}
 	Processo tramite il quale vene effettuato il collegamento tra un entità software e il suo corrispondente valore.
 	
-	I programmi sono formati da \textit{entità}(variabili, istruzioni, routine...), le entità sono caratterizzate da \textit{attributi}(var: nome, tipo, area di memoria, Routine: nome, parametri, modalità di passaggio parametri...)
+	I programmi sono formati da \textit{entità}(variabili, istruzioni, routine...), le entità sono caratterizzate da \textit{attributi}(var: nome, tipo, area di memoria, Routine: nome, parametri, modalità di passaggio parametri, ecc.).
 	
 	Il binding \textit{associa un valore alle entità} dei programmi. Per ogni entità le informazioni su esse sono contenute in un descrittore. Si ha quindi il collegamento tra indirizzi simbolici e indirizzi fisici.
 	Binding di dati e istruzioni a indirizzi di memoria.
@@ -546,7 +547,7 @@
 	
 	\subsection{Comandi}
 	\subsubsection{Variabili e assegnamenti}
-	Categoria sintattica i cui elementi sono eseguiti per aggiornare la memoria della macchina astratta che supporta il linguaggio. Il comando base è l'assegnamento che modifica il contenuto di una locazione. 
+	Categoria sintattica i cui elementi sono eseguiti per aggiornare la memoria della macchina astratta che supporta il linguaggio.
 	
 	\noindent
 	Una variabile è un contenitore di valori che ha un nome particolare. Il loro contenuto può essere modificato tramite un assegnamento. Un assegnamento è costruito utilizzando un termine come \textit{left-value}, che denota la locazione da modificare, e un \textit{right-value}, che contiene il nuovo valore da associare alla locazione.
