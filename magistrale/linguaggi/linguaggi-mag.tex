@@ -5,6 +5,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amsthm}
+\usepackage{amssymb}
 \usepackage{frontespizio}
 \usepackage{hyperref}
 \hypersetup{hidelinks,
@@ -19,12 +20,20 @@
 \usepackage{semantic}
 \usepackage[strict]{changepage}
 \usepackage{libertine}
+\usepackage{xfrac}
+
+\lstset{
+	basicstyle=\ttfamily\small
+}
 
 
 \newtheorem{thm}{Teorema}[section]
+\newtheorem{definit}{Definizione}[section]
 
 \newcommand{\sem}[1]{\llbracket #1 \rrbracket}
 \newcommand{\type}{\Gamma \vdash}
+\newcommand{\code}[1]{\textup{\lstinline{#1}}}
+\newcommand{\subs}[3]{#1 \lbrace \sfrac{#2}{#3} \rbrace}
 
 \begin{document}
 	\begin{frontespizio}
@@ -116,7 +125,7 @@
 		\end{itemize}
 	\end{thm}
 
-\section{Linguaggio imperativo}
+\section{Linguaggio imperativo} \label{imp}
 Definiamo la sintassi di un semplice linguaggio imperativo:
 \begin{align*}
 	b &:= true\ |\ false \\
@@ -155,7 +164,7 @@ I singoli passi di computazione sono singole applicazioni di regole della semant
 \begin{adjustwidth}{-1.3cm}{}
 \begin{align*}
 	&\inference[(op+)]{-}{\langle n_1 + n_2, s \rangle \rightarrowtriangle \langle n, s \rangle}\ n = add(n_1, n_2)
-	&\inference[(op-geq\text{\footnote{Problemi con \LaTeX implicano l'uso di un nome diverso}})]{-}{\langle n_1 \geq n_2, s \rangle \rightarrowtriangle \langle b, s \rangle}\ b = geq(n_1, n_2) \\
+	&\inference[(op-geq \footnotemark)]{-}{\langle n_1 \geq n_2, s \rangle \rightarrowtriangle \langle b, s \rangle}\ b = geq(n_1, n_2) \\
 		& &\\
 	&\inference[(op1)]{\langle e_1, s \rangle \rightarrowtriangle \langle e_1', s' \rangle}{\langle e_1 \text{ op } e_2, s \rangle \rightarrowtriangle \langle e_1' \text{ op } e_2, s' \rangle}  &\inference[(op2)]{\langle e_2, s \rangle \rightarrowtriangle \langle e_2', s' \rangle}{ \langle v \text{ op } e_2, s \rangle \rightarrowtriangle \langle v \text{ op } e_2', s' \rangle} \\
 		& &\\
@@ -171,6 +180,7 @@ I singoli passi di computazione sono singole applicazioni di regole della semant
 	& \inference[(while)]{-}{ \langle \text{while } e \text{ do } e_1,s \rangle \rightarrowtriangle \langle \text{if } e \text{ then } (e_1; \text{while } e \text{ do } e_1) \text{ else } skip,s \rangle} \\
 \end{align*}
 \end{adjustwidth}
+\footnotetext{Problemi con \LaTeX\ implicano l'uso di un nome diverso.}
 
 \subsection{Esecuzione di programmi e proprietà}
 L'esecuzione di programmi con questa semantica consiste nel trovare una memoria $s'$ tale per cui valga che \[ \langle P, s \rangle \rightarrowtriangle^\ast \langle v, s' \rangle \] ovvero che si raggiunga una configurazione terminale in un certo numero di passi.
@@ -323,23 +333,86 @@ In tal caso partiamo col presupposto che: \begin{itemize}
 \subsection{Rule induction}
 L'idea di base della rule induction consiste nell'ignorare la struttura di ciò che si deriva per fare induzione sulla dimensione dell'albero di derivazione.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Per provare formalmente una proprietà $P(D)$ su una derivazione $D$, si procede come segue: \begin{enumerate}
+	\item \textbf{Caso base:} dimostrare che $P(A)$ è vera, per ogni assioma $A$;
+	\item \textbf{Caso induttivo:} per ogni regola della forma \[ \inference[(regola)]{h_1\ h_2\ ...\ h_n}{c} \] si dimostra che ogni derivazione che termina con l'utilizzo di questa regola soddisfa la proprietà. Questa derivazione ha sottoderivazioni $D_1, D_2,...,D_n$ che terminano con le ipotesi $h_1, h_2,...,h_n$. Per ipotesi induttiva si assume che valga $P(D_i)$ con $1\leq i \leq n$.
+	
+\end{enumerate}
 
 \section{Aspetti funzionali}
+Estendiamo la sintassi data in \ref{imp} con:	 \begin{align*}
+	\text{Variabili } &x \in \mathbb{X}, \text{con } x = \lbrace x,y,z,...\rbrace \\
+	\text{Espressioni }&e::=\ ...\ |\ \text{fn }x:T \Rightarrow e\ |\ ee\ |\ x
+\end{align*}
+e i tipi con: \begin{align*}
+	T\ ::=\ ...\ |\ T \to T
+\end{align*}
+
+Assumiamo che: \begin{itemize}
+	\item l'applicazione di funzioni $ee$ è associativa a sinistra;
+	\item i tipi delle funzioni sono associativi a destra;
+	\item il corpo di $fn$ si estende a sinistra quanto più è possibile;
+	\item $fn\ x:unit \Rightarrow fn\ y:int \Rightarrow x;y$ è di tipo $unit \to int \to int$.
+\end{itemize}
+
+\subsection{Variabili free e bound}
+Intuitivamente, diciamo che una variabile è \textit{free} in $e$ se $x$ non occorre in nessun termine della forma \lstinline|fn x:T| $\Rightarrow$ ...
+
+Più formalmente definiamo le variabili free come una funzione: \[ fv(): Exp \to 2^\mathbb{X} \] dove $\mathbb{X}$ è l'insieme delle variabili. La funzione $fv$ è definita come: \begin{align*}
+	fv(x) &\triangleq \lbrace x \rbrace \\
+	fv(\code{fn x:T} \Rightarrow e) &\triangleq fv(e) \setminus \lbrace x \rbrace \\
+	fv(e_1 e_2)= fv (e_1;e_2) &\triangleq fv(e_1) \cup fv(e_2) \\
+	fv(n)=fv(b)=fv(!l)=fv(\code{skip}) &\triangleq \emptyset \\
+	fv(e_1 \code{op} e_2) = fv(\ \code{while}\ e_1\ \code{do}\ e_2) &\triangleq fv(e_1) \cup fv(e_2) \\
+	fv(l \code{:=} e) &\triangleq fv(e) \\
+	fv(\code{if}\ e_1\ \code{then}\ e_2\ \code{else}\ e_3) &\triangleq fv(e_1) \cup fv(e_2) \cup fv(e_3)
+\end{align*}
+
+\begin{definit}
+	Un'espressione $e$ si dice \textbf{chiusa} se $fv(e) = \emptyset$.
+\end{definit}
+
+\subsection{Alpha conversion}
+Nell'espressione \lstinline|fn x : T| $\Rightarrow e$ la variabile $x$ è \textit{bound} in $e$. Diciamo che: \begin{itemize}
+	\item $x$ è il parametro formale della funzione, quindi ogni occorrenza di $x$ che non è in una funzione annidata alla funzione attuale indica la stessa cosa;
+	\item al di fuori della definizione della funzione, la variabile $x$ non ha significato;
+\end{itemize}
+
+Basandoci su quanto detto nei due punti precedenti, possiamo concludere che il nome del parametro formale nella funzione \textbf{non modifica} il comportamento della funzione. Assumiamo quindi di poter \textit{rimpiazzare il vincolo su $x$ e tutte le occorrenze di $x$ in una certa espressione $e$ con una variabile \textbf{fresh} che non occorra da nessun'altra parte}.
+
+\subsection{Sostituzioni}
+\subsubsection{Sostituzioni singole}
+Un perno della semantica delle funzioni è dato dalle sostituzioni, ovvero il rimpiazzo a runtime di un parametro attuale con un parametro formale. Una sostituzione è indicata con \[ \subs{e_2}{e_1}{x}  \] e indica la sostituzione di $x$  con $e_2$ nell'espressione $e_1$, per tutte le occorrenze libere di $x$. Le sostituzioni funzionano come segue: \begin{align*}
+	\subs{n}{e}{x} &\triangleq n \\
+	\subs{b}{e}{x} &\triangleq b \\
+	\subs{\code{skip}}{e}{x} &\triangleq \code{skip} \\
+	\subs{x}{e}{x} &\triangleq e \\
+	\subs{y}{e}{x} &\triangleq y \\
+	\subs{\code{(fn x:T} \Rightarrow e_1 \code{)}}{e}{z} &\triangleq \code{(fn x:T} \Rightarrow \subs{e_1}{e}{z}\code{)} \text{se } x \notin fv(e) \\
+	\subs{\code{(fn x:T} \Rightarrow e_1 \code{)}}{e}{z} &\triangleq \code{(fn x:T} \Rightarrow (\subs{e_1}{e}{z})\lbrace \sfrac{e}{z} \rbrace \code{)} \text{se } x \in fv(e) \wedge y \text{ è fresh}\footnotemark \\
+	\subs{\code{(fn x:T} \Rightarrow e_1 \code{)}}{e}{x} &\triangleq \code{(fn x:T} \Rightarrow e_1 \code{)} \\
+	\subs{\code{(e}_1; \code{e}_2 \code{)}}{e}{x} &\triangleq (\subs{e_1}{e}{x}\subs{e_2}{e}{x})
+\end{align*}
+\footnotetext{Operando con alpha-conversion.}
+Le altre espressioni dopo una sostituzione rimangono invariate per il semplice motivo che non sono funzioni, quindi non va sostituito alcun parametro.
+
+\subsubsection{Sostituzioni simultanee}
+Le sostituzioni possono essere implementate in modo da poter essere anche simultanee, ovvero con lo scopo di poter sostituire più variabili contemporaneamente. In generale, una sostituzione simultanea è una funzione parziale $\sigma: \mathbb{X} \to Exp$.
+
+Sintatticamente viene indicato con $e \sigma$ l'espressione risultante dalla sostituzione simultanea di ogni $x \in dom(\sigma)$ con la corrispondente espressione $\sigma(x)$. La sostituzione dei parametri viene indicata con \[ \lbrace \sfrac{e_1}{x_1}, ..., \sfrac{e_k}{x_k} \rbrace \]
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \section{Dati e memoria variabile}
 
