@@ -401,6 +401,28 @@ Le sostituzioni possono essere implementate in modo da poter essere anche simult
 
 Sintatticamente viene indicato con $e \sigma$ l'espressione risultante dalla sostituzione simultanea di ogni $x \in dom(\sigma)$ con la corrispondente espressione $\sigma(x)$. La sostituzione dei parametri viene indicata con \[ \lbrace \sfrac{e_1}{x_1}, ..., \sfrac{e_k}{x_k} \rbrace \]
 
+\subsection{Lambda calcolo}
+Il lambda calcolo è un linguaggio dove: \begin{itemize}
+	\item ogni termine è una funzione;
+	\item ogni termine può essere applicato ad un altro termine;
+	\item le funzioni del linguaggio \lstinline|fn x:T| $\Rightarrow e$ diventano funzioni del tipo $\lambda x:T.e$.
+\end{itemize}
+
+La sintassi del lambda-calcolo non tipato è: \[ M \in Lambda ::=\ x\ |\ \lambda x.M\ |\ MM \]
+
+\subsection{Applicazione di funzioni}
+Intuitivamente, nell'espressione $M_1M_2$, per applicare $M_2$ a $M_1$ si procede prima risolvendo $M_1$ ad un termine del tipo $\lambda x.M$, poi si procede in base a una delle strategie di valutazione possibili: \begin{itemize}
+\item \textit{call-by-value:} si valuta $M_2$ ad un valore $v$, poi si valuta $\subs{M}{v}{x}$;
+\item \textit{call-by-name:} si valuta direttamente $\subs{M}{M_2}{x}$.
+\end{itemize}
+
+\subsubsection{Semantica dell'applicazione di funzioni}
+\[ \inference[App]{M_1 \rightarrowtriangle M_1'}{M_1M_2 \rightarrowtriangle M_1'M_2} \]
+Inoltre, in modalità call-by-value: \begin{align*}
+	\inference[CBV.A]{M_2 \rightarrowtriangle M_2'}{(\lambda x.M)M_2 \rightarrowtriangle (\lambda x.M)M_2'} \quad \inference[CBV.B]{-}{(\lambda x.M)v \rightarrowtriangle \subs{M}{v}{x}}
+\end{align*}
+mentre in modalità call-by-name: \[ \inference[CBN]{-}{(\lambda x.M)M_2 \rightarrowtriangle \subs{M}{M_2}{x}} \]
+
 
 
 
