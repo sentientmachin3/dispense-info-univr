@@ -11,12 +11,12 @@
 \usepackage[left=1.5cm, right=1.5cm, top=4cm]{geometry}
 \usepackage{listing}
 \usepackage{stmaryrd}
-\usepackage{multicol}
+\usepackage{mathtools}
 
 \pagenumbering{gobble}
 \setlength{\droptitle}{-5.5cm}
 \date{}
-\newcommand{\infer}[4]{\inference[\textbf{#1}]{#2}{#3}#4 \\}
+\newcommand{\infer}[4]{\inference[\textbf{#1}]{#2}{#3}#4 }
 \newcommand{\brule}[2]{\langle #1 \rangle \Downarrow #2}
 \newcommand{\srule}[2]{\langle #1 \rangle \rightarrowtriangle \langle #2 \rangle}
 \newcommand{\memrep}[3]{#1 \lbrack #2 \mapsto #3 \rbrack}
@@ -29,34 +29,36 @@
 	\title{\textbf{Regole di inferenza}}
 	\maketitle
 	\section*{Semantica big-step}
-	\begin{multicols}{2}
 	\begin{align*}
-		&\infer{B-Num}{-}{\brule{n,s}{n}}{} \\
-		&\infer{B-Loc}{-}{\brule{l,s}{s(l)}}{} \\
-		&\infer{B-Skip}{-}{\brule{skip,s}{s}}{} \\ 
-		&\infer{B-Add}{\brule{E_1,s}{n_1} \quad \brule{E_2,s}{n_2}}{\brule{E_1+E_2}{n_3}}{n_3 = add(n_1, n_2)} \\
-		&\infer{B-Assign}{\brule{E,s}{n}}{\brule{l:=e,s}{\memrep{s}{l}{n}}}{} \\ &\infer{B-Assign.s}{\brule{E,s}{n}}{\brule{l:=e,s}{\langle skip, \memrep{s}{l}{n}} \rangle}{} \\
-		&\infer{B-Seq}{\brule{C_1,s}{s_1} \quad \brule{C_2,s_1}{s'} }{\brule{C_1;C_2,s}{s'}}{} \\
-		&\infer{B-Seq.s}{\brule{C_1,s}{\langle skip,s_1 \rangle} \quad \brule{C_2,s_1}{\langle r,s' \rangle} }{\brule{C_1;C_2,s}{\langle r,s' \rangle}}{} \\
-		&\infer{B-If.T}{\brule{B,s}{true} \quad \brule{C_1,s}{s'}}{\brule{\ifthenelse{B}{C_1}{C_2},s}{\langle r, s\rangle}}{} \\
-		&\infer{B-If.T}{\brule{B,s}{false} \quad \brule{C_2,s}{s'}}{\brule{\ifthenelse{B}{C_1}{C_2},s}{\langle r, s\rangle}}{} \\
+		&\infer{B-Num}{-}{\brule{n,s}{n}}{}
+		&\infer{B-Loc}{-}{\brule{l,s}{s(l)}}{} \\ \\
+		&\infer{B-Skip}{-}{\brule{skip,s}{s}}{} 
+		&\infer{B-Add}{\brule{E_1,s}{n_1} \quad \brule{E_2,s}{n_2}}{\brule{E_1+E_2}{n_3}}{n_3 = add(n_1, n_2)} \\ \\
+		&\infer{B-Assign}{\brule{E,s}{n}}{\brule{l:=e,s}{\memrep{s}{l}{n}}}{}  &\infer{B-Assign.s}{\brule{E,s}{n}}{\brule{l:=e,s}{\langle skip, \memrep{s}{l}{n}} \rangle}{}  \\ \\
+		&\infer{B-Seq}{\brule{C_1,s}{s_1} \quad \brule{C_2,s_1}{s'} }{\brule{C_1;C_2,s}{s'}}{} 
+		&\infer{B-Seq.s}{\brule{C_1,s}{\langle skip,s_1 \rangle} \quad \brule{C_2,s_1}{\langle r,s' \rangle} }{\brule{C_1;C_2,s}{\langle r,s' \rangle}}{} \\ \\
+		&\infer{B-If.T}{\brule{B,s}{true} \quad \brule{C_1,s}{s'}}{\brule{\ifthenelse{B}{C_1}{C_2},s}{\langle r, s\rangle}}{} 
+		&\infer{B-If.T}{\brule{B,s}{false} \quad \brule{C_2,s}{s'}}{\brule{\ifthenelse{B}{C_1}{C_2},s}{\langle r, s\rangle}}{} \\ \\
 	\end{align*}
-	\end{multicols}
-\newpage
 \section*{Semantica small-step}
-\begin{multicols}{2}
 	\begin{align*}
-		&\infer{S-Left}{E_1 \goesto E_1' }{E_1 + E_2 \goesto E_1' + E_2}{} \\
-		&\infer{S-N.Right}{E_2 \goesto E_2'}{n_1 + E_2 \goesto n_1 + E_2'}{} \\
-		&\infer{S-Add}{-}{n_1+n_2 \goesto n_3}{n_3 = add(n_1, n_2)} \\
-		&\infer{S-Left}{E_1 \goesto_{ch} E_1'}{E_1 + E_2 \goesto_{ch} E_1' + E_2}{}\\
-		&\infer{S-Right}{E_2 \goesto_{ch} E_2'}{E_1 + E_2 \goesto_{ch} E_1 + E_2'}{}\\
-		&\infer{op+}{-}{\srule{n_1 + n_2,s}{n,s}}{n=add(n_1,n_2)}\\
-		&\infer{op-geq}{-}{\srule{n_1 \geq n_2,s}{b,s}}{b=geq(n_1, n_2)} \\
-		&\infer{op1}{\srule{e_1,s}{e_1', s'}}{\srule{e_1 + e_2,s}{e_1' + e_2,s'}}{} \\
-		&\infer{op2}{\srule{e_2,s}{e_2', s'}}{\srule{v + e_2,s}{v + e_2',s}}{} \\
-		&\infer{op1}{\srule{e_2,s}{e_2', s'}}{\srule{e_1 + e_2,s}{e_1 + e_2',s'}}{} \\
-		&\infer{op2}{\srule{e_1,s}{e_1', s'}}{\srule{e_1 + v,s}{e_1' + v',s'}}{} \\
+		&\infer{S-Left}{E_1 \goesto E_1' }{E_1 + E_2 \goesto E_1' + E_2}{} 
+		&\infer{S-N.Right}{E_2 \goesto E_2'}{n_1 + E_2 \goesto n_1 + E_2'}{} \\ \\
+		&\infer{S-Add}{-}{n_1+n_2 \goesto n_3}{n_3 = add(n_1, n_2)} 
+		&\infer{S-Left}{E_1 \goesto_{ch} E_1'}{E_1 + E_2 \goesto_{ch} E_1' + E_2}{}\\ \\
+		&\infer{S-Right}{E_2 \goesto_{ch} E_2'}{E_1 + E_2 \goesto_{ch} E_1 + E_2'}{}
+		&\infer{op+}{-}{\srule{n_1 + n_2,s}{n,s}}{n=add(n_1,n_2)}\\ \\
+		&\infer{op-geq}{-}{\srule{n_1 \geq n_2,s}{b,s}}{b=geq(n_1, n_2)} 
+		&\infer{op1}{\srule{e_1,s}{e_1', s'}}{\srule{e_1 + e_2,s}{e_1' + e_2,s'}}{} \\ \\
+		&\infer{op2}{\srule{e_2,s}{e_2', s'}}{\srule{v + e_2,s}{v + e_2',s}}{} 
+		&\infer{op1b}{\srule{e_2,s}{e_2', s'}}{\srule{e_1 + e_2,s}{e_1 + e_2',s'}}{} \\ \\
+		&\infer{op2b}{\srule{e_1,s}{e_1', s'}}{\srule{e_1 + v,s}{e_1' + v',s'}}{} 
+		&\infer{deref1}{-}{\srule{!l,s}{v,s}}{\text{if } l \in dom(s) \wedge s(l)=v} \\ \\
+		&\infer{deref2}{\srule{e,s}{e',s'}}{\srule{!e,s}{!e',s'}}{} 
+		&\infer{ref1}{-}{\srule{\text{ref }v, s}{l, \memrep{s}{l}{v}}}{l \notin dom(s)} \\ \\
+		&\infer{ref2}{\srule{e,s}{e',s'}}{\srule{\text{ref }e,s}{\text{ref } e',s}}{} 
+		&\infer{assign1}{-}{\srule{l:=v,s}{\text{skip}, \memrep{s}{l}{v}}}{\text{if } l \in dom(s)}	 \\ \\
+		&\infer{assign2}{\srule{e,s}{e',s'}}{\srule{l:=e,s}{l:=e',s}}{} 
+		&\infer{assign3}{\srule{e_1,s}{e_1',s'}}{\srule{e_1:=e_2,s}{e_1':=e_2,s'}}{}\\ \\
 	\end{align*}
-\end{multicols}
 \end{document}
