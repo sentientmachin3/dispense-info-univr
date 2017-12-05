@@ -14,5 +14,5 @@ Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman
 - Sicurezza di Rete (In progress, teoria)
 
 #### MAGISTRALE
-- Linguaggi
-- Analisi di Sistemi Informatici
+- Linguaggi (In progress, con schema delle regole di inferenza)
+- Analisi di Sistemi Informatici (In progress)
