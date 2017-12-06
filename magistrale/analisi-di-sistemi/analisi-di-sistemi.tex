@@ -20,6 +20,8 @@
 \usepackage{galois}
 \usepackage{libertine}
 
+\lstset{basicstyle=\ttfamily\small}
+
 \newcommand{\parts}[1]{\mathcal{P}(#1)}
 \newcommand{\galoistuple}{\langle C, \alpha, \gamma , A \rangle}
 
@@ -275,6 +277,29 @@
 	\end{cases}
 	\end{align*}
 	
+	\subsection{Linguaggio e semantica}
+	Introduciamo in questa sezione il linguaggio che verrà usato nel resto della dispensa e la sua semantica.
+	\begin{center}
+			\begin{tabular}{cc}
+			\hline
+			\textbf{Statement} & \textbf{Codice} \\
+			\hline
+			\hline
+			Variabili & \lstinline|x| \\
+			Espressioni aritmetiche & \lstinline|e| \\
+			Assegnamenti & \lstinline|x <- e| \\
+			Lettura da memoria & \lstinline|x <- M[e]| \\
+			Scrittura in memoria & \lstinline|M[e]|$_1$ \lstinline|<-e|$_2$ \\
+			Condizionali & \lstinline|if (e) S|$_1$ \lstinline|else S|$_2$ \\
+			Salto incondizionato & \lstinline|goto L|\\
+			\hline
+		\end{tabular}
+	\end{center}
+
+	La memoria $M$ è vista come un array arbitrariamente lungo dove i valori possono essere inseriti e letti successivamente.
+	
+	Ogni passo di computazione della semantica operazionale trasforma stati del programma $(\rho, \mu)$ dove $\rho: Var \to int$ e $\mu : \mathbb{N} \to int$. La funzione $\rho$ mappa variabili di programma al loro valore attuale, mentre la funzione $\mu$ mappa ogni cella dell'array al suo contenuto.
+
 	
 	
 	

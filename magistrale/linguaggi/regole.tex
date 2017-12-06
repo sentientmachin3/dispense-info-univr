@@ -63,7 +63,7 @@
 		&\infer{if-tt}{-}{\srule{\text{if } true \text{ then } e_1 \text{ else } e_2,s}{e_1,s}}{}
 		&\infer{if-ff}{-}{\srule{\text{if} false \text{then} e_1 \text{else} e_2,s}{e_2,s}}{} \\ \\
 		&\infer{if}{\srule{e,s}{e',s'}}{\srule{\text{if } e \text{ then } e_1 \text{ else } e_2,s}{\text{if } e' \text{ then } e_1 \text{ else } e_2,s}}{}
-		&\infer{while}{-}{\srule{\text{while } e \text{ do } e_1, s}{\text{if } e \text{ then } (e_1; \text{while } e \text{ do } e_1) \text{ else } skip, s}}{} \\ \\
+		&\infer{while}{-}{\srule{\text{while } e \text{ do } e_1, s}{\text{if } e \text{ then } (e_1; \text{while } e \text{ do } e_1) \text{ else } skip, s}}{} \\ \\-
 		&\infer{assign1b}{-}{\srule{l:=n,s}{n, \memrep{s}{l}{n}}}{l \in dom(s)}
 		&\infer{seq.skip}{-}{\srule{skip;e_2,s}{e_2,s}}{} \\ \\
 		&\infer{seq}{\srule{e_1,s}{e_1',s}}{\srule{e_1;e_2,s}{e_1';e_2,s'}}{}
