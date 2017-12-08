@@ -22,8 +22,10 @@
 
 \lstset{basicstyle=\ttfamily\small}
 
+\newcommand{\code}[1]{\textup{\lstinline{#1}}}
 \newcommand{\parts}[1]{\mathcal{P}(#1)}
 \newcommand{\galoistuple}{\langle C, \alpha, \gamma , A \rangle}
+\newcommand{\sem}[1]{\llbracket #1 \rrbracket (\rho, \mu)}
 
 \newtheorem{definit}{Definizione}[subsection]
 \newtheorem{thm}{Teorema}[subsection]
@@ -299,6 +301,21 @@
 	La memoria $M$ è vista come un array arbitrariamente lungo dove i valori possono essere inseriti e letti successivamente.
 	
 	Ogni passo di computazione della semantica operazionale trasforma stati del programma $(\rho, \mu)$ dove $\rho: Var \to int$ e $\mu : \mathbb{N} \to int$. La funzione $\rho$ mappa variabili di programma al loro valore attuale, mentre la funzione $\mu$ mappa ogni cella dell'array al suo contenuto.
+	
+	Durante le computazioni sui control flow graph (CFG) ogni arco viene marcato con un'etichetta, che definisce la trasformazione di stato. Qui diamo la semantica delle possibili etichette degli archi sui CFG.
+	\begin{align*}
+		\sem{;} &= (\rho, \mu) \\
+		\sem{\code{NonZero}(e)} &= (\rho, \mu) \text{ se } \llbracket e \rrbracket \rho \neq 0 \\
+		\sem{\code{Zero}(e)} &= (\rho, \mu) \text{ se } \llbracket e \rrbracket \rho = 0 \\
+		\sem{\code{x <- e}} &= (\rho \lbrack x \mapsto \llbracket e \rrbracket \rho \rbrack, \mu)  \\
+		\sem{\code{x <- M[e]}} &= (\rho \lbrack x \mapsto \mu(\llbracket e \rrbracket \rho) \rbrack, \mu)  \\
+		\sem{\code{M[e}_1\code{] <- e}_2} &= (\rho, \mu\lbrack \llbracket e_1 \rrbracket \rho \mapsto \llbracket e_2 \rrbracket \rho \rbrack)
+	\end{align*}
+	
+	Definiamo la modifica della memoria come \[ \rho \lbrack x \mapsto d \rbrack (y) = \begin{cases}
+	d &\text{se } x = y \\
+	\rho(y) &\text{altrimenti}
+	\end{cases} \]
 
 	
 	
