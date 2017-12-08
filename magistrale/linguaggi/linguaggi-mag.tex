@@ -417,12 +417,44 @@ Intuitivamente, nell'espressione $M_1M_2$, per applicare $M_2$ a $M_1$ si proced
 \end{itemize}
 
 \subsubsection{Semantica dell'applicazione di funzioni}
+Estendiamo l'insieme dei valori con \[ \text{Values } v::= b\ |\ n\ |\ skip\ |\ fn\ x:T \Rightarrow e \]
+La semantica funziona come di seguito:
 \[ \inference[App]{M_1 \rightarrowtriangle M_1'}{M_1M_2 \rightarrowtriangle M_1'M_2} \]
-Inoltre, in modalità call-by-value: \begin{align*}
-	\inference[CBV.A]{M_2 \rightarrowtriangle M_2'}{(\lambda x.M)M_2 \rightarrowtriangle (\lambda x.M)M_2'} \quad \inference[CBV.B]{-}{(\lambda x.M)v \rightarrowtriangle \subs{M}{v}{x}}
+Inoltre, in modalità call-by-value: \begin{adjustwidth}{-1.3cm}{}
+\begin{align*}
+	\inference[CBV-app1]{\langle e_1, s \rangle \rightarrowtriangle \langle e_1', s' \rangle}{\langle e_1e_2,s \rangle \rightarrowtriangle \langle e_1'e_2, s' \rangle}\quad  \inference[CBV-app2]{\langle e_2,s \rangle \rightarrowtriangle \langle e_2',s' \rangle}{\langle ve_2,s \rangle \rightarrowtriangle \langle ve_2',s' \rangle} \quad
+	\inference[CBV-fn]{-}{\langle (\text{fn }x:T \Rightarrow e)v, s \rangle \rightarrowtriangle \langle \subs{e}{v}{x},s \rangle}
 \end{align*}
-mentre in modalità call-by-name: \[ \inference[CBN]{-}{(\lambda x.M)M_2 \rightarrowtriangle \subs{M}{M_2}{x}} \]
+\end{adjustwidth}
+mentre in modalità call-by-name: \begin{align*}
+\inference[CBN-app]{\langle e_1, s \rangle \rightarrowtriangle \langle e_1', s' \rangle}{\langle e_1e_2,s \rangle \rightarrowtriangle \langle e_1'e_2, s' \rangle} \quad \inference[CBN-fn]{-}{\langle (\text{fn }x:T \Rightarrow e)e_2, s \rangle \rightarrowtriangle \langle \subs{e}{e_2}{x},s \rangle}
+\end{align*}
 
+Introduciamo inoltre una nuova semantica che raccoglie le due precedenti: \begin{align*}
+	\inference[BETA-app1]{\langle e_1, s \rangle \rightarrowtriangle \langle e_1', s' \rangle}{\langle e_1e_2,s \rangle \rightarrowtriangle \langle e_1'e_2, s' \rangle} \quad &\inference[BETA-app2]{\langle e_2,s \rangle \rightarrowtriangle \langle e_2',s' \rangle}{\langle e_1e_2,s \rangle \rightarrowtriangle \langle e_1e_2',s' \rangle} \\
+	\inference[BETA-fn1]{-}{\langle (\text{fn }x:T \Rightarrow e)e_2, s \rangle \rightarrowtriangle \langle \subs{e}{e_2}{x},s \rangle} \quad &\inference[BETA-fn2]{-}{\langle \text{fn }x:T \Rightarrow e, s \rangle \rightarrowtriangle \langle \text{fn }x:T \Rightarrow e', s \rangle}
+\end{align*}
+
+\subsection{Tipaggio di funzioni}
+Estendiamo l'insieme dei tipi come segue: \[ TypeEnv = \mathbb{L} \cup \mathbb{X} \rightharpoonup T_{loc} \cup T \] tale che: \begin{itemize}
+	\item $\forall l \in dom(\Gamma). \Gamma(l) \in T_{loc}$
+	\item $\forall x \in dim(\Gamma). \Gamma(x) \in T$
+\end{itemize}
+
+Definiamo le regole di tipaggio: \begin{align*}
+	\inference[var]{-}{\type x:T} \text{se } \Gamma(x) = T \quad 
+	\inference[fn]{\Gamma, x :T \vdash e:T'}{\type \text{fn } x :T \Rightarrow e:T \to T'} \quad
+	\inference[app]{\type e_1:T \to T' \quad \type e_2:T}{\type e_1e_2:T'}
+\end{align*}
+
+Qui di seguito definiamo alcune proprietà del tipaggio:
+\begin{thm}[Progress]
+	Se $e$ è chiusa, $\type e:T$ e $dom(\Gamma) \subseteq dom(s)$ allora $e$ è un valore oppure esiste una configurazione $\langle e',s' \rangle$ tale $\langle e,s \rangle \rightarrowtriangle \langle e',s' \rangle$.
+\end{thm}
+
+\begin{thm}[Type preservation]
+	Se $e$ è chiusa, $\type e:T$, $dom(\Gamma) \subseteq dom(s)$ e $\langle e,s \rangle \rightarrowtriangle \langle e',s' \rangle$ allora vale che $\type e:T'$, $e'$ è chiusa e $dom(\Gamma) \in dom(s')$.
+\end{thm}
 
 
 
@@ -440,5 +472,9 @@ mentre in modalità call-by-name: \[ \inference[CBN]{-}{(\lambda x.M)M_2 \righta
 \section{Dati e memoria variabile}
 
 \section{Sotto-tipaggio}
+
+\section{Equivalenze semantiche}
+
+\section{Concorrenza}
 
 \end{document}
