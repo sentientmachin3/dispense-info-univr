@@ -1,0 +1,739 @@
+\documentclass[a4paper]{article}
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{palatino}
+\usepackage{frontespizio}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage[left=1.5cm, right=1.5cm, top=3cm]{geometry}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{tikz}
+\usepackage{booktabs}
+\usetikzlibrary{patterns}
+\usetikzlibrary{shapes,positioning,calc}
+\usetikzlibrary{shapes.geometric, arrows}
+\usetikzlibrary{shapes.multipart}
+\usetikzlibrary{arrows.meta}
+\pgfdeclarelayer{background}
+\pgfsetlayers{background,main}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\hypersetup{
+	hidelinks, 
+	colorlinks = true,
+	linkcolor = black,
+}
+\usepackage{listings}
+\lstset{
+	language=C++,
+	basicstyle=\ttfamily ,%\normalfont
+	tabsize=4,
+	showstringspaces=false,
+	keywordstyle=\color{black}\bfseries,
+	morekeywords={b_transport, sc_module, SC_CTOR, SC_METHOD,SC_THREAD,SC_CTHREAD},
+}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{\nouppercase{\leftmark}}
+\rhead{\nouppercase{\rightmark}}
+\chead{}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+\usepackage{array}
+\usepackage{makecell}
+
+\renewcommand\theadalign{bc}
+\renewcommand\theadfont{\bfseries}
+\renewcommand\theadgape{\Gape[4pt]}
+\renewcommand\cellgape{\Gape[4pt]}
+
+
+\tikzstyle{rect} = [rectangle, 
+rounded corners, minimum width=1cm, minimum height=1cm,text centered, draw=black]
+
+\tikzset{
+	recta/.style={%
+		draw,%  
+		line width=.4pt,
+		rounded corners,                 
+		rectangle split,
+		rectangle split parts=2,
+		rectangle split,
+		rectangle split part fill={#1,none},
+		every text node part/.style={font=\bfseries},
+	} 
+}
+
+\newcommand{\tabb}[4]{
+	\node[recta=#2, align=left] (#3) at (#1) {\rotatebox{360}{#3}\nodepart{two}#4};
+	\begin{pgfonlayer}{background}
+		\fill[#2!30, rounded corners] (a.south west) rectangle (a.north east);
+	\end{pgfonlayer}
+}
+
+\title{Progettazione di Sistemi Embedded}
+\date{}
+
+\begin{document}
+	\begin{frontespizio}
+		\Universita{Verona}
+		\Dipartimento{Informatica}
+		\Scuola{Laurea Magistrale in Ingegneria e Scienze Informatiche}
+		\Titoletto{}
+		\Titolo{PSE}
+		\Sottotitolo{Progettazione di Sistemi Embedded\\
+			riassunto dei principali argomenti}
+		\Candidato[VR424987]{Danzi Matteo}
+		\Annoaccademico{2017/2018}
+		\NCandidato{Autore}
+	\end{frontespizio}
+
+	\tableofcontents
+	
+	\newpage
+	
+	\section{Sistemi Embedded - Introduzione}
+		\textbf{Definizione:} Sistema di Elaborazione specializzato, integrato in un dispositivo fisico in modo tale da controllarne le funzioni tramite un apposito programma SW dedicato.
+
+	\subsection{Storia}
+		\begin{itemize}
+			\item \textbf{Computer ('60 - '80)}: sistemi general purpose.
+			\item \textbf{Sistemi di controllo digitale ('80 - '90)}: dedicati al controllo e automazione.
+			\item \textbf{Sistemi distribuiti ('90 - '00)}: sistemi general purpose e/o dedicati che cooperano attraverso la rete.
+			\item \textbf{Sistemi Embedded ('00 -)}: sistemi distribuiti integrati in oggetti non computazionali e nell'ambiente fisico.
+			\item \textbf{Sistemi Ciber-fisici ('10 -)}: sistemi embedded integrati con processi fisici.
+		\end{itemize}
+	
+	\subsection{Smart System}
+		\textbf{Definizione:} Sistema Embedded, integrato in una componente nel silicio, che controlla il mondo fisico. Uno smart system ha le seguenti caratteristiche:
+		\begin{itemize}
+			\item Miniaturizzato - Autosufficiente (autonomo dal p.d.v. energetico)
+			\item Incorpora funzioni di sensore, attuatore, controllore
+			\item Descrive, analizza situazioni, prende decisioni in base ai dati raccolti.
+			\item Ha un comportamento predittivo e attuativo.
+		\end{itemize}
+		
+		\noindent
+		\textbf{Pretective Maintenance:} consiste nel riempire la catena di produzione con sensori che controllano e monitorano, cercando di prevenire e predirre guasti in base ai dati rilevati.
+		
+	\section{Come progettare}
+		Per progettare un S.E. non si seguono le stesse direttive e gli stessi principi con cui si progettano sistemi distribuiti general purpose. Ad esempio per quest'ultimi si tende a costruire CPU sempre più veloci, mentre nei sistemi embedded la CPU esiste come mezzo di implementazione di algoritmi di controllo che comunicano con sensori e attuatori. 
+		
+	\subsection{Vincoli di progettazione}
+		Durante la progettazione di S.E. ci sono i seguenti vincoli:
+		\begin{itemize}
+			\item Dimensioni: hand-held electronics (alla portata di mano).
+			\item Peso, potenza: utilizzo di batterie anziché corrente. 
+			\item Budget.
+			\item Resistenza del sistema alle condizioni avverse in cui deve operare.
+		\end{itemize}
+		Nella progettazione sono da unire le proprietà di \textbf{Calcolo, Controllo, Comunicazione}.
+		
+	\section{Modellazione di Sistemi Embedded}
+		I sistemi elettronici consistono di:
+		\begin{itemize}
+			\item Piattaforma HW: board di sviluppo;
+			\item Strati di applicazioni SW: in nessun contesto posso permettermi di progettare software da zero, devo riusare parti di software progettate da altri possibilmente opensource;
+			\item Interfacce;
+			\item Componenti analogiche: hano fatto la differenza tra la potenza di calcolo di smartphone della vecchia generazione e quelli di adesso che sono equipaggiati con componenti come accelerometro, riconoscimento impronte, giroscopio ecc.;
+			\item Sensori e trasduttori.
+		\end{itemize}
+		
+		\noindent
+		Principalmente si tende a spostare tutta l'elaborazione da analogica a digitale, inoltre si vuole una più ampia integrazione a livello di sistema per supportare l'approccio System-On-a-Chip (SOC). Questo approccio consiste nell'integrare in un chip tutto ciò che normalmente si vede in una board di un componente hardware. Il downside di questo approccio è rappresentato dal fatto che una volta effettuata l'integrazione sul chip non si può più cambiare il componente.
+		 
+	
+	\subsection{Sfide nella progettazione di sistemi embedded}
+		\begin{itemize}
+			\item Aumentare la complessità delle applicazioni anche in prodotti standard e di grandi dimensioni
+			\item Aumentare la complessità dei sistemi target
+		\end{itemize}
+		
+	\section{Co-design di Hardware/Software }
+		Consiste nella progettazione combinata della parte hardware e della parte software.
+		Gli obiettivi principali del codesign sono:
+		\begin{itemize}
+			\item Ottimizzazione del processo di progettazione: aumento della produttività
+			\item Ottimizzazione del design: aumento della qualità del prodotto
+		\end{itemize}
+		
+		\begin{center}
+			\begin{tikzpicture}
+				\node(a) at (0,0) {\textbf{co-design}};
+				\node(b) at (-.5,-2) {\textbf{HW}};  \node(c) at (.5,-2) {\textbf{SW}};
+				\draw (a.south) -- (0,-1.5) -- (b.north);  
+				\draw (0,-1.5) -- (c.north); 
+				\node(a1) at (3,0) {\textbf{classic design}};
+				\node(b1) at (2.5,-2) {\textbf{HW}};  \node(c1) at (3.5,-2) {\textbf{SW}};
+				\draw (a1.south) -- (2.5,-.5) -- (b1.north);  
+				\draw (a1.south) -- (3.5,-.5) -- (c1.north);
+			\end{tikzpicture}
+		\end{center}
+		\bigskip
+		
+		\noindent
+		I compiti del co-design sono:
+		\begin{itemize}
+			\item co-specification e co-modeling
+			\item co-verification
+			\item co-design process integration e ottimizzazione
+			\item design optimization e co-synthesis
+		\end{itemize}
+	
+	\subsection{Vantaggi del co-design}
+		\begin{itemize}
+			\item Permette di esplorare diverse alternative di progettazione nello spazio di progettazione architetturale.
+			\item Permette di adattare l'Hardware al Software e viceversa.
+			\item Riduce il tempo di progettazione del sistema.
+			\item Supporta una coerente specifica del progetto a livello del sistema.
+			\item Facilita il riuso delle parti HW e SW.
+			\item Permette di provvedere di un ambiente integrate per la sintesi e la validazione delle componenti HW e SW.
+		\end{itemize}
+		
+	\subsection{Co-design di sistemi embedded}
+		Co-progettazione, realizzare un sistema embedded portando avanti il più possibile in contemporanea la sua progettazione hw e sw.
+		
+		\noindent
+		Abbiamo un minor spreco di tempo, è più semplice passare da una descrizione hw a una sw (più facile scegliere cosa diventerà hw e cosa sw), rende più agevolato il riuso di parti sw e hw e rende possibile la co-validazione e la co-simulazione.
+		
+		\noindent
+		Progettazione dedicata di parti HW può comprendere:
+		\begin{itemize}
+			\item Diversi stili di progettazione: co-processori, embedded core, Application Specific Instruction Processor (ASIP).
+			\item Una scala di progettazione ampiamente variabile.
+		\end{itemize}
+		
+		\noindent
+		Progettazione dedicata di parti SW può comprendere:
+		\begin{itemize}
+			\item Sistemi operativi specializzati (special-purpose).
+			\item Dirver di dispositivi periferici.
+		\end{itemize}
+		
+		\begin{center}
+			\begin{tikzpicture}[scale=2, >=latex]
+				\draw (0,0) rectangle (4,-4);
+				\draw (2,-2) circle (2cm);
+				\node[anchor=south west] at (0,-4) {\textbf{Environment}};
+				\node at (2,-0.3) {\textbf{Embedded System}};
+				\node[rect, align=center] (a) at (2,-2.5) {\textbf{Hardwired Unit}\\\small Application-specific logic\\ Timers\\A/D and D/A Converters};
+				\node[rect, rotate=90] (b) at (0.5,-2) {\textbf{Sensors}};
+				\node[rect] (c) at (1.5,-1.25) {\textbf{Memory}};
+				\node[rect] (d) at (2.5,-1.25) {\textbf{ISP}};
+				\node[rect, rotate=90] (e) at (3.5,-2) {\textbf{Actuators}};
+				
+				\draw[->] ($ (a.east) +(0,-0.25) $) -- +(0.25,0)  -- (e.west); 
+				\draw[->] (b.west) -- ($ (b.west) +(0,-0.25) $) -- ($ (a.west) +(0,-0.15) $);
+				\draw[->] ($ (a.north) +(-0.35,0) $) -- ($ (c.south) +(.1,0) $);
+				\draw[->] ($ (c.south) +(-0.15,0) $) -- ($ (a.north) +(-0.65,0) $);
+				\draw[->] ($ (a.north) +(0.65,0) $) -- ($ (d.south) +(.1,0) $);
+				\draw[->] ($ (d.south) +(-0.1,0) $) -- ($ (a.north) +(0.45,0) $);
+				\draw[->] ($ (c.east) +(0,0.15) $) -- ($ (d.west) +(0,0.15) $);
+				\draw[->] ($ (d.west) +(0,-0.15) $) -- ($ (c.east) +(0,-0.15) $);
+				\draw[->] (0,-2) -- (b.north);
+				\draw[->] (e.south) -- (4,-2);
+			\end{tikzpicture}
+		\end{center}
+		
+	\subsection{Array-based design (design basto su array)}
+		ci sono due tipi di dispositivi che si possono progettare con questa tecnica di progettazione:
+		\begin{itemize}
+			\item \textbf{MPGA}: Pre-Diffused Array o più comunemente Mask Programmable Gate Array.
+			\item \textbf{FPGA}: Pre-wired Array o più comunemente Field Programmable Gate Array. Sono dispositivi HW (circuito integrato digitale) generici che possono essere programmati con SW dedicato/specifico.
+		\end{itemize}
+		
+	\subsection{Flusso di co-progettazione}
+		\begin{enumerate}
+			\item Modellazione, validazione e sintesi: simulazione a livello di sistema.
+			\item Modellazione omogenea:
+			\begin{enumerate}
+				\item Partizionamento HW/SW
+				\item Spostamento HW/SW o SW/HW
+			\end{enumerate}
+			\item Modellazione eterogenea: implementazione diretta e reindirizzamento
+			\item Co-sintesi
+			\begin{enumerate}[resume]
+				\item Sintesi HW e dell'interfaccia
+				\item Compilazione del SW e generazione del codice
+			\end{enumerate}
+			\item Co-simulazione
+		\end{enumerate}
+		
+		\begin{center}
+			\begin{tikzpicture}[>=latex]
+				\node[rect] (a) at (0,0) {Definizione dei requisiti};
+				\node[rect] (b) at (0,-1.5) {Specifica};
+				\node[rect] (c) at (0,-3) {Sviluppo dell'architettura del sistema};
+				\node[rect,align=left] (d) at (-6,-6) {\textbf{Sviluppo SW}\\applicaz. SW\\compilatori\\sist. operativo};
+				\node[rect,align=left] (e) at (0,-6) {\textbf{Progettaz interfaccia}\\Drivers SW del disp.\\sintesi dell'interfaccia HW};
+				\node[rect,align=left] (f) at (6.5,-6) {\textbf{Progettaz HW}\\Progettaz. arch. HW\\sintesi HW\\progettaz. fisica};
+				\node[rect] (g) at (0,-8) {Integrazione e testing};
+				\node (A) [cylinder, shape border rotate=90, draw,minimum height=1cm,minimum width=.7cm] at (6.5,-9)
+				{};
+				\node[yshift=-.5cm] at (A.south) {reused components};
+				
+				\draw[->] (a.south) -- (b.north); \draw[->] (b.south) -- (c.north);
+				\draw[->] (c.south) -- (d.north); \draw[->] (c.south) -- (e.north);
+				\draw[->] (c.south) -- (f.north); \draw[->] (d.south) -- (g.west);
+				\draw[->] (e.south) -- (g.north); \draw[->] (f.south) -- (g.east);
+				\draw[->] (g.south) -- +(0,-.5) -- (A.west);
+				\draw[->] ($ (A.north) +(0.,.4) $) -- +(0,.4); \draw[->] ($ (A.north) +(-.4,.2) $) -- +(-.4,.4);
+			\end{tikzpicture}
+		\end{center}
+		
+	\section{Requisiti per un sistema embedded}
+	Un sistema embedded deve essere:
+	\begin{itemize}
+		\item \textbf{REATTIVO}: Non fermarsi mai ed essere sempre pronto a rispondere a segnali provenienti dall'ambiente esterno.
+		\item \textbf{REAL TIME}: Rispettare vincoli temporali (HRT, SRT, FRT).
+	\end{itemize}
+	
+	
+	\section{Time to market}
+		Tempo che intercorre da quando un prodotto viene ideato a quando viene commercializzato, messo sul mercato per la prima volta.
+
+
+	\section{Platform-based design (Progettazione basata sulla piattaforma)}
+		La filosofia platform-based consiste nel progettare architetture HW (piattaforme) stabili, basate su microprocessore, che possano essere facilmente espanse a livello di componenti HW e che sono configurabili a livello SW; quindi sono piattaforme che nonostante abbiano componenti hw ben definite rimangono "a scopo generico" per la loro facile espansibilità, sia HW che SW.
+
+		
+		\begin{itemize}
+			\item Dispositivi con gradi di configurabilità (? SW ?)
+			\item Posso usare lo stesso oggetto per più applicazioni 
+			\item ASIC
+			\item FPGA 
+		\end{itemize}
+	
+	Concetti principali a Livello di Sistema:
+	
+	Concorrenza, Gerarchia dei moduli, Comunicazione tra sottosistemi, Sincronizzazione.
+	
+	\section{SystemC}
+		SystemC è una libreria che estende il linguaggio di programmazione C++, linguaggio strettamente SW.
+		\bigskip
+		
+		\noindent
+		Permette di fornire una descrizione del sistema a diversi livelli di astrazione: un livello più vicino all'HW, in cui si definiscono i dettagli implementativi come porte, segnali e interfacce (RTL) e un livello in cui si definisce uno standard per la comunicazione tra i moduli e ci si concentra sulla funzionalità (TLM).
+		\bigskip
+		
+		\noindent
+		Tali astrazioni rendono possibile fare co-design, cioè una co-progettazione del sistema in cui si cerca di portare avanti il più possibile in parallelo la progettazione hw e quella sw; il co-design diminuisce il tempo di progettazione, rende più facile il passaggio da una componente hw a una sw (quindi la scelta di quale componente implementare come hw e quale come sw) e permette una co-simulazione e una co-validazione.
+	\begin{itemize}
+		\item Permette di fare co-design.
+		\item Diversi livelli di astrazione (RTL-TLM).
+		\item Linguaggio di definizione dell'hardware (HDL).
+		\item Fornisce una descrizione hw a livello RT (RTL), dove ho un controllo sui segnali, sui registri e sugli operatori utilizzati. Descrivo un sistema con una FSMD.
+		\item Le sue caratteristiche permettono di gestire gli aspetti più importanti per un sistema embedded -> gerarchizzazione dei moduli, concorrenza (processi sync/async), comunicazione (porte/segnali), timing (clock/fasi/tempo), reattività (eventi), tipi di dato hw (oltre ai tipi c++), kernel di simulazione, debug (c++).
+		\item Ha introdotto una standardizzazione del modello transazionale (modo in cui si definiscono le transazioni tra moduli) attraverso il livello di astrazione TLM.
+		\item Riuso di moduli/componenti già pronti messi in comunicazione grazie allo standard per le transazioni definito da SystemC.
+	\end{itemize}
+	
+	\section{SystemC RTL}
+		Con SystemC RTL (Register Transfer Level) è possibile descrivere il funzionamento di un circuito digitale in termini di segnali, elementi di memoria dei segnali (registri) e di operazioni logiche tra segnali.
+		
+		\subsection{Moduli}
+			I moduli sono i blocchi di costruzione di base per partizionare un design. Sono classi C++, permettono di partizionare sistemi complessi in componenti più piccole. Nascondono la rappresentazione dei dati interni, utilizzano interfacce. Contengono porte, segnali, dati locali, altri moduli, processi, costruttori e distruttori. Segue un esempio:
+		
+			\begin{lstlisting}[mathescape, frame=tb, caption={module}]
+sc_module(module_name)
+{
+	// dichiarazione di porte
+	// dichiarazione di segnali
+	// costruttore del modulo: SC_CTOR
+	//		SC_METHOD
+	// creazione di sottomoduli e sensitivity list
+	// inizializzazione dei segnali
+}
+			\end{lstlisting}
+	
+		\noindent
+		Il costruttore del modulo:
+		\begin{itemize}
+			\item Inizializza e dichiara tutti i processi contenuti nel modulo e le regole per attivarli
+			\item Inizializza le variabili ai valori di default oppure a valori definiti dall'utente.
+		\end{itemize}
+		
+		\begin{lstlisting}[mathescape, frame=tb, caption={full adder constructor}]
+SC_CTOR( FullAdder )
+{
+	SC_METHOD( doIt );
+		sensitive << A;
+		sensitive << B;
+}
+		\end{lstlisting}
+		
+		\subsection{Processi}
+			I processi sono funzioni he sono identificate dal kernel di SystemC:
+			\begin{itemize}
+				\item I processi sono molto simili a funzioni C++ o metodi
+				\item I processi implementano le funzionalità dei moduli
+				\item Sono chiamate se un segnale della sensitivity list cambia il suo valore.
+			\end{itemize}
+			
+			\noindent
+			I processi possono essere \textbf{Metodi}, \textbf{Threads} o \textbf{CThreads (deprecated)}.
+			
+			\begin{multicols}{2}
+				\begin{itemize}
+				\item \textbf{Metodi}: 
+				\begin{itemize}
+					\item Quando attivati, vengono eseguiti e ritornano. 
+					\item \lstinline|SC_METHOD(process_name)|.
+				\end{itemize}
+				\item \textbf{Threads}: 
+				\begin{itemize}
+					\item Possono essere sospese a riattivate. 
+					\item La funzione \lstinline|wait()| sospende.
+					\item Un evento sulla sensitivity list riattiva.
+					\item \lstinline|SC_THREAD(process_name)|
+				\end{itemize}
+				\columnbreak
+				\item \textbf{CThreads (DEPRECATED)}:
+				\begin{itemize}
+					\item Sono attivate all'incremento del clock
+					\item \lstinline[basicstyle=\small\ttfamily]|SC_CTHREAD(process_name, clock_value)|
+				\end{itemize}
+			\end{itemize}
+			\end{multicols}
+			
+			\begin{table}
+				\begin{tabular}{cccc}
+					\toprule
+					\textbf{type} & \lstinline|SC_METHOD| & \lstinline|SC_THREAD| & \lstinline|SC_CHTREAD| \\
+					\midrule
+					Attivaz. all'exec. & Evento & Evento & Incremento clock \\
+					Sosp. dall'exec. & No & Sì & Sì \\
+					Loop infinito & No & Sì & Sì\\
+					sosp/riattiv da & n.d. & \lstinline|wait()| &  \lstinline|wait()| o \lstinline|until()| \\
+					\makecell{Costruttore e\\ sensitivity def} & \makecell{\lstinline|SC_METHOD(call_back);|\\
+						\lstinline|sensitive(signals);|\\
+						\lstinline|sensitive_pos(signals);|\\
+						\lstinline|sensitive_neg(signals);|} &
+						\makecell{\lstinline|SC_THREAD(call_back);|\\
+							\lstinline|sensitive(signals);|\\
+							\lstinline|sensitive_pos(signals);|\\
+							\lstinline|sensitive_neg(signals);|} & \lstinline|SC_CTHREAD(...)| \\
+					\bottomrule
+				\end{tabular}
+				\caption{Tabella riassuntiva}
+			\end{table}
+			
+	
+	\section{SystemC TLM}
+		SystemC TLM (Transaction Level Modeling) è una libreria del C++ che permette di rappresentare i principali componenti architetturali di piattaforme hardware. 
+		
+		È uno standard per la comunicazione tra i moduli (sia HW che SW) di un sistema, attraverso transazioni con caratteristiche ben definite. L'aver definito uno standard per il modo in cui si interfacciano diverse componenti ha facilitato il riuso dei componenti, cioè la possibilità di integrare facilmente nel proprio sistema moduli provenienti da fonti esterne e di interfacciarli tra loro semplicemente conoscendo le specifiche del protocollo di comunicazione.
+		
+		Il riuso dei componenti porta a grandi vantaggi anche nel cercare di diminuire il TTM, infatti posso risparmiare del tempo utilizzando componenti già implementate, di cui conosco le prestazioni e sono sicuro del loro funzionamento, piuttosto che ricrearle da zero e cercare di interfacciarle col mio sistema ad un livello più basso di astrazione.
+		
+		(Con TLM è inoltre possibile fornire velocemente una descrizione SW del comportamento, in modo da poter proporre ad un eventuale cliente un primo prototipo del sistema con tempistiche brevi.)
+		
+		\begin{itemize}
+			\item Permette una esplorazione architetturale e modellazione delle performance.
+			\item Consente l'esecuzione su modelli virtuali di piattaforme hardware.
+			\item È disponibile prima dell'RTL.
+			\item Viene simulato più velocemente dell'RTL.
+			\item Consente di modellare sistemi a livello transazionale.
+		\end{itemize}
+		
+		\subsection{Transazione TLM}
+			TLM si basa sul concetto di \textbf{transazione} cioè il trasferimento di dati tra moduli che comprende operazioni di scrittura/lettura. 
+			
+			\noindent
+			La transazione è rappresentata da un oggetto \textbf{payload}: viene scambiato con chiamate primitive, contiene sia dati che informazioni di controllo.
+			
+			\noindent
+			Gli attori della transazione sono:
+			\begin{itemize}
+				\item \textbf{Initiator}: fa partire la transazione tramite socket
+				\begin{itemize}
+					\item Crea un oggetto transazione.
+					\item Chiama o si connette con il metodo target per inviare il payload.
+				\end{itemize}
+				\item \textbf{Target}: agisce come destinazione finale della transazione. Elabora il payload.
+			\end{itemize}
+	
+			\noindent
+			È un tipico comportamento master/slave:
+			\bigskip
+			
+			\begin{center}
+				\begin{tikzpicture}[>=latex]
+					\node[rect] (a) {Initiator};
+					\node[rect] (b) at (4,0) {Target};
+					\draw[<->] (a.east) -- (b.west) node[midway, below] {payload};
+					\draw[->, ultra thick] ($ (a.east) +(.5,.5) $) -- ($ (b.west) +(-.5,.5) $);
+				\end{tikzpicture}
+			\end{center}
+			
+		\subsection{Cammini di transazione}
+			Il payload può seguire due diversi path:
+			\begin{itemize}
+				\item \textbf{Forward Path}: percorso di chiamata dall'initiator nella direzione del target. Il master chiama lo slave.
+				\item \textbf{Backward Path}: percorso di chiamata attraverso cui il target ritorna indietro il payload nella direzione dell'initiator. Lo slave risponde al master.
+			\end{itemize}
+		
+			\begin{center}
+				\begin{tikzpicture}[>=latex]
+				\node[rect] (a) {Initiator};
+				\node[rect] (b) at (4,0) {Target};
+				\draw[->, ultra thick] ($ (a.east) +(.2,0) $) -- +(0,.5) -- node[above] {forward path} ($ (b.west) +(-.2,.5) $)   -- ($ (b.west) -(.2,0) $);
+				\draw[->, ultra thick] ($ (b.west) -(.2,0) $) -- ($ (b.west) +(-.2,-.5) $) -- node[below] {backward path} ($ (a.east) +(.2,-.5) $) -- +(0,.5);
+				\end{tikzpicture}
+			\end{center}
+			
+		\subsection{Stili di programmazione TLM}
+			In TLM 2.0 non ci sono livelli di astrazione standardizzati, come avveniva in TLM 1.0:
+			\begin{itemize}
+				\item Program View (PV)
+				\item Program View with Time (PVT)
+				\item Cycle Accurate (CA)
+			\end{itemize}
+			Questi livelli possono essere usati per esprimere diverse astrazioni dello stesso sistema.
+			
+			\noindent
+			In TLM 2.0 si è deeciso di standardizzare come il tempo e i dati sono collegati:
+			\begin{itemize}
+				\item \textbf{Untimed (UT)}: senza tempo. 
+					\begin{itemize}
+						\item Interfaccia bloccante. 
+						\item Punti di sincronizzazione predefiniti.
+					\end{itemize}
+				\item \textbf{Loosely Timed (LT)}:
+					\begin{itemize}
+						\item Interfaccia bloccante.
+						\item Due punti di sincronizzazione (invocazione e return).
+						\item Temporal Decoupling
+					\end{itemize}
+				\item \textbf{Approximately Timed (AT4)}: si dettaglia maggiormente il sincronismo tra Initiator e Target
+					\begin{itemize}
+						\item Interfaccia transport non bloccante
+						\item Annotazione del tempo e fasi multiple durante il tempo di vita della transazione.
+						\item Protocollo 4-handshaking: inizio/fine richiesta, inizio/fine risposta.
+					\end{itemize}
+			\end{itemize}
+			
+			\textbf{UT} è il livello più alto, \textbf{AT} è il livello più basso. 
+			
+			La comunicazione tra master e slave può essere \textit{bloccante} (master rimane in attesa finché lo slave non ha finito i calcoli) o \textit{non bloccante} (il master passa i dati allo slave ma può andare comunque avanti), in questo modo si può decidere il livello di parallelismo del software. Possono esserci componenti di interconnessione tra initiator e target, e servono per modellare bus astratti.
+			
+			\noindent
+			Se aumento i punti di sincronizzazione (arrivando a sincronizzare ogni ciclo di clock) posso arrivare ad avere una sincronizzazione cycle accurate. 
+			
+		\subsection*{Temporal decoupling}
+		Initiator e target quando si sono de-sincronizzati possono andare avanti con tempi diversi e sono poi riallineati nel momento in cui si sincronizzano (comunicazioni non bloccanti), il più veloce aspetterà il più lento e si sincronizza.  Il T.D. permette ai due moduli di evolvere insieme senza sincronizzarsi, rendendo più veloce la simulazione.
+		
+		\subsection{Interfaccia bloccante}
+			Questa interfaccia è supportata da UT e LT. L'initiator completa la transazione con il target in una chiamata a funzione. Ci sono 2 punti di sincronizzazione: l'invocazione e il return. Utilizza solamente il \textbf{forward path}.
+			
+			\begin{center}
+				\begin{tikzpicture}[>=latex]
+					\draw (-1.5,0) rectangle (8,-6);
+					\node[anchor=south east] at (8,0) {Initiator};
+					\draw (10,0) rectangle (16,-6);
+					\node[anchor=south west] at (10,0) {Target};
+					
+					\tabb{3.5,-2.5}{white}{true}{Impostazione dei dati da inviare:\\ payload e tempo;\\\lstinline|b_transport(payload, time);|};
+					\tabb{3.5,-4.5}{white}{socket-event}{elaborazione dati ricevuti;};
+					
+					\node[rect] (b) at (13,-3) {
+						\begin{lstlisting}[basicstyle=\small\ttfamily]
+b_transport(payload, time) {
+	riceve payload;
+	setta il tempo;
+	esegue funz;
+	setta il payload
+	per ritornare i dati;
+}
+						\end{lstlisting}};
+					\node[draw, circle] (A) at (-.5,-2) {A};
+					\node[draw, circle] (B) at (7.5,-4) {B};
+					\node[draw, circle] (C) at (-.5,-4.5) {C};
+					
+					\draw[<->, ultra thick] (true.east) -- (b.west) node[midway, above] {socket};
+					\draw[->, bend left] (A.east) to (true.west);
+					\draw[->, bend left] (true.east) to (B.north);
+					\draw[->, bend left] (B.south) to (socket-event.east);
+					\draw[->] (socket-event.west) -- (C.east);
+				\end{tikzpicture}
+			\end{center}
+			
+	\subsection{Interfaccia non bloccante}
+		Questa interfaccia è supportata da AT4. Permette di dettagliare la sequenza di interazioni tra l'initiator e il target. È formata da due fasi:
+		\begin{enumerate}
+			\item Inizio/fine richiesta
+			\item Inizio/fine risposta.
+		\end{enumerate}
+		Utilizza sia il forward che il backward path. Utilizza il classico protocollo di handshaking a 4 fasi.
+			
+	\subsection{Transactor TLM: (transattore)}
+	
+	\begin{itemize}
+		\item Modulo systemC che permette di far comunicare modelli a diversi livelli di astrazione (Es. RTL-TLM).
+		\item Utile perché posso raffinare singolarmente prima i componenti e poi farli comunicare col transattore.
+		\item Diversi livelli di astrazione: PV, PVT, AC.
+		\item In PVT nel momento in cui devo temporizzare (non rispettando precisamente i cicli di clock) la comunicazione devo passare attraverso un bus (sia per moduli HW che SW) come AMBA (adottato da ARM).
+		\item In PVT posso già decidere cosa far diventare HW (moduli che impiegano più tempo per essere calcolati) e cosa SW, e analizzare il traffico sul bus per unire per esempio moduli che hanno un alto traffico tra loro. 
+		\item In CA ho sempre bisogno di un bus ma che rispetti esattamente i cicli di clock.
+	\end{itemize}
+	
+	
+	\subsection{Standard TLM 2.0}
+	
+	\begin{itemize}
+		\item Non ha senso standardizzare i livelli di astrazione. Si è passati da livelli di astrazione diversi a stili di codifica (LT e AT), lasciando al progettista la possibilità di decidere che tipo di flusso di progettazione seguire.
+		\item La comunicazione avviene con un campo (payload) ben definito e standardizzato.
+		\item TLM standardizza la comunicazione e non la funzionalità.
+		\item \textbf{Initiator} fa partire la transazione, \textbf{Target} riceve la transazione (tramite socket)
+		\item I cammini di transazione sono forward path e backward path
+		\item Coding style NON sono specifici livelli di astrazione.
+		\item Si possono definire coding style propri, ma potrei non riuscire a far comunicare moduli.
+		\item In ogni transazione LT ci sono 2 punti di sincronizzazione (inizio e fine) e non ci sono molte informazioni sugli aspetti temporali.
+		\item I processi hanno assegnati dei quanti di simulazione.
+		\item Si spezza la sincronizzazione in più fasi, avendo più punti di sincronismo
+		\item Per avere un modello UT prendo un modello LT e metto il tempo a 0.
+		\item Per LT e AT4 si definiscono delle interfacce: bloccante (UT e LT) e non bloccante (AT4).
+		\item Un altra interfaccia è la \textbf{DMI} usata per accedere ad aree di memoria condivisa tra Initiator e Target e modificarne i dati permette di far comunicare codici SystemC con codici di altri linguaggi (co-simulazione).
+	\end{itemize}
+
+	\section{SystemC AMS}
+		È una estensione del SystemC, permette la modellazione System-lever per sistemi con segnali analogici misti (Analog Mixed-Signal Systems). 
+		
+		\noindent
+		Metodologie e casi d'uso per sistemi con segnali mixed:
+		\begin{itemize}
+			\item Specifiche eseguibili: verificare la correttezza dei requisiti del sistema utilizzando la simulazione.
+			\item Prototipizzazione virtuale: modello ad alto livello (untimed/timed) dell'architettura hardware.
+			\item Esplorazione di architetture: valutazione del mapping tra il comportamento e l'architettura di sistema.
+			\item Validazione euristica integrata: verificare la correttezza delle componenti integrate.
+		\end{itemize}
+		
+		\subsection{Tempo discreto} 
+		Nelle descrizioni a tempo discreto:
+		\begin{itemize}
+			\item La funzione esiste solo in punti ben precisi nel tempo, negli altri non esiste e non posso valutarla
+			è come se scrivessi una procedura. I segnali e le quantità fisiche sono definiti in punti di tempo discreti. Si assumono costanti in mezzo a questi punti.
+			\item Vengono usate per rappresentare approssimazioni di rappresentazioni a tempo continuo, 
+			signal processing: rappresentazione di funzioni di elaborazioni di segnali ( tipo filtri )
+		\end{itemize}
+		
+		
+		\subsection{Tempo continuo}
+		Nelle descrizioni a tempo continuo:
+		\begin{itemize}
+			\item La grandezza fisica che descrivo esiste in qualsiasi punto nel tempo
+			come una equazione differenziale. I segnali e le quantità fisiche sono descritti nel come funzioni nei reali. Il tempo è considerato come un valore continuo.
+			\item Si comportano come equazioni differenziali algebriche (DAE) o equazioni differenziali ordinarie (ODE). Vengono risolte da un solver lineare o non-lineare.
+			\item Adatto per descrivere comportamenti fisici di sistemi dinamici,
+		\end{itemize}
+		
+		\subsection{Descrizioni conservative}
+		Nelle descrizioni conservative:
+		\begin{itemize}
+			\item Il comportamento 
+			\item È tutto implementato in blocchetti di base che noi colleghiamo e che garantiscono in modo automatico che le leggi di conservazione di Kirchhoff vengano rispettate.
+			\item ho vincoli sulla conservazione dell'energia
+			le correnti d'entrata uguali a quelle di uscita
+			\item Ci sono grandi quantità equazioni da risolvere, è molto dispendioso dal p.d.v. computazionale.
+		\end{itemize}
+		
+		\subsection{Descrizioni non conservative}
+		Nelle descrizioni conservative:
+		\begin{itemize}
+			\item Il comportamento è espresso con flussi di segnali di tempo continuo o variabili. Vengono applicate funzioni di processing (filtering e integrazione).
+			\item Può essere descritta la dinamica non lineare
+			\item Non è supportata l'interazione tra componenti AMS.
+			\item Le relazioni tra quantità non rispettano le leggi di conservazione dell'energia di Kirkhhoff.
+		\end{itemize}
+		
+		
+		\subsection{Formalismi di modellazione}
+			In SystemC AMS ci sono i seguenti formalismi di modellazione:
+			\begin{itemize}
+				\item \textbf{Time Data Flow (TDF)}: modelli a eventi discreti.
+				\begin{itemize}
+					\item Tempo discreto, modellazione non conservativa
+					\item Scheduler statico, basato su dataflow
+				\end{itemize}
+				\item \textbf{Linear Signal Flow (LSF)}: modelli a eventi continui.
+				\begin{itemize}
+					\item Tempo continuo, modellazione non conservativa
+					\item Basato su DAE e ODE, rappresentate da connessioni di primitive per segnali reali nel dominio del tempo.
+				\end{itemize}
+				\item \textbf{Electric Linear Network (ELN)}: per modellazione di reti elettriche.
+				\begin{itemize}
+					\item Tempo continuo, modellazione conservativa
+					\item Primitive per reti lineari (resistenze, condensatori)
+					\item Relazioni continue tra voltaggio e corrente.
+				\end{itemize}
+			\end{itemize}
+			
+			\begin{table}[h]
+				\begin{tabular}{ccc}
+					\toprule
+									 & Discreto (Scheduler Statico) & Continuo (Scheduler Dinamico)\\
+					\midrule 
+					Conservativo 	 & $ \emptyset $ & \textbf{ELN}\\ 
+					Non-Conservativo & \textbf{TDF} & \textbf{LSF} \\
+					\bottomrule
+				\end{tabular}
+			\end{table}
+			
+		\subsection{Time Data Flow (TDF)}
+			Formalismo basato su Synchronous Data Flow (SDF), senza tempo, modello a eventi discreti in tempo discreto. Ogni modulo del modello a eventi discreti contiene un metodo C++:
+			\begin{itemize}
+				\item Elabora una funzione matematica, a seconda degli input. Può dipendere anche dai suoi stati interni.
+				\item Composizione di moduli
+			\end{itemize}
+			
+			\noindent
+			Esempio di composizione di funzioni: $ f_C ( f_B (f_A) ) $
+			
+			\bigskip
+			
+			\begin{center}
+				\begin{tikzpicture}[>=latex]
+				\draw (-1,1) rectangle (7,-1);
+				\node[anchor=south west] at (-1,1) {Cluster TDF};
+				\node[rect] (A) {A};
+				\node[rect] (B) at (3,0) {B};
+				\node[rect] (C) at (6,0) {C};
+				\draw[->, ultra thick] (A.east) -- (B.west);
+				\draw[->, ultra thick] (B.east) -- (C.west);
+				\filldraw[fill=black, draw=black] ($ (A.east) +(-.1,.1) $) rectangle ($ (A.east) +(.1,-.1) $);
+				\filldraw[fill=black, draw=black] ($ (B.east) +(-.1,.1) $) rectangle ($ (B.east) +(.1,-.1) $);
+				\filldraw[fill=black, draw=black] ($ (B.west) +(-.1,.1) $) rectangle ($ (B.west) +(.1,-.1) $);
+				\filldraw[fill=black, draw=black] ($ (C.west) +(-.1,.1) $) rectangle ($ (C.west) +(.1,-.1) $);
+				
+				\node[yshift=-1cm] (mod) at (A.south) {Modulo TDF};
+				\node[yshift=-1cm] (sig) at (B.south) {Segnale TDF};
+				\node[xshift=-.4cm,yshift=-1cm] (port) at (C.south) {Porta TDF};
+				
+				\draw (mod.north) -- (A.south);
+				\draw (sig.north) -- ($ (B.west) +(2,0) $);
+				\draw (port.north) -- (C.west);
+				
+			\end{tikzpicture}
+			\end{center}
+			
+			Data una funzione, questa viene eseguita se e solo se ci sono abbastanza sample disponibili nella porta di input. C'è un numero fissato di sample consumati e prodotti. Ogni sample ha il suo time stamp. L'intervallo fissato è chiamato time step.
+			
+			\begin{itemize}
+				\item Time step (modulo)
+				\item Time step (porta)
+				\item Rate (porta)
+				\item Delay (porta)
+				\item Time offset (porta specializzata)
+			\end{itemize}
+			
+			Nello scheduling i cicli possono essere fonte di problemi. Ogni loop deve presentare minimo una porta di delay. Le porte di delay possono portare all'inconsistenza, quindi bisogna specificare un valore iniziale.
+			
+			\textbf{TDF non supporta la gerarchia}
+\end{document}
