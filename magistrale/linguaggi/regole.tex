@@ -11,10 +11,9 @@
 \usepackage[left=1.5cm, right=1.5cm, top=4cm]{geometry}
 \usepackage{listing}
 \usepackage{stmaryrd}
-\usepackage{mathtools}
 
 \pagenumbering{gobble}
-\setlength{\droptitle}{-5.5cm}
+\setlength{\droptitle}{-5cm}
 \date{}
 \newcommand{\infer}[4]{\inference[\textbf{#1}]{#2}{#3}#4 }
 \newcommand{\brule}[2]{\langle #1 \rangle \Downarrow #2}
@@ -41,6 +40,7 @@
 		&\infer{B-If.T}{\brule{B,s}{false} \quad \brule{C_2,s}{s'}}{\brule{\ifthenelse{B}{C_1}{C_2},s}{\langle r, s\rangle}}{} \\ \\
 	\end{align*}
 \section*{Semantica small-step}
+%% ADJUST WIDTH
 	\begin{align*}
 		&\infer{S-Left}{E_1 \goesto E_1' }{E_1 + E_2 \goesto E_1' + E_2}{} 
 		&\infer{S-N.Right}{E_2 \goesto E_2'}{n_1 + E_2 \goesto n_1 + E_2'}{} \\ \\

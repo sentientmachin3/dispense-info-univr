@@ -316,7 +316,28 @@
 	d &\text{se } x = y \\
 	\rho(y) &\text{altrimenti}
 	\end{cases} \]
+	
+	\subsubsection{Semantica come punto fisso}
+	
+	Una computazione su un control flow graph è un percorso $\pi = k_1, ..., k_n$ sui suoi archi, ognuno dei quali è composto da un nodo iniziale, un'etichetta e un nodo finale $\langle u_i, lab, u_{i+1} \rangle$, con $u_i \in Edges$. Ogni trasformazione di stato è quindi la composizione degli effetti degli archi inclusi in $\pi$:
+	\[ \llbracket \pi \rrbracket = \llbracket  k_1 \rrbracket \circ \dots \circ \llbracket k_n \rrbracket \]
+	
+	\begin{definit}[Fix-point semantics]
+		Una semantica come fix-point è specificata da una coppia $\langle D,F \rangle$ dove: \begin{itemize}
+		\item il poset $\langle D, \leq_D \rangle $ è il dominio semantico; 
+		\item $F: D \to D $ funzione totale, monotona e iterabile, è il trasformatore semantico.
+	\end{itemize}
+	\end{definit}
 
+	La semantica è definita attraverso sistemi di transizione.
+	\begin{definit}[Sistema di transizione]
+		Un sistema di transizione è una coppia $\langle \Sigma, \tau \rangle$ dove: \begin{itemize}
+			\item $\Sigma$ è un insieme non vuoto di stati;
+			\item $\tau \subseteq \Sigma \times \Sigma$ è la relazione di transizione.
+		\end{itemize}
+	\end{definit}
+
+	\section{Analisi statica}
 	
 	
 	
