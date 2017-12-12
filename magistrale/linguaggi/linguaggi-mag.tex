@@ -431,7 +431,7 @@ mentre in modalità call-by-name: \begin{align*}
 \end{align*}
 
 Introduciamo inoltre una nuova semantica che raccoglie le due precedenti: \begin{align*}
-	\inference[BETA-app1]{\langle e_1, s \rangle \rightarrowtriangle \langle e_1', s' \rangle}{\langle e_1e_2,s \rangle \rightarrowtriangle \langle e_1'e_2, s' \rangle} \quad &\inference[BETA-app2]{\langle e_2,s \rangle \rightarrowtriangle \langle e_2',s' \rangle}{\langle e_1e_2,s \rangle \rightarrowtriangle \langle e_1e_2',s' \rangle} \\
+	\inference[BETA-app1]{\langle e_1, s \rangle \rightarrowtriangle \langle e_1', s' \rangle}{\langle e_1e_2,s \rangle \rightarrowtriangle \langle e_1'e_2, s' \rangle} \quad &\inference[BETA-app2]{\langle e_2,s \rangle \rightarrowtriangle \langle e_2',s' \rangle}{\langle e_1e_2,s \rangle \rightarrowtriangle \langle e_1e_2',s' \rangle} \\ \\
 	\inference[BETA-fn1]{-}{\langle (\text{fn }x:T \Rightarrow e)e_2, s \rangle \rightarrowtriangle \langle \subs{e}{e_2}{x},s \rangle} \quad &\inference[BETA-fn2]{-}{\langle \text{fn }x:T \Rightarrow e, s \rangle \rightarrowtriangle \langle \text{fn }x:T \Rightarrow e', s \rangle}
 \end{align*}
 
@@ -456,9 +456,21 @@ Qui di seguito definiamo alcune proprietà del tipaggio:
 	Se $e$ è chiusa, $\type e:T$, $dom(\Gamma) \subseteq dom(s)$ e $\langle e,s \rangle \rightarrowtriangle \langle e',s' \rangle$ allora vale che $\type e:T'$, $e'$ è chiusa e $dom(\Gamma) \in dom(s')$.
 \end{thm}
 
+\begin{thm}[Normalization]
+	Nei sottolinguaggi senza cicli while o operazioni sulla memoria, se vale che $\type e:T$ e $e$ è chiusa, allora esiste un valore $v$ tale che, per ogni memoria $s$, \[ \langle e,s \rangle \rightarrowtriangle^\ast \langle v,s \rangle \]
+\end{thm}
 
+\subsection{Dichiarazioni locali}
+Le dichiarazioni locali sono usate per aumentare la leggibilità del codice e consistono nel nominare una certa espressione restringendo al contempo il suo scope. Il costrutto da introdurre è \lstinline|let |$y:$\lstinline|int| $=1+2$ \lstinline| in |  $y \geq y+4$
 
+La valutazione procede alla maniera seguente:\begin{itemize}
+	\item si valuta $1+2$ a $3$;
+	\item si valuta $y \geq y+4$ sostituendo a $y$ il valore $3$;
+\end{itemize}
 
+Estendiamo la sintassi con \[ e::=\ \dots |\ \text{let } x:T = e_1\text{ in } e_2  \] e diamo la relativa regola di tipaggio \[ \inference[(let)]{\type e_1:T \quad \Gamma,x:T \vdash e_2:T'}{\type let\ x:T = e_1\ in\ e_2:T'} \]
+
+Dal momento che $x$ è una variabile locale, $\Gamma$ non contiene una entry per $x$, quindi potrebbe essere necessario ricorrere ad alpha-conversion.
 
 
 
