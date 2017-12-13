@@ -242,7 +242,7 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 			in uscita} è invece una equazione algebrica, scalare o vettoriale a seconda del numero
 			delle variabili in uscita.
 			La rappresentazione schematica che si può dare di un modello in VS è pertanto
-			quella riportata in Fig. 2.5.
+			quella riportata in \hyperref[fig:VS]{\textbf{Fig. 3.}}
 			\begin{figure}[h!]
 				\centering
 				\begin{tikzpicture}[>=latex]
@@ -254,5 +254,7 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 					\draw[->] (a.east) -- (b.west) node[midway, above] {$ \vec{x}(t) $};
 					\draw[->] (b.east) -- ++(1,0) node[midway, above] {$ \vec{y}(t) $};
 				\end{tikzpicture}
+				\caption{Rappresentazione schematica di un modello in variabili di stato}
+				\label{fig:VS}
 			\end{figure}
 \end{document}
