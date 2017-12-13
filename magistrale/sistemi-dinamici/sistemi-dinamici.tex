@@ -1,0 +1,209 @@
+\documentclass[a4paper]{article}
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{palatino}
+\usepackage{frontespizio}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{enumitem}
+\usepackage{caption}
+\captionsetup[figure]{labelfont={bf},name={Fig.},labelsep=period}
+\usepackage[left=1.5cm, right=1.5cm, top=3cm]{geometry}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+\usepackage{hyperref}
+\usepackage{xcolor}
+\hypersetup{
+	hidelinks, 
+	colorlinks = true,
+	linkcolor = black,
+}
+\usepackage{cleveref}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{\nouppercase{\leftmark}}
+\rhead{\nouppercase{\rightmark}}
+\chead{}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\newcommand{\numberset}{\mathbb}
+\newcommand{\R}{\numberset{R}}
+
+\theoremstyle{definition}
+\newtheorem{exmp}{Esempio}[section]
+\newtheorem{defn}{Definizione}[section]
+
+\tikzstyle{syst} = [rectangle, 
+rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black]
+
+\usepackage[OT1]{eulervm}
+
+\begin{document}
+	\begin{frontespizio}
+		\Universita{Verona}
+		\Dipartimento{Informatica}
+		\Scuola{Laurea Magistrale in Ingegneria e Scienze Informatiche}
+		\Titoletto{}
+		\Titolo{Sistemi Dinamici}
+		\Sottotitolo{Riassunto dei principali argomenti}
+		\Candidato[VR424987]{Danzi Matteo}
+		\Annoaccademico{2017/2018}
+		\NCandidato{Autore}
+	\end{frontespizio}
+	
+	\tableofcontents
+	
+	\newpage
+	
+	\section{Introduzione}
+	
+	\subsection{Sistema}
+		\begin{defn}
+			Un sistema è un ente fisico, tipicamente formato da diverse componenti tra
+			loro interagenti, che risponde a sollecitazioni esterne producendo un determinato
+			comportamento.
+		\end{defn}
+		
+		\begin{exmp}
+			Un circuito elettrico costituito da componenti quali resistori, capacitori, induttori, diodi, generatori di corrente e tensione, ecc., costituisce un semplice esempio di sistema dinamico. Il comportamento del sistema può venire descritto dal valore dei segnali di tensione e di corrente nei rami del circuito. Le sollecitazioni che agiscono sul sistema sono le tensioni e le correnti applicate dai generatori, che
+			possono essere imposte dall'esterno.
+		\end{exmp}
+		
+	\subsection{Descrizione ingresso-uscita}
+		Le grandezze alla base di una descrizione IU sono le \textit{cause esterne} al sistema e gli
+		\textit{effetti}. Le cause esterne sono delle grandezze che si generano al di fuori del sistema;
+		la loro evoluzione influenza il comportamento del sistema ma non dipende da esso.
+		Gli effetti invece sono delle grandezze la cui evoluzione dipende dalle cause esterne
+		al sistema e dalla natura del sistema stesso. Di solito si usa la convenzione di definire
+		come \textit{ingressi} al sistema le cause esterne, e come \textit{uscite} gli effetti. In generale su un
+		sistema possono agire più ingressi così come più di una possono essere le grandezze
+		in uscita. \\
+		La classica rappresentazione grafica di un sistema per il quale siano stati
+		individuati ingressi e uscite è quella mostrata in \hyperref[fig:io]{\textbf{Fig. 1.}} dove può venire
+		considerato come un operatore che assegna uno specifico andamento alle grandezze
+		in uscita in corrispondenza ad ogni possibile andamento degli ingressi.
+		
+		
+		\begin{figure}[h!]
+			\centering
+			\begin{tikzpicture}[>=latex]
+				\node[syst, rounded corners=false] (a) {S};
+				\draw[->] ($ (a.west) +(-.75,.55) $) -- ($ (a.west) +(0,.55) $);
+				\draw[->] ($ (a.west) +(-.75,-.55) $) -- ($ (a.west) +(0,-.55) $);
+				\draw[->] ($ (a.east) +(0,.55) $) -- ($ (a.east) +(.75,.55) $);
+				\draw[->] ($ (a.east) +(0,-.55) $) -- ($ (a.east) +(.75,-.55) $);
+				\node (b) at ($ (a.west) +(-1.5,0) $) {$ \begin{matrix}
+					u_1(t) \\
+					\vdots \\
+					u_r(t)
+					\end{matrix} $};
+				\node (c) at ($ (a.east) +(1.5,0) $) {$ \begin{matrix}
+					y_1(t) \\
+					\vdots \\
+					y_p(t)
+					\end{matrix} $};
+				
+				\node at ($ (a.south) +(0,-.5) $) {sistema}; 
+				\node[align=center] at ($ (b.south) +(0,-.5) $) {ingressi\\ (cause)};
+				\node[align=center] at ($ (c.south) +(0,-.5) $) {uscite\\ (effetti)};
+			\end{tikzpicture}
+			\caption{Descrizione in ingresso-uscita }
+			\label{fig:io}
+		\end{figure}
+		
+		Di solito su usa la convenzione di indicare con
+		\[
+			u(t) = \big[\ u_1(t)\ \dots\ u_r(t)\ \big]^T \ \in\ \R^r
+		\]
+		il vettore degli ingressi e con
+		\[
+			y(t) = \big[\ y_1(t)\ \dots\ y_p(t)\ \big]^T \ \in\ \R^p
+		\]
+		il vettore delle uscite.
+	
+	\subsection{Descrizione in variabili di stato}
+		È facile rendersi conto che in generale l'uscita di un sistema in un
+		certo istante di tempo non dipende dal solo ingresso al tempo, ma dipende anche
+		dall'evoluzione precedente del sistema.
+		
+		Di questo fatto è possibile tenere conto introducendo una grandezza intermedia tra ingressi e uscite, chiamata \textit{stato} del sistema. Lo stato del sistema gode della	proprietà di concentrare in sè l'informazione sul passato e sul presente del sistema.
+		Così come le grandezze di ingresso e uscita, anche lo stato è in generale una
+		grandezza vettoriale e viene indicato mediante un vettore di stato
+		
+		\[
+			x(t) = \big[\ x_1(t)\ \dots\ x_n(t)\ \big]^T \ \in\ \R^n
+		\]
+		dove il numero di componenti del vettore di stato si indica con e viene detto \textit{ordine}
+		del sistema.
+		
+		\begin{defn}
+			Lo stato di un sistema all'istante di tempo è la grandezza che contiene l'informazione necessaria per determinare univocamente l'andamento dell'uscita $ y(t) $, per ogni $ t \geq t_0 $, sulla base della conoscenza dell'andamento dell'ingresso $ u(t) $, per $ t \geq t_0 $ e appunto dello stato in $ t_0 $.
+		\end{defn}
+		
+		\begin{figure}[t!]
+			\centering
+			\begin{tikzpicture}[>=latex]
+			\node[syst, rounded corners=false, minimum width=3cm, minimum height=2.5cm] (a) {$ \vdots $};
+			
+			\node[draw, rectangle, minimum width=0.5cm, minimum height=1.5cm] (a1) at ($ (a) +(-1,0) $) {}; 
+			\node[draw, rectangle, minimum width=0.5cm, minimum height=1.5cm] (a2) at ($ (a) +(1,0) $) {};
+			
+			
+			\draw[->] ($ (a1.east) +(0,.55) $) -- ($ (a2.west) +(0,.55) $) node[midway, above] {$ x_1(t) $};
+			\draw[->] ($ (a1.east) +(0,-.55) $) -- ($ (a2.west) +(0,-.55) $) node[midway, below] {$ x_n(t) $};
+			\draw[->] ($ (a.west) +(-.75,.55) $) -- ($ (a1.west) +(0,.55) $);
+			\draw[->] ($ (a.west) +(-.75,-.55) $) -- ($ (a1.west) +(0,-.55) $);
+			\draw[->] ($ (a2.east) +(0,.55) $) -- ($ (a.east) +(.75,.55) $);
+			\draw[->] ($ (a2.east) +(0,-.55) $) -- ($ (a.east) +(.75,-.55) $);
+			\node (b) at ($ (a.west) +(-1.5,0) $) {$ \begin{matrix}
+				u_1(t) \\
+				\vdots \\
+				u_r(t)
+				\end{matrix} $};
+			\node (c) at ($ (a.east) +(1.5,0) $) {$ \begin{matrix}
+				y_1(t) \\
+				\vdots \\
+				y_p(t)
+				\end{matrix} $};
+			
+			\node at ($ (a.south) +(0,-.5) $) {stati}; 
+			\node at ($ (b.south) +(0,-.5) $) {ingressi};
+			\node at ($ (c.south) +(0,-.5) $) {uscite};
+			\end{tikzpicture}
+			\caption{Descrizione in variabili di stato }
+			\label{fig:state}
+		\end{figure}
+		
+	\section{Modello matematico di un sistema}
+		L'obiettivo dell'Analisi dei Sistemi consiste nel studiare il legame esistente tra gli ingressi e le uscite di un sistema e/o tra gli stati, gli ingressi e le uscite del sistema.
+		In altri termini, risolvere un problema di analisi significa capire, dati certi segnali in ingresso al sistema, come evolveranno gli stati e le uscite di tale sistema.\\
+		Questo rende necessaria la definizione di un modello matematico che descriva in maniera quantitativa il comportamento del sistema allo studio, ossia fornisca una descrizione matematica esatta del legame tra ingressi (stati) e uscite.
+		A seconda del tipo di descrizione che si vuole dare al sistema (IU o VS) è necessario formulare due diversi tipi di modello.
+		
+		\subsection{Modello ingresso-uscita}
+			Il modello IU per un sistema MIMO, ossia un sistema con $ p $ uscite e $ r $ ingressi, è espresso mediante $ p $ equazioni differenziali del tipo:
+			\[
+				\begin{cases}
+					h_1 = \left(\underbrace{ y_1(t), \dots, y_1^{(n_1)}(t) }_{\textup{uscita 1}}, 
+						\underbrace{ u_1(t), \dots, u_1^{(m_{1,1})}(t) }_{\textup{ingresso 1}}, \dots,
+						\underbrace{ u_r(t), \dots, u_r^{(m_{1,r})}(t) }_{\textup{ingresso }r}, t
+					\right) = 0\\ \\
+					h_2 = \left(\underbrace{ y_2(t), \dots, y_2^{(n_2)}(t) }_{\textup{uscita 2}}, 
+						\underbrace{ u_1(t), \dots, u_1^{(m_{2,1})}(t) }_{\textup{ingresso 1}}, \dots,
+						\underbrace{ u_r(t), \dots, u_r^{(m_{2,r})}(t) }_{\textup{ingresso }r}, t
+					\right) = 0\\
+					\qquad\qquad \vdots \\
+					h_p = \left(\underbrace{ y_p(t), \dots, y_p^{(n_p)}(t) }_{\textup{uscita }p}, 
+						\underbrace{ u_1(t), \dots, u_1^{(m_{p,1})}(t) }_{\textup{ingresso 1}}, \dots,
+						\underbrace{ u_r(t), \dots, u_r^{(m_{p,r})}(t) }_{\textup{ingresso }r}, t
+					\right) = 0\\
+				\end{cases}
+			\]
+\end{document}
