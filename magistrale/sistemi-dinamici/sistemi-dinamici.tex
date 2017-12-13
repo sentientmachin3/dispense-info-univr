@@ -7,6 +7,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amsthm}
+\usepackage{bm}
 \usepackage{enumitem}
 \usepackage{caption}
 \captionsetup[figure]{labelfont={bf},name={Fig.},labelsep=period}
@@ -35,6 +36,7 @@
 
 \newcommand{\numberset}{\mathbb}
 \newcommand{\R}{\numberset{R}}
+\renewcommand{\vec}{\bm}
 
 \theoremstyle{definition}
 \newtheorem{exmp}{Esempio}[section]
@@ -206,4 +208,49 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 					\right) = 0\\
 				\end{cases}
 			\]
+			
+			dove:
+			\begin{itemize}
+				\item $ h_i,\ i = 1,\dots, p $ sono funzioni di più parametri che dipendono dal particolare
+				sistema allo studio,
+				\item $ n_i $ è il grado massimo di derivazione della $ i$-esima componente dell’uscita $ y_i(t) $,
+				\item $ m_i $ è il grado massimo di derivazione della $ i$-esima componente dell’ingresso $ u_i(t) $.
+			\end{itemize}
+			
+		\subsection{Modello in variabili di stato}
+			Il modello in VS per un sistema MIMO con $ r $ ingressi e $ p $ uscite ha invece una
+			struttura del tipo
+			\[
+				\begin{cases}
+					\dot{x}_1 (t) = f_1(x_1(t),\dots, x_n(t), u_1(t),\dots, u_r(t),t) \\
+					\qquad \quad\vdots \\
+					\dot{x}_n (t) = f_n(x_1(t),\dots, x_n(t), u_1(t),\dots, u_r(t),t) \\ \\
+					y_1(t) = g_1(x_1(t),\dots, x_n(t), u_1(t),\dots, u_r(t),t) \\
+					\qquad \quad\vdots \\
+					y_p(t) = g_p(x_1(t),\dots, x_n(t), u_1(t),\dots, u_r(t),t)
+				\end{cases}
+			\]
+			che riscritto in forma matriciale diviene
+			\[
+				\begin{cases}
+					\dot{\vec{x}}(t) = \vec{f}(\vec{x}(t),\vec{u}(t),t) \\
+					\vec{y}(t) = \vec{g}(\vec{x}(t),\vec{u}(t),t)
+				\end{cases}
+			\]
+			L’equazione di stato è pertanto un sistema di $ n $ equazioni differenziali del primo
+			ordine, a prescindere dal fatto che il sistema sia SISO o MIMO. La \textit{trasformazione
+			in uscita} è invece una equazione algebrica, scalare o vettoriale a seconda del numero
+			delle variabili in uscita.
+			La rappresentazione schematica che si può dare di un modello in VS è pertanto
+			quella riportata in Fig. 2.5.
+			\begin{figure}[h!]
+				\centering
+				\begin{tikzpicture}[>=latex]
+					\node[draw, rectangle,minimum height=1cm] (a) {$ \dot{\vec{x}}(t) = \vec{f}(\vec{x}(t),\vec{u}(t),t) $};
+					\node[draw, rectangle,minimum height=1cm] (b) at (5,0) {$ \vec{y}(t) = \vec{g}(\vec{x}(t),\vec{u}(t),t) $};
+					
+					\draw[->] ($ (a.west) +(-1,0) $) -- (a.west) node[midway, above] {$ \vec{u}(t) $};
+					\draw[->] ($ (a.west) +(-.75,0) $) -- ++(0,-1) -- ++(5,0) -- ++(0,0.75) -- ($ (b.west) +(0,-0.25) $);
+				\end{tikzpicture}
+			\end{figure}
 \end{document}
