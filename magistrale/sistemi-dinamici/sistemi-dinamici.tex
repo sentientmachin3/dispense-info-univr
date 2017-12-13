@@ -251,6 +251,8 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 					
 					\draw[->] ($ (a.west) +(-1,0) $) -- (a.west) node[midway, above] {$ \vec{u}(t) $};
 					\draw[->] ($ (a.west) +(-.75,0) $) -- ++(0,-1) -- ++(5,0) -- ++(0,0.75) -- ($ (b.west) +(0,-0.25) $);
+					\draw[->] (a.east) -- (b.west) node[midway, above] {$ \vec{x}(t) $};
+					\draw[->] (b.east) -- ++(1,0) node[midway, above] {$ \vec{y}(t) $};
 				\end{tikzpicture}
 			\end{figure}
 \end{document}
