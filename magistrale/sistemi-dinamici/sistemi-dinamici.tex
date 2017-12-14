@@ -8,6 +8,7 @@
 \usepackage{amsfonts}
 \usepackage{amsthm}
 \usepackage{bm}
+\usepackage{mathtools}
 \usepackage{enumitem}
 \usepackage{caption}
 \captionsetup[figure]{labelfont={bf},name={Fig.},labelsep=period}
@@ -15,13 +16,6 @@
 \usepackage{tikz}
 \usetikzlibrary{calc}
 
-\usepackage{hyperref}
-\usepackage{xcolor}
-\hypersetup{
-	hidelinks, 
-	colorlinks = true,
-	linkcolor = black,
-}
 \usepackage{cleveref}
 
 \usepackage{fancyhdr}
@@ -33,6 +27,14 @@
 \cfoot{\thepage}
 \rfoot{}
 \renewcommand{\headrulewidth}{0.4pt}
+
+\usepackage{hyperref}
+\usepackage{xcolor}
+\hypersetup{
+	hidelinks, 
+	colorlinks = true,
+	linkcolor = black,
+}
 
 \newcommand{\numberset}{\mathbb}
 \newcommand{\R}{\numberset{R}}
@@ -213,8 +215,8 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 			\begin{itemize}
 				\item $ h_i,\ i = 1,\dots, p $ sono funzioni di più parametri che dipendono dal particolare
 				sistema allo studio,
-				\item $ n_i $ è il grado massimo di derivazione della $ i$-esima componente dell’uscita $ y_i(t) $,
-				\item $ m_i $ è il grado massimo di derivazione della $ i$-esima componente dell’ingresso $ u_i(t) $.
+				\item $ n_i $ è il grado massimo di derivazione della $ i$-esima componente dell'uscita $ y_i(t) $,
+				\item $ m_i $ è il grado massimo di derivazione della $ i$-esima componente dell'ingresso $ u_i(t) $.
 			\end{itemize}
 			
 		\subsection{Modello in variabili di stato}
@@ -237,7 +239,7 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 					\vec{y}(t) = \vec{g}(\vec{x}(t),\vec{u}(t),t)
 				\end{cases}
 			\]
-			L’equazione di stato è pertanto un sistema di $ n $ equazioni differenziali del primo
+			L'equazione di stato è pertanto un sistema di $ n $ equazioni differenziali del primo
 			ordine, a prescindere dal fatto che il sistema sia SISO o MIMO. La \textit{trasformazione
 			in uscita} è invece una equazione algebrica, scalare o vettoriale a seconda del numero
 			delle variabili in uscita.
@@ -257,4 +259,57 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 				\caption{Rappresentazione schematica di un modello in variabili di stato}
 				\label{fig:VS}
 			\end{figure}
+			
+	\section{Proprietà dei sistemi}
+		\subsection{Sistemi dinamici o istantanei}
+			La prima importante distinzione che si può fare è tra sistemi istantanei e sistemi
+			dinamici.
+			
+			\begin{defn}
+				Un sistema è detto
+				\begin{itemize}
+					\item \textit{Istantaneo}: se il valore $ \vec{y}(t) $ assunto dall'uscita al tempo $ t $ dipende solo dal valore $ \vec{u}(t) $ assunto dall'ingresso al tempo $ t $;
+					\item \textit{Dinamico}: in caso contrario.
+				\end{itemize}
+			\end{defn}
+			
+			Condizione necessaria e sufficiente affinché un sistema MIMO con ingressi e uscite sia istantaneo è che il legame \textbf{IU} sia espresso da un insieme di equazioni della forma:
+			\[
+				\begin{cases}
+					h_1 (y_1(t),u_1(t),u_2(t),\dots, u_r(t),t) = 0 \\
+					h_2 (y_2(t),u_1(t),u_2(t),\dots, u_r(t),t) = 0 \\
+					\vdots \\
+					h_p (y_p(t),u_1(t),u_2(t),\dots, u_r(t),t) = 0.
+				\end{cases}
+			\]
+			
+			Condizione necessaria e sufficiente affinché un sistema sia istantaneo è che il modello in \textbf{VS} abbia ordine zero ovvero che \textit{non esista il vettore di stato}.
+			
+		\subsection{Sistemi lineari o non lineari}
+			Una delle proprietà fondamentali di cui gode un'ampia classe di sistemi (o più precisamente di modelli) è la linearità. È proprio su questa classe di sistemi che focalizzeremo la nostra attenzione in questo volume. L'importanza dei sistemi lineari deriva
+			da una serie di considerazioni pratiche.\\
+			La prima è che tali sistemi sono facili da studiare. Per essi sono state proposte
+			efficienti tecniche di analisi e di sintesi, non più applicabili se la linearità viene meno.
+			In secondo luogo, un modello lineare si rivela una buona approssimazione del
+			comportamento di numerosi sistemi reali purchè questi siano sottoposti a piccoli
+			ingressi.
+			
+			\begin{defn}
+				Un sistema è detto
+				\begin{itemize}
+					\item \textit{Lineare}: se per esso vale il principio di sovrapposizione degli effetti. Ciò significa che se il sistema risponde alla causa $ c_1 $ con l'effetto $ e_1 $ e alla causa $ c_2 $ con l'effetto $ e_2 $, allora la risposta del sistema alla causa $ ac_1 + bc_2 $ è $ ae_1 + be_2 $ qualunque siano i valori assunti dalle costanti $ a $ e $ b $.
+					Il seguente schema riassume tale proprietà:
+					\[
+						\begin{rcases*}
+							causa\ c_1\ \rightsquigarrow\ effetto\ e_1 \\
+							causa\ c_2\ \rightsquigarrow\ effetto\ e_2
+						\end{rcases*}
+						\
+						\Longrightarrow
+						\
+						causa\ (ac_1 + bc_2)\ \rightsquigarrow\ effetto\ (ae_1 + be_2);
+					\]
+					\item \textit{Non lineare}: in caso contrario.
+				\end{itemize}	
+			\end{defn}
 \end{document}
