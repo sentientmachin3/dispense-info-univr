@@ -273,7 +273,7 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 				\end{itemize}
 			\end{defn}
 			
-			Condizione necessaria e sufficiente affinché un sistema MIMO con ingressi e uscite sia istantaneo è che il legame \textbf{IU} sia espresso da un insieme di equazioni della forma:
+			Condizione necessaria e sufficiente affinché un sistema MIMO con $ r $ ingressi e $ p $ uscite sia istantaneo è che il legame \textbf{IU} sia espresso da un insieme di equazioni della forma:
 			\[
 				\begin{cases}
 					h_1 (y_1(t),u_1(t),u_2(t),\dots, u_r(t),t) = 0 \\
@@ -310,6 +310,28 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 						causa\ (ac_1 + bc_2)\ \rightsquigarrow\ effetto\ (ae_1 + be_2);
 					\]
 					\item \textit{Non lineare}: in caso contrario.
-				\end{itemize}	
+				\end{itemize}
 			\end{defn}
+			
+		Condizione necessaria e sufficiente affinché un sistema sia lineare è che il legame \textbf{IU} sia espresso da una equazione differenziale	lineare, cioè per un sistema SISO:
+		\[
+			a_0(t) y(t) + a_1(t)\dot{y}(t) + \cdots + a_n(t) y^{(n)}(t)\ =\
+			b_0(t) u(t) + b_1(t)\dot{u}(t) + \cdots + b_m(t)u^{(m)}(t)
+		\]
+		Un sistema MIMO invece è lineare se e solo se ciascuna delle funzioni $ h_i,\ i = 1,\dots , p $, esprime una combinazione lineare tra la $ i$-esima componente dell’uscita e le sue $ n_i $ derivate e le variabili di ingresso con le loro derivate.
+		
+		\bigskip
+		
+		Condizione necessaria e sufficiente affinché un
+		sistema sia lineare è che nel modello in \textbf{VS} sia l’equazione di stato che la trasformazione di uscita siano equazioni lineari:
+		\[
+			\begin{cases}
+				\dot{x}_1(t) = a_{1,1}(t) x_1(t) + \cdots + a_{1,n}(t) x_n(t) + b_{1,1} u_1(t) + \cdots + b_{1,r} u_r(t) \\
+				\qquad\vdots \\
+				\dot{x}_n(t) = a_{n,1}(t) x_1(t) + \cdots + a_{n,n}(t) x_n(t) + b_{n,1} u_1(t) + \cdots + b_{n,r} u_r(t) \\ \\
+				y_1(t) = c_{1,1}(t) x_1(t) + \cdots + c_{1,n}(t) x_n(t) + d_{1,1} u_1(t) + \cdots + d_{1,r} u_r(t) \\
+				\qquad\vdots \\
+				y_p(t) = c_{p,1}(t) x_1(t) + \cdots + c_{p,n}(t) x_n(t) + d_{p,1} u_1(t) + \cdots + d_{p,r} u_r(t) \\
+			\end{cases}
+		\]
 \end{document}
