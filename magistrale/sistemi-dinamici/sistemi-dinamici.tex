@@ -334,4 +334,94 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 				y_p(t) = c_{p,1}(t) x_1(t) + \cdots + c_{p,n}(t) x_n(t) + d_{p,1} u_1(t) + \cdots + d_{p,r} u_r(t) \\
 			\end{cases}
 		\]
+		ovvero
+		\[
+			\begin{cases}
+				\vec{\dot{x}}(t) = \vec{A}(t)\vec{x}(t) + \vec{B}(t)\vec{u}(t) \\
+				\vec{y}(t) = \vec{C}(t)\vec{x}(t) + \vec{D}(t)\vec{u}(t)
+			\end{cases}
+		\]
+		dove
+		
+		\begin{align*}
+			\vec{A}(t) &= \{a_{i,j} (t) \} \ \textup{matrice} \ n\times n;\qquad
+			&\vec{B}(t) = \{b_{i,j}(t) \} \ \textup{matrice} \ n\times r; \\
+			\vec{C}(t) &= \{c_{i,j} (t) \} \ \textup{matrice} \ p\times n;\qquad
+			&\vec{D}(t) = \{d_{i,j}(t) \} \ \textup{matrice} \ p\times r; 
+		\end{align*}
+		
+	\subsection{Tempo-invarianza}
+		Un’altra importante proprietà di cui gode un'ampia classe di sistemi è la \textit{tempo-invarianza} o stazionarietà. In particolare, in questo testo ci occuperemo proprio dell’analisi dei sistemi
+		lineari e stazionari.
+		
+		\begin{defn}
+			Un sistema è detto
+			\begin{itemize}
+				\item \textit{Tempo-invariante}: se per esso vale il principio di traslazione causa-effetto nel tempo, cioè se il sistema risponde sempre con lo stesso effetto ad una data causa, a prescindere dall’istante di tempo in cui tale causa agisca
+				sul sistema.\\
+				Il seguente schema riassume tale proprietà:
+				\[
+					\textup{causa}\ c(t)\ \rightsquigarrow \ \textup{effetto}\ e(t)\ \
+					\Longrightarrow\ \ \textup{causa}\ c(t - T)\  \rightsquigarrow \ \textup{effetto}\ e(t-T);
+				\]
+				\item \textit{Tempo-variante}: in caso contrario.
+			\end{itemize}
+			
+			La \hyperref[fig:time]{\textbf{Fig. 4.}} mostra il comportamento tipico di un sistema lineare sollecitato
+			dalla stessa causa applicata in due diversi intervalli di tempo, ossia a partire da $ t = 0 $
+			e a partire da $ t = T $: nei due casi l’effetto risultante è analogo ma ha semplicemente
+			origine da istanti di tempo che differiscono tra di loro proprio di una quantità pari a $ T $.
+			
+			\begin{figure}[h!]
+				\centering
+				\begin{tikzpicture}[>=latex]
+					\draw[->] (0,-.25) -- ++(0,2) node[left] {$ e(t) $}; \draw[->] (-.25,0) -- ++(3,0) node[below] {$ t $};
+					\draw[->] (5,-.25) -- ++(0,2) node[left] {$ e(t - T) $}; \draw[->] (4.75,0) -- ++(3,0) node[below] {$ t $};
+					\draw[->] (0, 2.75) -- ++(0,2) node[left] {$ c(t) $}; \draw[->] (-.25,3) -- ++(3,0) node[below] {$ t $};
+					\draw[->] (5,2.75) -- ++(0,2) node[left] {$ c(t - T) $}; \draw[->] (4.75,3) -- ++(3,0) node[below] {$ t $};
+					
+					\draw[thick] (-.25,3) -- ++(.25,0) -- ++(0,1) .. controls (0.25,4.7) and (.75,2.5)
+					.. (2,4);
+					\draw[thick] (4.75,3) -- ++(1,0) -- ++(0,1) .. controls (6 ,4.7) and (6.55,2.5)
+					.. (7.75,4);
+					
+					\draw[thick] (-.25,0) .. controls (1,0) and (1, .75) .. (2, 1.5);
+					\draw[thick] (4.75,0) -- (5.5,0);
+					\draw[thick,xshift=5.75cm] (-.25,0) .. controls (1,0) and (1, .75) .. (2, 1.5);
+					
+					\draw[<->] (5,0.25) -- (5.75,0.25) node[midway, above] {$ T $};
+					\draw (5.75,0) -- (5.75,.5);
+					\draw[<->,yshift=3cm] (5,0.25) -- (5.75,0.25) node[midway, above] {$ T $};
+				\end{tikzpicture}
+				\caption{Traslazione causa-effetto nel tempo}
+				\label{fig:time}
+			\end{figure}
+		\end{defn}
+		
+		Condizione necessaria e sufficiente affinché un sistema sia stazionario è che il legame \textbf{IU} non dipenda esplicitamente dal tempo, cioè per un sistema SISO:
+		\[
+			h \left( y(t), \dot{y}(t), \dots, y^{(n)}(t), u(t), \dot{u}(t),\dots, u^{(m)}(t) \right) = 0
+		\]
+		che nel caso dei sistemi lineari si riduce a una equazione differenziale lineare a
+		coefficienti costanti:
+		\[
+			a_0 y(t) + a_1\dot{y}(t) + \cdots + a_n y^{(n)}(t) = 
+			b_0 u(t) + b_1\dot{u}(t) + \cdots + b_n u^{(m)}(t).
+		\]
+		
+		Condizione necessaria e sufficiente affinché un	sistema sia stazionario è che nel modello in \textbf{VS} l’equazione di stato e la trasformazione di uscita non dipendano esplicitamente dal tempo:
+		\[
+			\begin{cases}
+				\vec{\dot{x}}(t)\ =\vec{f}(\vec{x}(t),\vec{u}(t)) \\
+				\vec{y}(t)\ =\vec{g}(\vec{x}(t),\vec{u}(t)) 
+			\end{cases}
+		\]
+		che nel caso dei sistemi lineari si riduce a
+		\[
+			\begin{cases}
+				\vec{\dot{x}}(t)\ =\vec{A}\vec{x}(t)+ \vec{B}\vec{u}(t)  \\
+				\vec{y}(t)\ =\vec{C}\vec{x}(t)+ \vec{D}\vec{u}(t) 
+			\end{cases}
+		\]
+		dove $ \vec{A}, \vec{B}, \vec{C} $ e $ \vec{D} $ sono matrici costanti.
 \end{document}
