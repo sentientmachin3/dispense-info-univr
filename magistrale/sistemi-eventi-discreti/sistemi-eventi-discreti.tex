@@ -1,0 +1,51 @@
+\documentclass[a4paper]{article}
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{frontespizio}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+
+\usepackage{cleveref}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{\nouppercase{\leftmark}}
+\rhead{\nouppercase{\rightmark}}
+\chead{}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\usepackage{hyperref}
+\hypersetup{
+	hidelinks, 
+	colorlinks = true,
+	linkcolor = black,
+}
+
+\theoremstyle{definition}
+\newtheorem{exmp}{Esempio}[section]
+\newtheorem{defn}{Definizione}[section]
+
+
+\begin{document}
+	\begin{frontespizio}
+		\Universita{Verona}
+		\Dipartimento{Informatica}
+		\Scuola{Laurea Magistrale in Ingegneria e Scienze Informatiche}
+		\Titoletto{}
+		\Titolo{Sistemi ad Eventi Discreti}
+		\Sottotitolo{Riassunto dei principali argomenti}
+		\Candidato{Chiunque voglia scriverla}
+		\Annoaccademico{2017/2018}
+		\NCandidato{Autore}
+	\end{frontespizio}
+	
+	\tableofcontents
+	
+	\newpage
+	
+\end{document}
