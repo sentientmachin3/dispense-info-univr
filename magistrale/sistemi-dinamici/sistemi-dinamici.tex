@@ -8,8 +8,10 @@
 \usepackage{amsfonts}
 \usepackage{amsthm}
 \usepackage{bm}
+\usepackage{empheq}
 \usepackage{mathtools}
 \usepackage{enumitem}
+\usepackage{multicol}
 \usepackage{caption}
 \captionsetup[figure]{labelfont={bf},name={Fig.},labelsep=period}
 \usepackage[left=1.5cm, right=1.5cm, top=3cm]{geometry}
@@ -424,4 +426,154 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 			\end{cases}
 		\]
 		dove $ \vec{A}, \vec{B}, \vec{C} $ e $ \vec{D} $ sono matrici costanti.
+		
+		\newpage
+		
+	\section{Analisi nel dominio del tempo delle rappresentazioni in variabili di stato}
+		Un sistema lineare e stazionario di ordine $ n $, con $ r $ ingressi e $ p $ uscite, ha la seguente rappresentazione in VS:
+		\[
+			\begin{cases}
+				\vec{\dot{x}}(t)\ =\vec{A}\vec{x}(t)+ \vec{B}\vec{u}(t)  \\
+				\vec{y}(t)\ =\vec{C}\vec{x}(t)+ \vec{D}\vec{u}(t) 
+			\end{cases}
+		\]
+	
+		Il problema fondamentale dell’analisi dei sistemi per un tale sistema consiste nel
+		determinare l’andamento dello stato $ \vec{x}(t) $ e dell'uscita $ \vec{y}(t) $ per $ t \geq t_0 $ noto:
+		\begin{itemize}
+			\item il valore dello stato iniziale $ \vec{x}(t_0) $;
+			\item l'andamento dell'ingresso $ \vec{u}(t) $ per $ t\geq t_0 $.
+		\end{itemize}
+
+		\subsection{Matrice di transizione di stato}
+			Data una matrice quadrata $ \vec{A} $ il suo esponenziale è la matrice
+			\[
+				e^{\vec{A}} = \vec{I} + \vec{A} + \dfrac{\vec{A}^2}{2!} + \dfrac{\vec{A}^2}{3!} + \cdots =
+				\sum_{k = 0}^{\infty} \dfrac{\vec{A}^k t^k}{k!}
+			\]
+			La matrice di transizione dello stato $ e^{\vec{A}} $ è una particolare matrice esponenziale i cui elementi sono funzioni del tempo di dimensione $ n\times n $ e anche $ \vec{A} $ è $ n\times n $
+			\[
+				e^{\vec{A}t} = \sum_{k=0}^{\infty} \dfrac{\vec{A}^k t^k}{k!}
+			\]
+			Se $ \vec{A} $ è una matrice \textbf{diagonale} di dimensione $ n\times n $
+			\[
+				\vec{A} = 
+				\begin{bmatrix}
+					\lambda_1 & 0 & \cdots & 0 \\
+					0 & \lambda_2 & \cdots & 0 \\
+					\vdots & \vdots & \ddots & \vdots \\
+					0 & 0 & \cdots & \lambda_n 
+				\end{bmatrix}
+				\qquad
+				\textup{vale}
+				\qquad
+				e^{\vec{A}t} =
+				\begin{bmatrix}
+					e^{\lambda_1 t} & 0 & \cdots & 0 \\
+					0 & e^{\lambda_2 t} & \cdots & 0 \\
+					\vdots & \vdots & \ddots & \vdots \\
+					0 & 0 & \cdots & e^{\lambda_n t}
+				\end{bmatrix}
+			\]
+			
+			
+		\subsection{Sviluppo di Sylvester}
+			Ci si pone ora il problema di determinare l’espressione analitica della matrice di transizione dello stato $ e^{\vec{A}t} $ senza dover necessariamente calcolare la serie infinita che la
+			definisce. Tale procedura si basa sullo sviluppo di Sylvester, esiste una seconda procedura, basata sul passaggio alla forma diagonale o alla forma di Jordan e una terza procedura, basata sull’uso delle
+			trasformate di Laplace.
+			
+			\begin{defn}
+				Se $ \vec{A} $ è una matrice di dimensione $ n\times n $, la corrispondente matrice di transizione dello stato $ e^{\vec{A}t} $ può essere scritta come:
+				\[
+					e^{\vec{A}t} = \sum_{i = 0}^{n - 1} \beta_i (t)\vec{A}^i = 
+					\beta_0 (t)\vec{I} + \beta_1(t)\vec{A} + \cdots + \beta_{n-1}(t)\vec{A}^{n-1}
+				\]
+				dove i coefficienti dello sviluppo $ \beta_i(t) $ sono opportune funzioni scalari nel tempo.			
+			\end{defn}
+			I coefficienti dello sviluppo di Sylvester possono venire determinati risolvendo un
+			sistema di equazioni lineari. Esistono sostanzialmente tre diversi casi che vengono discussi di seguito.
+			
+		\subsubsection{Autovalori di molteplicità unitaria}
+			Se la matrice $ \vec{A} $ ha autovalori tutti distinti $ \lambda_1, \lambda_2,\dots, \lambda_n $, le $ n $ funzioni incognite $ \beta_i(t) $ si ricavano risolvendo il seguente sistema di $ n $ equazioni (tante equazioni quanti sono gli autovalori):
+			\[
+				\begin{cases}
+					\beta_0 (t) + \lambda_1\beta_1 (t) + \lambda_1^2\beta_2 (t) + \cdots + \lambda_1^{n-1} \beta_{n-1}(t) = e^{\lambda_1 t} \\
+					\beta_0 (t) + \lambda_2\beta_1 (t) + \lambda_2^2\beta_2 (t) + \cdots + \lambda_2^{n-1} \beta_{n-1}(t) = e^{\lambda_2 t} \\
+					\qquad \vdots \qquad \vdots \\
+					\beta_0 (t) + \lambda_n\beta_1 (t) + \lambda_n^2\beta_2 (t) + \cdots + \lambda_n^{n-1} \beta_{n-1}(t) = e^{\lambda_n t} \\
+				\end{cases}
+			\]
+			ovvero risolvendo il sistema di equazioni lineari
+			\[
+				\vec{V}\vec{\beta} = \vec{\eta}
+			\]
+			dove
+			\begin{itemize}
+				\item $ \beta = \begin{bmatrix}
+					\beta_0(t) & \beta_1(t) & \cdots& \beta_{n-1}(t)
+				\end{bmatrix}^T $ è il vettore delle incognite
+				\item La matrice dei coefficienti vale
+				\[
+					\vec{V} = 
+					\begin{bmatrix}
+						1 & \lambda_1 & \cdots & \lambda_1^{n-1} \\
+						1 & \lambda_2 & \cdots & \lambda_2^{n-1} \\
+						\vdots & \vdots & \ddots & \vdots \\
+						1 & \lambda_n & \cdots & \lambda_n^{n-1} \\
+					\end{bmatrix}
+				\]
+				\item $ \eta = \begin{bmatrix}
+				e^{\lambda_1 t} & e^{\lambda_2 t} & \cdots & e^{\lambda_n t}
+				\end{bmatrix}^T $ è il vettore dei termini noti.
+			\end{itemize}
+		
+			Viene detta \textbf{modo della matrice} $ \vec{A} $ associato all'autovalore $ \lambda $ la generica componente $ e^{\lambda t} $ (una funzione nel tempo) del vettore  $ \vec{\eta} $.
+			
+		\subsubsection{Autovalori di molteplicità non unitaria}
+			Se la matrice $ \vec{A} $ ha autovlori di molteplicità non unitaria, si costruisce un sistema in cui ad ogni autovalore $ \lambda $ di molteplicità $ \nu $ corrispondono $ \nu $ equazioni della forma:
+			\begin{empheq}[left={\empheqlbrace}]{alignat*=2}
+				\beta_0 (t) + \lambda\beta_1 (t) + \cdots + \lambda^{n-1} \beta_{n-1} (t) &= e^{\lambda t} \\
+				\dfrac{d}{d\lambda}\left( \beta_0(t) + \lambda\beta_1 (t) + \cdots + \lambda^{n-1}\beta_{n-1}(t) \right) &= \dfrac{d}{d\lambda}e^{\lambda t} \\
+				\qquad \vdots \qquad \qquad \qquad \qquad & \qquad \vdots \\
+				\dfrac{d^{\nu -1}}{d\lambda^{\nu -1}}\left( \beta_0(t) + \lambda\beta_1 (t) + \cdots + \lambda^{n-1}\beta_{n-1}(t) \right) &= \dfrac{d^{\nu -1}}{d\lambda^{\nu -1}}e^{\lambda t} \\
+			\end{empheq}
+			ovvero
+			\begin{empheq}[left={\empheqlbrace}]{alignat*=2}
+				\beta_0 (t) + \lambda\beta_1 (t) + \cdots + \lambda^{n-1} \beta_{n-1} (t) &= e^{\lambda t} \\
+				\beta_1(t) + 2\lambda\beta_2 (t) + \cdots + (n - 1)\lambda^{n-2}\beta_{n-1}(t) &= t e^{\lambda t} \\
+				\qquad \vdots \qquad \qquad \qquad \qquad & \qquad \vdots \\
+				\dfrac{(\nu -1)!}{0!} \beta_{\nu - 1}(t) + \cdots + 
+				\dfrac{(n-1)!}{(n - \nu)!}\lambda^{n-\nu}\beta_{n-1}(t) &= t^{\nu - 1} e^{\lambda t} .\\
+			\end{empheq}
+			
+			Anche in tal caso è possibile scrivere un sistema lineare in cui ad ogni autovalore $ \lambda $ i molteplicità $ \nu $ sono associate $ \nu $ righe della matrice dei coefficienti $ \vec{V} $:
+			\[
+				\begin{bmatrix}
+					1 & \lambda & \lambda^2 & \cdots & \lambda^{\nu - 1} & \cdots & \lambda^{n - 1} \\
+					0 & 1 & 2\lambda & \cdots & (\nu - 1)\lambda^{\nu - 2} & \cdots & (n - 1)\lambda^{n-2} \\
+					\vdots & \vdots & \vdots & \ddots & \vdots & \ddots & \vdots \\
+					0 & 0 & 0 & \cdots & (\nu - 1)! & \cdots & \dfrac{(n-1)!}{(n - \nu)!}\lambda^{n - \nu}
+				\end{bmatrix}
+			\]
+			e $ \nu $ righe del vettore dei termini noti $ \vec{\eta} = 
+			\begin{bmatrix}
+				e^{\lambda t} & te^{\lambda t} & \cdots & t^{\nu - 1}e^{\lambda t}
+			\end{bmatrix}^T $.
+			
+		\subsubsection{Autovalori complessi}
+			Anche nel caso in cui vi siano autovalori complessi è possibile determinare i
+			coefficienti dello sviluppo di Sylvester come sopra indicato.
+		\subsection{Formula di Lagrange}
+		
+		\subsubsection{Evoluzione libera e evoluzione forzata}
+		
+		\subsubsection{Risposta impulsiva di una rappresentazione in VS}
+		
+		\subsection{Trasformazione di similitudine}
+		
+		\subsection{Diagonalizzazione}
+		
+		\subsection{Forma di Jordan}
+		
+			
 \end{document}
