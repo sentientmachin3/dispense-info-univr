@@ -337,7 +337,28 @@
 		\end{itemize}
 	\end{definit}
 
+	\subsection{Tracce e collecting semantics}
+	
+	\subsection{Control flow graphs}
+
 	\section{Analisi statica}
+	
+	\subsection{Introduzione}
+	L'analisi statica mira, osservando le proprietà semantica, a dire se una certa proprietà vale o no per un dato programma.
+	
+	Le tipologie di analisi statica si dividono in 2 categorie: \begin{itemize}
+		\item Control flow analysis;
+		\item Data flow analysis (distributive e non);
+	\end{itemize}
+
+	\subsection{Analisi su CFG}
+	Viene generato un CFG per ogni procedura. Le analisi che vengono eseguite sono localizzate a 3 livelli: \begin{enumerate}
+		\item \textbf{Locali al blocco:} sono eseguite all'interno di uno stesso blocco di codice;
+		\item \textbf{Intra-procedurali:} sono eseguite all'interno di una stessa procedura;
+		\item \textbf{Inter-procedurali:} sono eseguite su più funzioni/procedure.
+	\end{enumerate}
+
+	Il pattern delle analisi di data flow consiste nel dire come l'informazione viene manipolata in un blocco. La soluzione è data da un'equazione di punto fisso.
 	
 	
 	
