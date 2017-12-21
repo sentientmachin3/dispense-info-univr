@@ -40,14 +40,24 @@
 
 \newcommand{\numberset}{\mathbb}
 \newcommand{\R}{\numberset{R}}
+\newcommand{\C}{\numberset{C}}
 \renewcommand{\vec}{\bm}
 
 \theoremstyle{definition}
 \newtheorem{exmp}{Esempio}[section]
-\newtheorem{defn}{Definizione}[section]
+\newtheorem{defn}{Definizione}[subsection]
+
+\usetikzlibrary{decorations.pathreplacing}
+\newcommand{\tikzmark}[1]{\tikz[overlay,remember picture,baseline=(#1.base)]
+	\node (#1) {\strut};}
 
 \tikzstyle{syst} = [rectangle, 
 rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black]
+
+\newcommand\undermat[2]{%
+	\makebox[0pt][l]{$\smash{\underbrace{\phantom{%
+					\begin{matrix}#2\end{matrix}}}_{\text{$#1$}}}$}#2}
+
 
 \usepackage[OT1]{eulervm}
 
@@ -320,12 +330,12 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 			a_0(t) y(t) + a_1(t)\dot{y}(t) + \cdots + a_n(t) y^{(n)}(t)\ =\
 			b_0(t) u(t) + b_1(t)\dot{u}(t) + \cdots + b_m(t)u^{(m)}(t)
 		\]
-		Un sistema MIMO invece è lineare se e solo se ciascuna delle funzioni $ h_i,\ i = 1,\dots , p $, esprime una combinazione lineare tra la $ i$-esima componente dell’uscita e le sue $ n_i $ derivate e le variabili di ingresso con le loro derivate.
+		Un sistema MIMO invece è lineare se e solo se ciascuna delle funzioni $ h_i,\ i = 1,\dots , p $, esprime una combinazione lineare tra la $ i$-esima componente dell'uscita e le sue $ n_i $ derivate e le variabili di ingresso con le loro derivate.
 		
 		\bigskip
 		
 		Condizione necessaria e sufficiente affinché un
-		sistema sia lineare è che nel modello in \textbf{VS} sia l’equazione di stato che la trasformazione di uscita siano equazioni lineari:
+		sistema sia lineare è che nel modello in \textbf{VS} sia l'equazione di stato che la trasformazione di uscita siano equazioni lineari:
 		\[
 			\begin{cases}
 				\dot{x}_1(t) = a_{1,1}(t) x_1(t) + \cdots + a_{1,n}(t) x_n(t) + b_{1,1} u_1(t) + \cdots + b_{1,r} u_r(t) \\
@@ -353,13 +363,13 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 		\end{align*}
 		
 	\subsection{Tempo-invarianza}
-		Un’altra importante proprietà di cui gode un'ampia classe di sistemi è la \textit{tempo-invarianza} o stazionarietà. In particolare, in questo testo ci occuperemo proprio dell’analisi dei sistemi
+		Un'altra importante proprietà di cui gode un'ampia classe di sistemi è la \textit{tempo-invarianza} o stazionarietà. In particolare, in questo testo ci occuperemo proprio dell'analisi dei sistemi
 		lineari e stazionari.
 		
 		\begin{defn}
 			Un sistema è detto
 			\begin{itemize}
-				\item \textit{Tempo-invariante}: se per esso vale il principio di traslazione causa-effetto nel tempo, cioè se il sistema risponde sempre con lo stesso effetto ad una data causa, a prescindere dall’istante di tempo in cui tale causa agisca
+				\item \textit{Tempo-invariante}: se per esso vale il principio di traslazione causa-effetto nel tempo, cioè se il sistema risponde sempre con lo stesso effetto ad una data causa, a prescindere dall'istante di tempo in cui tale causa agisca
 				sul sistema.\\
 				Il seguente schema riassume tale proprietà:
 				\[
@@ -371,7 +381,7 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 			
 			La \hyperref[fig:time]{\textbf{Fig. 4.}} mostra il comportamento tipico di un sistema lineare sollecitato
 			dalla stessa causa applicata in due diversi intervalli di tempo, ossia a partire da $ t = 0 $
-			e a partire da $ t = T $: nei due casi l’effetto risultante è analogo ma ha semplicemente
+			e a partire da $ t = T $: nei due casi l'effetto risultante è analogo ma ha semplicemente
 			origine da istanti di tempo che differiscono tra di loro proprio di una quantità pari a $ T $.
 			
 			\begin{figure}[h!]
@@ -411,7 +421,7 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 			b_0 u(t) + b_1\dot{u}(t) + \cdots + b_n u^{(m)}(t).
 		\]
 		
-		Condizione necessaria e sufficiente affinché un	sistema sia stazionario è che nel modello in \textbf{VS} l’equazione di stato e la trasformazione di uscita non dipendano esplicitamente dal tempo:
+		Condizione necessaria e sufficiente affinché un	sistema sia stazionario è che nel modello in \textbf{VS} l'equazione di stato e la trasformazione di uscita non dipendano esplicitamente dal tempo:
 		\[
 			\begin{cases}
 				\vec{\dot{x}}(t)\ =\vec{f}(\vec{x}(t),\vec{u}(t)) \\
@@ -438,8 +448,8 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 			\end{cases}
 		\]
 	
-		Il problema fondamentale dell’analisi dei sistemi per un tale sistema consiste nel
-		determinare l’andamento dello stato $ \vec{x}(t) $ e dell'uscita $ \vec{y}(t) $ per $ t \geq t_0 $ noto:
+		Il problema fondamentale dell'analisi dei sistemi per un tale sistema consiste nel
+		determinare l'andamento dello stato $ \vec{x}(t) $ e dell'uscita $ \vec{y}(t) $ per $ t \geq t_0 $ noto:
 		\begin{itemize}
 			\item il valore dello stato iniziale $ \vec{x}(t_0) $;
 			\item l'andamento dell'ingresso $ \vec{u}(t) $ per $ t\geq t_0 $.
@@ -478,8 +488,8 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 			
 			
 		\subsection{Sviluppo di Sylvester}
-			Ci si pone ora il problema di determinare l’espressione analitica della matrice di transizione dello stato $ e^{\vec{A}t} $ senza dover necessariamente calcolare la serie infinita che la
-			definisce. Tale procedura si basa sullo sviluppo di Sylvester, esiste una seconda procedura, basata sul passaggio alla forma diagonale o alla forma di Jordan e una terza procedura, basata sull’uso delle
+			Ci si pone ora il problema di determinare l'espressione analitica della matrice di transizione dello stato $ e^{\vec{A}t} $ senza dover necessariamente calcolare la serie infinita che la
+			definisce. Tale procedura si basa sullo sviluppo di Sylvester, esiste una seconda procedura, basata sul passaggio alla forma diagonale o alla forma di Jordan e una terza procedura, basata sull'uso delle
 			trasformate di Laplace.
 			
 			\begin{defn}
@@ -562,10 +572,89 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 			
 		\subsubsection{Autovalori complessi}
 			Anche nel caso in cui vi siano autovalori complessi è possibile determinare i
-			coefficienti dello sviluppo di Sylvester come sopra indicato.
-		\subsection{Formula di Lagrange}
+			coefficienti dello sviluppo di Sylvester come sopra indicato.\\
+			Per evitare, tuttavia, di lavorare con numeri complessi conviene modificare la
+			procedura per il calcolo dei coefficienti $ \beta $ come segue (tratteremo solo il caso di autovalori di molteplicità unitaria per semplicità). Supponiamo che fra gli $ n $ autovalori della matrice ve ne siano 2 complessi e coniugati $ \lambda, \lambda' = \alpha \pm j \omega $.
+			
+			In tal caso nel sistema di equazioni dovrebbero comparire le due equazioni
+			
+			\begin{empheq}[left={\empheqlbrace}]{alignat*=2}
+				\beta_0 (t) + \lambda_1\beta_1 (t) + \lambda_1^2\beta_2 (t) + \cdots & + \lambda_1^{n-1} \beta_{n-1}(t) &= e^{\lambda_1 t} &= e^{\alpha t}e^{j\omega t}\\
+				\beta_0 (t) + \lambda'\beta_1 (t) + (\lambda' )^2\beta_2 (t) + \cdots & + (\lambda')^{n-1} \beta_{n-1}(t) &= e^{\lambda' t} &=e^{\alpha t}e^{j\omega t}
+			\end{empheq}
+			Possiamo tuttavia sostituire queste due equazioni con due equazioni equivalenti
+			in cui non compaiono termini complessi:
+			\begin{empheq}[left={\empheqlbrace}]{alignat*=2}
+				\beta_0 (t) + Re(\lambda)\beta_1 (t) + Re(\lambda^2)\beta_2 (t) + \cdots & + Re(\lambda^{n-1}) \beta_{n-1}(t) &= e^{\lambda_1 t} cos(\omega t)\\
+				Im(\lambda)\beta_1 (t) + Im(\lambda )^2\beta_2 (t) + \cdots & + Im(\lambda^{n-1}) \beta_{n-1}(t) &= e^{\lambda t} sin(\omega t)
+			\end{empheq}
+			dove $ Re $ e $ Im $ indicano la parte reale e immaginaria di un numero complesso. In particolare dunque vale $ Re(\lambda) = \alpha $ e $ Im(\lambda) = \omega $
+			
+			
+	\subsection{Formula di Lagrange}
+		Possiamo finalmente dimostrare un importante risultato che determina la soluzione
+		al problema di analisi per i sistemi MIMO precedentemente enunciato. Tale risultato
+		è noto con il nome di formula di Lagrange.
+		\begin{defn}
+			La soluzione del sistema 
+			\[
+			\begin{cases}
+			\vec{\dot{x}}(t)\ =\vec{A}\vec{x}(t)+ \vec{B}\vec{u}(t)  \\
+			\vec{y}(t)\ =\vec{C}\vec{x}(t)+ \vec{D}\vec{u}(t) 
+			\end{cases}
+			\]
+			con stato iniziale $ \vec{x}(t_0) $ e andamento dell'ingresso $ \vec{u}(t) $ (per $ t\geq t_0 $) vale per $ t\geq t_0 $:
+			\[
+				\begin{cases}
+					\vec{x}(t) = e^{\vec{A}(t - t_0)}\vec{x}(t_0) + 
+					\displaystyle\int_{t_0}^{t} e^{\vec{A}(t-\tau)}\vec{B}\vec{u}(\tau)d\tau \\ \\
+					\vec{y}(t) = \vec{C}e^{\vec{A}(t - t_0)}\vec{x}(t_0) + 
+					\vec{C}\displaystyle\int_{t_0}^{t} \vec{B}\vec{u}(\tau)d\tau + \vec{D}\vec{u}(t)
+				\end{cases}
+			\]
+		\end{defn}
+		
 		
 		\subsubsection{Evoluzione libera e evoluzione forzata}
+			In base al precedente risultato possiamo anche scrivere l'\textbf{evoluzione dello stato} per $ t\geq t_0 $
+			come la somme di due termini:
+			\[
+				\vec{x}(t) = \vec{x}_l(t) + \vec{x}_f(t).
+			\]
+			\begin{itemize}
+				\item Il termine 
+				\[
+					\vec{x}_l(t) = e^{\vec{A}(t-t_0)}\vec{x}(t_0)
+				\]
+				corrisponde all'\textit{evoluzione libera dello stato} a partire dalle condizioni iniziali $ \vec{x}(t_0) $. Si noti che $ e^{\vec{A}(t-t_0)} $ indica appunto come avviene la transizione dallo stato $ \vec{x}(t_0) $ allo stato $ \vec{x}(t) $ in assenza di contributi dovuti all'ingresso.
+				\item Il termine
+				\[
+					\vec{x}_f(t) = \int_{t_0}^{t} e^{\vec{A}(t - \tau)}\vec{B}\vec{u}(\tau)d\tau =
+					\int_{0}^{t-t_0} e^{\vec{A}\tau}\vec{B}\vec{u}(t - \tau)d\tau
+				\]
+				corrisponde all'\textit{evoluzione forzata dello stato} (la seconda equazione si dimostra
+				per cambiamento di variabile) . Si osservi che in tale integrale il contributo di 
+				$ \vec{u}(\tau) $ allo stato $ \vec{x}(t) $ è pesato tramite la funzione ponderatrice 
+				$ e^{\vec{A}(t - \tau)}\vec{B} $.
+			\end{itemize}
+			
+			Anche l'\textbf{evoluzione dell'uscita} per $ t\geq t_0 $ si può scrivere come la somma di due termini:
+			\[
+				\vec{y}(t) = \vec{y}_l(t) + \vec{y}_f(t).
+			\]
+			\begin{itemize}
+				\item Il termine
+				\[
+					\vec{y}_l(t) = \vec{C}\vec{x}_l(t) = \vec{C}e^{\vec{A}(t-t_0)}\vec{x}(t_0)
+				\]
+				corrisponde all'\textit{evoluzione libera dell'uscita} a partire dalle condizioni iniziali $ \vec{y}(t_0) = \vec{C}\vec{x}(t_0) $.
+				\item Il termine
+				\[
+					\vec{y}_f(t) = \vec{C}\vec{x}_f(t) + \vec{D}\vec{u}(t) = 
+					\vec{C}\int_{t_0}^{t} \vec{B}\vec{u}(\tau)d\tau + \vec{D}\vec{u}(t)
+				\]
+				corrisponde all'\textit{evoluzione forzata dell'uscita}.
+			\end{itemize}
 		
 		\subsubsection{Risposta impulsiva di una rappresentazione in VS}
 		
@@ -574,6 +663,71 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 		\subsection{Diagonalizzazione}
 		
 		\subsection{Forma di Jordan}
-		
+			Si consideri una matrice $ \vec{A} $ di dimensione $ n\times n $ i cui autovalori hanno molteplicità
+			non unitaria. In tal caso non vi è garanzia che esistano $ n $ autovettori linearmente indipendenti con cui costruire una matrice modale: dunque non è sempre possibile determinare una trasformazione di similitudine che porti ad una forma diagonale.\\
+			Si dimostra, tuttavia, che è sempre possibile, estendendo il concetto di autovettore, determinare un insieme di $ n $ \textit{autovettori generalizzati} linearmente indipendenti.\\
+			Tali vettori possono venire usati per costruire una \textit{matrice modale generalizzata} che 
+			consente, per similitudine, di passare ad una matrice in \textit{forma di Jordan}, una forma
+			canonica diagonale a blocchi che generalizza la forma diagonale.
+			
+			\begin{defn}
+				Dato un numero complesso $ \lambda \in \C $ e un numero intero $ p\geq 1 $ definiamo \textbf{blocco di Jordan} di ordine $ p $ associato a $ lambda $ la matrice quadrata
+				\[
+					\vec{J} =
+					\left.
+					\begin{bmatrix}
+						\lambda & 1 & 0 & \cdots & 0 & 0 \\
+						0 & \lambda & 1 & \cdots & 0 & 0 \\
+						0 & 0 & \lambda & \cdots & 0 & 0 \\
+						\vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+						0 & 0 & 0 & \cdots & \lambda & 1 \\
+	 					\tikzmark{lower1}0 & 0 & 0 & \cdots & 0 & \lambda\tikzmark{lower2}
+					\end{bmatrix}
+					\quad
+					\right\rbrace 
+					\text{p}
+				\]
+				\begin{tikzpicture}[overlay, remember picture,decoration={brace,amplitude=5pt}]
+				\draw[decorate,thick] ($ (lower2.south) +(0,-.25) $) -- ($ (lower1.south) +(0,-.25) $)
+				node [midway,below=5pt] {p};
+				\end{tikzpicture}
+				
+				\bigskip\bigskip
+				
+				Ogni elemento lungo la diagonale di tale matrice vale $ \lambda $, mentre ogni elemento lugo la sopra diagonale vale $ 1 $; ogni altro elemento è nullo. Dunque $ \lambda $ è un autovalore di molteplicità $ p $ del blocco $ \vec{J} $.
+			\end{defn}
+			Possiamo ora definire la forma canonica di Jordan.
+			\begin{defn}
+				Una matrice $ \vec{A} $ è detta in \textbf{forma di Jordan} se essa è una matrice diagonale a blocchi
+				\[
+					\vec{A} =
+					\begin{bmatrix}
+						\vec{J}_1 & \vec{0} & \cdots & \vec{0} \\
+						0 & \vec{J}_2 & \cdots & \vec{0} \\
+						\vdots & \vdots & \ddots & \vdots \\
+						\vec{0} & \vec{0} & \cdots & \vec{J}_q
+ 					\end{bmatrix}
+				\]
+				In cui ogni blocco $ \vec{J}_i $ lungo la diagonale è un blocco di Jordan associato ad un autovalore $ \lambda_i $ (per $ i = 1,\dots,q $).
+			\end{defn}
+			
+			\begin{defn}[Struttura di autovettori generalizzati]
+				Sia $ \vec{A} $ una matrice $ n\times n $ e sia $ \lambda $ un autovalore di molteplicità $ \nu $ a cui corrispondono $ \mu $ autovettori linearmente indipendenti ( con $ 1\leq \mu \leq \nu $).
+				A tale autovalore compete una struttura di $ \nu $ autovettori generalizzati linearmente indipendenti costituita da $ \mu $ catene:
+				\[
+					\begin{cases}
+						\vec{v}_{p_1}^{(1)}\ \rightarrow\ \cdots \ \rightarrow\ \vec{v}_{2}^{(1)}\ \rightarrow\ \vec{v}_{1}^{(1)} \qquad & \textup{catena 1} \\ \\
+						\vec{v}_{p_2}^{(2)}\ \rightarrow\ \cdots \ \rightarrow\ \vec{v}_{2}^{(2)}\ \rightarrow\ \vec{v}_{1}^{(2)} \qquad & \textup{catena 2} \\
+						\qquad\qquad \vdots & \qquad \vdots \\
+						\vec{v}_{p_\mu}^{(\mu)}\ \rightarrow\ \cdots \ \rightarrow\ \vec{v}_{2}^{(\mu)}\ \rightarrow\ \vec{v}_{1}^{(\mu)} \qquad & \textup{catena }\mu 
+					\end{cases}
+				\]
+				il numero di catene $ \mu $ è detto \textbf{molteplicità geometrica} dell'autovalore $ \lambda $.
+				La $ i-$esima catena ha lunghezza $ p_i $ e termina con un autovettore $ \vec{v}_1^{(i)} $. Gli altri autovettore della catena sono autovettori generalizzati ma non sono autovettori. Poiché in totale gli autovettori generalizzati sono $ \nu $ vale anche 
+				\[
+					\sum_{i=1}^{\mu} p_i = \nu
+				\]
+				La lunghezza della catena più lunga $ \pi = \max \{p_1,p_2,\dots,p_{\mu}\} $ è detta \textbf{indice} dell'autovalore $ \lambda $.
+ 			\end{defn}
 			
 \end{document}
