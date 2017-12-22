@@ -14,16 +14,14 @@
 \usepackage{multicol}
 \usepackage{caption}
 \captionsetup[figure]{labelfont={bf},name={Fig.},labelsep=period}
-\usepackage[left=1.5cm, right=1.5cm, top=3cm]{geometry}
+\usepackage[left=2.5cm, right=2.5cm, top=3cm]{geometry}
 \usepackage{tikz}
 \usetikzlibrary{calc}
-
-\usepackage{cleveref}
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \lhead{\nouppercase{\leftmark}}
-\rhead{\nouppercase{\rightmark}}
+\rhead{\nouppercase{}}
 \chead{}
 \lfoot{}
 \cfoot{\thepage}
@@ -37,6 +35,8 @@
 	colorlinks = true,
 	linkcolor = black,
 }
+
+\usepackage{cleveref}
 
 \newcommand{\numberset}{\mathbb}
 \newcommand{\R}{\numberset{R}}
@@ -441,12 +441,12 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 		
 	\section{Analisi nel dominio del tempo delle rappresentazioni in variabili di stato}
 		Un sistema lineare e stazionario di ordine $ n $, con $ r $ ingressi e $ p $ uscite, ha la seguente rappresentazione in VS:
-		\[
+		\begin{equation}\label{eq:sys}
 			\begin{cases}
 				\vec{\dot{x}}(t)\ =\vec{A}\vec{x}(t)+ \vec{B}\vec{u}(t)  \\
 				\vec{y}(t)\ =\vec{C}\vec{x}(t)+ \vec{D}\vec{u}(t) 
 			\end{cases}
-		\]
+		\end{equation}
 	
 		Il problema fondamentale dell'analisi dei sistemi per un tale sistema consiste nel
 		determinare l'andamento dello stato $ \vec{x}(t) $ e dell'uscita $ \vec{y}(t) $ per $ t \geq t_0 $ noto:
@@ -657,11 +657,53 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 			\end{itemize}
 		
 		\subsubsection{Risposta impulsiva di una rappresentazione in VS}
-		
+			La risposta impulsiva $ \omega(t) $ di un sistema SISO è la risposta forzata che consegue all’applicazione di un impulso unitario e dunque, posto $ u(t) = \delta(t) $, in base alla formula di Lagrange vale:
+			\[
+				\omega(t) = \vec{C}\int_{0}^{t} e^{\vec{A}t}\vec{B}\delta(t - \tau)d\tau + D\tau (t).
+			\]
+			Ricordando la fondamentale proprietà della funzione di Dirac per cui se $ f $ è una funzione continua in $ \left[ t_a,t_b \right] $ e $ t $ appartiene a questo intervallo vale
+			\[
+				\int_{t_a}^{t_b} f(\tau)\delta(\tau - t) d\tau =
+				\int_{t_a}^{t_b} f(\tau)\delta(t - \tau) d\tau = f(t)
+			\]
+			si ottiene finalmente
+			\[
+				\omega(t) = \vec{C}e^{\vec{A}t}\vec{B} + D\delta(t)
+			\]
+			
 		\subsection{Trasformazione di similitudine}
-		
+			La forma assunta da una rappresentazione in VS di un dato sistema dipende dalla
+			scelta delle grandezze che si considerano come variabili di stato. Tale scelta non è
+			unica e infatti si possono dare infinite diverse rappresentazioni dello stesso sistema,
+			tutte legate da un particolare tipo di trasformazione detta di similitudine.\\
+			Uno dei principali vantaggi di questa procedura consiste nel fatto che attraverso
+			particolari trasformazioni è possibile passare a nuove rappresentazioni in cui la matrice di stato assume una \textit{forma canonica} particolarmente facile da studiare.\\
+			Esempi di forme canoniche sono la \textit{forma diagonale} e la \textit{forma di Jordan}.
+			
+			\begin{defn}
+				Data una rappresentazione della forma~\eqref{eq:sys} si consideri il vettore $ \vec{z}(t) $ legato a $ \vec{x}(t) $ dalla trasformazione
+				\[
+					\vec{x}(t) = \vec{P}\vec{z}(t)
+				\]
+				dove $ \vec{P} $ è una qualunque matrice di costanti $ n\times n $ non-singolare. Dunque esiste sempre l'inversa di $ \vec{P} $ e vale anche $ \vec{z}(t) = \vec{P}^{-1}\vec{x}(t) $. Tale trasformazione è la \textbf{trasformazione di similitudine} e la matrice $ \vec{P} $ è detta \textit{matrice di similitudine}.
+			\end{defn}
+			La trasformazione di similitudine porta ad una nuova rappresentazione.
+			\[
+				\begin{cases}
+					\vec{\dot{z}}(t) = \vec{A'}\vec{z}(t) + \vec{B'}\vec{u}(t) \\
+					\vec{y}(t) = \vec{C'}\vec{z}(t) + \vec{D'}\vec{u}(t)
+				\end{cases}
+			\]
+			dove
+			\begin{align*}
+				\vec{A'} &= \vec{P}^{-1}\vec{A}\vec{P}; &\vec{B'} = \vec{P}^{-1}\vec{B};\\
+				\vec{C'} &= \vec{C}\vec{P}; &\vec{D'} = \vec{D}.
+			\end{align*}
+			 
 		\subsection{Diagonalizzazione}
-		
+			Si considera adesso il caso di una particolare trasformazione di similitudine che,
+			sotto opportune ipotesi, permette di passare ad una matrice $ \vec{\Lambda} = \vec{P}^{-1}\vec{A}\vec{P} $ in forma diagonale
+			
 		\subsection{Forma di Jordan}
 			Si consideri una matrice $ \vec{A} $ di dimensione $ n\times n $ i cui autovalori hanno molteplicità
 			non unitaria. In tal caso non vi è garanzia che esistano $ n $ autovettori linearmente indipendenti con cui costruire una matrice modale: dunque non è sempre possibile determinare una trasformazione di similitudine che porti ad una forma diagonale.\\
@@ -723,7 +765,7 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 					\end{cases}
 				\]
 				il numero di catene $ \mu $ è detto \textbf{molteplicità geometrica} dell'autovalore $ \lambda $.
-				La $ i-$esima catena ha lunghezza $ p_i $ e termina con un autovettore $ \vec{v}_1^{(i)} $. Gli altri autovettore della catena sono autovettori generalizzati ma non sono autovettori. Poiché in totale gli autovettori generalizzati sono $ \nu $ vale anche 
+				La $ i-$esima catena ha lunghezza $ p_i $ e termina con un autovettore $ \vec{v}_1^{(i)} $. Gli altri autovettori della catena sono autovettori generalizzati ma non sono autovettori. Poiché in totale gli autovettori generalizzati sono $ \nu $ vale anche 
 				\[
 					\sum_{i=1}^{\mu} p_i = \nu
 				\]
