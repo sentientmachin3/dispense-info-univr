@@ -21,7 +21,7 @@
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \lhead{\nouppercase{\leftmark}}
-\rhead{\nouppercase{}}
+\rhead{\nouppercase{\rightmark}}
 \chead{}
 \lfoot{}
 \cfoot{\thepage}
@@ -439,7 +439,7 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 		
 		\newpage
 		
-	\section{Analisi nel dominio del tempo delle rappresentazioni in variabili di stato}
+	\section{Analisi nel dominio del tempo delle rappresentazioni VS}
 		Un sistema lineare e stazionario di ordine $ n $, con $ r $ ingressi e $ p $ uscite, ha la seguente rappresentazione in VS:
 		\begin{equation}\label{eq:sys}
 			\begin{cases}
@@ -713,7 +713,7 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 			canonica diagonale a blocchi che generalizza la forma diagonale.
 			
 			\begin{defn}
-				Dato un numero complesso $ \lambda \in \C $ e un numero intero $ p\geq 1 $ definiamo \textbf{blocco di Jordan} di ordine $ p $ associato a $ lambda $ la matrice quadrata
+				Dato un numero complesso $ \lambda \in \C $ e un numero intero $ p\geq 1 $ definiamo \textbf{blocco di Jordan} di ordine $ p $ associato a $ \lambda $ la matrice quadrata
 				\[
 					\vec{J} =
 					\left.
@@ -736,7 +736,7 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 				
 				\bigskip\bigskip
 				
-				Ogni elemento lungo la diagonale di tale matrice vale $ \lambda $, mentre ogni elemento lugo la sopra diagonale vale $ 1 $; ogni altro elemento è nullo. Dunque $ \lambda $ è un autovalore di molteplicità $ p $ del blocco $ \vec{J} $.
+				Ogni elemento lungo la diagonale di tale matrice vale $ \lambda $, mentre ogni elemento lugo la sopra diagonale vale $ 1 $; ogni altro elemento è nullo. Dunque $ \lambda $ è un autovalore di molteplicità algebrica $ p $ del blocco $ \vec{J} $.
 			\end{defn}
 			Possiamo ora definire la forma canonica di Jordan.
 			\begin{defn}
@@ -745,13 +745,66 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 					\vec{A} =
 					\begin{bmatrix}
 						\vec{J}_1 & \vec{0} & \cdots & \vec{0} \\
-						0 & \vec{J}_2 & \cdots & \vec{0} \\
+						\vec{0} & \vec{J}_2 & \cdots & \vec{0} \\
 						\vdots & \vdots & \ddots & \vdots \\
 						\vec{0} & \vec{0} & \cdots & \vec{J}_q
  					\end{bmatrix}
 				\]
 				In cui ogni blocco $ \vec{J}_i $ lungo la diagonale è un blocco di Jordan associato ad un autovalore $ \lambda_i $ (per $ i = 1,\dots,q $).
 			\end{defn}
+			
+			\textbf{Matrice di Jordan:}
+			\[
+				\vec{J} = 
+				\begingroup % keep the change local
+				\setlength\arraycolsep{10pt}
+				\begin{bmatrix}
+					\boxed{\tikzmark{lower4}\vec{J}_1} & \vec{0} & \cdots & \vec{0} \\[.5em]
+					\vec{0} & \boxed{\vec{J}_2} & \cdots & \vec{0} \\[.5em]
+					\vdots & \vdots & \ddots & \vdots \\[.5em]
+					\vec{0} & \vec{0} & \cdots & \boxed{\vec{J}_q\tikzmark{lower3}} \\[.5em]
+				\end{bmatrix}
+				\endgroup
+			\]
+			\begin{tikzpicture}[overlay, remember picture,decoration={brace,amplitude=3pt}]
+			\draw[decorate,thick] ($ (lower3.north) +(.65,0) $)  -- ($ (lower3.south) +(.65,0) $)
+			node [midway,right=5pt] {$ \mu_{a_q} $};
+			\draw[decorate,thick] ($ (lower4.west) +(-.1,.5) $)  -- ($ (lower4.east) +(.5,.5) $)
+			node [midway,above=5pt] {$ \mu_{a_1} $};
+			\end{tikzpicture}
+			
+			\textbf{Blocco di Jordan:}
+			\[
+				\vec{J}_i =
+				\begin{bmatrix}
+					\boxed{\vec{J}_{1,1}} & \vec{0} & \cdots & \vec{0}\tikzmark{lower5} \\[.5em]
+					\vec{0} & \boxed{\vec{J}_{2,2}} & \cdots & \vec{0} \\[.5em]
+					\vdots & \vdots & \ddots & \vdots \\[.5em]
+					\vec{0} & \vec{0} & \cdots & \boxed{\vec{J}_{1,q_i}\tikzmark{lower6}} \\[.5em]
+				\end{bmatrix}
+			\]
+			\begin{tikzpicture}[overlay, remember picture,decoration={brace,amplitude=5pt}]
+			\draw[decorate,thick] ($ (lower5.north) +(1,0) $)  -- ($ (lower6.south) +(.75,0) $)
+			node [midway,right=5pt] {$ \mu_{a_i} $};
+			\end{tikzpicture}
+			
+			\textbf{Mini blocco di Jordan:}
+			\[
+				\vec{J}_{i,j} =
+				\begin{bmatrix}
+					\lambda_1 & 1 & 0 & \cdots & 0 & 0 \\
+					0 & \lambda_2 & 1 & \cdots & 0 & 0 \\
+					0 & 0 & \lambda_3 & \cdots & 0 & 0 \\
+					\vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+					0 & 0 & 0 & \cdots & \lambda_{i-1} & 1 \\
+					0 & 0 & 0 & \cdots & 0 & \lambda_i
+				\end{bmatrix}
+			\]
+			dove
+			\begin{itemize}
+				\item $ i\ \rightarrow\ \lambda_i $
+				\item $ j\ \rightarrow\ i,\dots, q_i $
+			\end{itemize}
 			
 			\begin{defn}[Struttura di autovettori generalizzati]
 				Sia $ \vec{A} $ una matrice $ n\times n $ e sia $ \lambda $ un autovalore di molteplicità $ \nu $ a cui corrispondono $ \mu $ autovettori linearmente indipendenti ( con $ 1\leq \mu \leq \nu $).
@@ -771,5 +824,6 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 				\]
 				La lunghezza della catena più lunga $ \pi = \max \{p_1,p_2,\dots,p_{\mu}\} $ è detta \textbf{indice} dell'autovalore $ \lambda $.
  			\end{defn}
+			
 			
 \end{document}
