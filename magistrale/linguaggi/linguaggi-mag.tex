@@ -487,10 +487,22 @@ e le sostituzioni nel seguente modo: \begin{align*}
 \end{align*}
 
 \subsubsection{Semantica small-step per dichiarazioni locali}
-La semantica del costrutto \lstinline|let| funziona in modi differenti a seconda del tipo di chiamata. \begin{align*}
-	
+La semantica del costrutto \lstinline|let| funziona in modi differenti a seconda del tipo di chiamata. In modalità call-by-value \begin{align*}
+	&\inference[(CBV-let1)]{\langle e_1, s \rangle \rightarrowtriangle \langle e_1', s' \rangle}{\langle \code{let}\ x:T = e_1\ \code{in}\ e_2,s \rangle \rightarrowtriangle \langle \code{let}\ x:T = e_1'\ \code{in}\ e_2, s' \rangle} \\ \\
+	&\inference[(CBV-let2)]{-}{\langle \code{let}\ x:T = v\ \code{in}\ e_2,s \rangle \rightarrowtriangle \langle \subs{e_2}{v}{x}, s \rangle}
 \end{align*}
+mentre in modalità call-by-name: \[ \inference[(CBN-let)]{-}{\langle \code{let}\ x:T = e_1\ \code{in}\ e_2, s \rangle \rightarrowtriangle \langle \subs{e_2}{e_1}{x}, s \rangle} \]
 
+In realtà il costrutto \lstinline|let| funge semplicemente da espansione sintattica, nel senso che ciò che si esprime con il costrutto \lstinline|let| può tranquillamente essere implementato con altri costrutti, ad esempio: \[  (fn\ x:\text{unit} \Rightarrow e_2) e_1 \equiv \code{let}\ x:\text{unit} = e_1\ \code{in}\ e_2 \equiv e_1; e_2\]
+
+\subsection{Ricorsione}
+La ricorsione è implementata tramite punti fissi\footnotemark. \footnotetext{Un punto fisso $x$ per un operatore $f$ è tale se vale che $f(x) = x$.} Estendiamo il linguaggio con il costrutto $fix$: \[ e::= \dots\ |\ fix.e \]
+La regola per il tipaggio di $fix$ è la seguente: \[ \inference[(T-fix)]{\type e: (T_1 \to T_2) \to (T_1 \to T_2)}{\type fix.e:T_1 \to T_2} \]
+
+La semantica in sè è relativamente semplice: \begin{align*}
+	&\inference[(Fix-cbn)]{-}{fix.e \rightarrowtriangle e(fix.e)} \\
+	&\inference[(Fix-cbv)]{e \equiv fn\ f: T_1 \to T_2 = e_1 \Rightarrow e_2}{fix.e \rightarrowtriangle e(fn\ x :T_1 \Rightarrow fix.e\ x)}
+\end{align*}
 
 
 
