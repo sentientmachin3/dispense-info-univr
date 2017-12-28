@@ -7,6 +7,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amsthm}
+\usepackage{amssymb}
 \usepackage{bm}
 \usepackage{empheq}
 \usepackage{mathtools}
@@ -44,6 +45,7 @@
 \renewcommand{\vec}{\bm}
 
 \theoremstyle{definition}
+\newtheorem{thm}{Teorema}
 \newtheorem{exmp}{Esempio}[section]
 \newtheorem{defn}{Definizione}[subsection]
 
@@ -802,8 +804,12 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 			\]
 			dove
 			\begin{itemize}
+				\item $ q $ è il numero di autovalori $ \lambda_i $ distinti
 				\item $ i\ \rightarrow\ \lambda_i $
 				\item $ j\ \rightarrow\ i,\dots, q_i $
+				\item $ \mu_{a_i} $ è la dimensione del blocco di Jordan $ \vec{J}_i $ ed è la molteplicità algebrica che coincide con il rango di $ \vec{J}_i $ .
+				\item $ \mu_{g_i} $ è il numero di mini blocchi $ \vec{J}_{i,j} $ ed è la molteplicità geometrica dell'autovalore $ \lambda_i $
+				\item $ 1 \leq \mu_g \leq \mu_a \leq n $
 			\end{itemize}
 			
 			\begin{defn}[Struttura di autovettori generalizzati]
@@ -824,6 +830,34 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 				\]
 				La lunghezza della catena più lunga $ \pi = \max \{p_1,p_2,\dots,p_{\mu}\} $ è detta \textbf{indice} dell'autovalore $ \lambda $.
  			\end{defn}
+ 			
+ 			\subsubsection{Teorema di Cayley-Hamilton}
+	 			Il seguente teorema di Cayley-Hamilton definisce il concetto di funzione polinomiale di una matrice quadrata e afferma che \textit{una matrice è radice del proprio polinomio caratteristico}.
+	 			
+	 			\begin{thm}[Cayley-Hamilton]
+					Data una matrice quadrata $ \vec{A} $ di ordine $ n $, sia
+					\[
+						P(s) = s^n + a_{n-1}s^{n-1} + \cdots + a_1 s + a_0
+					\]
+					il suo \textbf{polinomio caratteristico}. La matrice $ \vec{A} $ è \textbf{radice} del suo stesso polinomio caratteristico, ovvero soddisfa la seguente equazione:
+					\[
+						P(\vec{A}) \triangleq \vec{A}^n + a_{n-1} \vec{A}^{n-1} + \cdots + \vec{A}_1 s + a_0\vec{I} = \vec{0}
+					\]
+	 			\end{thm}
+	 			
+	 			dove $ \vec{0} $ è una matrice quadrata di ordine $ n $ i cui elementi valgono tutti zero.
+ 			
+ 			\subsubsection{Condizioni di diagonalizzabilità}
+	 			La matrice $ \vec{A}\ n\times n $ è diagonalizzabile se e solo se è verificata una delle seguenti condizioni:
+	 			\begin{itemize}
+	 				\item Esistono $ n $ autovettori linearmente indipendenti.
+	 				\item Se $ \mu_{a_i} $ dell'autovalore $ \lambda_i $ è uguale alla sua molteplicità geometrica $ \mu_{g_i} $.
+	 				\item Se la dimensione di tutti i mini blocchi di Jordan associato a $ \lambda_i $ è unitaria.
+	 				\item Se per ogni $ \lambda_i $ la dimensione $ m_i $ del più grande mini blocco di Jordan è unitaria.
+	 				\item Se il grado di molteplicità di ogni $ \lambda_i $ nel polinomio minimo $ m(\lambda) $ è unitario.
+	 			\end{itemize}
+	 			
+	 		
 			
 			
 \end{document}
