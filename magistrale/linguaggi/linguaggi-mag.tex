@@ -21,10 +21,10 @@
 \usepackage[strict]{changepage}
 \usepackage{libertine}
 \usepackage{xfrac}
+\usepackage{courier}
 
-\lstset{
-	basicstyle=\ttfamily\small
-}
+\lstset{tabsize=2,
+	basicstyle=\small\ttfamily}
 
 
 \newtheorem{thm}{Teorema}[section]
@@ -472,6 +472,24 @@ Estendiamo la sintassi con \[ e::=\ \dots |\ \text{let } x:T = e_1\text{ in } e_
 
 Dal momento che $x$ è una variabile locale, $\Gamma$ non contiene una entry per $x$, quindi potrebbe essere necessario ricorrere ad alpha-conversion.
 
+\subsubsection{Dichiarazioni locali e alpha conversion}
+Analogamente a quanto detto in precedenza, l'alpha-conversion è applicabile anche al costrutto \lstinline|let|.
+In sostanza, si opera come segue: \[ (\code{let}\ x:T = e_1\ \code{in}\ e_2) =_\alpha \code{let}\ y:T = e_1\ \code{in}\ \subs{e_2}{y}{x} \]
+
+dove $y$ è una fresh variable, ovvero non si trova nè in $e_1$, nè in $e_2$.
+
+\subsubsection{Dichiarazioni locali, free variables e sostituzioni}
+Definiamo le variabili libere per il costrutto \lstinline|let| come \[ fv(\code{let}\ x:T = e_1\ \code{in}\ e_2)  = fv(e_1) \cup (fv(e_2) \setminus \lbrace x \rbrace) \]
+e le sostituzioni nel seguente modo: \begin{align*}
+	\subs{(\code{let}\ x:T = e_1\ \code{in}\ e_2)}{e}{z} &= (\code{let}\ x:T = \subs{e_1}{e}{z}\ \code{in}\ \subs{e_2}{e}{z}) &\text{if } x \notin fv(e) \\
+	 \subs{(\code{let}\ x:T = e_1\ \code{in}\ e_2)}{e}{z} &= (\code{let}\ x:T = \subs{e_1}{e}{z}\ \code{in}\ (\subs{e_2}{y}{x}) \lbrace \sfrac{e}{z} \rbrace) &\text{if } x \in fv(e) \wedge y \text{fresh} \\
+	 \subs{(\code{let}\ x:T = e_1\ \code{in}\ e_2)}{e}{x} &= (\code{let}\ x:T = \subs{e_1}{e}{x}\ \code{in}\ e_2) &
+\end{align*}
+
+\subsubsection{Semantica small-step per dichiarazioni locali}
+La semantica del costrutto \lstinline|let| funziona in modi differenti a seconda del tipo di chiamata. \begin{align*}
+	
+\end{align*}
 
 
 
