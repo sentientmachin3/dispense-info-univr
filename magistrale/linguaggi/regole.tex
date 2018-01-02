@@ -6,9 +6,10 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amsthm}
+\usepackage{xfrac}
 \usepackage{semantic}
 \usepackage{titling}
-\usepackage[left=1.5cm, right=1.5cm, top=4cm]{geometry}
+\usepackage[landscape,left=1.5cm, right=1.5cm, top=1cm, bottom=1cm]{geometry}
 \usepackage{listing}
 \usepackage{stmaryrd}
 
@@ -16,76 +17,125 @@
 \newcommand{\Z}{\numberset{Z}}
 \newcommand{\integer}{\textup{int}}
 \newcommand{\bool}{\textup{bool}}
+\newcommand{\skipp}{\textup{skip}}
 
 \pagenumbering{gobble}
 \setlength{\droptitle}{-5cm}
 \date{}
 \newcommand{\infer}[4]{\inference[\textbf{#1}]{#2}{#3}#4 }
 \newcommand{\brule}[2]{\langle #1 \rangle \Downarrow #2}
+\newcommand{\bbrule}[2]{ #1 \Downarrow #2}
 \newcommand{\srule}[2]{\langle #1 \rangle \rightarrowtriangle \langle #2 \rangle}
+\newcommand{\ssrule}[2]{\langle #1 \rangle \rightarrowtriangle^{*} \langle #2 \rangle}
 \newcommand{\memrep}[3]{#1 \lbrack #2 \mapsto #3 \rbrack}
 \newcommand{\code}[1]{\textup{\lstinline{#1}}}
 \newcommand{\ifthenelse}[3]{\text{if } #1 \text{ then } #2 \text{ else } #3}
+\newcommand{\whiledo}[2]{\text{while } #1 \text{ do } #2}
+\newcommand{\doreturn}[2]{\text{do } #1 \text{ return } #2}
+\newcommand{\awaitprotectend}[2]{\text{await } #1 \text{ protect } #2 \text{ end}}
+\newcommand{\letin}[2]{\text{let } #1 \text{ in } #2}
+\newcommand{\subs}[3]{#1 \lbrace \sfrac{#2}{#3} \rbrace}
 \newcommand{\goesto}{\rightarrowtriangle}
 \title{\textbf{Regole di inferenza}}
 
+
+\usepackage[OT1]{eulervm}
+
 \begin{document}
-	
+
 	\maketitle
 	\section*{Semantica big-step}
 	\begin{align*}
-		&\infer{B-Num}{-}{\brule{n,s}{n}}{}
-		&\infer{B-Loc}{-}{\brule{l,s}{s(l)}}{} \\ \\
-		&\infer{B-Skip}{-}{\brule{skip,s}{s}}{} 
-		&\infer{B-Add}{\brule{E_1,s}{n_1} \quad \brule{E_2,s}{n_2}}{\brule{E_1+E_2}{n_3}}{n_3 = add(n_1, n_2)} \\ \\
-		&\infer{B-Assign}{\brule{E,s}{n}}{\brule{l:=e,s}{\memrep{s}{l}{n}}}{}  &\infer{B-Assign.s}{\brule{E,s}{n}}{\brule{l:=e,s}{\langle skip, \memrep{s}{l}{n}} \rangle}{}  \\ \\
-		&\infer{B-Seq}{\brule{C_1,s}{s_1} \quad \brule{C_2,s_1}{s'} }{\brule{C_1;C_2,s}{s'}}{} 
-		&\infer{B-Seq.s}{\brule{C_1,s}{\langle skip,s_1 \rangle} \quad \brule{C_2,s_1}{\langle r,s' \rangle} }{\brule{C_1;C_2,s}{\langle r,s' \rangle}}{} \\ \\
-		&\infer{B-If.T}{\brule{B,s}{true} \quad \brule{C_1,s}{s'}}{\brule{\ifthenelse{B}{C_1}{C_2},s}{\langle r, s\rangle}}{} 
-		&\infer{B-If.T}{\brule{B,s}{false} \quad \brule{C_2,s}{s'}}{\brule{\ifthenelse{B}{C_1}{C_2},s}{\langle r, s\rangle}}{} \\ \\
+		&\infer{(B-Num)}{-}{\brule{n,s}{n}}{}	
+		&\infer{(B-Loc)}{-}{\brule{l,s}{s(l)}}{}\qquad\qquad
+		&\infer{(B-Skip)}{-}{\brule{\skipp,s}{s}}{} 
+		&\infer{(B-Add)}{\brule{E_1,s}{n_1} \quad \brule{E_2,s}{n_2}}{\brule{E_1+E_2}{n_3}}{n_3 = add(n_1, n_2)}
 	\end{align*}
+	\begin{align*}
+		&\infer{(B-Assign)}{\brule{E,s}{n}}{\brule{l:=e,s}{\memrep{s}{l}{n}}}{}  &\infer{(B-Assign.s)}{\brule{E,s}{n}}{\brule{l:=e,s}{\langle \skipp, \memrep{s}{l}{n}} \rangle}{} \qquad\qquad
+		&\infer{(B-Seq)}{\brule{C_1,s}{s_1} \quad \brule{C_2,s_1}{s'} }{\brule{C_1;C_2,s}{s'}}{} 
+		&\infer{(B-Seq.s)}{\brule{C_1,s}{\langle \skipp,s_1 \rangle} \quad \brule{C_2,s_1}{\langle r,s' \rangle} }{\brule{C_1;C_2,s}{\langle r,s' \rangle}}{}
+	\end{align*}
+	\begin{align*}
+		&\infer{(B-If.T)}{\brule{B,s}{true} \quad \brule{C_1,s}{s'}}{\brule{\ifthenelse{B}{C_1}{C_2},s}{s'}}{} 
+		&\infer{(B-If.T)}{\brule{B,s}{true} \quad \brule{C_1,s}{\langle r,
+				s'\rangle}}{\brule{\ifthenelse{B}{C_1}{C_2},s}{\langle r, s'\rangle}}{} \qquad
+		&\infer{(B-If.F)}{\brule{B,s}{false} \quad \brule{C_2,s}{s'}}{\brule{\ifthenelse{B}{C_1}{C_2},s}{s'}}{}
+		&\infer{(B-If.F)}{\brule{B,s}{false} \quad \brule{C_2,s}{\langle r, s'\rangle}}{\brule{\ifthenelse{B}{C_1}{C_2},s}{\langle r, s\rangle}}{}
+	\end{align*}
+	\begin{align*}
+		&\infer{(B-While.T)}{\brule{B, s}{true}\quad \brule{C, s}{s_1}\quad \brule{\whiledo{B}{C}, s_1}{s'}}{\brule{\whiledo{B}{C}, s}{s'}}{}
+		&\infer{(B-While.F)}{\brule{B, s}{false}}{\brule{\whiledo{B}{C}, s}{s}}{} \qquad
+		&\infer{(B-Do)}{\brule{B,s}{v_1}\quad \brule{C,s}{v_2}}{\brule{\doreturn{E}{C}, s}{v_2}}{}
+	\end{align*}
+	\begin{align*}
+		&\infer{(B-While.UN)}{\brule{\ifthenelse{B}{(C;\whiledo{B}{C})}{\skipp}, s}{r, s'}}{\brule{\whiledo{B}{C}, s}{r, s'}}{}
+		&\infer{(B-Await)}{\brule{B, s}{true, s_1}\quad \ssrule{C, s_1}{\skipp, s'}}{\srule{\awaitprotectend{B}{C}, s}{\skipp, s'}}{}
+	\end{align*}
+	\begin{align*}
+		&\infer{(B-Let-CBV)}{\bbrule{P}{m}\quad \bbrule{\subs{E}{m}{x}}{n}}{\bbrule{\letin{x = P}{E}}{n}}{}
+		&\infer{(B-Let-CBN)}{\bbrule{\subs{E}{P}{x}}{n}}{\bbrule{\letin{x = P}{E}}{n}}{} \qquad
+		&\infer{(B-Fn)}{-}{\srule{\text{fn } x\colon T\ \Rightarrow\ e, s}{\text{fn } x\colon T\ \Rightarrow\ e, s}}{}
+	\end{align*}
+	\begin{align*}
+		&\infer{(B-App-CBV)}{\bbrule{E_1}{\text{fn } x\colon T \Rightarrow E}\qquad \bbrule{\subs{E}{E_2}{x}}{n}}{\bbrule{E_1 E_2}{n}}{}
+		&\infer{(B-App-CBN)}{\bbrule{E_1}{\text{fn } x\colon T \Rightarrow E}\qquad \bbrule{E_2}{v}\qquad \bbrule{\subs{E}{v}{x}}{n}}{\bbrule{E_1 E_2}{n}}{}
+	\end{align*}
+
 	\newpage
-	\newgeometry{left=1.5cm, right=1.5cm, top=1cm,bottom=1cm}
 	
 \section*{Semantica small-step}
+\subsection*{Grammatica delle espressioni}
+	\begin{align*}
+		op\ :\colon =&\ +\ \mid\ \geq \\ \\
+		e\in \textup{Exp}\ :\colon =&\ n\ \mid\ b\ \mid\ e\ \textup{op}\ e\ \mid\ \textup{if}\ e\ \textup{then}\ e\ \textup{else}\ e\ \mid\ l\colon = e\ \mid\ !l\ \mid\ \textup{skip}\ \mid\ e;e\ \mid\ \textup{while}\ e\ \textup{do}\ e\ \mid 
+		 \text{fn } x\colon T\ \Rightarrow\ e\ \mid\ e_1 e_2\ \mid\  \text{let } x\colon T = e\ \textup{in } e\ \mid\ e\oplus e\ \mid\ e\| e\ \mid\ \textup{await}\ e\ \textup{protect}\ e\ \textup{end}
+	\end{align*}
+\subsection*{Regole per la semantica}
 %% ADJUST WIDTH
 	\begin{align*}
 		&\infer{S-Left}{E_1 \goesto E_1' }{E_1 + E_2 \goesto E_1' + E_2}{} 
-		&\infer{S-N.Right}{E_2 \goesto E_2'}{n_1 + E_2 \goesto n_1 + E_2'}{} \\ \\
-		&\infer{S-Add}{-}{n_1+n_2 \goesto n_3}{n_3 = add(n_1, n_2)} 
-		&\infer{S-Left}{E_1 \goesto_{ch} E_1'}{E_1 + E_2 \goesto_{ch} E_1' + E_2}{}\\ \\
-		&\infer{S-Right}{E_2 \goesto_{ch} E_2'}{E_1 + E_2 \goesto_{ch} E_1 + E_2'}{}
-		&\infer{op+}{-}{\srule{n_1 + n_2,s}{n,s}}{n=add(n_1,n_2)}\\ \\
+		&\infer{S-N.Right}{E_2 \goesto E_2'}{n_1 + E_2 \goesto n_1 + E_2'}{} \qquad\qquad
+		&\infer{S-Add}{-}{n_1+n_2 \goesto n_3}{n_3 = add(n_1, n_2)} \\ \\
+		&\infer{S-Left}{E_1 \goesto_{ch} E_1'}{E_1 + E_2 \goesto_{ch} E_1' + E_2}{} 
+		&\infer{S-Right}{E_2 \goesto_{ch} E_2'}{E_1 + E_2 \goesto_{ch} E_1 + E_2'}{} \qquad\qquad
+		&\infer{op+}{-}{\srule{n_1 + n_2,s}{n,s}}{n=add(n_1,n_2)} \\ \\
 		&\infer{op-geq}{-}{\srule{n_1 \geq n_2,s}{b,s}}{b=geq(n_1, n_2)} 
-		&\infer{op1}{\srule{e_1,s}{e_1', s'}}{\srule{e_1 + e_2,s}{e_1' + e_2,s'}}{} \\ \\
-		&\infer{op2}{\srule{e_2,s}{e_2', s'}}{\srule{v + e_2,s}{v + e_2',s}}{} 
-		&\infer{op1b}{\srule{e_2,s}{e_2', s'}}{\srule{e_1 + e_2,s}{e_1 + e_2',s'}}{} \\ \\
-		&\infer{op2b}{\srule{e_1,s}{e_1', s'}}{\srule{e_1 + v,s}{e_1' + v',s'}}{} 
+		&\infer{op1}{\srule{e_1,s}{e_1', s'}}{\srule{e_1 + e_2,s}{e_1' + e_2,s'}}{} \qquad\qquad
+		&\infer{op2}{\srule{e_2,s}{e_2', s'}}{\srule{v + e_2,s}{v + e_2',s}}{} \\ \\
+		&\infer{op1b}{\srule{e_2,s}{e_2', s'}}{\srule{e_1 + e_2,s}{e_1 + e_2',s'}}{} 
+		&\infer{op2b}{\srule{e_1,s}{e_1', s'}}{\srule{e_1 + v,s}{e_1' + v',s'}}{} \qquad\qquad
 		&\infer{deref1}{-}{\srule{!l,s}{v,s}}{\text{if } l \in dom(s) \wedge s(l)=v} \\ \\
 		&\infer{deref2}{\srule{e,s}{e',s'}}{\srule{!e,s}{!e',s'}}{} 
-		&\infer{ref1}{-}{\srule{\text{ref }v, s}{l, \memrep{s}{l}{v}}}{l \notin dom(s)} \\ \\
-		&\infer{ref2}{\srule{e,s}{e',s'}}{\srule{\text{ref }e,s}{\text{ref } e',s}}{} 
-		&\infer{assign1}{-}{\srule{l:=v,s}{\text{skip}, \memrep{s}{l}{v}}}{\text{if } l \in dom(s)}	 \\ \\
-		&\infer{assign2}{\srule{e,s}{e',s'}}{\srule{l:=e,s}{l:=e',s}}{} 
-		&\infer{assign3}{\srule{e_1,s}{e_1',s'}}{\srule{e_1:=e_2,s}{e_1':=e_2,s'}}{}\\ \\
+		&\infer{ref1}{-}{\srule{\text{ref }v, s}{l, \memrep{s}{l}{v}}}{l \notin dom(s)} \qquad\qquad
+		&\infer{ref2}{\srule{e,s}{e',s'}}{\srule{\text{ref }e,s}{\text{ref } e',s}}{}\\ \\
+		&\infer{assign1}{-}{\srule{l:=v,s}{\text{skip}, \memrep{s}{l}{v}}}{\text{if } l \in dom(s)} 
+		&\infer{assign2}{\srule{e,s}{e',s'}}{\srule{l:=e,s}{l:=e',s}}{} \qquad\qquad
+		&\infer{assign3}{\srule{e_1,s}{e_1',s'}}{\srule{e_1:=e_2,s}{e_1':=e_2,s'}}{} \\ \\
 		&\infer{if-tt}{-}{\srule{\text{if } true \text{ then } e_1 \text{ else } e_2,s}{e_1,s}}{}
-		&\infer{if-ff}{-}{\srule{\text{if} false \text{then} e_1 \text{else} e_2,s}{e_2,s}}{} \\ \\
-	\end{align*}
-	\begin{align*}
-		\infer{if}{\srule{e,s}{e',s'}}{\srule{\text{if } e \text{ then } e_1 \text{ else } e_2,s}{\text{if } e' \text{ then } e_1 \text{ else } e_2,s}}{}
-	\end{align*}
-	\begin{align*}
+		&\infer{if-ff}{-}{\srule{\text{if } false \text{ then } e_1 \text{ else } e_2,s}{e_2,s}}{}\qquad\qquad
+		&\infer{if}{\srule{e,s}{e',s'}}{\srule{\text{if } e \text{ then } e_1 \text{ else } e_2,s}{\text{if } e' \text{ then } e_1 \text{ else } e_2,s}}{}\\ \\
 		&\infer{while}{-}{\srule{\text{while } e \text{ do } e_1, s}{\text{if } e \text{ then } (e_1; \text{while } e \text{ do } e_1) \text{ else } skip, s}}{}
-	\end{align*}
-		
-	\begin{align*}
-		&\infer{assign1b}{-}{\srule{l:=n,s}{n, \memrep{s}{l}{n}}}{l \in dom(s)}
-		&\infer{seq.skip}{-}{\srule{skip;e_2,s}{e_2,s}}{} \\ \\
-		&\infer{seq}{\srule{e_1,s}{e_1',s}}{\srule{e_1;e_2,s}{e_1';e_2,s'}}{}
+		&\infer{assign1b}{-}{\srule{l:=n,s}{n, \memrep{s}{l}{n}}}{l \in dom(s)} \\ \\
+		&\infer{seq.skip}{-}{\srule{skip;e_2,s}{e_2,s}}{}
+		&\infer{seq}{\srule{e_1,s}{e_1',s}}{\srule{e_1;e_2,s}{e_1';e_2,s'}}{}\qquad\qquad
 		&\infer{seq.skipb}{-}{\srule{v;e_2,s}{e_2,s}}{}
 	\end{align*}
 	\newpage
-	
+	\begin{minipage}{.45\linewidth}
+		\begin{flushleft} 
+			\begin{align*}
+				&\infer{par-L}{\srule{e_1,s}{e_1', s'}}{\srule{e_1\| e_2, s}{e_1'\| e_2 , s'}}{}
+				&\infer{par-R}{\srule{e_2,s}{e_2', s'}}{\srule{e_1\| e_2, s}{e_1\| e_2' , s'}}{}\qquad\qquad
+				&\infer{end-L}{-}{\srule{\textup{skip}\| e, s}{e , s}}{}
+				&\infer{end-R}{-}{\srule{e \| \textup{skip}, s}{e , s}}{} \\ \\
+				&\infer{await}{\ssrule{e_1, s}{\textup{true}, s'}\qquad \ssrule{e_2, s'}{\textup{skip}, s''}}{
+					\srule{\textup{await}\ e_1\ \textup{protect}\ e_2\ \textup{end}, s}{\textup{skip}, s''}}{}  
+				&\infer{ChoiceL}{\srule{e_1, s}{e_1', s'}}{\srule{e_1 \oplus e_2, s}{e_1', s'}}{} \qquad\qquad
+				&\infer{ChoiceR}{\srule{e_2, s}{e_2', s'}}{\srule{e_1 \oplus e_2, s}{e_2', s'}}{} 
+			\end{align*}
+		\end{flushleft}
+	\end{minipage}
 \section*{Grammatica dei tipi}
 	\[
 		T:\colon=\ \integer\ \mid\ \bool\ \mid\ \textup{unit}\ \mid\ T_1\rightarrow T_2\ \mid\ T_1 + T_2\ \mid\ T_1 * T_2\ 
@@ -96,15 +146,15 @@
 \subsection*{Tipi primitivi e operatori}
 	\begin{align*}
 		&\infer{(int)}{-}{\Gamma \vdash n\colon \integer}{\ \textup{for}\ n \in \Z} 
-		&\infer{(bool)}{-}{\Gamma \vdash b\colon \bool}{\ \textup{for}\ n \in \{true, false\}} \\ \\
+		&\infer{(bool)}{-}{\Gamma \vdash b\colon \bool}{\ \textup{for}\ n \in \{true, false\}} \qquad\qquad
 		&\infer{(op +)}{\Gamma \vdash e_1\colon \integer\qquad \Gamma \vdash e_2\colon \integer}{\Gamma\vdash e_1 + e_2 \colon \integer}{}
 		&\infer{(op *)}{\Gamma \vdash e_1\colon \integer\qquad \Gamma \vdash e_2\colon \integer}{\Gamma\vdash e_1 * e_2 \colon \integer}{} \\ \\
 		&\infer{(op or)}{\Gamma\vdash e_1\colon \bool\qquad \Gamma\vdash e_2\colon\bool}{\Gamma\vdash e_1\ or\ e_2 \colon\bool}{}
-		&\infer{(op and)}{\Gamma\vdash e_1\colon \bool\qquad \Gamma\vdash e_2\colon\bool}{\Gamma\vdash e_1\ and\ e_2 \colon\bool}{} \\ \\
+		&\infer{(op and)}{\Gamma\vdash e_1\colon \bool\qquad \Gamma\vdash e_2\colon\bool}{\Gamma\vdash e_1\ and\ e_2 \colon\bool}{} \qquad\qquad
 		&\infer{(op $ \geq $)}{\Gamma \vdash e_1\colon \integer\qquad \Gamma \vdash e_2\colon \integer}{\Gamma\vdash e_1 \geq e_2 \colon \bool}{}
 		&\infer{(assign)}{\Gamma \vdash e\colon \integer}{\Gamma\vdash l := e\colon \textup{unit}}{\ \textup{if}\ \Gamma(l) =\textup{intref}} \\ \\
 		&\infer{(skip)}{-}{\Gamma\vdash skip\colon unit}{}
-		&\infer{(seq)}{\Gamma \vdash e_1\colon unit \qquad \Gamma\vdash e_2\colon T}{\Gamma \vdash e_1;e_2\colon T}{} \\ \\
+		&\infer{(seq)}{\Gamma \vdash e_1\colon unit \qquad \Gamma\vdash e_2\colon T}{\Gamma \vdash e_1;e_2\colon T}{} \qquad\qquad
 		&\infer{(if)}{\Gamma\colon e_1\colon\bool\quad\Gamma\vdash e_2\colon T\quad \Gamma\vdash e_3 \colon T}{\Gamma\vdash \textup{if}\ e_1\ \textup{then}\ e_2\ \textup{else}\ e_3\colon T }{} 
 		&\infer{(while)}{\Gamma\vdash e_1 \colon \bool\qquad \Gamma\vdash e_2 \colon T}{\Gamma \vdash\textup{while}\ e_1\ \textup{do}\ e_2\colon T}{}\\ \\
 		&\infer{(let)}{\Gamma \vdash e_1\colon T\qquad \Gamma,x\colon T \vdash e_2\colon T'}{
@@ -113,31 +163,45 @@
 \subsection*{Funzioni}
 	\begin{align*}
 		&\infer{(var)}{-}{\Gamma \vdash \colon T}{\ \textup{if}\ \Gamma (x) = T} 
-		&\infer{(fn)}{\Gamma , x \colon T \vdash e\colon T'}{\Gamma\vdash (fn\ x\colon T\ \Rightarrow\ e )\colon T\rightarrow T'}{} \\ \\
-		&\infer{(app)}{\Gamma \vdash e_1 \colon T \rightarrow T'\qquad \Gamma\vdash e_2\colon T}{\Gamma\vdash e_1 e_2\colon T'}{}
+		&\infer{(fn)}{\Gamma , x \colon T \vdash e\colon T'}{\Gamma\vdash (fn\ x\colon T\ \Rightarrow\ e )\colon T\rightarrow T'}{} \qquad\qquad
+		&\infer{(app)}{\Gamma \vdash e_1 \colon T \rightarrow T'\qquad \Gamma\vdash e_2\colon T}{\Gamma\vdash e_1 e_2\colon T'}{} 
+	\end{align*}
+\subsection*{Concorrenza}
+	\begin{align*}
+		&\infer{(T-sq1)}{\Gamma\vdash e_1\colon\textup{unit}\qquad \Gamma\vdash e_2\colon\textup{unit}}{\Gamma\vdash e_1;e_2\colon \textup{unit}}{}
+		&\infer{(T-sq2)}{\Gamma\vdash e_1\colon\textup{proc}\qquad \Gamma\vdash e_2\colon\textup{proc}}{\Gamma\vdash e_1;e_2\colon \textup{proc}}{} \qquad\qquad
+		&\infer{(T-par)}{\Gamma\vdash e_1\colon T_1\qquad \Gamma\vdash e_2\colon T_2}{\Gamma\vdash e_1 \| e_2\colon \textup{proc}}{\ T_1, T_2 \in \{\textup{unit}, \textup{proc}\}} \\ \\
+		&\infer{(T-await)}{\Gamma\vdash e_1 \colon \bool\qquad \Gamma\vdash e_2\colon \textup{unit}}{
+			\Gamma\vdash \textup{await}\ e_1\ \textup{protect}\ e_2\ \textup{end}\colon \textup{unit} }{} 
+		&\infer{(T-choice)}{\Gamma\vdash e_1 \colon \textup{unit}\qquad \Gamma\vdash e_2\colon \textup{unit}}{\Gamma\vdash e_1 \oplus e_2\colon \textup{unit}}{}
 	\end{align*}
 \section*{Sottotipaggio}
 	\begin{align*}
-		&\infer{(sub)}{\Gamma\vdash e \colon T\qquad T<\colon T'}{\Gamma\vdash e\colon T'}{} \\ \\
-		&\infer{(s-refl)}{-}{T<\colon T}{}
+		&\infer{(sub)}{\Gamma\vdash e \colon T\qquad T<\colon T'}{\Gamma\vdash e\colon T'}{}
+		&\infer{(s-refl)}{-}{T<\colon T}{} \qquad\qquad
 		&\infer{(s-trans)}{T<\colon T'\qquad T'<\colon T''}{T<\colon T''}{}
 	\end{align*}
 \subsection*{Sottotipaggio dei record}
 	\begin{align*}
 		&\infer{(rec-perm)}{\pi\ \textup{una permutazione di } 1,2,\dots, k}{
-			\{p_1\colon T_1, \dots,p_k\colon T_k\}<\colon \{p_{\pi(1)}\colon T_{\pi (1)},\dots, p_{\pi(k)}\colon T_{\pi(k)} \}}{} \\ \\
+			\{p_1\colon T_1, \dots,p_k\colon T_k\}<\colon \{p_{\pi(1)}\colon T_{\pi (1)},\dots, p_{\pi(k)}\colon T_{\pi(k)} \}}{}
 		&\infer{(rec-width)}{-}{\{p_1\colon T_1,\dots,p_k\colon T_k, p_{k+1}\colon T_{k+1},\dots, p_z\colon T_z \} <\colon \{p_1\colon T_1,\dots, p_k\colon T_k \}}{} \\ \\
 		&\infer{(rec-depth)}{T_1<\colon T_1'\ \dots\ T_k<\colon T_k'}{\{ p_1\colon T_1,\dots , p_k\colon T_k \} <\colon \{ p_1\colon T_1',\dots,p_k\colon T_k'\}}{}
 	\end{align*}
 	
 \subsection*{Sottotipaggio delle funzioni}
-	\[
-		\infer{(fun-sub)}{T_1\colon> T_1'\qquad T_2<\colon T_2'}{T_1\rightarrow T_2 <\colon T_1'\rightarrow T_2'}{}
-	\]
-	
+	\begin{minipage}{.45\linewidth}
+		\begin{flushleft} 
+			\[
+				\infer{(fun-sub)}{T_1\colon> T_1'\qquad T_2<\colon T_2'}{T_1\rightarrow T_2 <\colon T_1'\rightarrow T_2'}{}
+			\]
+		\end{flushleft}
+	\end{minipage}
 \subsection*{Sottotipaggio somma e prodotto}
 	\begin{align*}
 		&\infer{(prod-sub)}{T_1<\colon T_1'\qquad T_2<\colon T_2'}{T_1 \ast T_2 <\colon T_1'\ast T_2'}{} 
 		&\infer{(sum-sub)}{T_1<\colon T_1'\qquad T_2<\colon T_2'}{T_1 + T_2 <\colon T_1'+ T_2'}{}
 	\end{align*}
+	
+
 \end{document}
