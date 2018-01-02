@@ -417,7 +417,10 @@ Intuitivamente, nell'espressione $M_1M_2$, per applicare $M_2$ a $M_1$ si proced
 \end{itemize}
 
 \subsubsection{Semantica dell'applicazione di funzioni}
-Estendiamo l'insieme dei valori con \[ \text{Values } v::= b\ |\ n\ |\ skip\ |\ fn\ x:T \Rightarrow e \]
+Estendiamo l'insieme dei valori con 
+\[ 
+	\text{Values } v::= b\ |\ n\ |\ skip\ |\ fn\ x:T \Rightarrow e 
+\]
 La semantica funziona come di seguito:
 \[ \inference[App]{M_1 \rightarrowtriangle M_1'}{M_1M_2 \rightarrowtriangle M_1'M_2} \]
 Inoltre, in modalità call-by-value: \begin{adjustwidth}{-1.3cm}{}
@@ -426,22 +429,30 @@ Inoltre, in modalità call-by-value: \begin{adjustwidth}{-1.3cm}{}
 	\inference[CBV-fn]{-}{\langle (\text{fn }x:T \Rightarrow e)v, s \rangle \rightarrowtriangle \langle \subs{e}{v}{x},s \rangle}
 \end{align*}
 \end{adjustwidth}
-mentre in modalità call-by-name: \begin{align*}
-\inference[CBN-app]{\langle e_1, s \rangle \rightarrowtriangle \langle e_1', s' \rangle}{\langle e_1e_2,s \rangle \rightarrowtriangle \langle e_1'e_2, s' \rangle} \quad \inference[CBN-fn]{-}{\langle (\text{fn }x:T \Rightarrow e)e_2, s \rangle \rightarrowtriangle \langle \subs{e}{e_2}{x},s \rangle}
+mentre in modalità call-by-name: 
+\begin{align*}
+	\inference[CBN-app]{\langle e_1, s \rangle \rightarrowtriangle \langle e_1', s' \rangle}{\langle e_1e_2,s \rangle \rightarrowtriangle \langle e_1'e_2, s' \rangle} \quad \inference[CBN-fn]{-}{\langle (\text{fn }x:T \Rightarrow e)e_2, s \rangle \rightarrowtriangle \langle \subs{e}{e_2}{x},s \rangle}
 \end{align*}
 
-Introduciamo inoltre una nuova semantica che raccoglie le due precedenti: \begin{align*}
+Introduciamo inoltre una nuova semantica che raccoglie le due precedenti: 
+\begin{align*}
 	\inference[BETA-app1]{\langle e_1, s \rangle \rightarrowtriangle \langle e_1', s' \rangle}{\langle e_1e_2,s \rangle \rightarrowtriangle \langle e_1'e_2, s' \rangle} \quad &\inference[BETA-app2]{\langle e_2,s \rangle \rightarrowtriangle \langle e_2',s' \rangle}{\langle e_1e_2,s \rangle \rightarrowtriangle \langle e_1e_2',s' \rangle} \\ \\
 	\inference[BETA-fn1]{-}{\langle (\text{fn }x:T \Rightarrow e)e_2, s \rangle \rightarrowtriangle \langle \subs{e}{e_2}{x},s \rangle} \quad &\inference[BETA-fn2]{-}{\langle \text{fn }x:T \Rightarrow e, s \rangle \rightarrowtriangle \langle \text{fn }x:T \Rightarrow e', s \rangle}
 \end{align*}
 
 \subsection{Tipaggio di funzioni}
-Estendiamo l'insieme dei tipi come segue: \[ TypeEnv = \mathbb{L} \cup \mathbb{X} \rightharpoonup T_{loc} \cup T \] tale che: \begin{itemize}
+Estendiamo l'insieme dei tipi come segue: 
+\[ 
+	TypeEnv = \mathbb{L} \cup \mathbb{X} \rightharpoonup T_{loc} \cup T 
+\] 
+tale che: 
+\begin{itemize}
 	\item $\forall l \in dom(\Gamma). \Gamma(l) \in T_{loc}$
 	\item $\forall x \in dim(\Gamma). \Gamma(x) \in T$
 \end{itemize}
 
-Definiamo le regole di tipaggio: \begin{align*}
+Definiamo le regole di tipaggio: 
+\begin{align*}
 	\inference[var]{-}{\type x:T} \text{se } \Gamma(x) = T \quad 
 	\inference[fn]{\Gamma, x :T \vdash e:T'}{\type \text{fn } x :T \Rightarrow e:T \to T'} \quad
 	\inference[app]{\type e_1:T \to T' \quad \type e_2:T}{\type e_1e_2:T'}
@@ -463,12 +474,20 @@ Qui di seguito definiamo alcune proprietà del tipaggio:
 \subsection{Dichiarazioni locali}
 Le dichiarazioni locali sono usate per aumentare la leggibilità del codice e consistono nel nominare una certa espressione restringendo al contempo il suo scope. Il costrutto da introdurre è \lstinline|let |$y:$\lstinline|int| $=1+2$ \lstinline| in |  $y \geq y+4$
 
-La valutazione procede alla maniera seguente:\begin{itemize}
+La valutazione procede alla maniera seguente:
+\begin{itemize}
 	\item si valuta $1+2$ a $3$;
 	\item si valuta $y \geq y+4$ sostituendo a $y$ il valore $3$;
 \end{itemize}
 
-Estendiamo la sintassi con \[ e::=\ \dots |\ \text{let } x:T = e_1\text{ in } e_2  \] e diamo la relativa regola di tipaggio \[ \inference[(let)]{\type e_1:T \quad \Gamma,x:T \vdash e_2:T'}{\type let\ x:T = e_1\ in\ e_2:T'} \]
+Estendiamo la sintassi con 
+\[ 
+	e::=\ \dots |\ \text{let } x:T = e_1\text{ in } e_2  
+\] 
+e diamo la relativa regola di tipaggio 
+\[ 
+	\inference[(let)]{\type e_1:T \quad \Gamma,x:T \vdash e_2:T'}{\type let\ x:T = e_1\ in\ e_2:T'} 
+\]
 
 Dal momento che $x$ è una variabile locale, $\Gamma$ non contiene una entry per $x$, quindi potrebbe essere necessario ricorrere ad alpha-conversion.
 
@@ -487,25 +506,27 @@ e le sostituzioni nel seguente modo: \begin{align*}
 \end{align*}
 
 \subsubsection{Semantica small-step per dichiarazioni locali}
-<<<<<<< HEAD
-%La semantica del costrutto \lstinline|let| funziona in modi differenti a seconda del tipo di chiamata. \begin{align*}
-%	
-%\end{align*}
-=======
+
 La semantica del costrutto \lstinline|let| funziona in modi differenti a seconda del tipo di chiamata. In modalità call-by-value \begin{align*}
 	&\inference[(CBV-let1)]{\langle e_1, s \rangle \rightarrowtriangle \langle e_1', s' \rangle}{\langle \code{let}\ x:T = e_1\ \code{in}\ e_2,s \rangle \rightarrowtriangle \langle \code{let}\ x:T = e_1'\ \code{in}\ e_2, s' \rangle} \\ \\
 	&\inference[(CBV-let2)]{-}{\langle \code{let}\ x:T = v\ \code{in}\ e_2,s \rangle \rightarrowtriangle \langle \subs{e_2}{v}{x}, s \rangle}
 \end{align*}
 mentre in modalità call-by-name: \[ \inference[(CBN-let)]{-}{\langle \code{let}\ x:T = e_1\ \code{in}\ e_2, s \rangle \rightarrowtriangle \langle \subs{e_2}{e_1}{x}, s \rangle} \]
 
-In realtà il costrutto \lstinline|let| funge semplicemente da espansione sintattica, nel senso che ciò che si esprime con il costrutto \lstinline|let| può tranquillamente essere implementato con altri costrutti, ad esempio: \[  (fn\ x:\text{unit} \Rightarrow e_2) e_1 \equiv \code{let}\ x:\text{unit} = e_1\ \code{in}\ e_2 \equiv e_1; e_2\]
->>>>>>> 644e2285d0827d940565a97d3333fafb4241914d
+In realtà il costrutto \lstinline|let| funge semplicemente da espansione sintattica, nel senso che ciò che si esprime con il costrutto \lstinline|let| può tranquillamente essere implementato con altri costrutti, ad esempio: 	
+\[
+  (fn\ x:\text{unit} \Rightarrow e_2) e_1 \equiv \code{let}\ x:\text{unit} = e_1\ \code{in}\ e_2 \equiv e_1; e_2
+\]
 
 \subsection{Ricorsione}
 La ricorsione è implementata tramite punti fissi\footnotemark. \footnotetext{Un punto fisso $x$ per un operatore $f$ è tale se vale che $f(x) = x$.} Estendiamo il linguaggio con il costrutto $fix$: \[ e::= \dots\ |\ fix.e \]
-La regola per il tipaggio di $fix$ è la seguente: \[ \inference[(T-fix)]{\type e: (T_1 \to T_2) \to (T_1 \to T_2)}{\type fix.e:T_1 \to T_2} \]
+La regola per il tipaggio di $fix$ è la seguente: 
+\[ 
+	\inference[(T-fix)]{\type e: (T_1 \to T_2) \to (T_1 \to T_2)}{\type fix.e:T_1 \to T_2} 
+\]
 
-La semantica in sè è relativamente semplice: \begin{align*}
+La semantica in sè è relativamente semplice: 
+\begin{align*}
 	&\inference[(Fix-cbn)]{-}{fix.e \rightarrowtriangle e(fix.e)} \\
 	&\inference[(Fix-cbv)]{e \equiv fn\ f: T_1 \to T_2 = e_1 \Rightarrow e_2}{fix.e \rightarrowtriangle e(fn\ x :T_1 \Rightarrow fix.e\ x)}
 \end{align*}
