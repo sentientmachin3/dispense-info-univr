@@ -1,4 +1,4 @@
-\documentclass[a4paper, 11pt]{article}
+\documentclass[a4paper, 10pt]{article}
 \usepackage[italian]{babel}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
@@ -18,11 +18,10 @@
 \usepackage{stmaryrd}
 \usepackage[strict]{changepage}
 \usepackage{galois}
-\usepackage{libertine}
-\usepackage{courier}
+
 
 \lstset{tabsize=2,
-	basicstyle=\footnotesize\ttfamily}
+	basicstyle=\small\ttfamily}
 
 \newcommand{\code}[1]{\textup{\lstinline{#1}}}
 \newcommand{\parts}[1]{\mathcal{P}(#1)}
@@ -340,9 +339,9 @@
 	\end{definit}
 
 	\subsection{Tracce e collecting semantics}
-	
-	\subsection{Control flow graphs}
 
+
+	\newpage
 	\section{Analisi statica}
 	
 	\subsection{Introduzione}
@@ -362,7 +361,89 @@
 
 	Il pattern delle analisi di data flow consiste nel dire come l'informazione viene manipolata in un blocco. La soluzione è data da un'equazione di punto fisso.
 	
+	Le analisi di data-flow possono procedere in due direzioni: \begin{itemize}
+		\item stabilendo l'output di un blocco precedente partendo dall'input di quello corrente (\textit{backward});
+		\item stabilendo l'input di un blocco successivo sulla base di cosa esce da quello corrente(\textit{forward}).
+	\end{itemize}
 	
+	Generalmente le analisi sono definite in un maniera simile al seguente template: \begin{align*}
+		FAin &= \begin{cases}
+		? \quad n=n_0 \\
+		\bigoplus\limits_{m \in pred(m)} FAout(m)
+		\end{cases} \qquad \text{\underline{Forward}} \\
+		BAout(n) &= \begin{cases}
+		? \quad n=n_f \\
+		\bigoplus\limits_{m \in Succ(n)} BAin(m) \qquad \text{\underline{Backward}}
+		\end{cases}
+		\end{align*}
+		
+	Inoltre si definiscono \textit{definite} la analisi dove $\bigoplus = \cap$, mentre se definiscono \textit{possible} le analisi dove $\bigoplus = \cup$.
+	
+	\subsubsection{Informazione di dominanza}
+	L'informazione di dominanza viene calcolata attraverso il punto fisso di un semplice algoritmo: \begin{lstlisting}[escapeinside={(*}{*)}, frame=tb]
+		n <- |N| - 1
+		Dom(0) <- (* $\lbrace $*) 0 (*$\rbrace$*)
+		for i <- 0 to n
+			Dom(i) <- N
+			
+		changed <- true
+		while (changed)
+			changed <- false
+			for i <- 1 to n
+				temp <- (* $\lbrace $*) i (*$\rbrace\ \bigcup\ (\bigcap_{Dom(j)}$*) j (*$\in$*) Pred(i) )
+				if temp != Dom(i) then
+					changed <- true
+	\end{lstlisting}
+	
+	Al termine dell'algoritmo, il nodo $d$ sarà in $Dom(n)$ se e solo se $d$ dominerà $n$. (??)
+	
+	\subsubsection{Available expressions}
+	Intuitivamente, si può dire che un'espressione $e$ è disponibile alla variabile $x$ ad un qualche punto di programma se: \begin{itemize}
+		\item è stata valutata precedentemente;
+		\item il risultato è stato assegnato ad $x$;
+		\item $x$ ed $e$ non sono state modificate nel frattempo.
+	\end{itemize}
+	
+	\begin{definit}[Available expression]
+		Sia $\pi = k_1,k_2, \dots, k_n$ un percorso dall'entry point del programma al punto $v$. L'espressione $e$ è disponibile in $x$ al punto $v$ se: \begin{itemize}
+			\item il percorso $\pi$ contiene un arco $k_i$, etichettato con un assegnamento \lstinline|x <- e|;
+			\item nessun arco $k_{i+1}, \dots, k_n$ è etichettato con un assegnamento ad una delle variabili $Var(e) \cup \lbrace x \rbrace$.
+		\end{itemize}
+	\end{definit}
+	
+	Dato un certo blocco è possibile quindi specificare l'informazione in entrata, $AvailIn(n)$, e quella in uscita da quel blocco, $AvailOut(n)$.
+
+	\begin{align*}
+		AvailIn(n) &= \begin{cases}
+		\emptyset &\text{if } n_0 = n \\
+		\bigcap\limits_{m \in Pred(n)} AvailOut(m) &\text{otherwise}
+		\end{cases} \\
+		AvailOut(m) &= Gen(m) \cup (AvailIn(m) \setminus Kill(m))
+	\end{align*}
+	
+	Per calcolare le espressioni disponibili si inizializza $AvailIn(n_0) = \emptyset$ e $AvailIn(n) = \lbrace \text{tutte le espressioni} \rbrace n \neq n_0$
+	
+	Prima di dare l'equazione da risolvere per arrivare alla soluzione, definiamo $DEExpr(n)$ : un'espressione $e$ vi è contenuta se il blocco $n$ valuta $e$ e nessuno degli operandi di $e$ è modificato tra l'ultima valutazione di $e$ e la fine del blocco $n$.
+	
+	L'equazione da risolvere è quindi la seguente:
+	\[
+		AvailIn(n) = \bigcap\limits_{m \in Pred(n)} (DEExpr(m) \cup (AvailIn(m) \cap Kill(m))
+	\]
+	
+	Una volta inizializzati gli insiemi $DEExpr$ e $Kill$, il compilatore esegue uno pseudocodice simile a questo per calcolare $AvailIn$ su ogni blocco:
+	
+	\begin{lstlisting}[frame=tb]
+		for i <- 0 to N-1
+			AvailIn(i) <- [AllExpr]
+		
+		changed = true
+		while (changed)
+			changed <- false
+			for i <- 0 to N-1
+				recompute AVailIn(i)
+				if AvailIn(i) changed then
+					changed <- true
+	\end{lstlisting}
 	
 	
 	
