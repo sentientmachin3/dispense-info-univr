@@ -13,15 +13,16 @@
 	urlcolor = black, 
 	linkcolor = black}
 \usepackage[margin=3cm]{geometry}
+\usepackage{libertine}
 \usepackage{booktabs}
 \usepackage{fancyhdr}
 \usepackage{listings}
 \usepackage{stmaryrd}
 \usepackage{semantic}
 \usepackage[strict]{changepage}
-\usepackage{libertine}
 \usepackage{xfrac}
 \usepackage{courier}
+
 
 \lstset{tabsize=2,
 	basicstyle=\small\ttfamily}
@@ -34,6 +35,7 @@
 \newcommand{\type}{\Gamma \vdash}
 \newcommand{\code}[1]{\textup{\lstinline|#1|}}
 \newcommand{\subs}[3]{#1 \lbrace \sfrac{#2}{#3} \rbrace}
+\newcommand{\goesto}{\rightarrowtriangle}
 
 \begin{document}
 	\begin{frontespizio}
@@ -500,18 +502,73 @@ La ricorsione è implementata tramite punti fissi\footnotemark. \footnotetext{Un
 La regola per il tipaggio di $fix$ è la seguente: \[ \inference[(T-fix)]{\type e: (T_1 \to T_2) \to (T_1 \to T_2)}{\type fix.e:T_1 \to T_2} \]
 
 La semantica in sè è relativamente semplice: \begin{align*}
-	&\inference[(Fix-cbn)]{-}{fix.e \rightarrowtriangle e(fix.e)} \\
+	&\inference[(Fix-cbn)]{-}{fix.e \rightarrowtriangle e(fix.e)} \\ \\
 	&\inference[(Fix-cbv)]{e \equiv fn\ f: T_1 \to T_2 = e_1 \Rightarrow e_2}{fix.e \rightarrowtriangle e(fn\ x :T_1 \Rightarrow fix.e\ x)}
 \end{align*}
 
 
-
-
-
-
-
-
 \section{Dati e memoria variabile}
+
+Fino ad ora abbiamo lavorato solo su tipi di dato semplici, quali interi, booleani, unit e funzioni. Ora procediamo introducendo dati strutturati, e modificando la concezione di memoria mutabile che abbiamo usato fino ad ora. 
+
+Introduciamo quindi il prodotto tra tipi $T_1 * T_2$, che consente di lavorare su \textit{tuple}, e la somma di tipi $T_1 + T_2$, che rappresenta l'unione disgiunta, con il valore risultante di tipo $T_1$ \textit{oppure} di tipo $T_2$.
+
+\subsection{Somme e moltiplicazioni tra tipi}
+Estendiamo il linguaggio utilizzato fino ad ora con: \begin{align*}
+	e &::= \dots\ |\ (e_1,e_2)\ |\ \sharp1\ e\ |\ \sharp2\ e\ \\
+	T &::= \dots\ |\ T_1 * T_2 \\
+	v &::= \dots\ |\ (v_1, v_2)
+\end{align*}
+
+\textbf{Nota:} le tuple sono ordinate, non sono arbitrarie.
+Inoltre sono state aggiunte delle proiezioni ($\sharp$), che estraggono elementi dai record.
+
+\paragraph{Moltiplicazioni.}
+La semantica dei costrutti di moltiplicazione appena introdotti funziona come segue: \begin{align*}
+	&\inference[(pair1)]{\langle e_1,s \rangle \goesto \langle e_1',s' \rangle}{\langle (e_1, e_2),s \rangle \goesto \langle (e_1', e_2), s' \rangle} \quad &\inference[(pair2)]{\langle e_2,s \rangle \goesto \langle e_2',s' \rangle}{\langle (v, e_2),s \rangle \goesto \langle (v, e_2'), s' \rangle} \\
+	&\inference[(proj1)]{-}{\langle \sharp 1 (v_1, v_2),s \rangle \goesto \langle v_1, s \rangle} \quad &\inference[(proj2)]{-}{\langle \sharp 2 (v_1, v_2),s \rangle \goesto \langle v_2, s \rangle} \\
+	&\inference[(proj3)]{\langle e,s \rangle \goesto \langle e',s' \rangle}{\langle \sharp 1\ e, s \rangle \goesto \langle \sharp 1\ e', s \rangle} \quad &\inference[(proj4)]{\langle e,s \rangle \goesto \langle e',s' \rangle}{\langle \sharp 2\ e, s \rangle \goesto \langle \sharp 2\ e', s \rangle}
+\end{align*}
+
+Il tipaggio invece procede come segue: 
+\[
+	\inference[(pair)]{\type e_1:T_1 \quad \type e_2:T_2}{\type (e_1, e_2): T_1 * T_2} \quad \inference[(proj1)]{\type e:T_1*T_2}{\type \sharp 1\ e:T_1} \] \[ \inference[(proj2)]{\type e:T_1*T_2}{\type \sharp 2\ e:T_2} 
+\]
+
+\paragraph{Somme.}
+Per quanto riguarda la somma di tipi, l'estensione da eseguire è la seguente: \begin{align*}
+	e ::= \dots\ &|\ \text{inl } e:T\ |\ \text{inr } e:T\\ &|\ (\text{case } e \text{ of inl }(x_1:T_1) \Rightarrow e_1\ |\ \text{inr } (x_2:T_2) \Rightarrow e_2) \\
+	T ::= \dots\ &|\ T_1 + T_2 \\
+	v ::= \dots &|\ \text{inl }v:T\ |\ \text{inr }v:T
+\end{align*}
+
+La semantica delle somme di tipi è definita come segue: \begin{align*}
+	\inference[(inl)]{\langle e,s \rangle \goesto \langle e',s' \rangle}{\langle \text{inl }e:T,s \rangle \goesto \langle \text{inl } e':T, s' \rangle} \quad \inference[(inr)]{\langle e,s \rangle \goesto \langle e',s' \rangle}{\langle \text{inr }e:T,s \rangle \goesto \langle \text{inr } e':T, s' \rangle}
+\end{align*}
+\begin{adjustwidth}{-1.5cm}{}
+	\begin{align*}
+	\inference[(case1)]{\langle e,s \rangle \goesto \langle e',s' \rangle}{\langle \text{case } e \text{ of inl }(x_1:T_1) \Rightarrow e_1\ |\ \text{inr } (x_2:T_2) \Rightarrow e_2, s \rangle \goesto \langle \text{case } e' \text{ of inl }(x_1:T_1) \Rightarrow e_1\ |\ \text{inr } (x_2:T_2) \Rightarrow e_2, s' \rangle}
+	\end{align*}
+\end{adjustwidth}
+\newpage
+\begin{align*}
+	&\inference[(case2)]{-}{\langle \text{case inl } v:T \text{ of inl }(x_1:T_1) \Rightarrow e_1\ |\ \text{inr } (x_2:T_2) \Rightarrow e_2, s \rangle \goesto \langle \subs{e_1}{v}{x_1},s \rangle} \\ \\
+	&\inference[(case3)]{-}{\langle \text{case inr } v:T \text{ of inl }(x_1:T_1) \Rightarrow e_1\ |\ \text{inr } (x_2:T_2) \Rightarrow e_2, s \rangle \goesto \langle \subs{e_2}{v}{x_2},s \rangle} \\
+\end{align*}
+
+Il tipaggio delle somme procede nel seguente modo: 
+\[
+	\inference[(inl)]{\type e:T_1}{\type (\text{inl } e:T_1+T_2):T_1+T_2} \quad \inference[(inr)]{\type e:T_2}{\type (\text{inr } e:T_1+T_2):T_1+T_2} 
+\]
+\\
+\[
+	\inference[(case)]{\type e:T_1+T_2 \quad \Gamma, x_1: T_1 \vdash e_1:T \quad \Gamma, x_2: T_2 \vdash e_2:T}{\type (\text{case } e \text{ of inl }(x_1:T_1) \Rightarrow e_1\ |\ \text{inr } (x_2:T_2) \Rightarrow e_2):T}
+\]
+
+
+
+
+
 
 \section{Sotto-tipaggio}
 
