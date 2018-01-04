@@ -26,6 +26,7 @@
 \newcommand{\brule}[2]{\langle #1 \rangle \Downarrow #2}
 \newcommand{\bbrule}[2]{ #1 \Downarrow #2}
 \newcommand{\srule}[2]{\langle #1 \rangle \rightarrowtriangle \langle #2 \rangle}
+\newcommand{\srulea}[2]{ #1  \rightarrowtriangle #2}
 \newcommand{\ssrule}[2]{\langle #1 \rangle \rightarrowtriangle^{*} \langle #2 \rangle}
 \newcommand{\memrep}[3]{#1 \lbrack #2 \mapsto #3 \rbrack}
 \newcommand{\code}[1]{\textup{\lstinline{#1}}}
@@ -150,45 +151,54 @@
 				&\infer{(ChoiceL)}{\srule{e_1, s}{e_1', s'}}{\srule{e_1 \oplus e_2, s}{e_1', s'}}{} \qquad\qquad
 				&\infer{(ChoiceR)}{\srule{e_2, s}{e_2', s'}}{\srule{e_1 \oplus e_2, s}{e_2', s'}}{} 
 			\end{align*}
-		\end{flushleft}
-	\end{minipage}
-\subsection*{CBV e CBN}
+		
+\subsection*{Call-By-Value}
 	\begin{align*}
 		&\infer{(CBV-app1)}{\srule{e_1, s}{e_1', s'}}{\srule{e_1 e_2, s}{e_1'e_2, s'}}{} \qquad
 		\infer{(CBV- app2)}{\srule{e_2, s}{e_2', s'}}{\srule{ve_2, s}{ve_2', s'}}{} \qquad
 		\infer{(CBV-fn)}{-}{\srule{(fn\ x\colon T\Rightarrow e)v, s}{\subs{e}{v}{x}, s}}{} \\ \\
-		&\infer{(CBN-app)}{\srule{e_1, s}{e_1', s'}}{\srule{e_1e_2, s}{e_1'e_2, s'}}{} \qquad
-		\infer{(CBN-fn)}{-}{\srule{(fn\ x\colon T\Rightarrow e)e_2, s}{\subs{e}{e_2}{x},x}}{}
+		&\infer{(CBV-let1)}{\srule{e_1,s}{e_1', s'}}{\srule{\letin{x\colon T = e_1}{e_2, s}}{\letin{x\colon T = e_1'}{e_2, s'}}}{} \qquad
+		\infer{(CBV-let2)}{-}{\srule{\letin{x\colon T = v}{e_2, s}}{\subs{e_2}{v}{x}, s}}{} \\ \\
+		&\infer{(CBV-fix)}{e\equiv\ \text{fn } f\colon T_1 \rightarrow T_2\ \Rightarrow\ e_2}{\srulea{\text{fix}.e}{e(\text{fn }x\colon T_1 \Rightarrow\ (\text{fix}.e)\ x)}}{}
 	\end{align*}
+\subsection*{Call-By-Name}
+	\begin{align*}
+		&\infer{(CBN-app)}{\srule{e_1, s}{e_1', s'}}{\srule{e_1e_2, s}{e_1'e_2, s'}}{} \qquad
+		\infer{(CBN-fn)}{-}{\srule{(fn\ x\colon T\Rightarrow e)e_2, s}{\subs{e}{e_2}{x},x}}{} \\ \\
+		&\infer{(CBN-let)}{-}{\srule{\letin{x\colon T = e_1}{e_2, s}}{\subs{e_2}{e_1}{x}, s}}{} \\ \\
+		&\infer{(CBN-fix)}{-}{\srulea{\text{fix}.e}{e(\text{fix}.e)}}{}
+	\end{align*}
+	\end{flushleft}
+\end{minipage}
 	\newpage
 	
-\section*{Grammatica dei tipi}
+\section*{Grammatica dei tipi e type system}
+\vspace{-.5cm}
 \begin{minipage}{.45\linewidth}
 	\begin{flushleft}
 	\begin{align*}
 		T&:\colon=\ \integer\ \big|\ \bool\ \big|\ \textup{unit}\ \big|\ T_1\rightarrow T_2\ \big|\ T_1 + T_2\ \big|\ T_1 * T_2\ 
-		\big|\ \textup{ref}\ T\ \big|\ \{lab_1\colon T_1, \dots, lab_k\colon T_k \} \\
+		\big|\ \textup{ref}\ T\ \big|\ \{lab_1\colon T_1, \dots, lab_k\colon T_k \}\ \big|\ \text{proc} \\
 		T_{\text{loc}}&:\colon = \text{ref } T
 	\end{align*}	
-	\end{flushleft}
-\end{minipage}
-\section*{Regole per il Tipaggio}
+	\vspace{-1cm}
 \subsection*{Tipi primitivi e operatori}
 	\begin{align*}
-		&\infer{(int)}{-}{\Gamma \vdash n\colon \integer}{\ \textup{for}\ n \in \Z} 
-		&\infer{(bool)}{-}{\Gamma \vdash b\colon \bool}{\ \textup{for}\ n \in \{true, false\}} \qquad\qquad
-		&\infer{(op +)}{\Gamma \vdash e_1\colon \integer\qquad \Gamma \vdash e_2\colon \integer}{\Gamma\vdash e_1 + e_2 \colon \integer}{}
-		&\infer{(op *)}{\Gamma \vdash e_1\colon \integer\qquad \Gamma \vdash e_2\colon \integer}{\Gamma\vdash e_1 * e_2 \colon \integer}{} \\ \\
-		&\infer{(op or)}{\Gamma\vdash e_1\colon \bool\qquad \Gamma\vdash e_2\colon\bool}{\Gamma\vdash e_1\ or\ e_2 \colon\bool}{}
-		&\infer{(op and)}{\Gamma\vdash e_1\colon \bool\qquad \Gamma\vdash e_2\colon\bool}{\Gamma\vdash e_1\ and\ e_2 \colon\bool}{} \qquad\qquad
-		&\infer{(op $ \geq $)}{\Gamma \vdash e_1\colon \integer\qquad \Gamma \vdash e_2\colon \integer}{\Gamma\vdash e_1 \geq e_2 \colon \bool}{}
+		&\infer{(int)}{-}{\Gamma \vdash n\colon \integer}{\ \textup{for}\ n \in \Z} \qquad\qquad
+		\infer{(bool)}{-}{\Gamma \vdash b\colon \bool}{\ \textup{for}\ n \in \{true, false\}} \qquad\qquad
+		\infer{(op +)}{\Gamma \vdash e_1\colon \integer\qquad \Gamma \vdash e_2\colon \integer}{\Gamma\vdash e_1 + e_2 \colon \integer}{}\qquad\qquad
+		\infer{(op *)}{\Gamma \vdash e_1\colon \integer\qquad \Gamma \vdash e_2\colon \integer}{\Gamma\vdash e_1 * e_2 \colon \integer}{} \\ \\
+		&\infer{(op or)}{\Gamma\vdash e_1\colon \bool\qquad \Gamma\vdash e_2\colon\bool}{\Gamma\vdash e_1\ or\ e_2 \colon\bool}{}\qquad\qquad
+		\infer{(op and)}{\Gamma\vdash e_1\colon \bool\qquad \Gamma\vdash e_2\colon\bool}{\Gamma\vdash e_1\ and\ e_2 \colon\bool}{} \qquad\qquad
+		\infer{(op $ \geq $)}{\Gamma \vdash e_1\colon \integer\qquad \Gamma \vdash e_2\colon \integer}{\Gamma\vdash e_1 \geq e_2 \colon \bool}{}\qquad\qquad
 		%&\infer{(assign)}{\Gamma \vdash e\colon \integer}{\Gamma\vdash l := e\colon \textup{unit}}{\ \textup{if}\ \Gamma(l) =\textup{intref}} 
-		&\infer{(skip)}{-}{\Gamma\vdash skip\colon unit}{}\\ \\
-		&\infer{(seq)}{\Gamma \vdash e_1\colon unit \qquad \Gamma\vdash e_2\colon T}{\Gamma \vdash e_1;e_2\colon T}{} \qquad\qquad
-		&\infer{(if)}{\Gamma\colon e_1\colon\bool\quad\Gamma\vdash e_2\colon T\quad \Gamma\vdash e_3 \colon T}{\Gamma\vdash \textup{if}\ e_1\ \textup{then}\ e_2\ \textup{else}\ e_3\colon T }{} 
-		&\infer{(while)}{\Gamma\vdash e_1 \colon \bool\qquad \Gamma\vdash e_2 \colon T}{\Gamma \vdash\textup{while}\ e_1\ \textup{do}\ e_2\colon T}{}
-		&\infer{(let)}{\Gamma \vdash e_1\colon T\qquad \Gamma,x\colon T \vdash e_2\colon T'}{
-			\Gamma\vdash \textup{let}\ x\colon T = e_1\ \textup{in}\ e_2\colon T'}{}
+		\infer{(skip)}{-}{\Gamma\vdash skip\colon unit}{}\\ \\
+		&\infer{(seq)}{\Gamma \vdash e_1\colon unit \qquad \Gamma\vdash e_2\colon T}{\Gamma \vdash e_1;e_2\colon T}{}\qquad\qquad
+		\infer{(if)}{\Gamma\colon e_1\colon\bool\quad\Gamma\vdash e_2\colon T\quad \Gamma\vdash e_3 \colon T}{\Gamma\vdash \textup{if}\ e_1\ \textup{then}\ e_2\ \textup{else}\ e_3\colon T }{} \qquad\qquad
+		\infer{(while)}{\Gamma\vdash e_1 \colon \bool\qquad \Gamma\vdash e_2 \colon T}{\Gamma \vdash\textup{while}\ e_1\ \textup{do}\ e_2\colon T}{}\qquad\qquad
+		\infer{(let)}{\Gamma \vdash e_1\colon T\qquad \Gamma,x\colon T \vdash e_2\colon T'}{
+			\Gamma\vdash \textup{let}\ x\colon T = e_1\ \textup{in}\ e_2\colon T'}{} \\ \\
+		&\infer{(T-fix)}{\Gamma\vdash e\colon (T_1\rightarrow T_2)\rightarrow(T_1\rightarrow T_2)}{\Gamma\vdash \text{fix}.e\colon T_1\rightarrow T_2}{}
 	\end{align*}
 \subsection*{Referenze}
 	\begin{align*}
@@ -217,7 +227,11 @@
 			\Gamma\vdash \textup{await}\ e_1\ \textup{protect}\ e_2\ \textup{end}\colon \textup{unit} }{} 
 		&\infer{(T-choice)}{\Gamma\vdash e_1 \colon \textup{unit}\qquad \Gamma\vdash e_2\colon \textup{unit}}{\Gamma\vdash e_1 \oplus e_2\colon \textup{unit}}{}
 	\end{align*}
+	\end{flushleft}
+\end{minipage}
 \section*{Sottotipaggio}
+\begin{minipage}{.45\linewidth}
+	\begin{flushleft} 
 	\begin{align*}
 		&\infer{(sub)}{\Gamma\vdash e \colon T\qquad T<\colon T'}{\Gamma\vdash e\colon T'}{}
 		&\infer{(s-refl)}{-}{T<\colon T}{} \qquad\qquad
@@ -232,18 +246,15 @@
 	\end{align*}
 	
 \subsection*{Sottotipaggio delle funzioni}
-	\begin{minipage}{.45\linewidth}
-		\begin{flushleft} 
 			\[
 				\infer{(fun-sub)}{T_1\colon> T_1'\qquad T_2<\colon T_2'}{T_1\rightarrow T_2 <\colon T_1'\rightarrow T_2'}{}
 			\]
-		\end{flushleft}
-	\end{minipage}
 \subsection*{Sottotipaggio somma e prodotto}
 	\begin{align*}
 		&\infer{(prod-sub)}{T_1<\colon T_1'\qquad T_2<\colon T_2'}{T_1 \ast T_2 <\colon T_1'\ast T_2'}{} 
 		&\infer{(sum-sub)}{T_1<\colon T_1'\qquad T_2<\colon T_2'}{T_1 + T_2 <\colon T_1'+ T_2'}{}
 	\end{align*}
-	
+	\end{flushleft}
+\end{minipage}	
 
 \end{document}
