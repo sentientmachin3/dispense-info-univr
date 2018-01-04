@@ -606,6 +606,7 @@ Un record è quindi una struttura del tipo:
 \end{align*}
 
 \textbf{Nota:} in ogni record un'etichetta non occorre mai più si una volta.
+
 La semantica dei record è abbastanza semplice:
 \begin{adjustwidth}{-1.3cm}{}
 	\begin{align*}
@@ -649,7 +650,30 @@ Le corrispondenti regole di tipaggio sono: \begin{align*}
 	&\inference[(deref)]{\type e:\text{ref } T}{\type !e:T} \quad \inference[(loc)]{-}{\type l:\text{ref }T}\ \Gamma(l)=\text{ref }T
 \end{align*}
 
+Le principali novità sono le seguenti: \begin{itemize}
+	\item l'espressione $\text{ref } v$ ora ritorna una nuova locazione di memoria;
+	\item all'inizio un programma non ha locazioni già disponibili, sono create a runtime;
+	\item è possibile il costrutto $\text{ref}(\text{ref}(3))$;
+	\item la determinatezza non è più valida, in quanto le locazioni di memoria sono decise in maniera arbitraria;
+	\item la memoria cresce sempre più durante l'esecuzione (si rende necessario un \textit{garbage collector}).
+\end{itemize}
 
+\subsection{Aggiornamento delle proprietà del tipaggio}
+\begin{thm}[Memoria ben tipata]
+	Scriviamo che $\Gamma \vdash s$ se: \begin{itemize}
+		\item $dom(\Gamma) = dom(s)$;
+		\item $\forall l \in dom(s)$, se $\Gamma(l)=\text{ref }T$ allora $\Gamma \vdash s(l):T$.
+	\end{itemize}
+\end{thm}
+
+\begin{thm}[Progress]
+	Se $e$ è chiusa, inoltre valgono $\type e:T$ e $\type s$ allora $e$ è un valore oppure esistono $e',s'$ tali che $\langle e,s \rangle \goesto \langle e',s' \rangle$.
+\end{thm}
+
+\begin{thm}[Type preservation]
+	Se $e$ è chiusa, $\type e:T$, $\type s$ e $\langle e,s \rangle \goesto \langle e',s' \rangle$ allora $e'$ è chiusa e, per qualche $\Gamma'$ con dominio disgiunto da $\Gamma$ si ha che $\Gamma, \Gamma' \vdash e':T$ e $\Gamma, \Gamma' \vdash s$.
+\end{thm}
+\newpage
 
 
 
