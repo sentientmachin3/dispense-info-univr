@@ -13,7 +13,6 @@
 	urlcolor = black, 
 	linkcolor = black}
 \usepackage[margin=3cm]{geometry}
-\usepackage{libertine}
 \usepackage{booktabs}
 \usepackage{fancyhdr}
 \usepackage{listings}
@@ -21,6 +20,7 @@
 \usepackage{semantic}
 \usepackage[strict]{changepage}
 \usepackage{xfrac}
+\usepackage{cancel}
 \usepackage{courier}
 
 
@@ -127,6 +127,7 @@
 		\end{itemize}
 	\end{thm}
 
+\newpage
 \section{Linguaggio imperativo} \label{imp}
 Definiamo la sintassi di un semplice linguaggio imperativo:
 \begin{align*}
@@ -295,6 +296,7 @@ Mettendo insieme le due proprietà sopra, si ottiene una nuova proprietà, espli
 	Se vale che $\type e:T$ e $\type e:T'$ allora $T=T'$.
 \end{thm}
 
+\newpage
 \section{Forme di induzione}
 L'induzione è una tecnica formale che consente di provare delle proprietà su determinate categorie di oggetti, sfruttando la natura di questi oggetti.
 Esistono 3 tipi di induzione:
@@ -340,7 +342,7 @@ Per provare formalmente una proprietà $P(D)$ su una derivazione $D$, si procede
 	\item \textbf{Caso induttivo:} per ogni regola della forma \[ \inference[(regola)]{h_1\ h_2\ ...\ h_n}{c} \] si dimostra che ogni derivazione che termina con l'utilizzo di questa regola soddisfa la proprietà. Questa derivazione ha sottoderivazioni $D_1, D_2,...,D_n$ che terminano con le ipotesi $h_1, h_2,...,h_n$. Per ipotesi induttiva si assume che valga $P(D_i)$ con $1\leq i \leq n$.
 	
 \end{enumerate}
-
+\newpage
 \section{Aspetti funzionali}
 Estendiamo la sintassi data in \ref{imp} con:	 \begin{align*}
 	\text{Variabili } &x \in \mathbb{X}, \text{con } x = \lbrace x,y,z,...\rbrace \\
@@ -534,7 +536,7 @@ La semantica in sè è relativamente semplice:
 	&\inference[(Fix-cbv)]{e \equiv fn\ f: T_1 \to T_2 = e_1 \Rightarrow e_2}{fix.e \rightarrowtriangle e(fn\ x :T_1 \Rightarrow fix.e\ x)}
 \end{align*}
 
-
+\newpage
 \section{Dati e memoria variabile}
 
 Fino ad ora abbiamo lavorato solo su tipi di dato semplici, quali interi, booleani, unit e funzioni. Ora procediamo introducendo dati strutturati, e modificando la concezione di memoria mutabile che abbiamo usato fino ad ora. 
@@ -573,7 +575,7 @@ Per quanto riguarda la somma di tipi, l'estensione da eseguire è la seguente: \
 La semantica delle somme di tipi è definita come segue: \begin{align*}
 	\inference[(inl)]{\langle e,s \rangle \goesto \langle e',s' \rangle}{\langle \text{inl }e:T,s \rangle \goesto \langle \text{inl } e':T, s' \rangle} \quad \inference[(inr)]{\langle e,s \rangle \goesto \langle e',s' \rangle}{\langle \text{inr }e:T,s \rangle \goesto \langle \text{inr } e':T, s' \rangle}
 \end{align*}
-\begin{adjustwidth}{-1.5cm}{}
+\begin{adjustwidth}{-1.7cm}{}
 	\begin{align*}
 	\inference[(case1)]{\langle e,s \rangle \goesto \langle e',s' \rangle}{\langle \text{case } e \text{ of inl }(x_1:T_1) \Rightarrow e_1\ |\ \text{inr } (x_2:T_2) \Rightarrow e_2, s \rangle \goesto \langle \text{case } e' \text{ of inl }(x_1:T_1) \Rightarrow e_1\ |\ \text{inr } (x_2:T_2) \Rightarrow e_2, s' \rangle}
 	\end{align*}
@@ -592,6 +594,65 @@ Il tipaggio delle somme procede nel seguente modo:
 \[
 	\inference[(case)]{\type e:T_1+T_2 \quad \Gamma, x_1: T_1 \vdash e_1:T \quad \Gamma, x_2: T_2 \vdash e_2:T}{\type (\text{case } e \text{ of inl }(x_1:T_1) \Rightarrow e_1\ |\ \text{inr } (x_2:T_2) \Rightarrow e_2):T}
 \]
+
+\subsection{Record}
+I record costituiscono una generalizzazione del prodotto tra tipi, che viene esteso fino a generare una tupla di lunghezza arbitraria.
+
+Un record è quindi una struttura del tipo:
+\begin{align*}
+	e &::=\ \dots\ |\ \lbrace lab_1=e_1, \dots, lab_n = e_n \rbrace\ |\ \sharp lab\ e \\
+	T &::=\ \dots\ |\ \lbrace lab_1:T_1, \dots, lab_n:T_n \rbrace \\
+	v &::=\ \dots\ |\ \lbrace lab_1=v_1, \dots, lab_n = v_n \rbrace
+\end{align*}
+
+\textbf{Nota:} in ogni record un'etichetta non occorre mai più si una volta.
+La semantica dei record è abbastanza semplice:
+\begin{adjustwidth}{-1.3cm}{}
+	\begin{align*}
+	&\inference[(record1)]{\langle e_i, s \rangle \goesto \langle e_i',s' \rangle}{\langle \lbrace lab_1=v_1, \dots, lab_i = e_i, \dots, lab_k = e_k \rbrace, s \rangle \goesto \langle \lbrace lab_1=v_1, \dots, lab_i = e_i', \dots, lab_k = e_k \rbrace, s' \rangle} \\ \\
+	&\inference[(record2)]{-}{\langle \sharp lab_i \lbrace lab_1=e_1. \dots, lab_i=e_i, \dots, lab_k=e_k \rbrace, s \rangle \goesto \langle v_i, s \rangle} \qquad \inference[(record3)]{\langle e,s \rangle \goesto \langle e',s' \rangle}{\langle \sharp lab\ e,s \rangle \goesto \langle \sharp lab\ e',s' \rangle}
+	\end{align*}
+\end{adjustwidth}
+
+Il tipaggio dei record invece: \begin{align*}
+	&\inference[(record)]{\type e_1:T_1 \quad \dots \quad \type e_k:T_k}{\type \lbrace lab_1=e_1, \dots, lab_k=e_k \rbrace : \lbrace lab_1:T_1, \dots, lab_k:T_k \rbrace} \\ \\
+	&\inference[(recordproj)]{\type e: \lbrace lab_1:T_1, \dots, lab_k:T_k \rbrace}{\type \sharp lab_i\ e:T_i}
+\end{align*}
+
+\subsection{Memoria dinamica}
+I linguaggi moderni possiedono un concetto di memoria dinamica che supera i problemi che ci sono nella memoria del nostro linguaggio fino ad ora, ovvero: \begin{itemize}
+	\item si possono salvare solo valori interi;
+	\item non si possono creare nuove locazioni;
+	\item non si possono scrivere funzioni che astraggano sulle locazioni di memoria, come ad esempio $fn\ l:intref \Rightarrow\ !l$.
+\end{itemize}
+
+Per rimuovere queste limitazioni, modifichiamo la sintassi come segue\footnotemark: \begin{align*}
+	e &::=\ \dots\ |\ \cancel{l:=e}\ |\ \cancel{!l}\ |\ e_1:=e_2\ |\ !e\ |\ ref\ e\ |\ l \\
+	T &::=\ \dots\ |\ ref\ T \\
+	T_{loc} &::=\ \cancel{intref}\ |\ ref\ T \\
+	v &::=\ \dots\ |\ l
+\end{align*}
+\footnotetext{Le espressioni barrate sono \textbf{rimosse} dal linguaggio.}
+Aggiorniamo la funzione di $Store$ ridefinendola come segue: \[ s: \mathbb{L} \rightharpoonup \mathbb{V} \]
+
+La semantica dei costrutti appena introdotti è le seguente: \begin{align*}
+	&\inference[(ref1)]{-}{\langle \text{ref } v,s \rangle \goesto \langle l, s\left[ l \mapsto v \right] \rangle}\ l \notin dom(s) \quad \inference[(ref2)]{\langle e,s \rangle \goesto \langle e',s' \rangle}{\langle \text{ref } e,s \rangle \goesto \langle \text{ref }e',s' \rangle} \\ \\
+	&\inference[(deref1)]{-}{\langle !l, s \rangle \goesto \langle v,s \rangle}\ \text{if } l \in dom(s) \text{ and } s(l)=v \quad \inference[(deref2)]{\langle e,s \rangle \goesto \langle e',s' \rangle}{\langle !e,s \rangle \goesto \langle !e',s' \rangle} \\ \\
+	&\inference[(assign1)]{-}{\langle l:= v,s \rangle \goesto \langle \text{skip}, s \lbrack l \mapsto v \rbrack \rangle}\ \text{if } l \in dom(s) \quad \inference[(assign2)]{\langle e,s \rangle \goesto \langle e',s' \rangle}{\langle l:=e,s \rangle \goesto \langle l:=e',s' \rangle}
+\end{align*}
+\[
+	\inference[(assign3)]{\langle e_1,s \rangle \goesto \langle e_1',s' \rangle}{\langle e_1:=e_2,s \rangle \goesto \langle e_1':=e_2,s' \rangle}
+\]
+
+Le corrispondenti regole di tipaggio sono: \begin{align*}
+	&\inference[(ref)]{\type e:T}{\type \text{ref } e: \text{ref }T} \quad \inference[(assign)]{\type e_1:\text{ref } T \quad \type e_2:T}{\type (e_1:=e_2):unit} \\ \\
+	&\inference[(deref)]{\type e:\text{ref } T}{\type !e:T} \quad \inference[(loc)]{-}{\type l:\text{ref }T}\ \Gamma(l)=\text{ref }T
+\end{align*}
+
+
+
+
+
 
 
 
