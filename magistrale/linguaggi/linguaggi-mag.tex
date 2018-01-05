@@ -673,17 +673,79 @@ Le principali novità sono le seguenti: \begin{itemize}
 \begin{thm}[Type preservation]
 	Se $e$ è chiusa, $\type e:T$, $\type s$ e $\langle e,s \rangle \goesto \langle e',s' \rangle$ allora $e'$ è chiusa e, per qualche $\Gamma'$ con dominio disgiunto da $\Gamma$ si ha che $\Gamma, \Gamma' \vdash e':T$ e $\Gamma, \Gamma' \vdash s$.
 \end{thm}
+
 \newpage
-
-
-
-
-
-
-
-
-
 \section{Sotto-tipaggio}
+La motivazione principale per la creazione del sotto tipaggio è sostanzialmente il fatto di non poter tipare (con i type systems visti fino ad ora) i programmi che, aspettandosi un certo argomento, ricevono come parametro un argomento più ricco dal punto di vista strutturale. Ad esempio, se una certa funzione si aspetta un argomento 
+\[
+	\lbrace left: \text{int} \rbrace
+\]
+le si può passare tranquillamente un argomento del tipo \[ \lbrace left:\text{int}, right:\text{int} \rbrace \] senza avere problemi nell'accesso alla struttura dati in quanto un campo con la label $left$ si trova in entrambi i parametri.
+
+Introduciamo quindi una regola di sussunzione, ovvero:
+\[
+	\inference[(sub)]{\type e:T \quad T<:T'}{\type e:T'}
+\]
+
+Nella regola di sussunzione, $T$ è sottotipo di $T'$, quindi \textbf{un oggetto di tipo $T$ può sempre essere usato dovunque ci si aspetti un oggetto di tipo $T'$}.
+
+La relazione di sottotipaggio è \textbf{riflessiva} e \textbf{transitiva}.
+
+Le principali modifiche apportate dal subtyping si riflettono sul tipaggio dei programmi: vengono infatte mantenute le proprietà di type-preservation e progress, ma le regole di tipaggio non sono più syntax-directed.
+
+\subsection{Sottotipaggio sui record}
+Con il sottotipaggio si può esprimere il riordinamento dei campi dei record, il passaggio di record più grandi come parametro oppure il sottotipaggio dei singoli campi di uno stesso record:
+\begin{align*}
+		&\inference[(rec-perm)]{\pi \text{ permutazione di } 1,\dots,k}{\lbrace p_1:T_1, \dots, p_k:T_k \rbrace <: \lbrace p_{\pi (1)}:T_1, \dots, p_{\pi (k)}:T_k \rbrace } \\ \\
+		&\inference[(rec-width)]{-}{\lbrace p_1:T_1, \dots, p_k:T_k,p_{k+1}:T_{k+1}, \dots, p_z:T_z \rbrace <: \lbrace p_1:T_1, \dots, p_k:T_k \rbrace } \\ \\
+		&\inference[(rec-depth)]{T_1 <: T_1' \quad \dots \quad T_k<:T_k'}{\lbrace p_1:T_1, \dots, p_k:T_k \rbrace <: \lbrace p_1:T_1', \dots, p_k:T_k' \rbrace }
+\end{align*} 
+
+\subsection{Sottotipaggio su funzioni}
+La regola di sottotipaggio su funzioni è la seguente: 
+\[ 
+	\inference[(fun-sub)]{T_1 >: T_1' \quad T_2 <: T_2'}{T_1 \to T_2 <: T_1' \to T_2'}
+\]
+
+Il sottotipaggio su funzioni è detto essere: \begin{itemize}
+	\item \textit{covariante} sulla sinistra di $\to$;
+	\item \textit{controvariante} in caso contrario.
+\end{itemize}
+
+\subsection{Sottotipaggio su somme e prodotti}
+Il sottotipaggio è covariante sia sulla somme che sui prodotti: 
+\begin{align*}
+	\inference[(prod-sub)]{T_1<:T_1' \quad T_2<:T_2'}{T_1 \ast T_2 <: T_1' \ast T_2'} \quad
+	\inference[(sum-sub)]{T_1 <:T_1' \quad T_2<:T_2'}{T_1 + T_2 <: T_1' + T_2'}
+\end{align*}
+
+\subsection{Downcasting}
+La regola di sussunzione permette l'upcasting al momento: si possono passare argomenti "più ampi" al posto di quelli "più piccoli". Per il downcast, supponiamo di aggiungere alle espressioni la seguente:
+\[
+	e::=\ \dots\ |\ (T)e
+\]
+ e aggiungiamo la regola di tipaggio \[ \inference[(down-cast)]{\type e:T' \quad T<: T'}{\type (T)e:T } \]
+ L'espressione $(T)e$ \textbf{non può essere tipata a tempo di compilazione}, ma solo a runtime, in quanto bisogna sapere il "vero tipo" di $e$. Ad esempio, avendo un down-cast come questo: \[ (\lbrace left:\text{int} \rbrace) !l\] non si saprà mai a compile-time il tipo ritornato da $!l$, ma lo si scoprirà solo a runtime. Notare che il tipo ritornato potrebbe anche non essere "castabile" a $\lbrace left:\text{int} \rbrace$.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
 
 \section{Equivalenze semantiche}
 
