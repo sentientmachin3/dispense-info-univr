@@ -169,7 +169,7 @@ I singoli passi di computazione sono singole applicazioni di regole della semant
 \begin{adjustwidth}{-1.3cm}{}
 \begin{align*}
 	&\inference[(op+)]{-}{\langle n_1 + n_2, s \rangle \rightarrowtriangle \langle n, s \rangle}\ n = add(n_1, n_2)
-	&\inference[(op-geq \footnotemark)]{-}{\langle n_1 \geq n_2, s \rangle \rightarrowtriangle \langle b, s \rangle}\ b = geq(n_1, n_2) \\
+	&\inference[(op$\geq$)]{-}{\langle n_1 \geq n_2, s \rangle \rightarrowtriangle \langle b, s \rangle}\ b = geq(n_1, n_2) \\
 		& &\\
 	&\inference[(op1)]{\langle e_1, s \rangle \rightarrowtriangle \langle e_1', s' \rangle}{\langle e_1 \text{ op } e_2, s \rangle \rightarrowtriangle \langle e_1' \text{ op } e_2, s' \rangle}  &\inference[(op2)]{\langle e_2, s \rangle \rightarrowtriangle \langle e_2', s' \rangle}{ \langle v \text{ op } e_2, s \rangle \rightarrowtriangle \langle v \text{ op } e_2', s' \rangle} \\
 		& &\\
@@ -185,7 +185,6 @@ I singoli passi di computazione sono singole applicazioni di regole della semant
 	& \inference[(while)]{-}{ \langle \text{while } e \text{ do } e_1,s \rangle \rightarrowtriangle \langle \text{if } e \text{ then } (e_1; \text{while } e \text{ do } e_1) \text{ else } skip,s \rangle} \\
 \end{align*}
 \end{adjustwidth}
-\footnotetext{Problemi con \LaTeX\ implicano l'uso di un nome diverso.}
 
 \subsection{Esecuzione di programmi e proprietà}
 L'esecuzione di programmi con questa semantica consiste nel trovare una memoria $s'$ tale per cui valga che \[ \langle P, s \rangle \rightarrowtriangle^\ast \langle v, s' \rangle \] ovvero che si raggiunga una configurazione terminale in un certo numero di passi.
