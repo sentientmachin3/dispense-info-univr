@@ -22,6 +22,7 @@
 \usepackage{xfrac}
 \usepackage{cancel}
 \usepackage{courier}
+\usepackage{mathabx}
 
 
 \lstset{tabsize=2,
@@ -36,6 +37,7 @@
 \newcommand{\code}[1]{\textup{\lstinline|#1|}}
 \newcommand{\subs}[3]{#1 \lbrace \sfrac{#2}{#3} \rbrace}
 \newcommand{\goesto}{\rightarrowtriangle}
+\newcommand{\treq}{\simeq_\Gamma^T}
 
 \begin{document}
 	\begin{frontespizio}
@@ -726,18 +728,90 @@ La regola di sussunzione permette l'upcasting al momento: si possono passare arg
 \]
  e aggiungiamo la regola di tipaggio \[ \inference[(down-cast)]{\type e:T' \quad T<: T'}{\type (T)e:T } \]
  L'espressione $(T)e$ \textbf{non può essere tipata a tempo di compilazione}, ma solo a runtime, in quanto bisogna sapere il "vero tipo" di $e$. Ad esempio, avendo un down-cast come questo: \[ (\lbrace left:\text{int} \rbrace) !l\] non si saprà mai a compile-time il tipo ritornato da $!l$, ma lo si scoprirà solo a runtime. Notare che il tipo ritornato potrebbe anche non essere "castabile" a $\lbrace left:\text{int} \rbrace$.
+\newpage
 
+\section{Equivalenze semantiche}
+Intuitivamente, diciamo che due programmi $P_1$ e $P_2$ sono semanticamente equivalenti ($P_1 \simeq P_2$) se uno dei due può essere rimpiazzato dall'altro, in un qualsiasi contesto.
 
+Con una buona equivalenza semantica, si può quindi: \begin{itemize}
+	\item comprendere cosa sia un programma;
+	\item dimostrare alcune particolari proprietà (\textit{program verification});
+	\item dimostrare che le ottimizzazioni di alcuni compilatori sono \textit{sound};
+	\item comprendere le differenze semantiche tra due programmi.
+\end{itemize}
 
+In particolare per avere una buona relazione di equivalenza si deve avere che: \begin{enumerate}
+	\item programmi che convergono a valori diversi, iniziando dalla stessa memoria, non devono essere equivalenti, quindi \[ (\exists s, s_1, s_2, v_1, v_2. \langle e_1, s \rangle \goesto^\ast \langle v_1, s_1 \rangle \wedge \langle e_2, s_2 \rangle \goesto^\ast \langle v_2, s_2 \rangle \wedge v_1 \neq v_2) \implies e_1 \nsimeq e_2 \]
+	\item i programmi che terminano non devono essere simili ai programmi che non terminano;
+	\item $\simeq$ deve essere una relazione di equivalenza;
+	\item $\simeq$ deve essere una \textit{congruenza}, ovvero se vale che $e_1 \simeq e_2$ per un qualche contesto $C\left[ \cdot \right]$, allora deve valere che $C\left[e_1\right] \simeq C\left[e_2\right]$;
+	\item $\simeq$ deve valere per quanti più programmi possibili.
+\end{enumerate}
 
+Un contesto $C\left[\cdot\right]$ è un programma non completo, ovvero un programma con una parte mancante, la quale deve essere istanziata con un qualche programma $P$. Inoltre, se vale che $\simeq$ è una congruenza, allora avendo che $P \simeq Q$ si ottiene che $C\left[P\right] \simeq C\left[Q\right]$.
 
+Considerando il semplice linguaggio imperativo, diamo qualche definizione formale.
 
+\begin{definit}[Trace equivalence]
+	Definiamo che $e_1 \treq e_2$ vale se, $\forall s. dom(\Gamma) \subseteq dom(s)$, si ha che $\type e_1:T$, $\type e_2:T$ e \begin{itemize}
+		\item $(\langle e_1, s \rangle \goesto^\ast \langle v, s' \rangle) \implies (\langle e_2, s \rangle \goesto^\ast \langle v, s' \rangle )$;
+		\item $(\langle e_2, s \rangle \goesto^\ast \langle v, s' \rangle) \implies (\langle e_1, s \rangle \goesto^\ast \langle v, s' \rangle )$;
+	\end{itemize}
+\end{definit}
 
+\begin{definit}[Proprietà di congruenza]
+	La relazione di equivalenza $\treq$ soddisfa la proprietà della congruenza, in quanto, dati due programmi $e_1$ e $e_2$ qualsiasi che soddisfano $e_1 \treq e_2$, per ogni contesto $C$ e tipo $T'$, se vale che $\type C\left[e_1\right]:T'$ e $\type C\left[e_2\right]:T'$, allora $C\left[e_1\right] \treq C\left[e_2\right]$.
+\end{definit}
 
+Diamo qui di seguito alcune leggi basilari sulla trace equivalence.
 
+\begin{thm}[Associatività di ;] Vale:
+	\[ e_1;(e_2; e_3) \treq (e_1; e_2);e_3 \] per qualsiasi $\Gamma, T, e_1, e_2$ ed $e_3$ tali per cui $\type e_1:unit, \type e_2:unit$ e $\type e_3:unit$.
+\end{thm} \newpage
 
+\begin{thm}[Rimozione di skip] Valgono:
+	\begin{itemize}
+		\item $e_2 \simeq_{\Gamma_2}^T (skip;e_2)$
+		\item $e_1;skip \simeq_{\Gamma_1}^{unit} e_1$
+	\end{itemize}
+	per qualunque $\Gamma_1, \Gamma_2, T, e_1, e_2$ tali che $\Gamma_2 \vdash e_2:T$ e $\Gamma_1 \vdash e_1:unit$.
+\end{thm}
 
+\begin{thm}[if-false]
+	\[ \text{if false then }e_1 \text{ else } e_2 \treq e_2 \]
+	per qualsiasi $\Gamma, T, e_1, e_2$ tali per cui $\type e_1:T, \type e_2:T$.
+\end{thm}
 
+\begin{thm}[if-true]
+	\[ \text{if true then }e_1 \text{ else } e_2 \treq e_2 \]
+	per qualsiasi $\Gamma, T, e_1, e_2$ tali per cui $\type e_1:T, \type e_2:T$.
+\end{thm}
+
+\begin{thm}[Distributività dell'if rispetto a ;]
+	\[ (\text{if } e_1 \text{ then }e_2 \text{ else } e_3);e \treq (\text{if }e_1 \text{ then }e_2; e \text{ else }e_3; e) \]
+	per qualsiasi $\Gamma, T, e_1, e_2, e_3$ tali che $\type e_1:bool, \type e_2:unit, \type e_3:unit, \type e:T$.
+\end{thm}
+
+\begin{thm}[Distributività di ; rispetto all'if]
+	\[ e;(\text{if } e_1 \text{ then }e_2 \text{ else }e_3) \treq (\text{if } e;e_1 \text{ then }e_2 \text{ else }e_3) \]
+	per qualsiasi $\Gamma, T, e_1, e_2, e_3$ tali che $\type e_1:bool, \type e_2:T, \type e_3:T, \type e:unit$.
+\end{thm}
+
+Diamo ora due definizioni più formali di trace equivalence, che considerano la cosa da un altro punto di vista.
+\begin{definit}[Simulazione]
+	Diciamo che $e_1$ è simulato da $e_2$, indicando $e_1 \sqsubseteq_\Gamma^T e_2$, se:\begin{itemize}
+		\item $\type e_1:T$ e $\type e_2:T$ per qualche $T$;
+		\item per qualsiasi $s$ con $dom(\Gamma) \subseteq dom(s)$, se $\langle e_1, s\rangle \goesto \langle e_1',s_1' \rangle$ allora esiste un $e_2'$ tale che $\langle e_2, s \rangle \goesto^\ast \langle e_2',s_2' \rangle$, con $e_1' \sqsubseteq_\Gamma^T e_2'$ e $s_1'=s_2'$.
+	\end{itemize}
+\end{definit}
+
+\begin{definit}[Bisimulazione]
+	Diciamo che $e_1$ è bisimile ad $e_2$, indicando $e_1 \approx_\Gamma^T e_2$ se e solo se:\begin{itemize}
+		\item $\type e_1:T$ e $\type e_2:T$ per qualche $T$;
+		\item per qualsiasi $s$ con $dom(\Gamma) \subseteq dom(s)$, se $\langle e_1, s\rangle \goesto \langle e_1',s_1' \rangle$ allora esiste un $e_2'$ tale che $\langle e_2, s \rangle \goesto^\ast \langle e_2',s_2' \rangle$, con $e_1' \approx_\Gamma^T e_2'$ e $s_1'=s_2'$;
+		\item per qualsiasi $s$ con $dom(\Gamma) \subseteq dom(s)$, se $\langle e_2, s\rangle \goesto \langle e_2',s_2' \rangle$ allora esiste un $e_1'$ tale che $\langle e_1, s \rangle \goesto^\ast \langle e_1',s_1' \rangle$, con $e_1' \approx_\Gamma^T e_2'$ e $s_1'=s_2'$.
+	\end{itemize}
+\end{definit}
 
 
 
@@ -746,9 +820,6 @@ La regola di sussunzione permette l'upcasting al momento: si possono passare arg
 
 
 \newpage
-
-\section{Equivalenze semantiche}
-
 \section{Concorrenza}
 
 \end{document}
