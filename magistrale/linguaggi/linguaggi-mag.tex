@@ -38,6 +38,7 @@
 \newcommand{\subs}[3]{#1 \lbrace \sfrac{#2}{#3} \rbrace}
 \newcommand{\goesto}{\rightarrowtriangle}
 \newcommand{\treq}{\simeq_\Gamma^T}
+\newcommand{\compar}{\ ||\ }
 
 \begin{document}
 	\begin{frontespizio}
@@ -814,12 +815,61 @@ Diamo ora due definizioni più formali di trace equivalence, che considerano la 
 \end{definit}
 
 
-
-
-
-
-
 \newpage
 \section{Concorrenza}
+Fino ad ora il nostro focus è stato quello di un ambito di programmazione puramente sequenziale. In realtà i sistemi moderni non viaggiano mai in linea sequenziale, ma sono programmati in ambito concorrente.
+
+La programmazione concorrente può incrementare anche di molto le prestazioni, con alcuni effetti collaterali, quali:
+\begin{itemize}
+	\item lo spazio degli stati diventa enormemente più ampio e complesso;
+	\item si pongono i problemi di \textit{deadlock}, \textit{starvation} e \textit{data race}, che possono portare a comportamenti erronei;
+	\item le computazioni possono diventare non deterministiche, a meno non sia imposto un qualche sistema di sincronizzazione;
+	\item problemi di comunicazione tra processi con differenti risorse locali (memorie, librerie condivise,...);
+	\item problemi legati alla sicurezza.
+\end{itemize}
+
+\subsection{Definizione del linguaggio}
+Per cominciare, definiamo il linguaggio sul quale si lavorerà: è composto da un linguaggio imperativo banale come in \ref{imp} e alcuni altri costrutti, quali: \begin{align*}
+	e &::=\ \dots\ |\ e \vert \vert e \\
+	T &::=\ \dots\ |\ proc
+\end{align*}
+
+Il linguaggio gode di alcune caratteristiche, quali: \begin{itemize}
+	\item la composizione parallela $e\ || e$;
+	\item le thread sono anonime, non ritornano valore e non possono essere uccise esternamente;
+	\item i processi sono costituiti da un \textit{pool} di thread concorrenti;
+	\item la terminazione di thread non può essere osservata direttamente da un programma.
+\end{itemize}
+
+Inoltre, come in ogni altro linguaggio concorrente, le thread vengono eseguite in maniera asincrona e possono scrivere e leggere su memoria condivisa, di conseguenza \textbf{si perde la proprietà di determinatezza}.
+
+\subsection{Semantica della composizione parallela}
+La semantica della composizione parallela procede come segue: \begin{align*}
+	&\inference[(par-L)]{\langle e_1, s\rangle \goesto \langle e_1', s' \rangle}{\langle e_1 \compar e_2,s \rangle \goesto \langle e_1' \compar e_2, s' \rangle} \quad &\inference[(par-R)]{\langle e_2, s\rangle \goesto \langle e_2', s' \rangle}{\langle e_1 \compar e_2,s \rangle \goesto \langle e_1 \compar e_2', s' \rangle} \\ \\
+	&\inference[(end-L)]{-}{\langle skip \compar e, s \rangle \goesto \langle e,s \rangle} \quad &\inference[(end-R)]{-}{\langle e \compar skip,s \rangle \goesto \langle e,s \rangle}
+	\end{align*}
+	
+\subsection{Tipaggio della composizione parallela}
+Il tipaggio della composizione parallela procede come segue: \begin{align*}
+	\inference[(T-sq1)]{\type e_1:unit \quad \type e_2:unit}{\type e_1;e_2:unit} \quad \inference[(T-sq2)]{\type e_1:unit \quad \type e_2:proc}{\type e_1;e_2:proc}
+\end{align*}
+\begin{align*}
+	\inference[(T-par)]{\type e_1:T_1 \quad \type e_2:T_2}{\type e_1 \compar e_2:proc}\ T_1, T_2 \in \lbrace unit, proc \rbrace
+\end{align*}
+
+\textbf{Nota:} dire che $\type e_1:unit$ equivale a dire che $e_1$ è single-threaded, mentre se è di tipo $proc$ è multi-threaded.
+
+\subsection{Race conditions}
+Le race condition sono un fenomeno che si verifica quando più thread vanno a modificare una zona di memoria condivisa senza un adeguato metodo di accesso, finendo con l'ottenere risultati inconsistenti e mal composti. Il problema risiede nel fatto che l'esecuzione di una thread può essere interrotta anche a metà di un'operazione, che, senza un sistema di sincronizzazione, causa risultati privi di senso. 
+
+È necessario quindi introdurre costrutti di sincronizzazione più sofisticati, che possano garantire l'accesso in mutua esclusione ai dati condivisi di interesse.
+
+
+
+
+
+
+
+
 
 \end{document}
