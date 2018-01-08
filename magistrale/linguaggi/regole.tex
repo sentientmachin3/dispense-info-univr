@@ -209,7 +209,7 @@
 	\end{align*}
 \subsection*{Funzioni}
 	\begin{align*}
-		&\infer{(var)}{-}{\Gamma \vdash \colon T}{\ \textup{if}\ \Gamma (x) = T} 
+		&\infer{(var)}{-}{\Gamma \vdash x \colon T}{\ \textup{if}\ \Gamma (x) = T} 
 		&\infer{(fn)}{\Gamma , x \colon T \vdash e\colon T'}{\Gamma\vdash (fn\ x\colon T\ \Rightarrow\ e )\colon T\rightarrow T'}{} \qquad\qquad
 		&\infer{(app)}{\Gamma \vdash e_1 \colon T \rightarrow T'\qquad \Gamma\vdash e_2\colon T}{\Gamma\vdash e_1 e_2\colon T'}{} 
 	\end{align*}
