@@ -185,7 +185,7 @@
 \subsection*{Tipi primitivi e operatori}
 	\begin{align*}
 		&\infer{(int)}{-}{\Gamma \vdash n\colon \integer}{\ \textup{for}\ n \in \Z} \qquad\qquad
-		\infer{(bool)}{-}{\Gamma \vdash b\colon \bool}{\ \textup{for}\ n \in \{true, false\}} \qquad\qquad
+		\infer{(bool)}{-}{\Gamma \vdash b\colon \bool}{\ \textup{for}\ b \in \{true, false\}} \qquad\qquad
 		\infer{(op +)}{\Gamma \vdash e_1\colon \integer\qquad \Gamma \vdash e_2\colon \integer}{\Gamma\vdash e_1 + e_2 \colon \integer}{}\qquad\qquad
 		\infer{(op *)}{\Gamma \vdash e_1\colon \integer\qquad \Gamma \vdash e_2\colon \integer}{\Gamma\vdash e_1 * e_2 \colon \integer}{} \\ \\
 		&\infer{(op or)}{\Gamma\vdash e_1\colon \bool\qquad \Gamma\vdash e_2\colon\bool}{\Gamma\vdash e_1\ or\ e_2 \colon\bool}{}\qquad\qquad
