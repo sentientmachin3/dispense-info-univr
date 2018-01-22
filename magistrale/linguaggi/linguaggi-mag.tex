@@ -15,6 +15,14 @@
 \usepackage[margin=3cm]{geometry}
 \usepackage{booktabs}
 \usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{\nouppercase{\leftmark}}
+\rhead{\nouppercase{\rightmark}}
+\chead{}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
 \usepackage{listings}
 \usepackage{stmaryrd}
 \usepackage{semantic}
@@ -40,6 +48,7 @@
 \newcommand{\treq}{\simeq_\Gamma^T}
 \newcommand{\compar}{\ ||\ }
 
+\usepackage[OT1]{eulervm}
 \begin{document}
 	\begin{frontespizio}
 		\Preambolo{\usepackage{datetime}}
