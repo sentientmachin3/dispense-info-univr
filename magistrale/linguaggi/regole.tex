@@ -368,7 +368,28 @@ Provare la progress sul seguente linguaggio:
 			\infer{(while)}{\Gamma\vdash e_1 \colon \bool\qquad \Gamma\vdash e_2 \colon T}{\Gamma \vdash\textup{while}\ e_1\ \textup{do}\ e_2\colon T}{}
 		\]
 		Supponiamo di aver derivato $ \Gamma \vdash E\colon T $ utilizzando la regola di tipaggio \textbf{(while)}. Posso concludere che $ E\equiv \textup{while}\ e_1\ \textup{do}\ e_2 $, per qualche $ e_1, e_2 $ tali che $ \Gamma\vdash e_1 \colon \bool $ e $ \Gamma\vdash e_2 \colon T $, e $ T\equiv unit $. Ne consegue che $ \phi(\Gamma, E, T) = \textup{true} $ perché applico la regola di riscrittura, applicando la regola semantica \textbf{(while)} e quindi faccio un passo:
-		$ \ \langle e, s \rangle \equiv \srule{\textup{while}\ e_1\ \textup{do}\ e_2}{\text{if } e \text{ then } (e_1; \text{while } e \text{ do } e_1) \text{ else } skip} \equiv \langle e', s'\rangle $
+		$ \ \langle e, s \rangle \equiv \srule{\textup{while}\ e_1\ \textup{do}\ e_2}{\text{if } e \text{ then } (e_1; \text{while } e \text{ do } e_1) \text{ else } skip} \equiv \langle e', s'\rangle $.
+	\end{ind}
+	\columnbreak
+	\begin{ind}[assign]
+		\[
+			\infer{(t-assign)}{\Gamma\vdash e_1\colon \text{int}}{\Gamma\vdash l\colon = e_1\colon unit}{if \Gamma(l) = intref}
+		\]
+		Supponiamo di aver derivato $ \Gamma\vdash E\colon T $ utilizzando la regola di tipaggio \textbf{(T-assign)}. Posso concludere che $ E\equiv l\colon = e_1 $ per qualche locazione $ l $ e qualche programma $ e_1 $ tali che $ \Gamma\vdash e_1 \colon \text{int} $, e $ T\equiv \text{unit} $ e $ \Gamma(l) = intref $. Ne consegue che, per il fatto che l'albero di derivazione di $ \Gamma\vdash e_1\colon \text{int} $ ha profondità minore di $ \Gamma\vdash E\colon T $, per ipotesi induttiva $ \phi(\Gamma, e_1, unit) =\text{true} $. Contraddistinguo quindi due casi:
+		\begin{enumerate}
+			\item
+			\[
+				\infer{(assign1)}{-}{\srule{l:=v,s}{\text{skip}, \memrep{s}{l}{v}}}{\text{if } l \in dom(s)} 
+			\]
+			Se $ \text{value}(e_1) = \text{true} $ abbiamo che $ e_1 = n $ per qualche $ n $, $ E\equiv l\colon = n $ per qualche $ l $. Dal fatto che $ \{l\} \subseteq \text{dom}(\Gamma)\subseteq \text{dom}(s) $, derivo che $ s $ è definito in $ l $. Posso quindi applicare la regola semantica \textbf{(assign1)} e quindi ho che $ \phi(\Gamma, E, T) =\text{true} $ perché faccio un passo: 
+			$ \langle e, s \rangle \equiv \srule{l\colon = n, s}{\skipp, s[l\mapsto n]}\equiv \langle e', s' \rangle $.
+			\item
+			\[
+				\infer{(assign2)}{\srule{e,s}{e',s'}}{\srule{l:=e,s}{l:=e',s}}{}
+			\]
+			Se $ \text{value}(e_1) = \text{false} $ abbiamo che $ E\equiv l\colon = e_1 $ per qualche $ l $. Quindi $ \forall s.\ \text{dom}(\Gamma)\subseteq \text{dom}(s)\ \srule{e_1, s}{e_1', s'} $ per qualche $ e_1' $. Posso quindi applicare la regola semantica \textbf{(assign2)} e quindi ho che $ \phi(\Gamma, E, T) =\text{true} $ perché faccio un passo:
+			$ \langle e, s \rangle \equiv \srule{l\colon= e_1, s}{l\colon= e_1', s'} \equiv \langle e', s' \rangle$
+		\end{enumerate} 
 	\end{ind}
 \end{prf}
 	
