@@ -385,7 +385,7 @@ Provare la progress sul seguente linguaggio:
 			$ \langle e, s \rangle \equiv \srule{l\colon = n, s}{\skipp, s[l\mapsto n]}\equiv \langle e', s' \rangle $.
 			\item
 			\[
-				\infer{(assign2)}{\srule{e,s}{e',s'}}{\srule{l:=e,s}{l:=e',s}}{}
+				\infer{(assign2)}{\srule{e_1,s}{e_1',s'}}{\srule{l:=e_1,s}{l:=e_1',s}}{}
 			\]
 			Se $ \text{value}(e_1) = \text{false} $ abbiamo che $ E\equiv l\colon = e_1 $ per qualche $ l $. Quindi $ \forall s.\ \text{dom}(\Gamma)\subseteq \text{dom}(s)\ \srule{e_1, s}{e_1', s'} $ per qualche $ e_1' $. Posso quindi applicare la regola semantica \textbf{(assign2)} e quindi ho che $ \phi(\Gamma, E, T) =\text{true} $ perché faccio un passo:
 			$ \langle e, s \rangle \equiv \srule{l\colon= e_1, s}{l\colon= e_1', s'} \equiv \langle e', s' \rangle$
