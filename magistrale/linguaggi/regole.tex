@@ -56,7 +56,7 @@
 		&\infer{(B-Num)}{-}{\brule{n,s}{n}}{}	
 		&\infer{(B-Loc)}{-}{\brule{l,s}{s(l)}}{}\qquad\qquad
 		&\infer{(B-Skip)}{-}{\brule{\skipp,s}{s}}{} 
-		&\infer{(B-Add)}{\brule{E_1,s}{n_1} \quad \brule{E_2,s}{n_2}}{\brule{E_1+E_2}{n_3}}{n_3 = add(n_1, n_2)}
+		&\infer{(B-Add)}{\brule{E_1,s}{n_1} \quad \brule{E_2,s}{n_2}}{\brule{E_1+E_2,s}{n_3}}{n_3 = add(n_1, n_2)}
 	\end{align*}
 	\begin{align*}
 		&\infer{(B-Assign)}{\brule{E,s}{n}}{\brule{l:=e,s}{\memrep{s}{l}{n}}}{}  &\infer{(B-Assign.s)}{\brule{E,s}{n}}{\brule{l:=e,s}{\langle \skipp, \memrep{s}{l}{n}} \rangle}{} \qquad\qquad
@@ -108,7 +108,7 @@
 	\begin{align*}
 		&\infer{(S-Left)}{E_1 \goesto E_1' }{E_1 + E_2 \goesto E_1' + E_2}{} 
 		&\infer{(S-N.Right)}{E_2 \goesto E_2'}{n_1 + E_2 \goesto n_1 + E_2'}{} \qquad\qquad
-		&\infer{(S-Add)}{-}{n_1+n_2 \goesto n_3}{n_3 = add(n_1, n_2)} \\ \\
+		&\infer{(S-Add)}{-}{n_1+n_2 \goesto_{ch} n_3}{n_3 = add(n_1, n_2)} \\ \\
 		&\infer{(S-Left)}{E_1 \goesto_{ch} E_1'}{E_1 + E_2 \goesto_{ch} E_1' + E_2}{} 
 		&\infer{(S-Right)}{E_2 \goesto_{ch} E_2'}{E_1 + E_2 \goesto_{ch} E_1 + E_2'}{} \qquad\qquad
 		&\infer{(op+)}{-}{\srule{n_1 + n_2,s}{n,s}}{n=add(n_1,n_2)} \\ \\
