@@ -12,13 +12,19 @@
 \usepackage[a4paper, landscape,left=1.5cm, right=1.5cm, top=1cm, bottom=1cm]{geometry}
 \usepackage{listing}
 \usepackage{stmaryrd}
-
+\usepackage{multicol}
+\usepackage{lipsum}
+\setlength{\columnseprule}{0.4pt}
 \newcommand{\numberset}{\mathbb}
 \newcommand{\Z}{\numberset{Z}}
 \newcommand{\integer}{\textup{int}}
 \newcommand{\bool}{\textup{bool}}
 \newcommand{\skipp}{\textup{skip}}
-
+\newtheorem{thm}{Teorema}[]
+\theoremstyle{definition}
+\newtheorem{prf}{Proof}[]
+\newtheorem{base}{Caso Base}
+\newtheorem{ind}{Caso induttivo}
 \pagenumbering{gobble}
 \setlength{\droptitle}{-5cm}
 \date{}
@@ -257,4 +263,175 @@
 	\end{flushleft}
 \end{minipage}	
 
+\newpage
+
+
+\section*{Progress}
+
+
+\begin{thm}[Progress]
+	Sia $ e $ chiusa, $ \Gamma \vdash e\colon T$ e $ dom(\Gamma) \subseteq dom(s) $ allora o $ e $ è un valore oppure $ \exists e',s'$ t.c. $ \srule{e, s}{e', s'} $.
+\end{thm}
+\begin{prf}
+	Sia $ \phi $ una relazione ternaria definita come segue:
+$
+		\phi(\Gamma, e, T)\ \stackrel{def}{=} \ \forall s. \text{dom}(\Gamma) \subseteq \text{dom}(s)\ \Rightarrow\ \text{value}(e)\ \vee\ (\exists e', s'\ t.c.\ \srule{e, s}{e', s'})
+$
+
+ 	Proviamo che per ogni $ \Gamma, e, T,\ $ se $\ \Gamma \vdash e\colon T\ $ allora $\ \phi (\Gamma, e, T) $ usando \textit{rule induction} su $\ \Gamma \vdash e\colon T $.
+\end{prf}
+\begin{multicols}{2}
+Provare la progress sul seguente linguaggio:
+
+\[
+	E:\colon = x \ \big|\ n \ \big|\ E_1 + E_2 \ \big|\ E_1;E_2; \ \big|\ \textup{fn}\ x\colon T \Rightarrow E \ \big|\ EE\ 
+	\big|\ \textup{while}\ E\ \textup{do}\ E\ \big|\ E_1\colon = E_2 \ \big|
+\]
+
+
+\begin{prf}[by \textit{rule induction} su come ho tipato $ E\ (\Gamma \vdash E\colon T) $]
+	\begin{base}[int]
+		\[
+			\infer{(int)}{-}{\Gamma \vdash n\colon \integer}{\ \textup{for}\ n \in \Z}
+		\]
+		Supponiamo di aver derivato $ \Gamma \vdash E\colon T $ utilizzando la regola di tipaggio \textbf{(int)}. Posso concludere che $ E\equiv n $, per $ n \in \Z $, e $ T\equiv \text{int} $. Ne consegue che $ \phi (\Gamma, E, T) = \text{true} $ perché $ \text{value}(n) = \text{true} $.
+	\end{base}
+	\begin{base}[bool]
+		\[
+		\infer{(bool)}{-}{\Gamma \vdash b\colon \bool}{\ \textup{for}\ b \in \{true, false\}}
+		\]
+		Supponiamo di aver derivato $ \Gamma \vdash E\colon T $ utilizzando la regola di tipaggio \textbf{(bool)}.\\ 
+		Posso concludere che $ E\equiv b $, per $ b \in \{\text{true}, \text{false}\} $, e $ T\equiv \text{bool} $.\\ 
+		Ne consegue che $ \phi (\Gamma, E, T) = \text{true} $ perché $ \text{value}(b) = \text{true} $.
+	\end{base}
+	\begin{base}[skip]
+		\[
+			\infer{(skip)}{-}{\Gamma\vdash \skipp\colon unit}{}
+		\]
+		Supponiamo di aver derivato $ \Gamma \vdash E\colon T $ utilizzando la regola di tipaggio \textbf{(skip)}. Posso concludere che $ E\equiv \skipp $, $ T\equiv unit $. Ne consegue che $ \phi (\Gamma, \skipp, unit) = \textup{true} $ perchè $ \text{value}(\skipp) = \text{true} $.
+	\end{base}
+	\begin{base}[var]
+		\[
+			\infer{(var)}{-}{\Gamma \vdash x \colon T}{\ \textup{if}\ \Gamma (x) = T} 
+		\]
+		Supponiamo di aver derivato $ \Gamma \vdash E\colon T $ utilizzando la regola di tipaggio \textbf{(var)}. Posso concludere che $ E\equiv x $, e $ T\equiv T_1\rightarrow T_2$ oppure $ T\equiv \text{int} $. Posso dire che $ E $ non è chiusa perché $ x \in FV(E) $. Dato che la premessa della dimostrazione è falsa posso dedurre che $ \phi (\Gamma, E, T) = \text{true} $.
+	\end{base}
+	\begin{ind}[fn]
+		\[
+			\infer{(fn)}{\Gamma , x \colon T \vdash e\colon T'}{\Gamma\vdash (fn\ x\colon T\ \Rightarrow\ e )\colon T\rightarrow T'}{}
+		\]
+		Supponiamo di aver derivato $ \Gamma \vdash E\colon T $ utilizzando la regola di tipaggio \textbf{(fn)}. Posso concludere che $ E\equiv fn\ x\colon T\ \Rightarrow\ e $ e $ T\equiv T\rightarrow T' $. Ne consegue che $ \phi (\Gamma, E, T) = \text{true} $ perché $ \text{value}(fn\ x\colon T\ \Rightarrow\ e) = \text{true} $.
+	\end{ind}
+	\begin{ind}[op +]
+		\[
+			\infer{(op +)}{\Gamma \vdash e_1\colon \integer\qquad \Gamma \vdash e_2\colon \integer}{\Gamma\vdash e_1 + e_2 \colon \integer}{}
+		\]
+		Supponiamo di aver derivato $ \Gamma \vdash E\colon T $ utilizzando la regola di tipaggio \textbf{(op +)}. Posso concludere che $ E\equiv e_1 + e_2 $, $ T\equiv \text{int} $, $ \Gamma\vdash e_1 \colon \text{int} $ e $ \Gamma\vdash e_2 \colon \text{int} $. Per \textbf{ipotesi induttiva} ho che $ \phi(\Gamma, e_1, int)= \text{true} $ e $ \phi(\Gamma, e_2, int)= \text{true} $. Perciò contraddistinguo tre casi:
+		\begin{enumerate}
+			\item 
+			\[
+				\infer{(op1)}{\srule{e_1,s}{e_1', s'}}{\srule{e_1 + e_2,s}{e_1' + e_2,s'}}{}
+			\]
+			Se $ \text{value}(e_1) = \text{false} $ allora $ \langle e_1, s \rangle $ fa un passo e quindi, applicando la regola della semantica small-step \textbf{(op1)}, abbiamo che $ \phi(\Gamma, e_1 + e_2, \text{int}) = \textup{true} $;
+			\item
+			\[
+				\infer{(op+)}{-}{\srule{n_1 + n_2,s}{n,s}}{n=add(n_1,n_2)}
+			\]
+			Se $ \text{value}(e_1) = \text{true}\ \wedge\ \text{value}(e_2) = \text{true} $ allora, applicando la regola della semantica small-step \textbf{(op +)}, abbiamo che $ \phi(\Gamma, e_1 + e_2, \text{int}) = \textup{true} $;
+			\item 
+			\[
+				\infer{(op2)}{\srule{e_2,s}{e_2', s'}}{\srule{v + e_2,s}{v + e_2',s}}{}
+			\]
+			Se $ \text{value}(e_1) = \text{true}\ \wedge\ \text{value}(e_2) = \text{false} $ allora, applicando la regola della semantica small-step \textbf{(op2)}, abbiamo che $ \phi(\Gamma, e_1 + e_2, \text{int}) = \textup{true} $.
+		\end{enumerate}
+	\end{ind}
+	\begin{ind}[seq]
+		\[
+			\infer{(seq)}{\Gamma \vdash e_1\colon unit \qquad \Gamma\vdash e_2\colon T}{\Gamma \vdash e_1;e_2\colon T}{}
+		\]
+		Supponiamo di aver derivato $ \Gamma \vdash E\colon T $ utilizzando la regola di tipaggio \textbf{(seq)}. Posso concludere che $ E\equiv e_1;e_2 $, $ T\equiv \text{unit} $, $ \Gamma\vdash e_1 \colon \text{unit} $ e $ \Gamma\vdash e_2 \colon \text{unit} $.  Per \textbf{ipotesi induttiva} ho che $ \phi(\Gamma, e_1, unit)= \text{true} $ e $ \phi(\Gamma, e_2, unit)= \text{true} $. Perciò contraddistinguo due casi:
+		\begin{enumerate}
+			\item
+			\[
+				\infer{(seq)}{\srule{e_1,s}{e_1',s}}{\srule{e_1;e_2,s}{e_1';e_2,s'}}{}
+			\]
+			Se $ \text{value}(e_1) = \text{false} $ allora $ \langle e_1, s \rangle $ fa un passo e quindi, applicando la regola della semantica small-step \textbf{(seq)}, abbiamo che $ \phi(\Gamma, e_1;e_2, \text{unit}) = \textup{true} $;
+			\item
+			\[
+				\infer{(seq.skip)}{-}{\srule{skip;e_2,s}{e_2,s}}{}
+			\]
+			Se $ \text{value}(e_1) = \text{true} $ allora, applicando la regola della semantica small-step \textbf{(seq.skip)}, abbiamo che $ \phi(\Gamma, e_1;e_2, \text{unit}) = \textup{true} $.
+		\end{enumerate}
+	\end{ind}
+	\begin{ind}[while]
+		\[
+			\infer{(while)}{\Gamma\vdash e_1 \colon \bool\qquad \Gamma\vdash e_2 \colon T}{\Gamma \vdash\textup{while}\ e_1\ \textup{do}\ e_2\colon T}{}
+		\]
+		Supponiamo di aver derivato $ \Gamma \vdash E\colon T $ utilizzando la regola di tipaggio \textbf{(while)}. Posso concludere che $ E\equiv \textup{while}\ e_1\ \textup{do}\ e_2 $, per qualche $ e_1, e_2 $ tali che $ \Gamma\vdash e_1 \colon \bool $ e $ \Gamma\vdash e_2 \colon T $, e $ T\equiv unit $. Ne consegue che $ \phi(\Gamma, E, T) = \textup{true} $ perché applico la regola di riscrittura, applicando la regola semantica \textbf{(while)} e quindi faccio un passo:
+		$ \ \langle e, s \rangle \equiv \srule{\textup{while}\ e_1\ \textup{do}\ e_2}{\text{if } e \text{ then } (e_1; \text{while } e \text{ do } e_1) \text{ else } skip} \equiv \langle e', s'\rangle $
+	\end{ind}
+\end{prf}
+	
+\end{multicols}
+
+\newpage
+\setcounter{thm}{0}
+\setcounter{prf}{0}
+\setcounter{base}{0}
+\setcounter{ind}{0}
+\section*{Type Preservation}
+\begin{thm}[Type Preservation]
+	Sia $ e $ chiusa e $\ \Gamma \vdash e\colon T\ $ e $\ \text{dom}(\Gamma) \subseteq \text{dom}(s)\ $ e $\ \srule{e, s}{e', s'} \ $ allora $\ \Gamma \vdash e'\colon T\ $ e $\ e' $ è chiusa e $\ \text{dom}(\Gamma) \subseteq \text{dom}(s') $.
+\end{thm}
+
+\begin{multicols}{2}
+Provare la type preservation sul seguente linguaggio:
+
+\[
+E:\colon = x \ \big|\ n \ \big|\ E_1 + E_2 \ \big|\ \textup{fn}\ x\colon T \Rightarrow E \ \big|\ EE
+\]
+
+
+	
+\begin{prf}[by \textit{rule induction} su come ho derivato $ E\rightarrow F$]
+	\begin{base}[S-Add]
+		\[
+			\infer{(S-Add)}{-}{\srule{n_1 + n_2,s}{n_3,s}}{n_3=add(n_1,n_2)}
+		\]
+		Supponiamo di aver derivato $ E\rightarrow F $ utilizzando la regola semantica \textbf{(S-Add)}. Ne consegue che $ E\equiv n_1 + n_2 $ e $ F\equiv n_3 $. Se $ \Gamma\vdash E\colon \text{int} $ sarò stato in grado di tipare $ E $ utilizzando la regola di tipaggio \textbf{(op +)}. Di conseguenza ho tipato $ n_1 $ e $ n_2 $: $ \ \Gamma\vdash n_1 \colon \text{int} $, 
+		$ \ \Gamma\vdash n_2 \colon \text{int} $. Ne consegue che $ \ \Gamma\vdash n_3\colon \text{int} $ come richiesto.
+	\end{base}
+	\begin{base}[CBV-fn]
+		\[
+			\infer{(CBV-fn)}{-}{\srule{(fn\ x\colon T\Rightarrow e)v, s}{\subs{e}{v}{x}, s}}{}
+		\]
+		Supponiamo di aver derivato $ E\rightarrow F $ utilizzando la regola semantica \textbf{(CBV-fn)}. Ne consegue che $ E\equiv (fn\ x\colon T\Rightarrow e)v $ e $ F\equiv \subs{e}{v}{x} $. Se $ \Gamma\vdash E\colon T $ sarò stato in grado di tipare $ E $ utilizzando la regola di tipaggio \textbf{(app)}. In tal caso avrò dedotto che $ \Gamma \vdash v\colon T'$ e $ \Gamma\vdash fn\ x\colon T'\Rightarrow e \colon T\rightarrow T' $. Di conseguenza sarò stato in grado di tipare il corpo di $ e $: $ \ \Gamma, x\colon T'\vdash e\colon T $. Dunque per il \textit{substitution lemma} avrò che $ \Gamma\vdash\subs{e}{v}{x}\equiv F\colon T $ come richiesto.
+	\end{base}
+	\begin{ind}[S-Left]
+		\[
+			\infer{(S-Left)}{E_1 \goesto E_1' }{E_1 + E_2 \goesto E_1' + E_2}{} 
+		\]
+		Supponiamo di aver derivato $ E\rightarrow F $ utilizzando la regola semantica \textbf{(S-Left)}. Ne consegue che $ E\equiv E_1 + E_2 $ e $ F\equiv E_1' + E_2 $. Se $ \Gamma\vdash E\colon T $ allora vuol dire che sarò stato in grado di tipare $ E $ usando la regola di tipaggio \textbf{(op +)}. In tal caso avrò dedotto che $ T\equiv \text{int} $, $ \Gamma\vdash E_1\colon \text{int} $, $ \Gamma\vdash E_2\colon \text{int} $. Per ipotesi induttiva da $ E_1\rightarrow E_1' $ concludo che $ \Gamma\vdash E_1'\colon \text{int} $. Ma allora applicando la regola di tipaggio \textbf{(op +)} derivo che $ \Gamma\vdash E_1' + E_2\equiv F \colon \text{int} $ come richiesto.
+	\end{ind}
+	\columnbreak
+	\begin{ind}[S-Right]
+		\[
+			\infer{(S-Right)}{E_2 \goesto E_2'}{E_1 + E_2 \goesto E_1 + E_2'}{}
+		\]
+		Supponiamo di aver derivato $ E\rightarrow F $ utilizzando la regola semantica \textbf{(S-Right)}. Ne consegue che $ E\equiv E_1 + E_2 $ e $ F\equiv E_1 + E_2' $. Se $ \Gamma\vdash E\colon T $ allora vuol dire che sarò stato in grado di tipare $ E $ usando la regola di tipaggio \textbf{(op +)}. In tal caso avrò dedotto che $ T\equiv \text{int} $, $ \Gamma\vdash E_1\colon \text{int} $, $ \Gamma\vdash E_2\colon \text{int} $. Per ipotesi induttiva da $ E_2\rightarrow E_2' $ concludo che $ \Gamma\vdash E_2'\colon \text{int} $. Ma allora applicando la regola di tipaggio \textbf{(op +)} derivo che $ \Gamma\vdash E_1 + E_2'\equiv F \colon \text{int} $ come richiesto.
+	\end{ind}
+	\begin{ind}[CBV-app1]
+		\[
+			\infer{(CBV-app1)}{\srule{e_1, s}{e_1', s'}}{\srule{e_1 e_2, s}{e_1'e_2, s'}}{}
+		\]
+		Supponiamo di aver derivato $ E\rightarrow F $ utilizzando la regola semantica \textbf{(CBV-app1)}. Ne consegue che $ E\equiv E_1E_2 $ e $ F\equiv E_1'E_2 $ e $ E_1\rightarrow E_1' $. Se $ \Gamma\vdash E\colon T $ allora vuol dire che sarò stato in grado di tipare $ E $ usando la regola di tipaggio \textbf{(app)}. Quindi per ipotesi induttiva da $ E_1\rightarrow E_1' $ deduco che $ \Gamma\vdash E_1'\colon T_A\rightarrow T $. Siccome $ F\equiv E_1'E_2 $ e $ \Gamma \vdash E_2 \colon T_A $, ne consegue che, applicando la regola di tipaggio \textbf{(app)}, derivo che $ \Gamma\vdash E_1'E_2\equiv F \colon T $ come richiesto.
+	\end{ind}
+	\begin{ind}[CBV-app2]
+		\[
+			\infer{(CBV- app2)}{\srule{e_2, s}{e_2', s'}}{\srule{ve_2, s}{ve_2', s'}}{}
+		\]
+		Supponiamo di aver derivato $ E\rightarrow F $ utilizzando la regola semantica \textbf{(CBV-app2)}. Ne consegue che $ E\equiv vE_2 $ e $ F\equiv vE_2' $ e $ E_2\rightarrow E_2' $. Se $ \Gamma\vdash E\colon T $ allora vuol dire che sarò stato in grado di tipare $ E $ usando la regola di tipaggio \textbf{(app)}. Quindi per ipotesi induttiva da $ E_2\rightarrow E_2' $ deduco che $ \Gamma\vdash E_2'\colon T_A $. Siccome $ F\equiv vE_2' $ e $ \Gamma \vdash v \colon T_A\rightarrow T $, ne consegue che, applicando la regola di tipaggio \textbf{(app)}, derivo che $ \Gamma\vdash vE_2'\equiv F \colon T $ come richiesto.
+	\end{ind}
+\end{prf}
+\end{multicols}
 \end{document}
