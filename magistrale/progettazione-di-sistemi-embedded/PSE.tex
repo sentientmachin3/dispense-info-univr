@@ -726,14 +726,56 @@ b_transport(payload, time) {
 			Data una funzione, questa viene eseguita se e solo se ci sono abbastanza sample disponibili nella porta di input. C'è un numero fissato di sample consumati e prodotti. Ogni sample ha il suo time stamp. L'intervallo fissato è chiamato time step.
 			
 			\begin{itemize}
-				\item Time step (modulo)
+				\item Time step (modulo) 
+				\hspace{1cm}
+				\begin{tikzpicture}[baseline=-0.5]
+					\node[rect, minimum width=1.25cm] (A) {A};
+					\node at (0,-.35) {\tiny Tm:$ 20\mu$s };
+					\filldraw[fill=black, draw=black] ($ (A.east) +(-.1,.1) $) rectangle ($ (A.east) +(.1,-.1) $);
+					\filldraw[fill=black, draw=black] ($ (A.west) +(-.1,.1) $) rectangle ($ (A.west) +(.1,-.1) $);
+				\end{tikzpicture}
 				\item Time step (porta)
+				\hspace{1cm}
+				\begin{tikzpicture}[baseline=-0.5]
+					\node[rect, minimum width=1.25cm] (B) {B};
+					\node[align=left, font=\tiny] at (-.05,.25) {Tp:$ 10\mu$s \\ R:2 };
+					\filldraw[fill=black, draw=black] ($ (B.east) +(-.1,.1) $) rectangle ($ (B.east) +(.1,-.1) $);
+					\filldraw[fill=black, draw=black] ($ (B.west) +(-.1,.1) $) rectangle ($ (B.west) +(.1,-.1) $);
+				\end{tikzpicture}
 				\item Rate (porta)
 				\item Delay (porta)
+				\hspace{1cm}
+				\begin{tikzpicture}[baseline=-0.5]
+				\node[rect, minimum width=1.25cm] (C) {C};
+				\node[align=left, font=\tiny] at (.35,0) {D:1};
+				\filldraw[fill=black, draw=black] ($ (C.east) +(-.1,.1) $) rectangle ($ (C.east) +(.1,-.1) $);
+				\filldraw[fill=black, draw=black] ($ (C.west) +(-.1,.1) $) rectangle ($ (C.west) +(.1,-.1) $);
+				\end{tikzpicture}
 				\item Time offset (porta specializzata)
+				\hspace{1cm}
+				\begin{tikzpicture}[baseline=-0.5]
+				\node[rect, minimum width=1.25cm] (D) {D};
+				\node[align=left, font=\tiny] at (-.1,.35) {Tpf:$ 1\mu$s};
+				\filldraw[fill=black, draw=black] ($ (D.east) +(-.1,.1) $) rectangle ($ (D.east) +(.1,-.1) $);
+				\filldraw[fill=black, draw=black] ($ (D.west) +(0,.1) $) rectangle ($ (D.west) +(.1,-.1) $);
+				\filldraw[fill=white, draw=black] ($ (D.west) +(-.1,.1) $) rectangle ($ (D.west) +(0,-.1) $);
+				\end{tikzpicture}
+			\end{itemize}
+			
+		\subsection{Scheduling}
+			Discrete Event Models Cluster: insieme di moduli di modelli di eventi discreti connessi che appartengono allo stesso scheduler statico:
+			\begin{itemize}
+				\item I parametri devono essere compatibili
+				\item Definisce una sequenza in cui i moduli di modelli di eventi discreti vengono eseguiti
 			\end{itemize}
 			
 			Nello scheduling i cicli possono essere fonte di problemi. Ogni loop deve presentare minimo una porta di delay. Le porte di delay possono portare all'inconsistenza, quindi bisogna specificare un valore iniziale.
 			
 			\textbf{TDF non supporta la gerarchia}
+			
+			\textbf{Consistenza:}
+			\[
+				T_m = T_{p_{\text{input}}}\cdot R_{\text{input}} = T_{p_{\text{output}}}\cdot R_{\text{output}}
+			\]
+			
 \end{document}
