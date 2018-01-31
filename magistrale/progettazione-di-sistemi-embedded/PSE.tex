@@ -1,8 +1,8 @@
 \documentclass[a4paper]{article}
 \usepackage[italian]{babel}
 \usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage{palatino}
+\usepackage[utf8x]{inputenc}
+\usepackage{libertine}
 \usepackage{frontespizio}
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -13,6 +13,7 @@
 \usepackage{multirow}
 \usepackage{tikz}
 \usepackage{booktabs}
+\usetikzlibrary{decorations.pathreplacing}
 \usetikzlibrary{patterns}
 \usetikzlibrary{shapes,positioning,calc}
 \usetikzlibrary{shapes.geometric, arrows}
@@ -48,6 +49,9 @@
 \renewcommand{\headrulewidth}{0.4pt}
 \usepackage{array}
 \usepackage{makecell}
+
+\theoremstyle{definition}
+\newtheorem{dfn}{Definizione}[]
 
 \renewcommand\theadalign{bc}
 \renewcommand\theadfont{\bfseries}
@@ -778,4 +782,440 @@ b_transport(payload, time) {
 				T_m = T_{p_{\text{input}}}\cdot R_{\text{input}} = T_{p_{\text{output}}}\cdot R_{\text{output}}
 			\]
 			
+			\newpage
+			
+	\section{Sintesi di Software Embedded}
+		La sintesi di un software embedded è legata alla piattaforma target che deve avere un organizzazione semplice:
+		\begin{itemize}
+			\item Insieme di unità HW dedicate
+			\item Porte programmabili
+			\item Processore
+			\item Memoria
+		\end{itemize}
+		Il software dovrà anche riuscire ad attivare l'esecuzione sui vari dispositivi hardware e ottenere risultati di tali parti.
+		Gli algoritmi non sono mappati come processi ma come hardware, come avviene nei circuiti integrati ASIC (Application Specific Integrated Circuit).
+		
+		\subsection{Hardware Dependent Software}
+			Possiamo considerare un software embedded come un \textbf{firmware} (metà tra hw e sw). Con questo termine in realtà si definiva il software che permetteva di realizzare microistruzioni all'interno dei processori negli anni '70 (microprogrammazione).\\
+			Il termine corretto non è firmware ma \textbf{HDS}: Hardware Dependent Software. Il software è hardware independent grazie ad uno strato hardware dependent. Questo strato generalmente viene fornito dal sistema operativo.
+			
+			\begin{figure}[h]
+				\centering
+				\begin{tikzpicture}
+				\draw[rounded corners] (0,0) rectangle (9,7);
+				\draw (0,6) -- (9,6); \draw (0,6) -- (9,6); \draw (0,5) -- (9,5); \draw (0,4) -- (9,4); \draw (0,2.5) -- (9,2.5);
+				\draw (0,1) -- (9,1);
+				\draw (4.5,5) -- (4.5,1); \draw (2.25,4) -- (2.25,1); \draw (6.75,5) -- (6.75,2.5);
+				\node at (4.5,6.5) {Application SW}; \node at (7.5,6.75) {Embedded SW};\node at (4.5,5.5) {Middleware};
+				\node[align=center] at (5.65,4.5) {Test support\\ Library};
+				\node[align=center] at (7.75,4.5) {Online test\\ segment};
+				\node[align=center] at (5.65,3.25) {Offline test\\ segments};
+				\node[align=center] at (3.45,3.25) {Device\\ drivers};
+				\node[align=center] at (3.45,1.75) {HW\\ abstraction\\ layer (HAL)};
+				\node[align=center] at (1.15,3.25) {Boot\\ \& Load};
+				\node[align=center] at (1.15,1.75) {HW init}; \node[align=center] at (6.75,1.75) {BSP};
+				\node at (4.5,0.5) {Communication HW};
+				\draw [decorate,decoration={brace,amplitude=5pt,mirror,raise=4pt},yshift=0pt]
+				(9.25,0) -- (9.25,1) node [black,midway,xshift=1.5cm,align=center] {HW\\ space};
+				\draw [decorate,decoration={brace,amplitude=10pt,mirror,raise=4pt},yshift=0pt]
+				(9.25,1) -- (9.25,4) node [black,midway,xshift=1.5cm,align=center] {Kernel\\ space};
+				\draw [decorate,decoration={brace,amplitude=10pt,mirror,raise=4pt},yshift=0pt]
+				(9.25,4) -- (9.25,7) node [black,midway,xshift=1.5cm,align=center] {User\\ space};
+				\draw [decorate,decoration={brace,amplitude=10pt,raise=4pt},yshift=0pt]
+				(-.25,1) -- (-.25,5) node [black,midway,xshift=-1.25cm,align=center] {HdS};
+			\end{tikzpicture}
+			\end{figure}
+			
+			Non è detto che un sistema embedded abbia a disposizione un sistema operativo. In molti sistemi embedded infatti non c'è, se il software è realizzabile come un unico processo non mi serve un sistema operativo. Se invece ho più processi o librerie esterne devo averlo per implementare uno scheduler. Spesso nelle board ho solo una parte del kernel di linux. Se non c'è o.s., l'HDS deve comunque fare qualcosa:
+			\begin{itemize}
+				\item \textbf{HAL} (Hardware Abstraction Layer): contiene informazioni su dove i dispositivi hw sono mappati in memoria: mappa di indirizzi a cui non corrisponde RAM, bensì Hardware. Parte principale che permette di interfacciarmi con l'hw.
+				\item \textbf{Device Drivers}: Se ho interrupt allora devo alzarmi nel livello di astrazione e avere a disposizione un device driver e primitive che si interfacciano con un dato dispositivo leggendo e utilizzando gli indirizzi a cui sono associati gli hw.
+				Le primitive sono:
+				\begin{itemize}
+					\item \lstinline|OPEN|
+					\item \lstinline|READ| : è solo una lettura su un indirizzo di memoria
+					\item \lstinline|WRITE|
+					\item \lstinline|CLOSE| (chiude la comunicazione)
+					\item \lstinline|GENERIC IO| : fasi specifiche del dispositivo hw (usata solo in casi particolari)
+				\end{itemize}
+			\end{itemize}
+			Scrivere un device driver significa scrivere le sopracitate funzioni.\\
+			La difficoltà di un device driver non risiede quindi sulla complessità delle primitive ma sulle scelte progettuali:
+			\begin{itemize}
+				\item bloccante o non bloccante
+				\item Come gestire sincronismo per evitare che i dati di uno non finiscano nell'altro?
+			\end{itemize}
+			Il sistema operativo mette a disposizione una serie di funzionalità che facilitano tutto ciò. Se non ho un sistema operativo generalmente ho solo processi. 
+			\begin{itemize}
+				\item \textbf{Boot and Load}: ogni processore ha una propria strategia di boot. Devo caricare in memoria il codice specifico per un dato processore ( questa componente è generalmente venduta con il processore: non si deve scrivere).\\
+				Il compilatore produce software sapendo qual è la mappa di memoria che si aspetta il processore per funzionare.
+				Il linguaggio usato di riferimento è il C o C++. Posso scrivere programmi in linguaggio ad alto livello ma ho bisogno del compilatore specifico e di un o.s. ( la complessità aumenta).
+				\item \textbf{Middleware}: libreria specifica che mette a disposizione funzionalità per una particolare classe di problemi.
+			\end{itemize}
+			Le porte di HDS e software applicativo comunicano tra loro. Linux è il software embedded più utilizzato perché non ha licenze ed è aperto. È adattabile a tutte le piattaforme.\\
+			Linux inoltre è composto da tante parti. Posso prendere parti che mi servono. Esistono configuratori che capiscono quali sono le componenti che vengono effettivamente usate dalla mia piattaforma. Questi configuratori permettono di riapplicare la stessa ricetta anche per versioni di linux successive.
+			
+		\subsection{Flusso di co-sintesi a livello di sistema}
+			In questa fase avviene la partizione tra \textit{unità dedicate} e \textit{unità programmabili}.
+			\begin{itemize}
+				\item \textbf{Sintesi Hardware} delle \textit{unità dedicate} basata sulla ricerca o su tool commerciali per la sintesi standard.
+				\item \textbf{Sintesi Software} delle \textit{unità programmabili} basata su tecniche di compilazione specializzata.
+				\item \textbf{Sintesi delle interfacce} in cui vengono definite le interfacce HW e SW e avviene la sincronizzazione.
+			\end{itemize}
+			
+		\subsection{Compilatori re-targetable}
+			Si tratta di compilatori progettati in modo tale che risultino facili da modificare a fronte di generazione di codice per diversi instruction set di CPU. 
+			\begin{itemize}
+				\item Risultano utili ad esempio per architetture ASIP (Application Specific Instruction-set Processor) le quali hanno un set di istruzioni specifico.
+				\item La qualità del codice (e.g. velocità di esecuzione) è molto importante, lo è meno il tempo di compilazione.
+				\item Sono compilatori portabili.
+				\item Sono compilatori indipendenti dalla macchina, applicabili a diverse architetture.
+			\end{itemize}
+			
+			 
+		
+		\subsection{Linux RT}
+			\textbf{Linux RT}: versioni \textit{real time} di linux. Le funzionalità sono corrette quando producono risultati corretti all'interno della finestra temporale che desideriamo.
+			
+			Esempio: airbag di un automobile ha requisiti real time:
+	
+			\begin{tikzpicture}[scale=0.5, >=latex, font=\footnotesize]
+				\draw [<->, thin] (0,5) node [left,rotate=90,yshift=.25cm,xshift=.5cm] {correttezza} -- (0,0) -- (7,0) node [below] {tempo};
+				\draw[ultra thick] node[below] {0} (0,0) -- (2,0) node[below] {4$ ms $} -- (2,2) -- (5,2) -- (5,0) node[below] {10$ ms $} -- (7,0);
+				\node[left] at (0,2) {1}; \node at (1,1) {NO};\node at (6,1) {NO};
+				
+				\node at (17,2) {{\normalsize \textit{Hard real time}: precisione massima}};
+			\end{tikzpicture}
+			
+			\begin{tikzpicture}[scale=0.5, >=latex, font=\footnotesize]
+				\draw [<->, thin] (0,5) node [left,rotate=90,yshift=.25cm,xshift=.5cm] {correttezza} -- (0,0) -- (7,0) node [below] {tempo};
+				\draw node[below] {0} (0,0) -- (2,0) node[below] {4$ ms $} -- (2,2) -- (5,2) -- (5,0) node[below] {10$ ms $} -- (7,0);
+				\draw[ultra thick] (0,0) to [out=0, in=-110] (2,2) to [out=45, in=180] (3.5,2.5)	to [out=0, in=135] (5,2) to [out=-80, in=180] (7,0);
+				\node[left] at (0,2) {1};
+				\node at (17,2) {{\normalsize \textit{Soft real time}: sopporta un po' di ritardo}};
+			\end{tikzpicture}
+	
+			Nell'hard real time posso garantire che il sistema risponda in certi intervalli di tempo.
+			Se ho un unico processo che però deve reagire a interrupt il tempo di esecuzione reale aumenta sensibilmente e si rischia di violare i tempi prefissati (non determinismo). Se voglio determinismo tolgo gli interrupt e metto polling (sebbene sia profondamente inefficiente). Ho comunque non determinismo legato alla presenza in cache del dato oppure no.
+			
+			Se ho sistemi operativo con più processi il non determinismo è ancora più evidente. In sistemi operativi avanzati posso dare vincoli di real time ai processi che vengono usati dallo scheduler per capire quale processo ha priorità maggiore.
+			
+			\textbf{Difetti} di Linux RT: è una versione obsoleta rispetto a versioni di linux più recenti. Spesso non viene usato ma si usa questa strategia: considero sempre il caso pessimo. Se non soddisfo questo requisito alzo la frequenza del processore.
+			
+		\subsection{Sintesi SW dal SystemC}
+		
+			\begin{itemize}
+				\item Le funzioni software vengono identificate da thread, poiché un singolo processore necessita della serializzazione di thread o interleaving di azioni originariamente concorrenti.
+			
+				\item Avviene quindi lo scheduling delle thread e delle istruzioni in modo da soddisfare i vincoli dettati dalle performance.
+				
+				\item C'è uno scheduler run-time a livello di sistema che sincronizza le funzioni SW e HW.
+			
+				\item I processi software vengono isolati dalla descrizione del sistema globale.
+				
+				\item Vengono generate le interfacce tra la parte HW e SW.
+				
+				\item Prima di andare verso l'hardware devo depurare il tutto dalle keyword di systemC: modifico il codice trasformandolo in thread che vengono fornite dal sistema operativo.
+				
+				\item Avvengono le misurazioni per le performance del software limitate dai vincoli hardware.
+			\end{itemize}
+			
+			Flusso generale: TLM$\ \rightarrow\ $ generazione software $\ \begin{cases}
+				\text{cache} \\
+				\text{HdS}
+			\end{cases} $ $\ \rightarrow\ $ Cross-compilazione.
+			
+			\noindent
+			Devo decidere cosa va in software e cosa va in hardware sulla base delle prestazioni richieste:
+			\[
+				1000 ms
+				\begin{cases}
+					\text{componente 1}\ \rightarrow\ \text{90\% del tempo di esecuzione}\\
+					\text{componente 2}\ \rightarrow\ \text{10\% del tempo di esecuzione}
+				\end{cases}
+			\]
+			Se la componente 2 viene ottimizzata di 10 volte il tempo passa da $ 1000 $ a $ 910 $. Se avessi ottimizzato di 2 volte il tempo della componente 1 lo speed up sarebbe stato notevolmente maggiore con sforzo minimo.
+			
+		\subsection{Misurazione delle performance Software}
+			Uno dei tool utilizzati per la misurazione delle performance è \textbf{\lstinline|gprof|}: si utilizza compilando da gcc con flag \lstinline|-P|. 
+			\begin{itemize}
+				\item Permette di calcolare quanto tempo spendo in ogni componente/sottoprogramma del sistema. 
+				\item Posso realizzare le \textit{componenti più lente in hardware} al fine di migliorare le prestazioni. 
+				\item Per sapere quante volte è chiamata la funzione devo controllare il software ad una frequenza di campionamento maggiore. 
+				\item Occhio però perché se la frequenza è troppo alta interrompo spesso l'esecuzione e deterioro un po' i risultati.
+			\end{itemize}
+			
+		\subsection{Definizione dei testbench}
+			L'esecuzione del programma in termini di tempi dipende fortemente dal testbench utilizzato. Il testbench è buono se rispetta alcuni vincoli di copertura:
+			\begin{itemize}
+				\item \textit{Branch coverage}: percentuale di cammini che sono riuscito ad attivare
+				\item \textit{Statement coverage}: alcune operazioni hanno un minimo e un massimo termine di esecuzione a seconda dell'input(esempio: potenze o radici quadrate).
+				\item \textit{Path coverage}: i cammini di esecuzione crescono in maniera esponenziale, nel caso in cui ho processi. È necessario quindi fare delle approssimazioni. Devo cercare di individuare il cammino più lento se sono interessato al caso pessimo.
+			\end{itemize}
+			
+		\subsection{Difficoltà di test per SW Embedded}
+			La piattaforma di esecuzione (hardware) è spesso progettata in parallelo al software embedded:
+			\begin{itemize}
+				\item È necessario un modello hardware.
+				\item Non c'è una esecuzione del software easy. E quindi neanche easy testing.
+			\end{itemize}
+			Il software embedded è spesso software hardware dependent (HdS):
+			\begin{itemize}
+				\item La correttezza dipende dalle tempistiche
+				\item Il comportamento del software dipende dagli eventi asincroni hardware
+				\item È richiesta una piattaforma reale o un modello hardware complesso: no easy testing.
+			\end{itemize}
+			
+			\noindent
+			\textbf{Una possibile soluzione approssimata:}
+			\begin{itemize}
+				\item \textbf{Test basato su test pattern funzionali}: è un approccio comune, ma non è esaustivo, alcuni bug rimangono nascosti e non verificati.
+			\end{itemize}
+			Per migliorare l'efficienza dei test pattern:
+			\begin{itemize}
+				\item ATPG (generazione automatica di vettori di collaudo) funzionale: è necessario un modello di guasti hw/sw
+				\item Restrizione dei test funzionali: è necessario un modello di guasti hw/sw
+				\item Copertura dei cambiamenti(mutation coverage): test basato su piccole modifiche del programma, in cui ogni versione viene chiamata mutante.
+			\end{itemize}
+			
+			\noindent
+			\textbf{Una possibile soluzione esatta:}
+			\begin{itemize}
+				\item \textbf{Test basato sulle proprietà}: difficile da utilizzare, è esaustivo se l'insieme delle proprietà è completo.
+			\end{itemize}
+			Per migliorare l'efficienza:
+			\begin{itemize}
+				\item Generazione automatica delle proprietà: è necessario un modello di specifica hw/sw.
+				\item Model checking: model checking di hw/sw è ancora un area di ricerca.
+				\item Classificazione delle proprietà: la copertura dei cambiamenti può essere utile.
+			\end{itemize}
+			
+			\noindent
+			\textbf{La soluzione ideale:}\\
+			\textbf{Generazione di software embedded che si corregge nel processo di costruzione}:
+			\begin{itemize}
+				\item Il software viene raffinato da un modello hw/sw: è necessario un modello di specifica hw/sw.
+				\item HdS viene generato automaticamente: il modello hardware guida la generazione del software.
+				\item Le primitive del modello di specifica hw/sw vengono mappate automaticamente sulle primitive del sistema operativo del sistema embedded: modelli astratti di sistemi operativi.
+				\item Non è necessario nessun test del software embedded!
+			\end{itemize}
+			
+			
+	\section{Model Based Design e UML}
+		Model based design si pone a un livello intermedio; si passa all'implementazione del sottosistema mediante tool automatici. Nell'approccio tradizionale scrivo software per una particolare board. Se lavoro a livello di modello sono indipendente dall'architettura.
+		
+		Il software embdedded è uno specific-purpose software: è strettamente integrato con la piattaforma di esecuzione sottostante che reagisce costantemente ad eventi e unisce flusso di controllo e flusso dati.\\
+		Il suo ruolo principale non è quello di trasformare i dati, ma quello di interazione con il mondo fisico: viene eseguito su macchine che non sono solo computer, ma sono automobili, aerei, telefoni, strumenti medici, giocattoli...
+		
+		\subsection{Caratteristiche principali di Software Embedded}
+			\begin{itemize}
+				\item \textbf{Tempestività} (\textit{Timeliness}): i processi fisici evolvono lungo il tempo. Una computazione in tardiva ("late computation") non è solo in ritardo, ma è incorretta!
+				\item \textbf{Concorrenza} (\textit{Concurrency}): i segnali possono arrivare dall'ambiente contemporaneamente, potrebbero accadere attività disgiunte ma in parallelo che necessitano il monitoraggio.
+				\item \textbf{Liveness}: nella visione di computazione di Turing, tutti i programmi che non terminano sono programmi difettosi. Nella computazione embedded, tutti i programmi che \textit{terminano} sono difettosi!
+				\item \textbf{Reattività} (\textit{Reactivity}): E.S. sono sistemi vincolati in tempo reale e safety critical che reagiscono in modo continuo con l'ambiente che li circonda.
+				\item \textbf{Eterogeneità} : E.S. mescolano stili di computazione con tecnologie di implementazione.
+			\end{itemize}
+			
+			Il software embedded (ESW) deve quindi essere:
+			\begin{itemize}
+				\item Sviluppato rapidamente;
+				\item Rapidamente modificabile ed estendibile;
+				\item Conforme alle specifiche del cliente;
+				\item Facilmente portabile tra le piattaforme di Sistemi Embedded.
+			\end{itemize} 
+		
+		\subsection{ESW: vincoli di progettazione}
+			La progettazione di software embedded implica vincoli di progettazione che vanno in conflitto tra loro:
+			\begin{itemize}
+				\item Efficiente, efficace, basso costo computazionale, basso utilizzo di memoria $\ \rightarrow\ $ stretta integrazione con la piattaforma ES;
+				\item Riusabile, sviluppabile velocemente, mantenibile nel tempo, portabile  $\ \rightarrow\ $ astratto e indipendente dalla piattaforma ES.
+			\end{itemize}
+			 Per risolvere il conflitto di progettazione:
+			 \textbf{Model Based Design (MBD)}  $\ \rightarrow\ $ progettazione basata su modelli astratti, generazione automatica di codice dai modelli astratti.
+		
+		\subsection{MBD: soluzioni sul mercato}
+		
+			\textbf{Matlab} permette lo sviluppo di agoritmi usando componenti già pronte assemblabili tra loro e quindi indipendentemente dal software. Saranno poi i plug-in di Matlab a fare sintesi sulla board specifica. L'unico \textit{difetto} di Matlab è quello che la specifica scritta in Matlab non è portabile in altri ambienti.
+			
+			\noindent
+			\textbf{Modelica}: simile a Matlab ma open source. Utilizzato in progettazione di sistemi tecnici e.g.: sistemi meccanici, elettrici, termici, idraulici... La specifica del comportamento dinamico è descritta con equazioni differenziali, algebriche e discrete. \textit{Difetto}: scarsa manutenzione, supporta principalmente specifica funzionale/comportamentale.
+			
+			\noindent
+			\textbf{Simulink}: progettazione di sistemi dinamici e di controllo. Descrizione dei sistemi tramite una libreeria di blocchi grafici o di equazioni differenziali, algebriche e discrete.\textit{Difetto}: supporta principalmente specifica funzionale/comportamentale, supporta in parte la partizione strutturale del sistema.
+		
+			Il mercato cerca qualcosa di standard: \textbf{UML}
+			\begin{itemize}
+				\item Specifica strutturale: componenti
+				\item Specifica funzionale
+				\item Specifica use case
+			\end{itemize}
+			Vantaggi: linguaggio aperto e flessibile. Le specifiche grafiche sono facilmente interpretabili. Permette la specifica a diversi livelli di astrazione:
+			\begin{itemize}
+				\item Livello use case
+				\item Livello di sistema (structural view)
+				\item Livello di integrazione (subsystems interaction view)
+				\item Livello di unità (\textit{Unit Level} - subsystem functional view)
+			\end{itemize} 
+		
+		\subsection{Unified Modeling Language (UML)}
+			È un linguaggio standard per:
+			\begin{multicols}{2}
+				\begin{itemize}
+				\item Specificare
+				\item Visualizzare
+				\item Costruire
+				\item Documentare
+				\item Modellare il business
+				\item Comunicazioni
+				\end{itemize}
+			\end{multicols}
+			Ci permette di visualizzare secondo 3 punti di vista diversi: \textit{Utente}, \textit{Designer} e \textit{Analizzatore}.
+			
+			UML mette a disposizione diversi \textbf{diagrammi} per la rappresentazione dei sistemi:
+			\begin{itemize}
+				\item \textit{Use Case diagram}: sono diagrammi dedicati alla descrizione delle funzioni o servizi offerti da un sistema, così come sono percepiti e utilizzati dagli attori che interagiscono col sistema stesso.\\
+				Usati nei E.S. solamente all'inizio con il cliente, in modo da definire un'idea astratta.
+				\item \textit{Class diagram}: si definiscono le classi con attributi e relazioni del sistema includendo ereditarietà, aggregazione, associazione e le operazioni e gli attributi delle classi.\\
+				Non molto utili nei E.S. perchè troppo ad alto livello per le strutture dati dei ESW.
+				\item \textit{Sequence Diagram}: diagramma di interazione che spiega in dettaglio come le operazioni vengono portate avanti nel tempo. Quali messaggi vengono inviati e quando in base al tempo di vita del sistema.\\
+				Usati nei E.S. per ritrarre le relazioni nel tempo, anche se è difficile scrivere codice in modo automatico.
+				\item \textit{Activities Diagram}: si permettono di definire stati e transazioni per descrivere cosa avviene nel tempo.\\
+				Non usati nei E.S.: troppo distanti dal codice effettivo.
+				\item \textit{\textbf{State Machine Diagram}}: mostrano i possibili stati degli oggetti e le transizioni che provocano un cambiamento dello stato degli oggetti.\\
+				Usati nei E.S. e rappresentano un trade off perfetto tra l'astrazione e la verosimiglianza con il codice effettivo. Permettono di fare una rappresentazione astratta del ESW, pur mantenendo il contatto con il codice generato.
+			\end{itemize}
+			Vantaggi: trade-off tra astrazione e codice finale. Permette di rappresentare cosa effettivamente viene fatto.
+			
+			Esistono tool che permettono di convertire modelli UML in codice. Effettivamente usati su embedded (IAR azienda che produce questi tool.)	
+	
+	\section{A Software Cloud Architecture (IoT)}
+		Devo mettere insieme il cloud con gli oggetti embedded. Per cloud si intende archivio che risiede in remoto.
+		
+		\textbf{IoT}(Internet of Things): un sistema di device interconnessi, dispositivi digitali e meccanici, oggetti con identificatori univoci e con la possibilità di trasferire dati sulla rete senza che sia richiesto l'intervento umano. 
+		
+		
+		\subsection{Scenari di applicazione}
+			Vengono elencati di seguito i possibili scenari di applicazione di IoT.
+			\begin{enumerate}
+				\item Prodotti IoT per la salute (smart healthcare): questi prodotti permettono di misurare battiti cardiaci, sudore, movimento, numero di passi, pressione del sangue, attività cerebrale, tutto in tempo reale e salvato in modo sicuro nel cloud.
+				\item Prodotti IoT per la casa (Smart Home): per controllare l'umidità, luci, serrature...
+				\item Prodotti IoT per la mobilità (Smart Mobility): dispositivi per l'industria del settore automobilistico come il controllo della pressione delle gomme o concetti più grandi tipo auto connesse per le misure di sicurezza sulla strada, sensori di parcheggio, sensori nelle strade e nei parcheggi..
+				\item Prodotti IoT per l'energia (Smart grid / energy): dai contatori smart a vere e proprie griglie smart.
+				\item Prodotti IoT per l'agricoltura : per ottimizzare i processi di manodopera, diminuire lo spreco e aumentare la qualità
+				\item Prodotti IoT per la città (Smart cities)
+				\item Prodotti IoT per l'industria (IIoT): per migliorare l'efficienza, aumentare la produzione.
+			\end{enumerate}
+			
+		\subsection{Ingredienti per una soluzione IoT}
+			Una soluzione IoT è composta da molti strati:
+			\begin{itemize}
+				\item \textbf{Strati di device} (\textit{device layers}): sono le \textit{things} dell IoT, cioè dispositivi embedded che sono equipaggiati per leggere, elaborare e inviare informazioni all'interno di internet. Solitamente un dispositivo è un micro-controllore equipaggiato di un chip di memoria, processore integrato, porte di I/O e di rete e un piccolo sistema operativo (Linux Yocto, Windows 10 IoT...). La capacità di controllare il dispositivo e di farlo comunicare con la rete è uno degli aspetti chiave di IoT.
+				\begin{itemize}
+					\item \textbf{Sensori}: giocano un ruolo importante nelle soluzioni IoT. Un sensore può essere programmato per catturare i parametri dell'ambiente richiesti che necessitano di essere monitorati e successivamente questi vengono convertiti in dati utili. Difficilmente hanno un'interfaccia. Sono i più diffusi.\\
+					Non hanno controlli di input e output o funzioni, l'informazione può essere visualizzata in una console connessa con un altro dispositivo.\\
+					Sono low powered device, e spesso sono equipaggiati con una piccola batteria a lunga vita che dura mesi o anche anni.
+					\item \textbf{Attuatori}: dispositivi che interagiscono con il mondo fisico e in base all'input che ricevono svolgono l'azione richiesta. E.g.: movimento, luci, emissione di suoni, controllo di potenza ecc..
+					\item \textit{RFID} (Radio Frequency Identification): tessera/ codice a barre smart che funge da chiave e identifica un device o un prodotto e lavora in connessione con il lettore RFID per tracciare l'informazione del prodotto e inviarla alla rete.
+					\item \textit{NFC} (near field communication): funzionano su corte frequenze radio. Funzionano come gli RFID, ma il dispositivo con protocollo NFC può agire sia come lettore che come tag per una comunicazione a due vie. Sono utili per i pagamenti contactless.
+					\item \textit{Beacons}: altra forma di dispositivi tag che trasmettono segnali o condividono in broadcast le proprie informazioni sulla posizione utilizzando bluetooth low energy(LE).
+				\end{itemize}
+				\item \textbf{Strati di comunicazione} (communication layer): la strategia di comunicazione è basata sulle capacità dei rete di ogni dispositivo. Un dispositivo può essere in grado di connettersi direttamente ad internet con wifi o con la rete telefonica. Al contrario un altro dispositivo può non essere in grado di connettersi direttamente ad internet e magari deve fare uso di un gateway o di un hub.
+				\begin{itemize}
+					\item \textbf{Device Gateway}: un dispositivo che connette reti o protocolli incompatibili tra loro e fornisce un mezzo per connettere dispositivi ad internet. Il gateway tradurrà i dati in arrivo in dati IP che possono essere poi instradati nella rete.
+					\item \textbf{Smart gateway} (o edge gateway): sono device gateway dotati di archiviazione locale e applicazioni embedded che possono fare analisi sui dati che vengono trasmessi direttamente dai dispositivi. Permettono di abbattere la complessità dei nodi. Un gateway può avere capacità computazionale. Facendo così aumentano l'efficienza facendo computazione in tempo reale. un esempio è \textit{Kura}, un progetto open source provvisto di una piattaforma per costruire IoT edge gateways.
+					\item \textbf{Smartphone}: un sensore o attuatore può comunicare con uno smartphone attraverso il protocollo Bluetooth, lo smartpone può a sua volta utilizzare wifi o rete telefonica per inviare i dati. Lo smartphone non automatizza il processo di comunicazione da solo, è necessario un intervento manuale per impostare il processo.
+				\end{itemize}
+				\item \textbf{Protocolli di comunicazione}: responsabili della connettività della rete. Alcuni forniscono una connettività diretta con internet (Wifi, Ethernet, rete telefonica tipo 2G, 3G, 4G, LTE...). \\
+				Altri protocolli richiedono un gateway per tradurre comandi specifici nei corrispondenti comandi IP (Bluetooth LE, RFID, NFC, Zigbee/Z-wave per dispositivi con vincoli ambientali).
+				\item \textbf{Protocolli di Applicazione}: sono in cima allo strato TCP. Utilizzano tCP come strato di trasporto per comunicare con messaggi di applicazione specifici.
+				\begin{itemize}
+					\item \textbf{MQTT} (Message Queue Telemetry Transport): protocollo di connettività machine-to-machine (M2M). È un protocollo di trasporto di messaggi di tipo publish/subscribe molto leggero.\\
+					Utile per comunicazioni di piccoli dati, dispositivi con vincoli di risorse, reti con banda ristretta e alta latenza. Ha un payload binario ristretto.\\
+					I dispositivi IoT sono client che si connettono all'MQTT broker, il quale supporta connessioni multiple concorrenti che coinvolgono un grande numero di dispositivi. Il dispositivo client inizia la connessione al broker MQTT. 
+					\item \textbf{AMQP} (Advanced Message Queuing Protocol): un altro famoso middleware orientato ai messaggi che opera con il trasporto TCP. Questo protocollo supporta sia il modello a code di messaggi che il modello publish/subscribe. Assicura un'affidabile consegna dei messaggi.
+				\end{itemize}
+				\item \textbf{Protocolli di industria}: protocolli progettati per implementare soluzioni connesse specifiche per le industrie. Sono protocolli proprietari e permettono l'automazione industriale (SCADA, Modbus...).
+				\item \textbf{Piattaforma core}: fornisce un insieme di possibilità per la connessione, il controllo e il monitoraggio di milioni di dispositivi. Composta da:
+				\begin{itemize}
+					\item \textit{Protocollo Gateway}: usata per il supporto della gestione di più protocolli. Permette la conversione tra protocolli. Può agire come interfaccia per supportare diversi protocolli e convertire diversi protocolli.
+					\item \textit{IoT Messagging Middleware}: è un software che permette ai publishers e ai subscribers di distribuire messaggi senza che questi siano connessi fisicamente tra loro. È molto scalabile e pò gestire un vasto numero di dispositivi connessi assicurando alte prestazioni e tolleranza ai guasti.
+					\item \textit{Data Storage}: archiviazione di un flusso continuo di dati proveniente dai dispositivi. C'è bisogno di un servizio di archiviazione molto scalabile. I dati devono essere replicati attraverso i server per assicurare un'alta disponibilità e per evitare errori.\\
+					Tipicamente vengono usati database NoSQL: database Time Series in cui i dati sono rappresentati con una sequenza di vaolri per uno specifico attributo per un certo periodo di tempo. (MongoDB, Cassandra, Hbase, CouchDB...).
+					\item \textit{Aggregazione di dati e filtraggio}: l'aggregazione dei dati permette di contestualizzare i dati del dispositivo con più informazioni.
+				\end{itemize}
+				\item \textbf{Strato di piattaforme di analisi} (Analytics Platform Layer): permettono di analizzare grandi quantità di informazioni, derivare approfondimenti. Formato da:
+				\begin{itemize}
+					\item \textit{Stream processing}: interagiscce con il componente di Messaging Middleware di IoT ascoltando i topics specificati. Fa real time stream processing, cioè analizza flussi di dati di dispositivi in tempo reale. 
+					\item \textit{Machine Learning}: in che modo le macchine imparano dai dati utilizzando diversi algoritmi senza programmarle in modo specifico, in modo tale che ritornino il risultato richiesto. Viene classificato in tre categorie:
+					\begin{enumerate}
+						\item \textit{Supervised Learning}: forniamo dati etichettati come input e output desiderato e alleniamo il sistema ad imparare dai dati e a predirre i risultati.
+						\item \textit{Unsupervised learning}: non vengono forniti i dati etichettati ma viene lasciato agli algoritmi il compito di trovare una struttura nascosta nei dati non etichettati.
+						\item \textit{Reinforcement learning}: i sistemi imparano attraverso l'interazione con l'ambiente.
+					\end{enumerate}
+					\item \textit{Events and Reporting}: insieme di servizi che rendono più semplice l'invocazione delle azioni richieste in base ai dati analizzati. Le azioni posso essere: l'innesco di eventi, la chiamata a servizi esterni, l'aggiornamento dei report in tempo reale.
+				\end{itemize}
+			\end{itemize}
+			IoT dovrebbe inoltre organizzare la sicurezza e il controllo delle applicazioni IoT.
+		
+		Per lavorare su IoT devo gestire il dispositivo, i protocolli di comunicazione e il cloud. È fondamentale per la sicurezza per evitare che i pacchetti vengano intercettati. Dovremmo avere un meccanismo di crittografia che parte dal sensore. Devo infatti spesso interfacciarmi con software di terze parti.
+	
+ 		
+	
+	\section{Verification and Testing}
+		\begin{figure}[h]
+			\centering
+			\begin{tikzpicture}[>=latex]
+			\node[rect] (a) at(0,0) {Validazione}; \node[rect] (b) at (3,0) {Verifica};  \node[rect,align=center] (c) at (6,0) {Manufacturing\\Test};
+			\draw[->] (a) -- (b);\draw[->] (b) -- (c);
+			\end{tikzpicture}
+			\caption{Flusso di Verification and testing}
+		\end{figure}
+	
+	
+		Solitamente i requisiti iniziali vengono scritti in un testo semi-strutturato; la descrizione non è formale. Dobbiamo quindi passare da questi requisiti a delle specifiche formali. Questo passaggio è scarsamente automatizzabile. Seguono alcune definizioni.
+		
+		\begin{dfn}[Validazione]
+			Processo in cui verifico se la specifica formale è coerente con la specifica informale
+			Confronto tra la parte informale e quella formale. Ci sono pochi strumenti automatici in grado di fare ciò. Dalle specifiche ottengo quindi un modello simulabile; riesco a dire così se le specifiche sono conformi. Per questa fase si richiede quindi un intervento umano.
+		\end{dfn}
+		
+		\begin{dfn}[Verifica]
+			Confronto tra specifica formale e realizzazione. (esempio: il modello RTL è conforme con quello di partenza?). Una specifica formale viene sintetizzata in una realizzazione. Quando ottengo una specifica formale raffino il progetto in un livello di sintesi sottostante. La verifica è un processo automatizzabile perché basato sul confronto tra due linguaggi formali.
+		\end{dfn}
+		Se avessi solo software allora mi basterebbero solamente Validazione e Verifica.
+	
+		\subsection{Test di fabbricazione (Manufacturing test)}
+			Nei sistemi embedded abbiamo sia hw che sw. L'hardware deve essere realizzato (esempio: una FPGA deve essere fabbricata). Il test di fabbricazione viene fatto dopo la fabbricazione dell'oggetto fisico. Passo quindi dal mondo simulato della progettazione al mondo fisico. \\
+			È complicato vedere se un transistor è difettoso (i transistor in un chip sono milioni). L'osservabilità e la controllabilità sono molto difficili da valutare.
+			Il costo del test non deve superare il costo a cui il prodotto è venduto. Spesso il test non viene nemmeno fatto.
+		
+		Esempio:
+		\begin{itemize}
+			\item Eseguo un test su un chip, costo: 1€. Il test non è accurato ma viene comunque messo in vendita. Il chip viene quindi montato su una board.
+			\item Viene eseguito un test sulla board, costo: 10€. La board risulta difettosa perché il chip è difettoso. La board viene comunque messa insieme ad altre board.
+			\item Questo insieme di board viene testato, costo: 100€. L'insieme delle board risulta essere difettoso.
+		\end{itemize}
+		Ad ogni livello di integrazione il costo del test per sapere se funziona decuplica.
+		Il 40 o 50\% dei costi di sviluppo sono dovuti a validazione, verifica e test. Spesso si arriva anche al 70\%. 
+		
+		\textbf{Test:} metodi che mi permettono di capire se un sistema ha o non ha guasti. Se un chip non funziona lo butto via, non posso ripararlo (GO/ NO GO).
+		
+		\textbf{Fault Diagnosis}: se il chip non funziona, devo identificare la posizione del guasto. Permette alla fonderia di silicio di capire quale fase della produzione ha dato problemi.\\
+		La fase di test si divide in due parti:
+		\begin{enumerate}
+			\item \textbf{Generazione del test}: produco gli stimoli di test che faccio sui modelli systemC o Verilog.
+			\item \textbf{Test application}: applico i test per ogni oggetto prodotto.
+		\end{enumerate}
+		
+		Il test dell'hardware è incredibilmente più complesso perché errori possono avvenire anche in fase di produzione (non è così nel software).
+		
+		\textbf{Functional Test}: Verifica la correttezza del progetto. Un generatore automatico di testbench fa esattamente lo stesso della verifica. Il functional test fa da tramite tra i due mondi. 
+		Utilizza tecniche di test pattern per generare test per fare validazione/verifica. 
+		Un test pattern deve essere in grado di evidenziare il guasto se questo è presente. Dovrei orientare il test ai difetti ma i difetti possibili sono moltissimi. Il livello di difettosità (DL) è misurato in parti per miliardo
+		
+		Il test deve essere inserito nella fase di progetto. Ottengo un chip più grande, che consuma di più o più lento, ma che è testabile. Modifico il progetto al fine di poter generare più velocemente il test. 
+		Il sistema deve avere delle risorse hardware aggiuntive che permettono di avere un sistema \textit{fault-tollerant}.
+		
+		Il problema principale è: quali sono tutti i guasti per i dispositivi hardware? Tutt'ora non si conosce il modo di generare test pattern per ogni tipo di guasto.
+		
 \end{document}
