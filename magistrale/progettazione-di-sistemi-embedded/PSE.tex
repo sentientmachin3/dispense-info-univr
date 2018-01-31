@@ -1159,7 +1159,68 @@ b_transport(payload, time) {
 		
 		Per lavorare su IoT devo gestire il dispositivo, i protocolli di comunicazione e il cloud. È fondamentale per la sicurezza per evitare che i pacchetti vengano intercettati. Dovremmo avere un meccanismo di crittografia che parte dal sensore. Devo infatti spesso interfacciarmi con software di terze parti.
 	
- 		
+ 	\section{Networked Embedded Systems Design (NESD)}
+	 	I sistemi Embedded di rete rappresentano una classe importante di dispositivi: le funzionalità della rete sono il nucleo degli obiettivi della progettazione. L'unione della modellazione e della simulazione HW-Sw e la rete è un beneficio: si ha l'integrazione di un simulatore di sistema e di un simulatore di rete.
+	 	
+	 	\noindent
+	 	\textbf{Questioni aperte:}
+	 	\begin{itemize}
+	 		\item Le applicazioni NES sono sviluppate senza alcun supporto di software di sistema;
+	 		\item Non è semplice lo sviluppo di applicazioni NES;
+	 		\item Esistono applicazioni ad-hoc, ma non sono flessibili e hanno alti costi di sviluppo.
+	 	\end{itemize}
+	
+		\subsection{System/Network co-simulazione}
+			\begin{itemize}
+				\item \textbf{Obiettivo:} Efficiente riproduzione di computazione (system) e trasmissione del comportamento (network) di un'applicazione.
+				\item \textbf{Risultati:} 
+				\begin{itemize}
+					\item \textit{Simulazione di rete in SystemC}: si ha l'estensione dell'insieme di primitive del SystemC per modellare le reti basate su pacchetti. I NES descritti in SystemC possono essere direttamente connessi allo scenario di rete descritto in SCNSL (solo un tool/linguaggio, simulazione più veloce).
+					\item \textit{Sincronizzazione tra diversi tool di simulazione}: il simulatore dell'instruction set e il SystemC vengono sincronizzati attraverso un algoritmo e i due comunicano tra loro.
+					\item \textit{Simulazione dei guasti basata sulla rete}: i guasti di un'applicazione di rete sono dovuti a un errato comportamento delle trasmissioni dati asincrone basate sullo scambio di pacchetti. I pacchetti sono soggetti a diversi guasti:
+					\begin{multicols}{2}
+						\begin{itemize}
+							\item LOST: pacchetto scomparso dal canale;
+							\item CORRUPT: alcuni bit del pacchetto trasmesso sono stati girati;
+							\item CUT: alcuni bit adiacenti sono scomparsi dal canale;
+							\item DUPLICATE: il pacchetto trasmesso è stato inviato due volte;
+							\item CARRIER: il test sull'uso del canale è o positivo o negativo indipendentemente dalla presenza di una effettiva comunicazione.
+						\end{itemize}
+					\end{multicols}
+				\end{itemize}
+			\end{itemize}
+			
+		\subsection{System/Network co-progettazione}
+			\begin{itemize}
+				\item \textbf{Obiettivo:} Unire la progettazione di unità di computazione (sistema) e la progettazione di protocolli di trasmissione (network).
+				\item \textbf{Risultati:} Un flusso di progettazione attento alla rete per modellare i requisiti di trasmissione di una applicazione per guidare la sintesi dei protocolli di trasmissione.
+			\end{itemize}
+			TLM (Transaction Level Modeling) sta diventando un approccio comune per semplificare la progettazione di sistemi embedded: da un modello funzionale in TLM Loosely Timed a un modello accurato a Livello Transazionale Cycle Accurate.\\
+			Come combinare Hw-Sw-Network co-modellazione e co-simulazione con il TLM?
+			
+			\bigskip
+			
+			\begin{tikzpicture}[>=latex, scale=0.7]
+				\draw[->] (0,0) -- (0,-5); \draw (-.1,-1) -- (.1,-1);\draw (-.1,-2) -- (.1,-2);\draw (-.1,-3) -- (.1,-3);\draw (-.1,-4) -- (.1,-4); \draw (4.9,-1) -- (5.1,-1); \draw (4.9,-2) -- (5.1,-2); \draw (4.9,-3) -- (5.1,-3); \draw (4.9,-4) -- (5.1,-4);
+				\node[left] at (0,-1) {TLM LT};  \node[left] at (0,-2) {TLM AT}; \node[left] at (0,-3) {TLM CA};  \node[left] at (0,-4) {RTL};
+				\draw[->] (5,0) -- (5,-5); \draw[->] (5,0) -- (9,0) node[midway, above] {Network alternatives}; 
+				\draw[dashed,->] (5,-1) -- (6,-1) -- (6,-2) -- (7,-2) -- (7,-3) -- (8,-3) -- (8,-4) -- (9,-4);
+				\node[align=center] at (0,-6) {Raffinamento TLM\\ tradizionale};
+				\node[align=center] at (7,-6) {Esplorazione dello\\ spazio di progettazione\\ TLM/Network};
+			\end{tikzpicture}
+			
+			Suddivido lo spazio di progettazione in 2 dimensioni:
+			\begin{enumerate}
+				\item Dimensione \textit{Verticale}: raffinamento del sistema, ottimizzazione dell'algoritmo.
+				\item Dimensione \textit{Orizzontale}: diverse topologie di rete, diversi parametri di rete.
+			\end{enumerate}
+			\textbf{Vantaggi}:
+			\begin{itemize}
+				\item I requisiti della rete possono essere facilmente verificati dopo ogni passo di raffinamento;
+				\item I test pattern realistici possono essere facilmente generati;
+				\item L'implementazione dei protocolli di rete può essere testata contro la loro specifica astratta nel simulatore di rete;
+				\item Pianificazione di rete per le migliori performance.
+			\end{itemize}
 	
 	\section{Verification and Testing}
 		\begin{figure}[h]
@@ -1174,15 +1235,63 @@ b_transport(payload, time) {
 	
 		Solitamente i requisiti iniziali vengono scritti in un testo semi-strutturato; la descrizione non è formale. Dobbiamo quindi passare da questi requisiti a delle specifiche formali. Questo passaggio è scarsamente automatizzabile. Seguono alcune definizioni.
 		
+		\begin{dfn}[Test]
+			Metodi che mi permettono di capire se un sistema ha o non ha guasti. Se un chip non funziona lo butto via, non posso ripararlo (GO/ NO GO).
+		\end{dfn}
+		
+		\begin{dfn}[Fault Detection]
+			Identificazione di un malfunzionamento.
+		\end{dfn}
+		
+		\begin{dfn}[Fault Diagnosis]
+			Identificazione del guasto.	Se il chip non funziona, devo identificare la posizione del guasto. Permette alla fonderia di silicio di capire quale fase della produzione ha dato problemi.
+		\end{dfn}
+		
 		\begin{dfn}[Validazione]
 			Processo in cui verifico se la specifica formale è coerente con la specifica informale
 			Confronto tra la parte informale e quella formale. Ci sono pochi strumenti automatici in grado di fare ciò. Dalle specifiche ottengo quindi un modello simulabile; riesco a dire così se le specifiche sono conformi. Per questa fase si richiede quindi un intervento umano.
 		\end{dfn}
 		
 		\begin{dfn}[Verifica]
-			Confronto tra specifica formale e realizzazione. (esempio: il modello RTL è conforme con quello di partenza?). Una specifica formale viene sintetizzata in una realizzazione. Quando ottengo una specifica formale raffino il progetto in un livello di sintesi sottostante. La verifica è un processo automatizzabile perché basato sul confronto tra due linguaggi formali.
+			Confronto tra specifica formale e realizzazione. (esempio: il modello RTL è conforme con quello di partenza?). Una specifica formale viene sintetizzata in una realizzazione. Quando ottengo una specifica formale raffino il progetto in un livello di sintesi sottostante. La verifica è un processo automatizzabile perché basato sul confronto tra due linguaggi formali.\\ 
+			In sostanza si vuole assicurare che il design sintetizzato, una volta fabbricato, svolgerà le funzioni di i/o date dalle specifiche formali.
 		\end{dfn}
 		Se avessi solo software allora mi basterebbero solamente Validazione e Verifica.
+		
+		\begin{dfn}[Sintesi del design]
+			Data una funzione di i/o, sviluppa una procedura per fabbricare un dispositivo utilizzando materiali noti e processi.
+		\end{dfn}
+		
+		\begin{dfn}[Test di Produzione]
+			Un passo della fabbricazione che assicura che il dispositivo fisico, fabbricato dal design sintetizzato, non ha difetti di fabbricazione.
+		\end{dfn}
+		
+		\subsection{Verifica vs Test}
+			\begin{multicols}{2}
+				
+				\textbf{Verifica}:
+				\begin{itemize}
+					\item Verifica la correttezza del design
+					\item Attuata dalla simulazione, emulazione di hardware o metodi formali
+					\item Attuata una volta prima della fabbricazione
+					\item Responsabile della qualità del design
+				\end{itemize}
+				
+				\columnbreak
+
+				\textbf{Test}:
+				\begin{itemize}
+					\item Verifica la correttezza dell'hardware fabbricato
+					\item Processo diviso in 2 parti:
+					\begin{enumerate}
+						\item \textbf{Generazione dei test}: processo sw eseguito una volta durante la progettazione
+						\item \textbf{Applicazione dei test}: test elettrici applicati all'hardware.
+					\end{enumerate}
+					\item L'applicazione dei test viene attuata su ogni dispositivo fabbricato
+					\item Responsabile della qualità dei dispositivi.
+				\end{itemize}
+			\end{multicols}
+			Il test dell'hardware è incredibilmente più complesso perché errori possono avvenire anche in fase di produzione (non è così nel software).
 	
 		\subsection{Test di fabbricazione (Manufacturing test)}
 			Nei sistemi embedded abbiamo sia hw che sw. L'hardware deve essere realizzato (esempio: una FPGA deve essere fabbricata). Il test di fabbricazione viene fatto dopo la fabbricazione dell'oggetto fisico. Passo quindi dal mondo simulato della progettazione al mondo fisico. \\
@@ -1198,24 +1307,105 @@ b_transport(payload, time) {
 		Ad ogni livello di integrazione il costo del test per sapere se funziona decuplica.
 		Il 40 o 50\% dei costi di sviluppo sono dovuti a validazione, verifica e test. Spesso si arriva anche al 70\%. 
 		
-		\textbf{Test:} metodi che mi permettono di capire se un sistema ha o non ha guasti. Se un chip non funziona lo butto via, non posso ripararlo (GO/ NO GO).
+		\subsection{Functional Test (test funzionale)} 
+			Verifica la correttezza del design. Un generatore automatico di testbench fa esattamente lo stesso della verifica. Il functional test fa da tramite tra i due mondi. 
+			Utilizza tecniche di test pattern per generare test per fare validazione/verifica. 
+			Un test pattern deve essere in grado di evidenziare il guasto se questo è presente. Dovrei orientare il test ai difetti ma i difetti possibili sono moltissimi. 
+			
+			Il test deve essere inserito nella fase di progetto. Ottengo un chip più grande, che consuma di più o più lento, ma che è testabile. Modifico il progetto al fine di poter generare più velocemente il test. 
+			Il sistema deve avere delle risorse hardware aggiuntive che permettono di avere un sistema \textit{fault-tollerant}.
+			
+			\textbf{Verifica del Design}: per verificare formalmente la correttezza del design.\\
+			\textbf{Test interconnesso}: per verificare la correttezza dei blocchi di interconnessione.\\
+			\textbf{Test dei guasti (fault testing)}: per verificare i guasti che emergono dalla fabbricazione.
+			
+		\subsection{Problemi con il test ideale}
+			I test ideali individuano tutti i difetti prodotti nel processo di fabbricazione. Tutti i dispositivi corretti funzionalmente passano i test ideali.\\
+			Il problema principale è: \textit{quali sono tutti i guasti per i dispositivi hardware}? Tutt'ora non si conosce il modo di generare test pattern per ogni tipo di guasto.
+			
+		\subsection{Test Reali}
+			\begin{itemize}
+				\item Basati su modelli di guasti analizzabili, che potrebbero non mapparsi su tutti i reali difetti. 
+				\item Incompleta copertura dei guasti modellati a causa dell'alta complessità
+				\item Alcuni chip buoni vengono buttati: la percentuale di questi chip viene chiamata perdita di produzione (yeld loss).
+				\item Alcuni chip difettosi passano i test: questa percentuale viene chiamata defect level.
+			\end{itemize}
 		
-		\textbf{Fault Diagnosis}: se il chip non funziona, devo identificare la posizione del guasto. Permette alla fonderia di silicio di capire quale fase della produzione ha dato problemi.\\
-		La fase di test si divide in due parti:
-		\begin{enumerate}
-			\item \textbf{Generazione del test}: produco gli stimoli di test che faccio sui modelli systemC o Verilog.
-			\item \textbf{Test application}: applico i test per ogni oggetto prodotto.
-		\end{enumerate}
+			Nella VLSI (Very large scale integration) ci possono essere difetti di fabbricazione. Il costo di un chip è dato dal seguente rapporto:
+			\[
+				\dfrac{\text{Costo della fabbricazione e del test di un wafer}}{\text{Perdita per numero di locazioni del chip nel wafer}}
+			\]
+			
+			\textbf{Defect Level (DL)} è il rapporto dei chip difettosi tra i chip che passano il test. \\
+			Il livello di difettosità è misurato in \textit{parti per milion}e (ppm). \\
+			Rappresenta una misura dell'efficacia dei test e una quantitativa misura della qualità del prodotto fabbricato. \\
+			Per chip commerciali VLSI un DL maggiore di 500ppm è considerato inaccettabile.
 		
-		Il test dell'hardware è incredibilmente più complesso perché errori possono avvenire anche in fase di produzione (non è così nel software).
-		
-		\textbf{Functional Test}: Verifica la correttezza del progetto. Un generatore automatico di testbench fa esattamente lo stesso della verifica. Il functional test fa da tramite tra i due mondi. 
-		Utilizza tecniche di test pattern per generare test per fare validazione/verifica. 
-		Un test pattern deve essere in grado di evidenziare il guasto se questo è presente. Dovrei orientare il test ai difetti ma i difetti possibili sono moltissimi. Il livello di difettosità (DL) è misurato in parti per miliardo
-		
-		Il test deve essere inserito nella fase di progetto. Ottengo un chip più grande, che consuma di più o più lento, ma che è testabile. Modifico il progetto al fine di poter generare più velocemente il test. 
-		Il sistema deve avere delle risorse hardware aggiuntive che permettono di avere un sistema \textit{fault-tollerant}.
-		
-		Il problema principale è: quali sono tutti i guasti per i dispositivi hardware? Tutt'ora non si conosce il modo di generare test pattern per ogni tipo di guasto.
-		
+		\subsection{Design for Testability (DFT)}
+			Si riferisce a stili di progettazione hardware che riducono la complessità della generazione dei test. Motivazione: la complessità della generazione dei test aumenta esponenzialmente con la dimensione del circuito.\\
+			Ruolo del testing:
+			\begin{itemize}
+				\item Rilevazione (detection): determinare se il DUT (design under test) ha o meno guasti.
+				\item Diagnosi: identificazione di guasti specifici presenti nel DUT.
+				\item Caratterizzazione del design: identificazione e correzione di errori nel design o nella procedura di testing.
+				\item Failure mode analysis (FMA): identificazione di errori nel processo di fabbricazione che possono aver provocato difetti nel DUT. 
+			\end{itemize}
+			Difficoltà del testing:
+			\begin{itemize}
+				\item Aumento delle dimensioni dei circuiti e dei sistemi;
+				\item Aumento della densità dell'integrazione: più funzionalità necessitano di essere testate;
+				\item Inaccessibilità degli interni dei circuiti;
+				\item Diminuzione del rapporto tra porte / pin: minor livello di controllabilità/osservabilità;
+				\item Aumento delle velocità: correttezza logica non è più sufficiente;
+				\item L'analisi fisica dei difetti è troppo costosa;
+				\item I difetti fisici sono modellati usando i guasti: modelli a livello logico come STUCK-AT
+			\end{itemize}
+			
+			\noindent
+			\textbf{Guasto}: fallimento del meccanismo fisico dovuto ad alcuni difetti.\\
+			\textbf{Effetto del guasto}: effetto logico di un guasto sulle linee in una rete\\
+			\textbf{Errore}: la condizione (lo stato) di un sistema che contiene un guasto (deviazione da uno stato corretto).
+			
+		\subsection{Caratteristiche dei guasti}
+			\textbf{Guasto permanente}: guasto che dura per un tempo sufficiente da essere osservato nell'ambiente di test.\\
+			\textbf{Guasto transiente}: guasto che appare e scompare a intervalli di tempo brevi.\\
+			\textbf{Guasto intermittente}: guasto che appare e scompare a intervalli di tempo regolari.
+			
+		\subsection{Modelli di guasti}
+			Sono astrazioni logiche che descrivono l'effetto funzionale di un guasto fisico. C'è la necessità di astrarre perché altrimenti i costi sarebbero eccessivi.\\
+			Esistono diversi livelli di modellazione dei guasti basati su diverse primitive:
+			\begin{itemize}
+				\item funzione (livello behavioural)
+				\item struttura (livello RT)
+				\item Circuito (livello gate)
+				\item Porte di libreria (livello switch)
+			\end{itemize}
+			
+			Esistono guasti diversi a seconda del livello:
+			\begin{multicols}{2}
+				\begin{itemize}
+					\item Livello funzionale (TLM):
+					\begin{itemize}
+						\item Funzioni generiche
+						\item Metriche ti copertura sw: statement/condition/branch/path coverage
+					\end{itemize}
+					\item Livello RT:
+					\begin{itemize}
+						\item FSM e data-path
+						\item Blocchi funzionali e registri: transition/stuck-at line/erroneous block functionality
+					\end{itemize}
+					\item Livello Gate:
+					\begin{itemize}
+						\item Porte di libreiria
+						\item Modello di guasto basato su linea: stuck-at/gate-delay/path-delay/bridge
+					\end{itemize}
+					\item Livello switch:
+					\begin{itemize}
+						\item celle standard
+						\item Transistor
+						\item modelli elettrici
+					\end{itemize}
+				\end{itemize}
+			\end{multicols}
+			
 \end{document}
