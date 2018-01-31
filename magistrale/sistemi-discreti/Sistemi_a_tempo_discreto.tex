@@ -1,0 +1,95 @@
+\documentclass[a4paper]{article}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{latexsym}
+\usepackage{lstautogobble}
+\usepackage[colorinlistoftodos]{todonotes}
+
+\title{Sistemi a tempo discreto}
+
+\author{Gulino Giorgia}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+
+\section{MACCHINE A STATI}
+
+
+\subsection{Deterministica}Solo uno stato iniziale e per ogni stato e per ogni input c'è solo 1 stato successivo. Se M2 è \textbf{DET} allora M1 è \textbf{simulata} da M2 sse è \textbf{equivalente} a M2.
+\subsection{Output-Deterministico}Solo uno stato iniziale e per ogni stato e ogni coppia di I/O c'è 1 solo stato successivo. Se M2 è \textbf{Output-Det} allora M2 \textbf{simula} M1 sse M1 \textbf{raffina} M2.\\
+\begin{center}
+\emph{Deterministico} implica Output-Det, ma \textbf{non} viceversa.
+\end{center}
+\subsection{Non-Deterministico}Può esserci più di uno stato iniziale e per ogni stato e ogni coppia di I/O può esserci + di uno stato successivo. Se M2 è NON-DET, M1 è \textbf{simulata} da M2 allora M1 \textbf{raffina} M2, ma non viceversa.
+\subsection{Non-Deterministico, Progressiva}Progressiva significa che l'evoluzione è definita per ogni ingresso, cioè la funzione è definita come: Stati x ingressi $\rightarrow$ P(Stati x uscite)/insieme vuoto, dove P rappresenta l'insieme potenza e l'insieme vuoto impone che sia progressiva.
+\subsection{Equivalenza}
+\begin{itemize}
+\item X Det: input[M1]=input[M2]; output[M1]=output[M2].
+\item X Non-det: comportamento[M1]=comportamento[M2].
+\item Cioè se M1 \textbf{raffina} m2 e viceversa.
+\item C'è equivalenza se c'è \textbf{bisimulazione}.
+\end{itemize}
+\subsection{Raffinamento}M1 \textbf{raffina} M2 sse input[M1]=input[M2]; output[M1]=output[M2] e comportamento[M1] $\subseteq$ comportamento[M2].
+\subsection{Bisimulazione}Bisimulazione tra M1 e M2 sse l'unione delle \textbf{simulazioni} è simmetrica e c'è \textbf{isomorfismo} tra minimize(M1) e minimize(M2).
+\subsection{Isomorfe}Si dicono isomorfe se hanno lo stesso numero di stati con nome uguale.
+\subsection{Rel. RAFFINAMENTO/SIMULAZIONE AFSND $\rightarrow$ AFSD} Se M1 è det, M1 è \textbf{simulata} da M2 sse M1 è equivalente a M2, cioè se M1 raffina M2 e viceversa.
+\subsection{Rel. RAFFINAMENTO/SIMULAZIONE AFSND $\rightarrow$ AFSpseudo-nondet} Se M2 è psuedo-non det, M1 è \textbf{simulata} da M2 sse M1 è equivalente a M2, cioè se M1 \textbf{raffina} M2.
+\subsection{Rel. RAFFINAMENTO/SIMULAZIONE AFSND $\rightarrow$ AFSND} Se M2 non è deterministica, M1 è \textbf{simulata} da M2 implica M1 \textbf{raffina} M2, ma M1 raffina M2 non implica M1 \textbf{simula} M2.
+\subsection{Simulazione per Det $\rightarrow$ M1 da M2}
+\begin{itemize}
+\item $\forall$ p $\in$  PossibiliInitialState[M1], $\exists$ q $\in$ PossibiliInitialState[M2], (p,q) $\in$ S.
+\item $\forall$ p $\in$  Stati[M1], $\forall$ q $\in$ Stati[M2].
+\begin{itemize}
+\item if (p,q) $\in$ S $\Rightarrow$ $\forall$ x $\in$ Input, $\forall$ y $\in$ Output, $\forall$ p1 $\in$  Stati[M1];
+\item if (p1,y) $\in$ PossibiliUpdates[M1](p,x) $\Rightarrow$ $\exists$ q1 $\in$ Stati[M1], (q1,y) $\in$ PossibiliUpdates[M2](q,x) e (p1,q1) $\in$ S. (S contiene coppie di stati iniziali e coppie consultanti l'algoritmo).
+\item $\forall$ p $\in$ Stati[M1] $\exists$ q $\in$ Stati[M2] per cui $\forall$ I/O possibili c'è corrispondenza tra I/O uguali di p e (p,q) $\in$ S. 
+\end{itemize}
+\end{itemize}
+\subsection{Simulazione per Output-Det}Data M ASFND trova la macchina output-det det(M) equivalente a M.\\ SUBSET CONSTRUCTION 
+\begin{itemize}
+\item InitialState[det(M)] = PossibileInitialState[M]
+\item States[det(M)]={InitialState[det(M)]}
+\item Ripeti finché nuove transizioni possono essere aggiunte a det(M). Scegli
+\begin{itemize}
+\item P $\in$ States[det(M)] e (x,y) $\in$ Input x Output
+\item Q = {q $\in$ States[M] | $\exists$ p $\in$ P, (q,y) $\in$ PossibleUpdates[M](p,x)}
+Se Q $\ne$ 0 allora States[det(M)]= States[det(M)] $\cup$ {Q}\\
+Update[det(M)](p,x)=(q,y)\\
+Raggruppa tutti gli stati iniziali, $\forall$ coppia I/O raggruppa tutti gli stati per cui quest'ultima è Possibleupdate.
+\end{itemize}
+\end{itemize}
+\subsection{Simulazione}
+\begin{itemize}
+\item Se p $\in$ PossibleInitialState[M1] e PossibleInitialState[m2] = {q} $\Rightarrow$ (p,q) $\in$ S.
+\item Se (p,q) $\in$ S e (p1,y) $\in$ PossibleUpdates[M1](p,x) e PossibleUpdates[M2](q,x) = {q}. 
+\end{itemize}
+\subsection{Bisimulazione per Det} Una relazione binaria B è una \emph{bisimulazione} sse:
+\begin{itemize}
+\item InitialState[M1], InitialState[M2] $\in$ B 
+\item $\forall$ p $\in$ Stati[M1], $\forall$ q $\in$ Stati[M2]:
+\begin{itemize}
+\item if (p,q) $\in$ B $\Rightarrow$ $\forall$ x $\in$ Input[M1], Output[M1](p,x) = Output[M2](q,x)\\
+(nextState[M1](p,x),nextState[M2](q,x)) $\in$ B.
+Stati iniziali di M1 e M2 sono in relazione e ogni coppia (p,q) relazionati, $\forall$ input producono lo stesso output e nextState Relazionati.
+\end{itemize}
+\end{itemize}
+
+\section{LINGUAGGI}
+\subsection{Il linguaggio K è \emph{controllabile}?}
+Siano K e M = $\overline{M}$ linguaggi dell'alfabeto di eventi E, con E\textsubscript{uc} $\subseteq$ E. Si dice che K è controllabile rispetto a M e E\textsubscript{uc} se per tutte le stringhe s $\in$ $\overline{K}$ e per tutti gli eventi $\sigma$ $\in$ E\textsubscript{uc} si ha : \textbf{s$\sigma$ $\in$ M $\Rightarrow$ s$\sigma$ $\in$ $\overline{K}$}. (Equivalente a $\overline{K}$E\textsubscript{uc} $\cap$ M $\subseteq$ $\overline{K}$.)\\ Per la def di \emph{controllabilità} si ha che K è controllabile sse $\overline{K}$ è controllabile.
+\subsection{Osservabilità}
+Si considerino i linguaggi K e M = $\overline{M}$ definiti sull'alfabeto di eventi E, con E\textsubscript{c} $\subseteq$ E, E\textsubscript{c} $\subseteq$ E e P la proiezione naturale da E* $\Rightarrow$ E\textsubscript{0}*.\\ Si dice che K è osservabile rispetto a M, E\textsubscript{o},E\textsubscript{c} se per tutte le stringhe s $\in$ $\overline{K}$ e per tutti gli eventi $\sigma$ $\in$ E\textsubscript{c} abbiamo: 
+\begin{center}(s$\sigma$ $\notin$ K) $\land$ (s$\sigma$ $\in$ M) $\Rightarrow$ $P^{-1}$[P(s)] $\sigma$  $\cap$ $\overline{K}$ = $\emptyset$
+\end{center}
+L'insieme di stringhe denotato dal termine $P^{-1}$[P(s)] $\sigma$  $\cap$ $\overline{K}$ contiene tutte le stringhe che hanno la medesiman proiezione di s e possono essere prolungate in K con il simbolo $\sigma$. SE tale insieme non è vuoto, allora K contiene due stringhe s e s' tali che P(s)=P(s') per cui s$\sigma$ $\notin$ $\overline{K}$ e s'$\sigma$ $\in$ $\overline{K}$. Tali due stringhe richiederebbero un'azione di controllo diversa rispetto a $\sigma$ (disabilitare $\sigma$ nel caso di s, abilitare $\sigma$ nel caso di s'), ma un supervisore non saprebbe distinguere tra s e s' per l'osservabilità ristretta. Non potrebbe quindi esistere un supervisore che ottiene esattamente il linguaggio $\overline{K}$.
+\end{document} 
