@@ -704,7 +704,56 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 			 
 		\subsection{Diagonalizzazione}
 			Si considera adesso il caso di una particolare trasformazione di similitudine che,
-			sotto opportune ipotesi, permette di passare ad una matrice $ \vec{\Lambda} = \vec{P}^{-1}\vec{A}\vec{P} $ in forma diagonale
+			sotto opportune ipotesi, permette di passare ad una matrice $ \vec{\Lambda} = \vec{P}^{-1}\vec{A}\vec{P} $ in forma diagonale.
+			
+			Una rappresentazione in cui la matrice di stato è in forma diagonale è detta \textit{forma canonica diagonale} ed essa si presta ad una semplice interpretazione fisica. Si consideri ad esempio un sistema SISO la cui equazione vale:
+			\[
+				\begin{bmatrix}
+					\dot{x}_1 (t) \\
+					\dot{x}_2 (t) \\
+					\vdots \\
+					\dot{x}_n (t)
+				\end{bmatrix}
+				=
+				\begin{bmatrix}
+					\lambda_1 & 0 & \cdots & 0 \\
+					0 & \lambda_2 & \cdots & 0 \\
+					\vdots & \vdots & \ddots & \vdots \\
+					0 & 0 & \cdots & \lambda_2
+				\end{bmatrix}
+				\begin{bmatrix}
+					x_1 (t) \\
+					x_2 (t) \\
+					\vdots \\
+					x_n (t)
+				\end{bmatrix}
+				+
+				\begin{bmatrix}
+					b_1 \\
+					b_2 \\
+					\vdots\\
+					b_n
+				\end{bmatrix}
+				u(t)
+			\]
+			L’evoluzione della $ i$-esima componente dello stato è retta dall’equazione
+			\[
+				\dot{x}_i(t) = \lambda_i x_i(t) + b_i u(t)
+			\]
+			
+			dalla quale si vede che la derivata della componente $ i$-esima non è influenzata dal valore delle altre componenti.
+			
+			Possiamo dunque pensare a questo sistema come ad una collezione di sottosistemi di ordine 1, ciascuno descritto da una componente del vettore di stato, che evolvono indipendentemente. Il sistema corrispondente alla componente $ i$-esima ha polinomio caratteristico $ P_i = (s-\lambda_i) $ e ad esso corrisponde il modo $ e^{\lambda_i t} $. Talvolta si è anche soliti definire una rappresentazione diagonale con il termine \textit{disaccoppiata} per indicare appunto 'indipendenza fra i diversi nodi.
+			
+			Il passaggio da una rappresentazione generica ad una rappresentazione in forma
+			diagonale richiede una particolare matrice di similitudine.
+			
+			\begin{defn}
+				Data una matrice $ \vec{A} $ di dimensione $ n\times n $ siano $ \vec{v}_1, \vec{v}_2, \dots, \vec{v}_n $ un insieme di autovettori linearmente indipendenti corrispondenti agli autovalori $ \lambda_1,\lambda_2,\dots,\lambda_n $. Definiamo \textit{matrice modale} di $ \vec{A} $ la matrice $ n\times n $
+				\[
+					\vec{V} = \left[\ \vec{v}_1\ \big|\ \vec{v}_2\ \big|\ \cdots\ \big|\ \vec{v}_n\ \right]
+				\]
+			\end{defn}
 			
 		\subsection{Forma di Jordan}
 			Si consideri una matrice $ \vec{A} $ di dimensione $ n\times n $ i cui autovalori hanno molteplicità
