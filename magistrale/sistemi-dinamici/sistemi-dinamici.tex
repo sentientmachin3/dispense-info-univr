@@ -48,6 +48,7 @@
 \newtheorem{thm}{Teorema}
 \newtheorem{exmp}{Esempio}[section]
 \newtheorem{defn}{Definizione}[subsection]
+\newtheorem{prop}{Proposizione}[subsection]
 
 \usetikzlibrary{decorations.pathreplacing}
 \newcommand{\tikzmark}[1]{\tikz[overlay,remember picture,baseline=(#1.base)]
@@ -461,7 +462,7 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 			Data una matrice quadrata $ \vec{A} $ il suo esponenziale è la matrice
 			\[
 				e^{\vec{A}} = \vec{I} + \vec{A} + \dfrac{\vec{A}^2}{2!} + \dfrac{\vec{A}^2}{3!} + \cdots =
-				\sum_{k = 0}^{\infty} \dfrac{\vec{A}^k t^k}{k!}
+				\sum_{k = 0}^{\infty} \dfrac{\vec{A}^k }{k!}
 			\]
 			La matrice di transizione dello stato $ e^{\vec{A}} $ è una particolare matrice esponenziale i cui elementi sono funzioni del tempo di dimensione $ n\times n $ e anche $ \vec{A} $ è $ n\times n $
 			\[
@@ -719,7 +720,7 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 					\lambda_1 & 0 & \cdots & 0 \\
 					0 & \lambda_2 & \cdots & 0 \\
 					\vdots & \vdots & \ddots & \vdots \\
-					0 & 0 & \cdots & \lambda_2
+					0 & 0 & \cdots & \lambda_n
 				\end{bmatrix}
 				\begin{bmatrix}
 					x_1 (t) \\
@@ -754,6 +755,16 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 					\vec{V} = \left[\ \vec{v}_1\ \big|\ \vec{v}_2\ \big|\ \cdots\ \big|\ \vec{v}_n\ \right]
 				\]
 			\end{defn}
+			
+			Ogni matrice che ammette matrice modale è \textit{diagonalizzabile}:
+			
+			\begin{prop}
+				Data una matrice $ \vec{A} $ di dimensione $ n\times n $ e autovalori $ \lambda_1,\lambda_2,\dots,\lambda_n $ e $ \vec{V} $ una sua matrice modale. La matrice $ \vec{\Lambda} $ ottenuta attraverso la trasformazione di similitudine
+				\[
+					\vec{\Lambda} = \vec{P}^{-1}\vec{A}\vec{P}
+				\]
+				è \textit{diagonale}.
+			\end{prop}
 			
 		\subsection{Forma di Jordan}
 			Si consideri una matrice $ \vec{A} $ di dimensione $ n\times n $ i cui autovalori hanno molteplicità
@@ -790,7 +801,7 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 				Ogni elemento lungo la diagonale di tale matrice vale $ \lambda $, mentre ogni elemento lugo la sopra diagonale vale $ 1 $; ogni altro elemento è nullo. Dunque $ \lambda $ è un autovalore di molteplicità algebrica $ p $ del blocco $ \vec{J} $.
 			\end{defn}
 			Possiamo ora definire la forma canonica di Jordan.
-			\begin{defn}
+			\begin{defn}(Forma di Jordan)
 				Una matrice $ \vec{A} $ è detta in \textbf{forma di Jordan} se essa è una matrice diagonale a blocchi
 				\[
 					\vec{A} =
@@ -802,7 +813,7 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
  					\end{bmatrix}
 				\]
 				In cui ogni blocco $ \vec{J}_i $ lungo la diagonale è un blocco di Jordan associato ad un autovalore $ \lambda_i $ (per $ i = 1,\dots,q $).
-			\end{defn}
+			
 			
 			\textbf{Matrice di Jordan:}
 			\[
@@ -839,6 +850,7 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 			node [midway,right=5pt] {$ \mu_{a_i} $};
 			\end{tikzpicture}
 			
+			
 			\textbf{Mini blocco di Jordan:}
 			\[
 				\vec{J}_{i,j} =
@@ -860,6 +872,7 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 				\item $ \mu_{g_i} $ è il numero di mini blocchi $ \vec{J}_{i,j} $ ed è la molteplicità geometrica dell'autovalore $ \lambda_i $
 				\item $ 1 \leq \mu_g \leq \mu_a \leq n $
 			\end{itemize}
+		\end{defn}
 			
 			\begin{defn}[Struttura di autovettori generalizzati]
 				Sia $ \vec{A} $ una matrice $ n\times n $ e sia $ \lambda $ un autovalore di molteplicità $ \nu $ a cui corrispondono $ \mu $ autovettori linearmente indipendenti ( con $ 1\leq \mu \leq \nu $).
