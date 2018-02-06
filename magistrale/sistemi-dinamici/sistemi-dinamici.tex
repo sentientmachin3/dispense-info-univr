@@ -4,6 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{palatino}
 \usepackage{frontespizio}
+\usepackage{mathtools, nccmath}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amsthm}
@@ -13,6 +14,7 @@
 \usepackage{mathtools}
 \usepackage{enumitem}
 \usepackage{multicol}
+\usepackage{graphicx}
 \usepackage{caption}
 \captionsetup[figure]{labelfont={bf},name={Fig.},labelsep=period}
 \usepackage[left=2.5cm, right=2.5cm, top=3cm]{geometry}
@@ -920,6 +922,371 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 	 			\end{itemize}
 	 			
 	 		
+		\newpage
+		
+		\section{Jordan e cambiamento di base tutorial}
+			Data una matrice $ \vec{A} $ per ricavare la matrice $ \vec{T} $ di cambiamento di base e poi la matrice di Jordan $ \vec{J} $ si eseguono i seguenti passi:
+			\begin{enumerate}
+				\item Calcolo del polinomio caratteristico $ P_A = \text{det}(\vec{A} - \lambda \vec{I}) $. Da questo mi ricavo gli autovalori $ \lambda_n $ e la molteplicità algebrica $ \mu_a $.
+				\item Per ogni autovalore $ \lambda_i,\ i= 1\dots n\ $ calcolo lo spazio nullo $ N(\vec{A} - \lambda_i\vec{I}) $ e ricavo quindi la dimensione dello spazio nullo $ \text{dim}(N) $.
+				\item Se $\ \text{dim}(N) < \mu_a\ $ allora calcolo $ N(\vec{A} - \lambda_i\vec{I})^p $ finché $\ \text{dim}(N) = \mu_a\ $.
+				\item Una volta trovato $ p $, scelgo un vettore $ v $ che non è presente nello spazio nullo precedente.
+				\item Calcolo così la catena di Jordan a ritroso ricavando gli altri vettori: 
+				$\ \vec{v}_{n-1} = (\vec{A} - \lambda_n)\vec{v}_n $.
+				\item Ottengo così la matrice di trasformazione $ \vec{T} $ fatta in questo modo:
+				\[
+					\vec{T} =
+					\begin{bmatrix}
+						\vec{v}_1 & \vec{v}_2 & \cdots & \vec{v}_n
+					\end{bmatrix}
+				\]
+			\end{enumerate}
 			
-			
+			\begin{exmp}
+				Data la matrice 
+				\[
+					\vec{A} = 
+					\begin{bmatrix}
+						2 & 0 & -1 & 1 \\
+						1 & 1 & -1 & 1 \\
+						1 & -3 & 2 & -1 \\
+						0 & -3 & 2 & -1
+					\end{bmatrix}
+				\] 
+				calcolare la matrice  $ \vec{T} $ di cambiamento di base e poi la $ \vec{A} $ in forma di Jordan data dalla formula 
+				\[
+					\vec{A} = \vec{T}^{-1} \vec{J} \vec{T}
+				\]
+				
+				\begin{enumerate}
+					\item Calcolo il polinomio caratteristico $ P_A $:
+					\begin{align*}
+						&\text{det}(\vec{A} - \lambda \vec{I}) = 
+						\text{det}
+						\begin{bmatrix}
+							2-\lambda & 0 & -1 & 1\\
+							1 & 1-\lambda & -1 & 1 \\
+							1 & -3 & 2 - \lambda & -1\\
+							0 & -3 & 2 & -1-\lambda
+						\end{bmatrix} \\ \\
+						&= (2-\lambda)\cdot\text{det}
+						\begin{bmatrix}
+							1-\lambda & -1 & 1\\
+							-3 & 2-\lambda & -1\\
+							-3 & 2 & -1-\lambda
+						\end{bmatrix}
+						-1\cdot\text{det}
+						\begin{bmatrix}
+							0 & -1 & 1 \\
+							-3 & 2 - \lambda & -1\\
+							-3 & 2 & -1-\lambda
+						\end{bmatrix}
+						+1\cdot\text{det}
+						\begin{bmatrix}
+							0 & -1 & 1\\
+							1-\lambda & -1 & 1\\
+							-3 & 2 & -1-\lambda
+						\end{bmatrix} \\ \\
+						&= \medmath{ (2-\lambda)\Bigg((1-\lambda)\big[ (2-\lambda)(-1-\lambda) +2 \big] 
+													  + 3\big[ (1+\lambda) - 2 \big]
+													  - 3\big[ 1 - (2-\lambda) \big] \Bigg)}
+						\medmath{ -1\Bigg( 0 + 3 \big[ (1+\lambda) -2 \big]
+											  - 3 \big[ 1 - (2-\lambda) \big] \Bigg) } \\
+						&\medmath{\ \ + 1\Bigg( 0 - (1-\lambda)\big[ (1+\lambda) - 2 \big] - 0 \Bigg)} = 
+						\medmath{(2-\lambda)(1-\lambda)(\lambda^2-\lambda) - 0  + (\lambda - 1)^2 }	=
+						\medmath{\lambda^4 - 4\lambda^3 + 6\lambda^2 - 4\lambda + 1}\\ \\
+						&=(\lambda - 1)^4 
+					\end{align*}
+					Ho quindi che: $\ P_A=(\lambda - 1)^4 \quad \lambda_{1,2,3,4} = 1 \quad \mu_a = 4 $.
+					\item Procedo con il calcolo della molteplicità geometrica $ \mu_g $ dell'autovalore $ \lambda=1 $ calcolando lo spazio nullo generato:
+					\[
+						N(\vec{A} - 1\vec{I}) =
+						N \begin{pmatrix}
+							1 & 0 & -1 & 1 \\
+							1 & 0 & -1 & 1 \\
+							1 & -3 & 1 & -1 \\
+							0 & -3 & 2 & -2
+						\end{pmatrix}
+					\]
+					Devo quindi trovare una base che mi rappresenta lo spazio nullo. Utilizzo il metodo di \textit{Echelon} per portare il sistema in forma triangolare.
+					
+					\begin{align*}
+						&\begin{pmatrix}
+							1 & 0 & -1 & 1 \\
+							1 & 0 & -1 & 1 \\
+							1 & -3 & 1 & -1 \\
+							0 & -3 & 2 & -2
+						\end{pmatrix}
+						\xrightarrow{E_{2 1}(-1)}
+						\begin{pmatrix}
+							1 & 0 & -1 & 1 \\
+							0 & 0 & 0 & 0 \\
+							1 & -3 & 1 & -1 \\
+							0 & -3 & 2 & -2
+						\end{pmatrix}
+						\xrightarrow{E_{3 1}(-1)}
+						\begin{pmatrix}
+							1 & 0 & -1 & 1 \\
+							0 & 0 & 0 & 0 \\
+							0 & -3 & 2 & -2 \\
+							0 & -3 & 2 & -2
+						\end{pmatrix} \\
+						&\xrightarrow{E_{4 3}(-1)}
+						\begin{pmatrix}
+							1 & 0 & -1 & 1 \\
+							0 & 0 & 0 & 0 \\
+							0 & -3 & 2 & -2 \\
+							0 & 0 & 0 & 0
+						\end{pmatrix}
+						\xrightarrow{E_{3 2}}
+						\begin{pmatrix}
+							1 & 0 & -1 & 1 \\
+							0 & -3 & 2 & -2 \\
+							0 & 0 & 0 & 0 \\
+							0 & 0 & 0 & 0
+						\end{pmatrix}
+						\xrightarrow{E_{2}(-1/3)}
+						\begin{pmatrix}
+							1 & 0 & -1 & 1 \\
+							0 & 1 & -2/3 & 2/3 \\
+							0 & 0 & 0 & 0 \\
+							0 & 0 & 0 & 0
+						\end{pmatrix}
+					\end{align*}
+					Ho quindi il seguente sistema di equazioni:
+					\[
+						\begin{cases*}
+							x_1 - x_3 + x_4 = 0 \\
+							x_2 - \dfrac{2}{3}x_3 + \dfrac{2}{3}x_4 = 0 \\
+							x_3 = \alpha \\
+							x_4 = \beta
+						\end{cases*}
+						\qquad\longrightarrow\qquad
+						\begin{cases*}
+							x_1 = x_3 - x_4 \\
+							x_2 = \dfrac{2}{3}x_3 - \dfrac{2}{3}x_4 \\
+							x_3 = \alpha \\
+							x_4 = \beta
+						\end{cases*}
+						\qquad\longrightarrow\qquad
+						\begin{matrix}
+							x_1 \\
+							x_2 \\
+							x_3 \\
+							x_4
+						\end{matrix}
+						\begin{bmatrix}
+							1 \\
+							2/3 \\
+							1 \\
+							0
+						\end{bmatrix}
+						\quad
+						\begin{bmatrix}
+							-1 \\
+							-2/3 \\
+							0 \\
+							1
+						\end{bmatrix}
+					\]
+					i vettori che rappresentano la base dello spazio nullo \textit{normalizzati} risultano essere quindi
+					\[
+						\left\{
+						\begin{bmatrix}
+							3 \\
+							2 \\
+							3 \\
+							0
+						\end{bmatrix},
+						\begin{bmatrix}
+							-3 \\
+							-2 \\
+							0 \\
+							3
+						\end{bmatrix}
+						\right\}
+					\]
+					Ricavo quindi che $ \mu_g = 2 $ per $ \lambda_1 $. Perciò so che avrò due catene di Jordan e che la matrice di Jordan avrà due mini-blocchi.
+					\item Siccome $\ \text{dim}(N) (= 2) < \mu_a (= 4)\ $ allora calcolo $ N(\vec{A} - 1\vec{I})^2 $:
+					\begin{align*}
+						N(\vec{A} - 1\vec{I})^2 &= N
+						\begin{pmatrix}
+							\begin{bmatrix}
+								1 & 0 & -1 & 1 \\
+								1 & 0 & -1 & 1 \\
+								1 & -3 & 1 & -1 \\
+								0 & -3 & 2 & -2
+							\end{bmatrix}^2
+						\end{pmatrix}
+						= N
+						\begin{pmatrix}
+							0 & 0 & 0 & 0 \\
+							0 & 0 & 0 & 0 \\
+							-1 & 0 & 1 & -1 \\
+							-1 & 0 & 1 & -1
+						\end{pmatrix}
+						\quad\xrightarrow{E_{3 1}}
+						\begin{pmatrix}
+							-1 & 0 & 1 & -1 \\
+							0 & 0 & 0 & 0 \\
+							0 & 0 & 0 & 0 \\
+							-1 & 0 & 1 & -1
+						\end{pmatrix} \\
+						&\quad\xrightarrow{E_{4 2}}
+						\begin{pmatrix}
+							-1 & 0 & 1 & -1 \\
+							-1 & 0 & 1 & -1\\
+							0 & 0 & 0 & 0 \\
+							0 & 0 & 0 & 0 
+						\end{pmatrix} 
+						\quad\xrightarrow{E_{2 1}(-1)}
+						\begin{pmatrix}
+							-1 & 0 & 1 & -1 \\
+							0 & 0 & 0 & 0\\
+							0 & 0 & 0 & 0 \\
+							0 & 0 & 0 & 0 
+						\end{pmatrix}
+					\end{align*}
+					Ho quindi il sistema:
+					\[
+						\begin{cases}
+							x_1 = -x_3 + x_4 \\
+							x_2 = \alpha \\
+							x_3 = \beta \\
+							x_4 = \gamma
+						\end{cases}
+						\quad
+						\text{perciò la base di } N \text{ è }
+						\left\{
+						\begin{bmatrix}
+							0\\
+							1\\
+							0\\
+							0
+						\end{bmatrix}
+						\begin{bmatrix}
+							1\\
+							0\\
+							1\\
+							0
+						\end{bmatrix}
+						\begin{bmatrix}
+							-1\\
+							0\\
+							0\\
+							1
+						\end{bmatrix}
+						\right\}
+					\]
+					Però $ \text{dim}(N) (=3) < \mu_a (=4) $ perciò calcolo $ N(\vec{A} - 1\vec{I})^3 $:
+					\[
+						N(\vec{A} - 1\vec{I})^3 =
+						N\begin{pmatrix}
+							\begin{bmatrix}
+								0 & 0 & 0 & 0 \\
+								0 & 0 & 0 & 0 \\
+								-1 & 0 & 1 & -1 \\
+								-1 & 0 & 1 & -1
+							\end{bmatrix}
+							\begin{bmatrix}
+								1 & 0 & -1 & 1 \\
+								1 & 0 & -1 & 1 \\
+								1 & -3 & 1 & -1 \\
+								0 & -3 & 2 & -2
+							\end{bmatrix}
+						\end{pmatrix}
+						=
+						N
+						\begin{pmatrix}
+							\begin{bmatrix}
+							0 & 0 & 0 & 0 \\
+							0 & 0 & 0 & 0 \\
+							0 & 0 & 0 & 0 \\
+							0 & 0 & 0 & 0
+							\end{bmatrix}
+						\end{pmatrix}
+						= \varnothing
+					\]
+					Quindi abbiamo che la base per lo spazio nullo è:
+					\[
+						\left\{
+						\begin{bmatrix}
+							1 \\ 0 \\ 0 \\ 0
+						\end{bmatrix},
+						\begin{bmatrix}
+							0 \\ 1 \\ 0 \\ 0
+						\end{bmatrix},
+						\begin{bmatrix}
+							0 \\ 0 \\ 1 \\ 0
+						\end{bmatrix},
+						\begin{bmatrix}
+							0 \\ 0 \\ 0 \\ 1
+						\end{bmatrix}
+						\right\}
+					\]
+					posso quindi fermarmi dato che $\ \text{dim}(N) = \mu_a $.
+					\item Scelgo un vettore $ v \in N(\vec{A} - 1\vec{I})^3 $ che non è presente (non è combinazione lineare di) nello spazio nullo $ N(\vec{A} - 1\vec{I})^2  $. \\Perciò scelgo $\quad  \begin{bmatrix}
+					0 \\ 0 \\ 0 \\ 1
+					\end{bmatrix} $.
+					
+					\item Calcolo a ritroso la catena di Jordan ricavando gli altri vettori sapendo che $ \vec{v}_{n-1} = (\vec{A} - 1 )\vec{v}_n $
+					\[
+						\vec{v}_3 =
+						\begin{bmatrix}
+							0 \\ 0 \\ 0 \\ 1
+						\end{bmatrix}
+						\qquad
+						\vec{v}_2 =
+						\begin{bmatrix}
+							1 & 0 & -1 & 1 \\
+							1 & 0 & -1 & 1 \\
+							1 & -3 & 1 & -1 \\
+							0 & -3 & 2 & -2
+						\end{bmatrix}
+						\begin{bmatrix}
+							0 \\ 0 \\ 0 \\ 1
+						\end{bmatrix}
+						=
+						\begin{bmatrix}
+							1 \\ 1 \\ -1 \\ 2
+						\end{bmatrix}
+						\qquad
+						\vec{v}_1 =
+						\begin{bmatrix}
+						1 & 0 & -1 & 1 \\
+						1 & 0 & -1 & 1 \\
+						1 & -3 & 1 & -1 \\
+						0 & -3 & 2 & -2
+						\end{bmatrix}
+						\begin{bmatrix}
+							1 \\ 1 \\ -1 \\ 2
+						\end{bmatrix}
+						=
+						\begin{bmatrix}
+							0 \\ 0 \\ -1 \\ -1
+						\end{bmatrix}
+					\]
+					
+					aggiungo poi un altro vettore linearmente indipendente dagli altri:$\quad \begin{bmatrix}
+					3 \\ 2 \\ 3 \\ 0
+					\end{bmatrix}  = \vec{v}_0$
+					
+					\item Ottengo così la matrice di trasformazione $ \vec{T} $:
+					\[
+					    \vec{T}=
+						\begin{bmatrix}
+							3 & 0 & 1 & 0 \\
+							2 & 0 & 1 & 0 \\
+							3 & -1 & -1 & 0 \\
+							0 & -1 & 2 & 1
+						\end{bmatrix}
+						=
+						\begin{bmatrix}
+							\vec{v}_0 & \vec{v}_1 & \vec{v}_2 & \vec{v}_3 
+						\end{bmatrix}
+					\]
+				\end{enumerate}
+				
+				
+			\end{exmp}
 \end{document}
