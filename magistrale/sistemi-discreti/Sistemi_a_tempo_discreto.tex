@@ -128,8 +128,65 @@ Stati iniziali di $M_1$ e $M_2$ sono in relazione e ogni coppia (p,q) relazionat
 \subsection{Il linguaggio K è \emph{controllabile}?}
 Siano K e M = $\overline{M}$ linguaggi dell'alfabeto di eventi E, con E\textsubscript{uc} $\subseteq$ E. Si dice che K è controllabile rispetto a M e E\textsubscript{uc} se per tutte le stringhe s $\in$ $\overline{K}$ e per tutti gli eventi $\sigma$ $\in$ E\textsubscript{uc} si ha : \textbf{s$\sigma$ $\in$ M $\Rightarrow$ s$\sigma$ $\in$ $\overline{K}$}. (Equivalente a $\overline{K}$E\textsubscript{uc} $\cap$ M $\subseteq$ $\overline{K}$.)\\ Per la def di \emph{controllabilità} si ha che K è controllabile sse $\overline{K}$ è controllabile.
 \subsection{Osservabilità}
-Si considerino i linguaggi K e M = $\overline{M}$ definiti sull'alfabeto di eventi E, con E\textsubscript{c} $\subseteq$ E, E\textsubscript{c} $\subseteq$ E e P la proiezione naturale da E* $\Rightarrow$ E\textsubscript{0}*.\\ Si dice che K è osservabile rispetto a M, E\textsubscript{o},E\textsubscript{c} se per tutte le stringhe s $\in$ $\overline{K}$ e per tutti gli eventi $\sigma$ $\in$ E\textsubscript{c} abbiamo: 
+Si considerino i linguaggi K e M = $\overline{M}$ definiti sull'alfabeto di eventi E, con E\textsubscript{c} $\subseteq$ E, E\textsubscript{o} $\subseteq$ E e P la proiezione naturale da E* $\Rightarrow$ E\textsubscript{0}*.\\ Si dice che K è osservabile rispetto a M, E\textsubscript{o},E\textsubscript{c} se per tutte le stringhe s $\in$ $\overline{K}$ e per tutti gli eventi $\sigma$ $\in$ E\textsubscript{c} abbiamo: 
 \begin{center}(s$\sigma$ $\notin$ K) $\land$ (s$\sigma$ $\in$ M) $\Rightarrow$ $P^{-1}$[P(s)] $\sigma$  $\cap$ $\overline{K}$ = $\emptyset$
 \end{center}
-L'insieme di stringhe denotato dal termine $P^{-1}$[P(s)] $\sigma$  $\cap$ $\overline{K}$ contiene tutte le stringhe che hanno la medesiman proiezione di s e possono essere prolungate in K con il simbolo $\sigma$. SE tale insieme non è vuoto, allora K contiene due stringhe s e s' tali che P(s)=P(s') per cui s$\sigma$ $\notin$ $\overline{K}$ e s'$\sigma$ $\in$ $\overline{K}$. Tali due stringhe richiederebbero un'azione di controllo diversa rispetto a $\sigma$ (disabilitare $\sigma$ nel caso di s, abilitare $\sigma$ nel caso di s'), ma un supervisore non saprebbe distinguere tra s e s' per l'osservabilità ristretta. Non potrebbe quindi esistere un supervisore che ottiene esattamente il linguaggio $\overline{K}$.
+L'insieme di stringhe denotato dal termine $P^{-1}$[P(s)] $\sigma$  $\cap$ $\overline{K}$ contiene tutte le stringhe che hanno la medesima proiezione di s e possono essere prolungate in K con il simbolo $\sigma$. SE tale insieme non è vuoto, allora K contiene due stringhe s e s' tali che P(s)=P(s') per cui s$\sigma$ $\notin$ $\overline{K}$ e s'$\sigma$ $\in$ $\overline{K}$. Tali due stringhe richiederebbero un'azione di controllo diversa rispetto a $\sigma$ (disabilitare $\sigma$ nel caso di s, abilitare $\sigma$ nel caso di s'), ma un supervisore non saprebbe distinguere tra s e s' per l'osservabilità ristretta. Non potrebbe quindi esistere un supervisore che ottiene esattamente il linguaggio $\overline{K}$.
+
+\subsection{Proprietà di Controllabilità}
+Esistono due tipi di linguaggi derivati da K:
+\begin{itemize}
+\item K\textsuperscript{$\uparrow$C} il \textit{il sottolinguaggio supremo di K}
+\item K\textsuperscript{$\downarrow$C} il \textit{il sovralinguaggio controllabile infimo di K}
+\end{itemize}
+Abbiamo i seguenti rapporti: 
+\begin{center}
+$\emptyset$ $\subseteq$ K\textsuperscript{$\uparrow$C} $\subseteq$ K $\subseteq$ $\overline{K}$ $\subseteq$ K\textsuperscript{$\downarrow$C} $\subseteq$ M
+\end{center}
+\begin{itemize}
+\item Se K\textsubscript{1} e K\textsubscript{2} sono controllabili, allora K\textsubscript{1} $\cup$ K\textsubscript{2} è controllabile. 
+\item Se K\textsubscript{1} e K\textsubscript{2} sono controllabili, allora K\textsubscript{1} $\cap$ K\textsubscript{2} non ha bisogno di essere controllabile.
+\item Se K\textsubscript{1} e K\textsubscript{2} sono non in conflitto ed entrambi controllabili, allora K\textsubscript{1} $\cap$ K\textsubscript{2} è controllabile. \textbf{Si ricorda che K\textsubscript{1} e K\textsubscript{2} si dicono non in conflitto qualora $\overline{K}$\textsubscript{1} $\cap \overline{K}$\textsubscript{2} = $\overline{ K\textsubscript{1} \cap K\textsubscript{2} }$ }
+\item Se K\textsubscript{1} e K\textsubscript{2} sono prefisso-chiuso e controllabili, allora K\textsubscript{1} $\cap$ K\textsubscript{2} è prefisso-chiuso e controllabile.
+\end{itemize}
+Definiamo due classi di linguaggi: 
+\begin{center}
+\textit{C}\textsubscript{in}(K) := {L $\subseteq$ K : $\overline{L}$E\textsubscript{uc} $\cap$ M $\subseteq$ $\overline{L}$}
+\end{center}
+\begin{center}
+\textit{CC}\textsubscript{out}(K) := { L $\subseteq$ E* : (K $\subseteq$ L $\subseteq$ M) $\land$ ( $\overline{L}$ = L ) $\land$ ( $\overline{L}$E\textsubscript{uc} $\cap$ M $\subseteq$ $\overline{L}$ ) }
+\end{center}
+\subsection{Riguardo il sottolinguaggio supremo}
+\begin{itemize}
+\item \textit{C}\textsubscript{in}(K) è un insieme parzialmente ordinato (\textit{o poset}) che è chiuso sotto unioni arbitrarie.
+\item \textit{C}\textsubscript{in}(K) possiede un unico elemento \textit{supremo}. Definito come:
+\begin{center}
+\[ {K}^{\uparrow C} :=   \bigcup_{L \in \textit{C}\textsubscript{in}(K)} L \]
+\end{center}
+che è un elemento ben-definito di \textit{C}\textsubscript{in}(K).
+\item K\textsuperscript{$\uparrow$C} è chiamato \textit{sottolinguaggio supremo controllabile di K.}
+\begin{itemize}
+\item Nel caso peggiore, K\textsuperscript{$\uparrow$C} = $\emptyset$ , dal momento che $\emptyset$ $\in$ \textit{C\textsubscript{in}(K)}
+\item Se K è controllabile, allora K\textsuperscript{$\uparrow$C} = K 
+\item Osserviamo che K\textsuperscript{$\uparrow$C} non necessita di essere prefisso-chiuso in generale
+\end{itemize}
+\end{itemize}
+\subsection{Riguardo il sovralinguaggio infimo}
+\begin{itemize}
+\item \textit{CC}\textsubscript{out}(K) è un(\textit{ poset}) che è chiuso sotto intersezioni arbitrarie (e unioni).
+\item \textit{CC}\textsubscript{out}(K) possiede un unico elemento \textit{infimo}. Definito come:
+\begin{center}
+\[ {K}^{\downarrow C} :=   \bigcap_{L \in \textit{CC}\textsubscript{out}(K)} L \]
+\end{center}
+che è un elemento ben-definito di \textit{CC}\textsubscript{out}(K).
+\item Chiamiamo K\textsuperscript{$\downarrow$C} il sovralinguaggio infimo a prefisso-chiuso e controllabile di K.
+\begin{itemize}
+\item Nel caso peggiore, K\textsuperscript{$\downarrow$C} = M, dal momento che M $\in$ \textit{CC\textsubscript{out}}(K).
+\item Se K è controllabile, allora K\textsuperscript{$\downarrow$C} = $\overline{K}$.
+\end{itemize}
+\end{itemize}
+
+
+
+
 \end{document} 
