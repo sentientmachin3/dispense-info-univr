@@ -9,50 +9,89 @@
 \usepackage{latexsym}
 \usepackage{lstautogobble}
 \usepackage[colorinlistoftodos]{todonotes}
+\usepackage[margin=3cm]{geometry}
 
-\title{Sistemi a tempo discreto}
 
-\author{Gulino Giorgia}
 
 \date{\today}
 
+\newtheorem{definit}{Definizione}[subsection]
+\newtheorem{thm}{Teorema}[subsection]
+
 \begin{document}
-\maketitle
+ \clearpage
+ \begin{titlepage}
+ 	\centering
+ 	\vspace*{\fill}
+ 	{\scshape\LARGE Università degli Studi di Verona \par}
+ 	\vspace{1.5cm}
+ 	\line(1,0){280} \\
+ 	{\huge\bfseries Sistemi ad eventi discreti\par}
+ 	\line(1,0){280} \\
+ 	\vspace{0.5cm}
+ 	{\scshape\Large Riassunto dei principali argomenti\par}
+ 	\vspace{2cm}
+ 	{\Large\itshape Giorgia Gulino, Davide Bianchi\par}
+ 	\vspace{1cm}
+
+ 	\vspace{5cm}
+ 	\vspace*{\fill}
+ 	% Bottom of the page
+ 	{\large \today\par}
+ \end{titlepage}
+ \thispagestyle{empty}
 \newpage
 \tableofcontents
 \newpage
 
-\section{MACCHINE A STATI}
+\section{Macchine a stati}
 
+\begin{definit}[Macchina a stati deterministica]
+Una macchina a stati deterministica esiste un solo uno stato iniziale. Inoltre per ogni stato e per ogni input esiste solo un stato successivo. Se $M_2$ è deterministica allora $M_1$ è \textbf{simulata} da $M_2$ sse è \textbf{equivalente} a $M_2$.
+\end{definit}
 
-\subsection{Deterministica}Solo uno stato iniziale e per ogni stato e per ogni input c'è solo 1 stato successivo. Se M2 è \textbf{DET} allora M1 è \textbf{simulata} da M2 sse è \textbf{equivalente} a M2.
-\subsection{Output-Deterministico}Solo uno stato iniziale e per ogni stato e ogni coppia di I/O c'è 1 solo stato successivo. Se M2 è \textbf{Output-Det} allora M2 \textbf{simula} M1 sse M1 \textbf{raffina} M2.\\
+\subsection{Output-Deterministico}
+Solo uno stato iniziale e per ogni stato e ogni coppia di I/O c'è 1 solo stato successivo. Se $M_2$ è \textbf{Output-Det} allora $M_2$ \textbf{simula} $M_1$ sse $M_1$ \textbf{raffina} $M_2$.\\
+
 \begin{center}
 \emph{Deterministico} implica Output-Det, ma \textbf{non} viceversa.
 \end{center}
-\subsection{Non-Deterministico}Può esserci più di uno stato iniziale e per ogni stato e ogni coppia di I/O può esserci + di uno stato successivo. Se M2 è NON-DET, M1 è \textbf{simulata} da M2 allora M1 \textbf{raffina} M2, ma non viceversa.
-\subsection{Non-Deterministico, Progressiva}Progressiva significa che l'evoluzione è definita per ogni ingresso, cioè la funzione è definita come: Stati x ingressi $\rightarrow$ P(Stati x uscite)/insieme vuoto, dove P rappresenta l'insieme potenza e l'insieme vuoto impone che sia progressiva.
+
+\subsection{Non-Deterministico}
+Può esserci più di uno stato iniziale e per ogni stato e ogni coppia di I/O può esserci + di uno stato successivo. Se $M_2$ è NON-DET, $M_1$ è \textbf{simulata} da $M_2$ allora $M_1$ \textbf{raffina} $M_2$, ma non viceversa.
+
+\subsection{Non-Deterministico, Progressiva}
+Progressiva significa che l'evoluzione è definita per ogni ingresso, cioè la funzione è definita come: Stati x ingressi $\rightarrow$ P(Stati x uscite)/insieme vuoto, dove P rappresenta l'insieme potenza e l'insieme vuoto impone che sia progressiva.
+
 \subsection{Equivalenza}
+
 \begin{itemize}
-\item X Det: input[M1]=input[M2]; output[M1]=output[M2].
-\item X Non-det: comportamento[M1]=comportamento[M2].
-\item Cioè se M1 \textbf{raffina} m2 e viceversa.
+\item X Det: input[$M_1$]=input[$M_2$]; output[$M_1$]=output[$M_2$].
+\item X Non-det: comportamento[$M_1$]=comportamento[$M_2$].
+\item Cioè se $M_1$ \textbf{raffina} m2 e viceversa.
 \item C'è equivalenza se c'è \textbf{bisimulazione}.
 \end{itemize}
-\subsection{Raffinamento}M1 \textbf{raffina} M2 sse input[M1]=input[M2]; output[M1]=output[M2] e comportamento[M1] $\subseteq$ comportamento[M2].
-\subsection{Bisimulazione}Bisimulazione tra M1 e M2 sse l'unione delle \textbf{simulazioni} è simmetrica e c'è \textbf{isomorfismo} tra minimize(M1) e minimize(M2).
-\subsection{Isomorfe}Si dicono isomorfe se hanno lo stesso numero di stati con nome uguale.
-\subsection{Rel. RAFFINAMENTO/SIMULAZIONE AFSND $\rightarrow$ AFSD} Se M1 è det, M1 è \textbf{simulata} da M2 sse M1 è equivalente a M2, cioè se M1 raffina M2 e viceversa.
-\subsection{Rel. RAFFINAMENTO/SIMULAZIONE AFSND $\rightarrow$ AFSpseudo-nondet} Se M2 è psuedo-non det, M1 è \textbf{simulata} da M2 sse M1 è equivalente a M2, cioè se M1 \textbf{raffina} M2.
-\subsection{Rel. RAFFINAMENTO/SIMULAZIONE AFSND $\rightarrow$ AFSND} Se M2 non è deterministica, M1 è \textbf{simulata} da M2 implica M1 \textbf{raffina} M2, ma M1 raffina M2 non implica M1 \textbf{simula} M2.
-\subsection{Simulazione per Det $\rightarrow$ M1 da M2}
+
+\subsection{Raffinamento}
+$M_1$ \textbf{raffina} $M_2$ sse input[$M_1$]=input[$M_2$]; output[$M_1$]=output[$M_2$] e comportamento[$M_1$] $\subseteq$ comportamento[$M_2$].
+
+\subsection{Bisimulazione}
+Bisimulazione tra $M_1$ e $M_2$ sse l'unione delle \textbf{simulazioni} è simmetrica e c'è \textbf{isomorfismo} tra minimize($M_1$) e minimize($M_2$).
+
+\subsection{Isomorfe}
+Si dicono isomorfe se hanno lo stesso numero di stati con nome uguale.
+
+\subsection{Rel. RAFFINAMENTO/SIMULAZIONE AFSND $\rightarrow$ AFSD} Se $M_1$ è det, $M_1$ è \textbf{simulata} da $M_2$ sse $M_1$ è equivalente a $M_2$, cioè se $M_1$ raffina $M_2$ e viceversa.
+\subsection{Rel. RAFFINAMENTO/SIMULAZIONE AFSND $\rightarrow$ AFSpseudo-nondet} Se $M_2$ è psuedo-non det, $M_1$ è \textbf{simulata} da $M_2$ sse $M_1$ è equivalente a $M_2$, cioè se $M_1$ \textbf{raffina} $M_2$.
+\subsection{Rel. RAFFINAMENTO/SIMULAZIONE AFSND $\rightarrow$ AFSND} Se $M_2$ non è deterministica, $M_1$ è \textbf{simulata} da $M_2$ implica $M_1$ \textbf{raffina} $M_2$, ma $M_1$ raffina $M_2$ non implica $M_1$ \textbf{simula} $M_2$.
+\subsection{Simulazione per Det $\rightarrow$ $M_1$ da $M_2$}
 \begin{itemize}
-\item $\forall$ p $\in$  PossibiliInitialState[M1], $\exists$ q $\in$ PossibiliInitialState[M2], (p,q) $\in$ S.
-\item $\forall$ p $\in$  Stati[M1], $\forall$ q $\in$ Stati[M2].
+\item $\forall$ p $\in$  PossibiliInitialState[$M_1$], $\exists$ q $\in$ PossibiliInitialState[$M_2$], (p,q) $\in$ S.
+\item $\forall$ p $\in$  Stati[$M_1$], $\forall$ q $\in$ Stati[$M_2$].
 \begin{itemize}
-\item if (p,q) $\in$ S $\Rightarrow$ $\forall$ x $\in$ Input, $\forall$ y $\in$ Output, $\forall$ p1 $\in$  Stati[M1];
-\item if (p1,y) $\in$ PossibiliUpdates[M1](p,x) $\Rightarrow$ $\exists$ q1 $\in$ Stati[M1], (q1,y) $\in$ PossibiliUpdates[M2](q,x) e (p1,q1) $\in$ S. (S contiene coppie di stati iniziali e coppie consultanti l'algoritmo).
-\item $\forall$ p $\in$ Stati[M1] $\exists$ q $\in$ Stati[M2] per cui $\forall$ I/O possibili c'è corrispondenza tra I/O uguali di p e (p,q) $\in$ S. 
+\item if (p,q) $\in$ S $\Rightarrow$ $\forall$ x $\in$ Input, $\forall$ y $\in$ Output, $\forall$ p1 $\in$  Stati[$M_1$];
+\item if (p1,y) $\in$ PossibiliUpdates[$M_1$](p,x) $\Rightarrow$ $\exists$ q1 $\in$ Stati[$M_1$], (q1,y) $\in$ PossibiliUpdates[$M_2$](q,x) e (p1,q1) $\in$ S. (S contiene coppie di stati iniziali e coppie consultanti l'algoritmo).
+\item $\forall$ p $\in$ Stati[$M_1$] $\exists$ q $\in$ Stati[$M_2$] per cui $\forall$ I/O possibili c'è corrispondenza tra I/O uguali di p e (p,q) $\in$ S. 
 \end{itemize}
 \end{itemize}
 \subsection{Simulazione per Output-Det}Data M ASFND trova la macchina output-det det(M) equivalente a M.\\ SUBSET CONSTRUCTION 
@@ -70,17 +109,17 @@ Raggruppa tutti gli stati iniziali, $\forall$ coppia I/O raggruppa tutti gli sta
 \end{itemize}
 \subsection{Simulazione}
 \begin{itemize}
-\item Se p $\in$ PossibleInitialState[M1] e PossibleInitialState[m2] = {q} $\Rightarrow$ (p,q) $\in$ S.
-\item Se (p,q) $\in$ S e (p1,y) $\in$ PossibleUpdates[M1](p,x) e PossibleUpdates[M2](q,x) = {q}. 
+\item Se p $\in$ PossibleInitialState[$M_1$] e PossibleInitialState[m2] = {q} $\Rightarrow$ (p,q) $\in$ S.
+\item Se (p,q) $\in$ S e (p1,y) $\in$ PossibleUpdates[$M_1$](p,x) e PossibleUpdates[$M_2$](q,x) = {q}. 
 \end{itemize}
 \subsection{Bisimulazione per Det} Una relazione binaria B è una \emph{bisimulazione} sse:
 \begin{itemize}
-\item InitialState[M1], InitialState[M2] $\in$ B 
-\item $\forall$ p $\in$ Stati[M1], $\forall$ q $\in$ Stati[M2]:
+\item InitialState[$M_1$], InitialState[$M_2$] $\in$ B 
+\item $\forall$ p $\in$ Stati[$M_1$], $\forall$ q $\in$ Stati[$M_2$]:
 \begin{itemize}
-\item if (p,q) $\in$ B $\Rightarrow$ $\forall$ x $\in$ Input[M1], Output[M1](p,x) = Output[M2](q,x)\\
-(nextState[M1](p,x),nextState[M2](q,x)) $\in$ B.
-Stati iniziali di M1 e M2 sono in relazione e ogni coppia (p,q) relazionati, $\forall$ input producono lo stesso output e nextState Relazionati.
+\item if (p,q) $\in$ B $\Rightarrow$ $\forall$ x $\in$ Input[$M_1$], Output[$M_1$](p,x) = Output[$M_2$](q,x)\\
+(nextState[$M_1$](p,x),nextState[$M_2$](q,x)) $\in$ B.
+Stati iniziali di $M_1$ e $M_2$ sono in relazione e ogni coppia (p,q) relazionati, $\forall$ input producono lo stesso output e nextState Relazionati.
 \end{itemize}
 \end{itemize}
 
