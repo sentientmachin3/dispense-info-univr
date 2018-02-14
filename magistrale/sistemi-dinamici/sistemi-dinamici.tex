@@ -4,6 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{palatino}
 \usepackage{frontespizio}
+\usepackage{physics}
 \usepackage{mathtools, nccmath}
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -38,6 +39,8 @@
 	colorlinks = true,
 	linkcolor = black,
 }
+\usepackage[thinlines,thiklines]{easybmat}
+\usepackage{braket}
 
 \usepackage{cleveref}
 
@@ -47,7 +50,7 @@
 \renewcommand{\vec}{\bm}
 
 \theoremstyle{definition}
-\newtheorem{thm}{Teorema}
+\newtheorem{thm}{Teorema}[subsection]
 \newtheorem{exmp}{Esempio}[section]
 \newtheorem{defn}{Definizione}[subsection]
 \newtheorem{prop}{Proposizione}[subsection]
@@ -920,9 +923,6 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 	 				\item Se per ogni $ \lambda_i $ la dimensione $ m_i $ del più grande mini blocco di Jordan è unitaria.
 	 				\item Se il grado di molteplicità di ogni $ \lambda_i $ nel polinomio minimo $ m(\lambda) $ è unitario.
 	 			\end{itemize}
-	 			
-	 		
-		\newpage
 		
 		\section{Jordan e cambiamento di base tutorial}
 			Data una matrice $ \vec{A} $ per ricavare la matrice $ \vec{T} $ di cambiamento di base (matrice modale) e poi la matrice di Jordan $ \vec{J} $ si eseguono i seguenti passi:
@@ -1289,4 +1289,184 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 				
 				
 			\end{exmp}
+			
+		\newpage
+		
+		\section{Stabilità}
+			L’importanza di tale proprietà deriva dal fatto che la stabilità
+			è una specifica imposta a quasi ogni sistema fisico controllato perché implica la possibilità di lavorare intorno a certe condizioni nominali senza discostarsi troppo da esse.\\
+			Nel seguito verranno introdotte due diverse definizioni di stabilità: la prima relativa al legame ingresso-uscita (stabilità BIBO), la seconda relativa ad una rappresentazione in termini di variabili di stato (stabilità alla Lyapunov).
+			
+			\subsection{Stabilità BIBO}
+				\begin{defn}[stabilità BIBO]
+					Un sistema SISO è detto BIBO (bounded-input bounded-output)
+					stabile se e solo se a partire da una condizione di riposo, ad ogni ingresso limitato
+					risponde con un’uscita anch’essa limitata.
+				\end{defn}
+				
+				\begin{thm}[condizione necessaria e sufficiente per la BIBO stabilità]
+					Si consideri un sistema SISO lineare e stazionario. La \textit{condizione necessaria e sufficiente} affinché tale sistema sia BIBO stabile è che la sua risposta impulsiva sia \textbf{assolutamente sommabile}, ovvero:
+					\[
+						\exists M>0\ \text{ t.c.}\ \int^{\infty}_0 \lvert \omega (\tau) \rvert d\tau\ \leq\ M\ <\ \infty
+					\]
+				\end{thm}
+				
+				\begin{prop}[condizione necessaria e sufficiente per l'assoluta sommabilità di $ \omega(t) $]
+					La condizione necessaria e sufficiente per l'assoluta sommabilità di $ \omega(t) $ è che $ \omega(t) $ contenga tutti i modi del sistema, ovvero $ A_{i, k} \neq 0\quad \forall i\in 1,\dots, r\quad \forall K= 0,1,\dots,\nu_i-1 $
+				\end{prop}
+				
+				\begin{thm}
+					La \textit{condizione necessaria e sufficiente} affinché un sistema SISO, lineare, stazionario a parametri concentrati e in forma minima sia BIBO stabile:
+					\begin{itemize}
+						\item Tutte le \textbf{radici} del \textit{polinomio caratteristico} siano a \textit{parte reale \textbf{negativa}}.
+						\item Tutti i \textbf{poli} della \textit{funzione caratteristica} siano a \textit{parte reale \textbf{strettamente negativa}}.
+					\end{itemize}
+				\end{thm}
+				
+			\subsection{Lyapunov in termini di variabili di stato}
+				\begin{defn}[Sistema Autonomo]
+					Un sistema nella forma:
+				\[
+					\vec{\dot{x}} (t) = f(\vec{x}(t), \vec{u}(t), t)
+				\]
+				è \textbf{autonomo} se:
+				\begin{itemize}
+					\item $ \vec{u}(t) $ è identicamente \textit{nullo}.
+					\item è \textit{stazionario}, ovvero $ f $ \textit{non dipende esplicitamente dal tempo}.
+				\end{itemize}
+				Quindi il sistema diventa:
+				\[
+					\vec{\dot{x}}(t) = f(\vec{x}(t))
+				\]
+				\end{defn}
+				
+				\begin{defn}[Stato di equilibrio]
+					Uno stato $ \vec{x}_e $ è uno \textbf{stato di equilibrio} (o punto di equilibrio) per il sistema se vale:
+					\[
+						\vec{x}(\tau) = \vec{x}_e\ \Rightarrow\ (\forall t\geq \tau)\quad \vec{x}(t) = \vec{x}_e
+					\]
+					Ovvero se ogni traiettoria che parte da $ \vec{x}_e $ in tempo $ \tau $ resta in $ \vec{x}_e $ all'istante successivo.
+				\end{defn}
+				
+				\begin{itemize}
+					\item Uno stato di equilibrio è \textbf{stabile} se 
+					\[
+					\forall\epsilon > 0 \quad\exists \delta(\epsilon) > 0\ \text{ t.c. se }\ \| \vec{x}(\vec{0}) - \vec{x}_e \| \leq \delta(\epsilon)\ \text{ allora }\ \| \vec{x}(t) - \vec{x}_e \| < \epsilon\quad  \forall t\geq 0
+					\]
+					\item L'\textit{origine} di uno stato di equilibrio è \textbf{stabile} se 
+					\[
+					\forall\epsilon > 0 \quad\exists \delta(\epsilon) > 0\ \text{ t.c. se }\ \| \vec{x}(\vec{0}) \| \leq \delta(\epsilon)\ \text{ allora }\ \| \vec{x}(t) \| < \epsilon\quad  \forall t\geq 0
+					\]
+					\item Uno stato di equilibrio è \textbf{asintoticamente stabile} se \textit{è stabile} e
+					$\ \lim\limits_{t\rightarrow\infty} \| \vec{x}(t) - \vec{x}_e \| = 0 $
+					
+					\item L'origine di uno stato di equilibrio è \textbf{asintoticamente stabile} se \textit{è stabile} e
+					$\ \lim\limits_{t\rightarrow\infty} \| \vec{x}(t) \| = 0 $
+					
+				\end{itemize}
+				
+				\begin{prop}
+					Se uno stato di equilibrio $ \vec{x}_e $ è \textit{asintoticamente stabile}, qualunque sia lo stato iniziale da cui la traiettoria ha origine, allora $ \vec{x}_e $ è \textbf{globalmente asintoticamente stabile}. Ne deriva che $ \vec{x}_e $ è \textit{l'unico} stato di equilibrio del sistema.
+				\end{prop}
+				
+			
+			\subsection{Lyapunov per sistemi lineari e stazionari}	
+			
+				\begin{prop}
+					Se $ \ \dot{\vec{x}} = \vec{A}\vec{x}(t)\ $ è un sistema \textit{lineare autonomo}, $ \vec{x}_e $ è un punto di equilibrio sse vale
+					\[
+						\vec{A}\vec{x}_e  = \vec{0}
+					\]
+					dove $ \vec{x}_e $ è la soluzione di tale sistema lineare omogeneo.
+				\end{prop}
+				
+				\noindent
+				Ricaviamo dunque che:
+				\begin{itemize}
+					\item Se $ \vec{A} $ \textit{non} è singolare (determinante $ \neq 0 $), l'unico punto di equilibrio è $\ \vec{x}_e = \vec{0}\ $ (l'origine).
+					\item Se $ \vec{A} $ è singolare, il sistema ha un numero infinito di stati di equilibrio che descrivono uno \textbf{spazio lineare}: tutti questi stati sono contenuti nello spazio nullo $\ N(\vec{A}) $.
+				\end{itemize}
+	
+				\begin{prop}
+					Dato un sistema \textit{lineare autonomo}:
+					\begin{itemize}
+						\item Se uno stato di equilibrio è \textit{stabile} (instabile) $\ \Rightarrow\ $ tutti gli altri $ \vec{x}_e $ sono \textit{stabili} (instabili).
+						\item Se uno stato di equilibrio è \textit{asintoticamente stabile} allora valgono:
+						\begin{itemize}
+							\item $ \vec{x}_e = \vec{0} $.
+							\item $ \vec{x}_e $ è l'unico stato di equilibrio.
+							\item $ \vec{x}_e $ è globalmente asintoticamente stabile.
+						\end{itemize}
+					\end{itemize}
+				\end{prop}
+				
+				\begin{prop}
+					Dato il sistema lineare \textit{stazionario}: $ \ \dot{\vec{x}}(t) = \vec{A}\vec{x}(t) $:
+					\begin{itemize}
+						\item È \textbf{asintoticamente stabile} sse tutti gli \textit{autovalori} di $ \vec{A} $ hanno \textit{parte reale negativa}.
+						\item È \textbf{stabile} sse $ \vec{A} $ \textit{non} ha autovalori a parte \textit{reale positiva} e gli eventuali autovalori nulli hanno \textbf{indice unitario} (molteplicità $ \mu_g = 1 $).
+						\item È \textbf{instabile} sse $ \vec{A} $ ha \textit{almeno un} autovalore a parte reale positiva \textit{oppure} parte reale nulla \textit{e} indice non unitario.
+					\end{itemize}
+				\end{prop}
+				
+			\subsection{Stabilità con la funzione di Lyapunov}
+				\begin{defn}[Funzione definita positiva]
+					La funzione $\ V(\vec{x})\ $ scalare, continua è \textbf{definita positiva} in $ \vec{x}' $ se $ \exists $ una regione $\ \Omega\ $ dello spazio di stato (intorno circolare di $ \vec{x}' $) tale che
+					\[
+						V(\vec{x}) > 0 \quad \forall \text{ stato } \vec{x}\neq \vec{x}' \text{ in } \Omega\ \text{ e } V(\vec{x}') = 0
+					\]
+					Se $ \Omega $ coincide con l'intero spazio di stato allora $ V(\vec{x}) $ è \textbf{globalmente definita positiva}.
+				\end{defn}
+				
+				\begin{defn}[Funzione semi-definita positiva]
+					La funzione $\ V(\vec{x}) \ $ scalare, continua è \textbf{semi-definita positiva} in $ \vec{x}' $ se $ \exists $ una regione $\ \Omega\ $ dello spazio di stato (intorno circolare di $ \vec{x}' $) tale che
+					\[
+						V(\vec{x}) \geq 0 \quad \forall \text{ stato } \vec{x}\neq \vec{x}' \text{ in } \Omega\ \text{ e } V(\vec{x}') = 0 
+					\]
+					Se $ \Omega $ coincide con l'intero spazio di stato allora $ V(\vec{x}) $ è \textbf{globalmente semi-definita positiva}.
+				\end{defn}
+				
+				\begin{defn}[Funzione (globalmente) (semi-)definita negativa]
+						La funzione $\ V(\vec{x}) \ $ scalare, continua è \textbf{(globalmente) (semi)-definita negativa} in $ \vec{x}' $ se $\ -V(\vec{x})\ $ è (globalmente) (semi-)definita positiva in $ \vec{x}' $.
+				\end{defn}
+				
+				\begin{thm}[Metodo di Lyapunov]
+					Considero il sistema autonomo $\ \dot{\vec{x}}(t) = \vec{f}(\vec{x}(t)) $ dove $ \vec{f}(\cdot) $ è \textit{continuo}, con le derivate parziali prime $ \dfrac{\partial \vec{f}}{\partial x_i}\ \ i=1,\dots,n $.\\
+					Sia $ \vec{x}_e $ un punto di equilibrio per il sistema, cioè $ \ \vec{f}(\vec{x}_e) = \vec{0}\ \ \forall t\geq 0 $.\\
+					Se esiste una \textit{funzione scalare continua} $ \ V(\vec{x}) $ continua insieme alle sue derivate parziali prime, \textit{definita positiva} in $ \vec{x}_e $ e tale che
+					\[
+						\dot{V}(\vec{x}) = \dv{V(\vec{x})}{t} = \partialderivative{V(\vec{x})}{\vec{x}}\dv{\vec{x}}{t} =
+						\partialderivative{V(\vec{x})}{\vec{x}}\cdot \vec{f}(\vec{x}) = 
+						\partialderivative{V}{x_1}\dot{x}_1 + \cdots + \partialderivative{V}{x_n}\dot{x}_n
+					\]
+					\begin{itemize}
+						\item Se $\ \dot{V}(\vec{x})\ $ è \textbf{semi-definita negativa} in $ \vec{x}_e $
+						$ \ \Rightarrow\ $ $ \vec{x}_e $ è uno \textit{stato di equilibrio} \textbf{stabile}.
+						\item Se $\ \dot{V}(\vec{x})\ $ è \textbf{definita negativa} in $ \vec{x}_e $
+						$ \ \Rightarrow\ $ $ \vec{x}_e $ è uno \textit{stato di equilibrio} \textbf{asintoticamente stabile}.
+						\item Se $\ \dot{V}(\vec{x})\ $ è \textbf{definita positiva} in $ \vec{x}_e $
+						$ \ \Rightarrow\ $ $ \vec{x}_e $ è uno \textit{stato di equilibrio} \textbf{instabile}.
+					\end{itemize}
+					
+				\end{thm}
+				
+			\subsection{Matrice di linearizzazione o Jacobiana}
+				La matrice di linearizzazione o matrice Jacobiana o Jacobiano di $ \vec{f}(\cdot) $ calcolata in $ \vec{x}_e $ è definita nel seguente modo:
+				\[
+					\vec{J}(\vec{x}_e) = \bigg[ \partialderivative{\vec{f}}{\vec{x}} \bigg]_{\vec{x}_e} =
+					\left[
+					\begin{BMAT}(,27pt, 27pt){cccc}{cccc}
+						\partialderivative{f_1}{x_1} & \partialderivative{f_1}{x_2} & \cdots & \partialderivative{f_1}{x_n} \\
+						\partialderivative{f_2}{x_1} & \partialderivative{f_2}{x_2} & \cdots & \partialderivative{f_2}{x_n} \\
+						\vdots & \vdots & \ddots & \vdots \\
+						\partialderivative{f_n}{x_1} & \partialderivative{f_n}{x_2} & \cdots & \partialderivative{f_2}{x_n}
+					\end{BMAT}
+					\right]_{\vec{x}_e}
+				\]
+				\begin{itemize}
+					\item Se $ \vec{J} $ ha autovalori \textit{tutti} a parte reale \textit{negativa} $ \ \Rightarrow\ $ $ \vec{x}_e $ è \textbf{asintoticamente stabile}.
+					\item Se $ \vec{J} $ ha \textit{almeno un} autovalore a parte reale \textit{positiva} $ \ \Rightarrow\ $ $ \vec{x}_e $ è \textbf{instabile}.
+				\end{itemize}
+				
+				
 \end{document}
