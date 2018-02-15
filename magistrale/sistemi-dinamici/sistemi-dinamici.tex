@@ -1467,6 +1467,124 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 					\item Se $ \vec{J} $ ha autovalori \textit{tutti} a parte reale \textit{negativa} $ \ \Rightarrow\ $ $ \vec{x}_e $ è \textbf{asintoticamente stabile}.
 					\item Se $ \vec{J} $ ha \textit{almeno un} autovalore a parte reale \textit{positiva} $ \ \Rightarrow\ $ $ \vec{x}_e $ è \textbf{instabile}.
 				\end{itemize}
+			
+			\newpage
 				
+		\section{Controllabilità}
+			\begin{defn}[Sistema controllabile]
+				Un sistema \textit{lineare stazionario} 
+				\[
+					\dot{\vec{x}}(t) = \vec{A}\vec{x}(t) + \vec{B}\vec{u}(t)
+				\] 
+				è \textbf{controllabile} sse è possibile, agendo sull'ingresso, trasferire lo stato del sistema da un qualunque stato iniziale $ \ \vec{x}_0 = \vec{x}(0)\ $ ad un qualunque altro stato $\ \vec{x}_f = \vec{x}(t_f)\ $, detto \textit{stato zero} o \textit{stato obiettivo}, in un tempo finito $ t_f\geq 0 $. 
+			\end{defn}
+			
+			\begin{defn}[Gramiano di controllabilità]
+				Dato un sistema $\ \dot{\vec{x}}(t) = \vec{A}\vec{x}(t) + \vec{B}\vec{u}(t)\ $ dove $\ \vec{x}\in\R^n\ $ e $\ \vec{u}\in\R^r\ $, il \textbf{gramiano di controllabilità} è la matrice $ n\times n $:
+				\[
+					\vec{\Gamma}(t) = \int_{0}^{t} e^{\vec{A}\tau} \vec{B}\vec{B}^T e^{\vec{A}^T\tau}d\tau
+				\]
+				Il sistema è \textbf{controllabile} se il \textit{gramiano non è singolare} $ \forall t > 0 $.
+			\end{defn}
 				
+			\begin{defn}[Matrice di controllabilità]
+				La matrice di controllabilità è una $ (n)\times(r\cdot n) $ definita come segue:
+				\[
+					\mathcal{T} = 
+					\begin{bmatrix}
+						\vec{B} & \vec{A}\vec{B} & \vec{A}^2\vec{B} & \cdots & \vec{A}^{n-1}\vec{B}
+					\end{bmatrix}
+				\]
+				Condizione \textit{necessaria e sufficiente} affinché il sistema sia controllabile:
+				\[
+					n_c \stackrel{\text{def}}{=} \text{rango}(\mathcal{T}) = n
+				\]
+			\end{defn}
+			
+			\begin{prop}
+				Dato il sistema:
+				\[
+					\dot{\vec{x}}(t) =
+					\begin{bmatrix}
+						\lambda_1 & 0 & \cdots & 0 \\
+						0 & \lambda_2 & \cdots & 0 \\
+						\vdots & \vdots & \ddots & \vdots \\
+						0\tikzmark{lowerA} & 0 & \cdots & \lambda_n\tikzmark{lowerB}
+					\end{bmatrix}
+					\vec{x}(t) +
+					\begin{bmatrix}
+						b_{11} & b_{12} & \cdots & b_{1r} \\
+						b_{21} & b_{22} & \cdots & b_{2r} \\
+						\vdots & \vdots & \ddots & \vdots \\
+						b_{n1}\tikzmark{lowerC} & b_{n2} & \cdots & b_{nr}\tikzmark{lowerD} \\
+					\end{bmatrix}
+					\vec{u}(t)
+				\]
+				\begin{tikzpicture}[overlay, remember picture,decoration={brace,amplitude=5pt}]
+				\draw[decorate,thick] ($ (lowerB.south) +(.20,-.25) $) -- ($ (lowerA.south) +(-.250,-.25) $)
+				node [midway,below=5pt] {A};
+				\draw[decorate,thick] ($ (lowerD.south) +(.250,-.25) $) -- ($ (lowerC.south) +(-.50,-.25) $)
+				node [midway,below=5pt] {B};
+				\end{tikzpicture}
+				
+				\vspace{1cm}
+				dove $ \vec{A} $ è in forma diagonale con autovalori tutti distinti, la condizione necessaria e sufficiente affinché sia \textbf{controllabile} è che $ \vec{B} $ \textit{non} abbia \textit{righe identicamente nulle}.
+			\end{prop}
+			
+			\begin{prop}
+				La trasformazione di \textbf{similitudine} preserva la controllabilità.
+			\end{prop}
+			
+			\begin{defn}[Forma canonica di Kalman]
+				Dato il sistema
+				\[
+					\dot{\vec{z}}(t) = \vec{A}'\vec{z}(t) + \vec{B}'\vec{u}(t)
+				\]
+				è nella forma canonica di Kalman se:
+				\[
+					\vec{A}' =
+					\left[
+					\begin{BMAT}(e,10pt,10pt){c1c}{c1c}
+					\vec{A}_c' & \vec{A}_1' \\
+					\vec{0} & \vec{A}_{nc}'
+					\end{BMAT}
+					\right]
+					\qquad
+					\vec{B}' =
+					\left[
+					\begin{BMAT}(e,10pt,10pt){c}{c1c}
+						\vec{B}_c'\\
+						0
+					\end{BMAT}
+					\right]
+				\]
+			\end{defn}
+			dove:
+			\begin{itemize}
+				\item $ \vec{A}_c' $ è quadrata con ordine uguale al rango $ n_c $ della matrice di controllabilità $ \mathcal{T} $.
+				\item $ \vec{B}_c' $ ha numero di \textit{righe} uguale al rango $ n_c $ della matrice di controllabilità $ \mathcal{T} $.
+			\end{itemize}
+			In particolare la coppia $ (\vec{A}_c', \vec{B}_c') $ è controllabile.
+			
+			Il vettore $ \vec{z} $ può essere riscritto come:
+			\[
+				\vec{z} =
+				\left[
+				\begin{BMAT}(e,10pt,10pt){c}{c1c}
+					\vec{z}_c\tikzmark{A}\\
+					\vec{z}_{nc}\tikzmark{B}
+				\end{BMAT}
+				\right]
+			\]
+			\begin{tikzpicture}[overlay, remember picture, >=latex]
+			\draw[thick, ->] (A.east) -- +(1,0) node [right] {$ \in \R^{n_c} $};
+			\draw[thick, ->] (B.east) -- +(1,0)	node [right] {$ \in \R^{n - n_c} $};
+			\end{tikzpicture}
+				
+			Quindi il sistema può essere decomposto in due parti:
+			\begin{itemize}
+				\item Parte controllabile di ordine $ n_c $ : 
+				$ \ \dot{\vec{z}}_c (t) = \vec{A}_c'\vec{z}_c(t) + \vec{A}_1'\vec{z}_{nc}(t) + \vec{B}_c'\vec{u}(t) $
+				\item Parte non controllabile di ordine $ n - n_c $: $ \ \dot{\vec{z}}_{nc}(t) = \vec{A}_{nc}'\vec{z}_{nc}(t) $
+			\end{itemize}
 \end{document}
