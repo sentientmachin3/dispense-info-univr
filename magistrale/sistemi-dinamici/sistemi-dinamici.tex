@@ -1582,9 +1582,14 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 			\end{tikzpicture}
 				
 			Quindi il sistema può essere decomposto in due parti:
-			\begin{itemize}
-				\item Parte controllabile di ordine $ n_c $ : 
-				$ \ \dot{\vec{z}}_c (t) = \vec{A}_c'\vec{z}_c(t) + \vec{A}_1'\vec{z}_{nc}(t) + \vec{B}_c'\vec{u}(t) $
-				\item Parte non controllabile di ordine $ n - n_c $: $ \ \dot{\vec{z}}_{nc}(t) = \vec{A}_{nc}'\vec{z}_{nc}(t) $
-			\end{itemize}
+			\[
+			\begin{cases}
+				\dot{\vec{z}}_c (t) = \vec{A}_c'\vec{z}_c(t) + \vec{A}_1'\vec{z}_{nc}(t) + \vec{B}_c'\vec{u}(t) \qquad &
+				\text{ Parte controllabile di ordine } n_c \\  
+				\dot{\vec{z}}_{nc}(t) = \vec{A}_{nc}'\vec{z}_{nc}(t) \qquad &
+				\text{ Parte non controllabile di ordine } n - n_c
+			\end{cases}
+			\]
+			
+			
 \end{document}
