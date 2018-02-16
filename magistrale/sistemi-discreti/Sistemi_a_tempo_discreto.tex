@@ -12,6 +12,7 @@
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage[margin=3cm]{geometry}
 
+\newcommand{\od}{\textbf{output-deterministica }}
 
 
 \date{\today}
@@ -32,7 +33,7 @@
  	\vspace{0.5cm}
  	{\scshape\Large Riassunto dei principali argomenti\par}
  	\vspace{2cm}
- 	{\Large\itshape Giorgia Gulino\par}
+ 	{\Large\itshape Giorgia Gulino, Davide Bianchi\par}
  	\vspace{1cm}
 
  	\vspace{5cm}
@@ -48,39 +49,43 @@
 \section{Macchine a stati}
 
 \begin{definit}[Macchina a stati deterministica]
-Una macchina a stati deterministica esiste un solo uno stato iniziale. Inoltre per ogni stato e per ogni input esiste solo un stato successivo. Se $M_2$ è deterministica allora $M_1$ è \textbf{simulata} da $M_2$ sse è \textbf{equivalente} a $M_2$.
+Una macchina a stati è deterministica se valgono: \begin{itemize}
+	\item esiste un solo uno stato iniziale;
+	\item per ogni stato e per ogni input esiste solo un stato successivo;
+\end{itemize}  
+\end{definit}
+Inoltre se $M_2$ è deterministica allora $M_1$ è \textbf{simulata} da $M_2$ sse è \textbf{equivalente} a $M_2$.
+
+\subsection{Output-Determinismo}
+\begin{definit}
+	Una macchina a stati è \textbf{output-deterministica} se esiste un solo stato iniziale e per ogni stato e ogni coppia di I/O c'è un solo stato successivo. Se $M_2$ è \od allora $M_2$ \textbf{simula} $M_1$.
 \end{definit}
 
-\subsection{Output-Deterministico}
-Solo uno stato iniziale e per ogni stato e ogni coppia di I/O c'è 1 solo stato successivo. Se $M_2$ è \textbf{Output-Det} allora $M_2$ \textbf{simula} $M_1$ sse $M_1$ \textbf{raffina} $M_2$.\\
-
 \begin{center}
-\emph{Deterministico} implica Output-Det, ma \textbf{non} viceversa.
+\textbf{determinismo} $\Rightarrow$ \textbf{output-determinismo}, non vale il viceversa.
 \end{center}
 
-\subsection{Non-Deterministico}
-Può esserci più di uno stato iniziale e per ogni stato e ogni coppia di I/O può esserci + di uno stato successivo. Se $M_2$ è NON-DET, $M_1$ è \textbf{simulata} da $M_2$ allora $M_1$ \textbf{raffina} $M_2$, ma non viceversa.
+\subsection{Non-Determinismo}
+In una macchina a stati non deterministica può esistere più di uno stato iniziale e per ogni stato e ogni coppia di I/O può esistere più di uno stato successivo. Se $M_2$ è non deterministica, $M_1$ è \textbf{simulata} da $M_2$ allora $M_1$ \textbf{raffina} $M_2$, ma non viceversa.
 
-\subsection{Non-Deterministico, Progressiva}
-Progressiva significa che l'evoluzione è definita per ogni ingresso, cioè la funzione è definita come: Stati x ingressi $\rightarrow$ P(Stati x uscite)/insieme vuoto, dove P rappresenta l'insieme potenza e l'insieme vuoto impone che sia progressiva.
 
-\subsection{Equivalenza}
+Una macchina a stati è progressiva quando l'evoluzione è definita per ogni ingresso, cioè la funzione è definita come \[States \times Inputs \Rightarrow \mathcal{P}(States \times Outputs) \setminus \emptyset \] dove $\mathcal{P}$ rappresenta l'insieme potenza e l'insieme vuoto impone che sia progressiva.
 
+\subsection{Equivalenze}
+Data una macchina a stati $X$:
 \begin{itemize}
-\item X Det: input[$M_1$]=input[$M_2$]; output[$M_1$]=output[$M_2$].
-\item X Non-det: comportamento[$M_1$]=comportamento[$M_2$].
-\item Cioè se $M_1$ \textbf{raffina} m2 e viceversa.
-\item C'è equivalenza se c'è \textbf{bisimulazione}.
+\item se $X$ è deterministica: $input[M_1]=input[M_2]; output[M_1]=output[M_2]$.
+\item se $X$ è non deterministica: $Behaviour[M_1]=Behaviour[M_2]$.
+\item se due macchine a stati $M_1$ e $M_2$ sono bisimili, allora sono equivalenti.
 \end{itemize}
 
-\subsection{Raffinamento}
-$M_1$ \textbf{raffina} $M_2$ sse input[$M_1$]=input[$M_2$]; output[$M_1$]=output[$M_2$] e comportamento[$M_1$] $\subseteq$ comportamento[$M_2$].
+\begin{definit}[Raffinamento]
+	$M_1$ \textbf{raffina} $M_2 \Leftrightarrow  \Big(Inputs[M_1]=Inputs[M_2]\ \wedge\ Outputs[M_1]=Outputs[M_2] \wedge Behaviour[M_1] \subseteq Behaviour[M_2]\Big)$.
+\end{definit}
+
 
 \subsection{Bisimulazione}
 Bisimulazione tra $M_1$ e $M_2$ sse l'unione delle \textbf{simulazioni} è simmetrica e c'è \textbf{isomorfismo} tra minimize($M_1$) e minimize($M_2$).
-
-\subsection{Isomorfe}
-Si dicono isomorfe se hanno lo stesso numero di stati con nome uguale.
 
 \subsection{Rel. RAFFINAMENTO/SIMULAZIONE AFSND $\rightarrow$ AFSD} Se $M_1$ è det, $M_1$ è \textbf{simulata} da $M_2$ sse $M_1$ è equivalente a $M_2$, cioè se $M_1$ raffina $M_2$ e viceversa.
 \subsection{Rel. RAFFINAMENTO/SIMULAZIONE AFSND $\rightarrow$ AFSpseudo-nondet} Se $M_2$ è psuedo-non det, $M_1$ è \textbf{simulata} da $M_2$ sse $M_1$ è equivalente a $M_2$, cioè se $M_1$ \textbf{raffina} $M_2$.
@@ -90,7 +95,7 @@ Si dicono isomorfe se hanno lo stesso numero di stati con nome uguale.
 \item $\forall$ p $\in$  PossibiliInitialState[$M_1$], $\exists$ q $\in$ PossibiliInitialState[$M_2$], (p,q) $\in$ S.
 \item $\forall$ p $\in$  Stati[$M_1$], $\forall$ q $\in$ Stati[$M_2$].
 \begin{itemize}
-\item if (p,q) $\in$ S $\Rightarrow$ $\forall$ x $\in$ Input, $\forall$ y $\in$ Output, $\forall$ p1 $\in$  Stati[$M_1$];
+\item if $(p,q) \in S \Rightarrow \forall x \in Input, \forall y \in Output, \forall p_1 \in  Stati[M_1]$;
 \item if (p1,y) $\in$ PossibiliUpdates[$M_1$](p,x) $\Rightarrow$ $\exists$ q1 $\in$ Stati[$M_1$], (q1,y) $\in$ PossibiliUpdates[$M_2$](q,x) e (p1,q1) $\in$ S. (S contiene coppie di stati iniziali e coppie consultanti l'algoritmo).
 \item $\forall$ p $\in$ Stati[$M_1$] $\exists$ q $\in$ Stati[$M_2$] per cui $\forall$ I/O possibili c'è corrispondenza tra I/O uguali di p e (p,q) $\in$ S. 
 \end{itemize}
