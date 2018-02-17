@@ -1,4 +1,4 @@
-\documentclass[a4paper]{article}
+\documentclass[a4paper, 11pt]{article}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
@@ -11,8 +11,15 @@
 \usepackage{lstautogobble}
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage[margin=3cm]{geometry}
+\usepackage{hyperref}
+\hypersetup{
+	hidelinks, 
+	colorlinks = true,
+	linkcolor = black,
+}
 
 \newcommand{\od}{\textbf{output-deterministica }}
+\newcommand{\revp}[1]{P_{#1}^{-1}}
 
 
 \date{\today}
@@ -129,11 +136,101 @@ Stati iniziali di $M_1$ e $M_2$ sono in relazione e ogni coppia (p,q) relazionat
 \end{itemize}
 \end{itemize}
 
-\section{LINGUAGGI}
-\subsection{Il linguaggio K è \emph{controllabile}?}
-Siano K e M = $\overline{M}$ linguaggi dell'alfabeto di eventi E, con E\textsubscript{uc} $\subseteq$ E. Si dice che K è controllabile rispetto a M e E\textsubscript{uc} se per tutte le stringhe s $\in$ $\overline{K}$ e per tutti gli eventi $\sigma$ $\in$ E\textsubscript{uc} si ha : \textbf{s$\sigma$ $\in$ M $\Rightarrow$ s$\sigma$ $\in$ $\overline{K}$}. (Equivalente a $\overline{K}$E\textsubscript{uc} $\cap$ M $\subseteq$ $\overline{K}$.)\\ Per la def di \emph{controllabilità} si ha che K è controllabile sse $\overline{K}$ è controllabile.
+\section{Linguaggi}
+\subsection{Introduzione}
+
+\begin{definit}[Linguaggio]
+	Dato un insieme di simboli $E$, un traccia (ovvero una sequenza finita di simboli di $E$), definiamo linguaggio un qualsiasi sottoinsieme $L \subseteq E^\ast$.
+\end{definit}
+
+Definiamo inoltre l'insieme dei prefissi di un linguaggio come l'insieme \[ \overline{L} := \lbrace s \in E^\ast : (\exists t \in E^\ast) st \in L \rbrace \]
+
+\subsection{Automi}
+
+In parole povere, un automa è una struttura matematica che genera un determinato linguaggio.
+\begin{definit}[Automa]
+	Un automa è un tupla di sei elementi \[ G = (X,E,f,\Gamma,x_0,X_m) \] dove: \begin{itemize}
+		\item $X$ è l'insieme degli stati;
+		\item $E$ è l'insieme di eventi associati alle transizioni in $G$;
+		\item $f:X \times E \to X$ è la \textbf{funzione di transizione}; dicendo che $f(x,e) = y$ si sta dicendo che esiste una transizione etichettata con $e$ che porta dallo stato $x$ allo stato $y$;
+		\item $\Gamma: X \to 2^E$ è la \textbf{funzione degli eventi attivi}; $\Gamma(x)$ indica l'insieme degli eventi per i quali $f(x,e)$ è definita;
+		\item $x_0$ è lo stato iniziale;
+		\item $X_m \subseteq X$ è l'insieme degli \textbf{stati marcati}.
+	\end{itemize}
+\end{definit}
+
+\begin{definit}[Linguaggio generato]
+	Il linguaggio generato da un automa è definito come: \[ L(G) = \lbrace s \in E^\ast : f(x_0,s) \text{ è definita} \rbrace \]
+\end{definit}
+
+\begin{definit}[Linguaggio marcato]
+	Il linguaggio marcato da un automa è definito come: \[ L_m(G) = \lbrace s \in L(G) : f(x_0,s) \in X_m \rbrace \]
+\end{definit}
+
+\begin{definit}[Equivalenza tra automi]
+	Due automi $G_1$ e $G_2$ si dicono equivalenti se vale che \[ L(G_1) = L(G_2) \wedge L_m(G_1) = L_m(G_2) \]
+\end{definit}
+
+\subsubsection{Composizione di automi}
+\paragraph{Proiezioni naturali.}
+Le proiezioni naturali sono funzioni del tipo $$P_i : (E_1 \cup E_2)^\ast \to E_i^\ast$$ definite come 
+\begin{align*}
+	P_i(\epsilon) &= \epsilon \\
+	P_i(\sigma) &= \begin{cases}
+	\sigma &\text{se } \sigma \in E_i \\
+	\epsilon &\text{se } \sigma \notin E_i
+	\end{cases} \\
+	P_i(s\sigma) &= P_i(s)P_i(\sigma) \text{ per } s \in (E_1 \cup E_2)^\ast, \sigma \in E_1 \cup E_2
+\end{align*}
+
+Delle proiezioni naturali esistono anche le inverse: come le proiezioni sono estese ai linguaggi come
+\[
+	P_i(L) = \lbrace t \in E_i^\ast: \exists s \in L(P_i(s) = t) \rbrace \text{ con } L \subseteq (E_1 \cup E_2)^\ast
+\]
+anche le proiezioni inverse sono estese come
+\[
+	\revp{i}(L_i) = \lbrace s \in (E_1 \cup E_2)^\ast: \exists t \in L_i(P_i(s) = t) \rbrace
+\]
+per $L_i \subseteq E_i^\ast$.
+
+\paragraph{Prodotto di automi.} Il prodotto di due automi $G_1 = (X_1, E_1, f_1, \Gamma_1, x_{01}, X_{m1})$ e $G_2 = (X_2, E_2, f_2, \Gamma_2, x_{02}, X_{m2})$ è l'automa risultato \[ G_1 \times G_2 = (X_1 \times X_2, E_1 \cap E_2,f,\Gamma_{1 \times 2}, (x_{01}, x_{02}), X_{m1} \times X_{m2}) \] dove 
+\begin{align*} f((x_1, x_2), \sigma) &= \begin{cases}
+(f(x_1, \sigma), f_2(x_2, \sigma)) &\text{se } \sigma \in \Gamma_1(x_1) \cap \Gamma_2(x_2) \\
+\text{indefinita} &\text{altrimenti}
+\end{cases}  \\
+\Gamma_{1 \times 2}(x_1, x_2) &= \Gamma_1(x_1) \cap \Gamma_2(x_2)
+\end{align*}
+
+Le proprietà di questa composizione sono le seguenti: \begin{enumerate}
+	\item $L(G_1 \times G_2) = L(G_1) \cap L(G_2)$
+	\item $L_m(G_1 \times G_2) = L_m(G_1) \cap L_m(G_2)$
+\end{enumerate}
+
+\paragraph{Composizione parallela di automi.} La composizione parallela di due automi $G_1 = (X_1, E_1, f_1, \Gamma_1, x_{01}, X_{m1})$ e $G_2 = (X_2, E_2, f_2, \Gamma_2, x_{02}, X_{m2})$ è l'automa risultato \[ G_1 \vert\vert G_2 = (X_1 \times X_2, E_1 \cup E_2,f,\Gamma_{1 \vert \vert 2}, (x_{01}, x_{02}), X_{m1} \times X_{m2}) \]
+dove \[ 
+	f((x_1, x_2), \sigma) = \begin{cases}
+	(f_1(x_1, \sigma), f_2(x_2, \sigma)) &\text{se } \sigma \in \Gamma_1(x_1) \cap \Gamma_2(x_2) \\
+	(f_1(x_1, \sigma), x_2) &\text{se } \sigma \in \Gamma_1(x_1) \setminus E_2 \\
+	(x_1, f(x_2, \sigma)) &\text{se } \sigma \in \Gamma_2(x_2) \setminus E_1 \\
+	\text{indefinita} &\text{altrimenti}
+	\end{cases}
+ \]
+ 
+La proiezione parallela gode delle seguenti proprietà:\begin{enumerate}
+	\item $L(G_1 \vert \vert G_2) = \revp{1}\left[ L(G_1) \right] \cap \revp{2}\left[ L(G_2) \right] $
+	\item $L_m(G_1 \vert \vert G_2) = \revp{1}\left[ L_m(G_1) \right] \cap \revp{2}\left[ L_m(G_2) \right] $
+	\item $G_1 \vert \vert G_2 = G_2 \vert \vert G_1$
+\end{enumerate}
+
+\subsection{Controllabilità e osservabilità di un linguaggio}
+
+\begin{definit}[Controllabilità]
+	Siano $K$ e $M = \overline{M}$ linguaggi dell'alfabeto di eventi $E$, con $E_{uc} \subseteq E$. Si dice che $K$ è controllabile rispetto a $M$ e $E_{uc}$ se per tutte le stringhe $s \in \overline{K}$ e per tutti gli eventi $\sigma \in E_{uc}$ vale \[s \sigma \in M \Rightarrow s\sigma \in \overline{K}\footnotemark \]
+\end{definit}
+\footnotetext{Equivalente a $\overline{K}E_{uc} \cap M \subseteq\overline{K}$.}
+
 \subsection{Osservabilità}
-Si considerino i linguaggi K e M = $\overline{M}$ definiti sull'alfabeto di eventi E, con E\textsubscript{c} $\subseteq$ E, E\textsubscript{o} $\subseteq$ E e P la proiezione naturale da E* $\Rightarrow$ E\textsubscript{0}*.\\ Si dice che K è osservabile rispetto a M, E\textsubscript{o},E\textsubscript{c} se per tutte le stringhe s $\in$ $\overline{K}$ e per tutti gli eventi $\sigma$ $\in$ E\textsubscript{c} abbiamo: 
+Si considerino i linguaggi K e M = $\overline{M}$ definiti sull'alfabeto di eventi E, con $E_{c} \subseteq E, E_o \subseteq E$ e $P$ la proiezione naturale da $E^\ast \Rightarrow E_0^\ast$ .\\ Si dice che $K$ è osservabile rispetto a $M, E_{o},E_{c}$ se per tutte le stringhe s $\in$ $\overline{K}$ e per tutti gli eventi $\sigma$ $\in$ $E_c$ abbiamo: 
 \begin{center}(s$\sigma$ $\notin$ K) $\land$ (s$\sigma$ $\in$ M) $\Rightarrow$ $P^{-1}$[P(s)] $\sigma$  $\cap$ $\overline{K}$ = $\emptyset$
 \end{center}
 L'insieme di stringhe denotato dal termine $P^{-1}$[P(s)] $\sigma$  $\cap$ $\overline{K}$ contiene tutte le stringhe che hanno la medesima proiezione di s e possono essere prolungate in K con il simbolo $\sigma$. SE tale insieme non è vuoto, allora K contiene due stringhe s e s' tali che P(s)=P(s') per cui s$\sigma$ $\notin$ $\overline{K}$ e s'$\sigma$ $\in$ $\overline{K}$. Tali due stringhe richiederebbero un'azione di controllo diversa rispetto a $\sigma$ (disabilitare $\sigma$ nel caso di s, abilitare $\sigma$ nel caso di s'), ma un supervisore non saprebbe distinguere tra s e s' per l'osservabilità ristretta. Non potrebbe quindi esistere un supervisore che ottiene esattamente il linguaggio $\overline{K}$.
@@ -151,15 +248,15 @@ $\emptyset$ $\subseteq$ K\textsuperscript{$\uparrow$C} $\subseteq$ K $\subseteq$
 \begin{itemize}
 \item Se K\textsubscript{1} e K\textsubscript{2} sono controllabili, allora K\textsubscript{1} $\cup$ K\textsubscript{2} è controllabile. 
 \item Se K\textsubscript{1} e K\textsubscript{2} sono controllabili, allora K\textsubscript{1} $\cap$ K\textsubscript{2} non ha bisogno di essere controllabile.
-\item Se K\textsubscript{1} e K\textsubscript{2} sono non in conflitto ed entrambi controllabili, allora K\textsubscript{1} $\cap$ K\textsubscript{2} è controllabile. \textbf{Si ricorda che K\textsubscript{1} e K\textsubscript{2} si dicono non in conflitto qualora $\overline{K}$\textsubscript{1} $\cap \overline{K}$\textsubscript{2} = $\overline{ K\textsubscript{1} \cap K\textsubscript{2} }$ }
-\item Se K\textsubscript{1} e K\textsubscript{2} sono prefisso-chiuso e controllabili, allora K\textsubscript{1} $\cap$ K\textsubscript{2} è prefisso-chiuso e controllabile.
+\item Se K\textsubscript{1} e K\textsubscript{2} sono non in conflitto ed entrambi controllabili, allora K\textsubscript{1} $\cap$ K\textsubscript{2} è controllabile. \textbf{Si ricorda che K\textsubscript{1} e K\textsubscript{2} si dicono non in conflitto qualora $\overline{K}$\textsubscript{1} $\cap \overline{K}$\textsubscript{2} = $\overline{ K_1 \cap K_2 }$ }
+\item Se K\textsubscript{1} e K\textsubscript{2} sono prefisso-chiuso e controllabili, allora $K_1 \cap K_2$ è prefisso-chiuso e controllabile.
 \end{itemize}
 Definiamo due classi di linguaggi: 
 \begin{center}
-\textit{C}\textsubscript{in}(K) := {L $\subseteq$ K : $\overline{L}$E\textsubscript{uc} $\cap$ M $\subseteq$ $\overline{L}$}
+% \textit{C}\textsubscript{in}(K) := {L $\subseteq$ K : $\overline{L}$E_{uc} $\cap$ M $\subseteq$ $\overline{L}$}
 \end{center}
 \begin{center}
-\textit{CC}\textsubscript{out}(K) := { L $\subseteq$ E* : (K $\subseteq$ L $\subseteq$ M) $\land$ ( $\overline{L}$ = L ) $\land$ ( $\overline{L}$E\textsubscript{uc} $\cap$ M $\subseteq$ $\overline{L}$ ) }
+% \textit{CC}\textsubscript{out}(K) := { L $\subseteq$ E* : (K $\subseteq$ L $\subseteq$ M) $\land$ ( $\overline{L}$ = L ) $\land$ ( $\overline{L}$E_{uc} $\cap$ M $\subseteq$ $\overline{L}$ ) }
 \end{center}
 \subsection{Riguardo il sottolinguaggio supremo}
 \begin{itemize}
