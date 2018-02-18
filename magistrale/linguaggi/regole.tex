@@ -320,7 +320,7 @@ Provare la progress sul seguente linguaggio:
 		\[
 			\infer{(fn)}{\Gamma , x \colon T \vdash e\colon T'}{\Gamma\vdash (fn\ x\colon T\ \Rightarrow\ e )\colon T\rightarrow T'}{}
 		\]
-		Supponiamo di aver derivato $ \Gamma \vdash E\colon T $ utilizzando la regola di tipaggio \textbf{(fn)}. Posso concludere che $ E\equiv fn\ x\colon T\ \Rightarrow\ e $ e $ T\equiv T\rightarrow T' $. Ne consegue che $ \phi (\Gamma, E, T) = \text{true} $ perché $ \text{value}(fn\ x\colon T\ \Rightarrow\ e) = \text{true} $.
+		Supponiamo di aver derivato $ \Gamma \vdash E\colon T $ utilizzando la regola di tipaggio \textbf{(fn)}. Posso concludere che $ E\equiv fn\ x\colon T\ \Rightarrow\ e $, $ T\equiv T\rightarrow T' $ e $ \Gamma , x \colon T \vdash e\colon T' $.\\ Ne consegue che $ \phi (\Gamma, E, T) = \text{true} $ perché $ \text{value}(fn\ x\colon T\ \Rightarrow\ e) = \text{true} $.
 	\end{ind}
 	\begin{ind}[op +]
 		\[
