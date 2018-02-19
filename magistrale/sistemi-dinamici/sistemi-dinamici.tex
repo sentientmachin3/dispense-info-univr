@@ -13,6 +13,7 @@
 \usepackage{bm}
 \usepackage{empheq}
 \usepackage{mathtools}
+\usepackage{mathdots}
 \usepackage{enumitem}
 \usepackage{multicol}
 \usepackage{graphicx}
@@ -20,7 +21,8 @@
 \captionsetup[figure]{labelfont={bf},name={Fig.},labelsep=period}
 \usepackage[left=2.5cm, right=2.5cm, top=3cm]{geometry}
 \usepackage{tikz}
-\usetikzlibrary{calc}
+\usetikzlibrary{shapes,arrows,positioning,calc}
+
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -1590,6 +1592,284 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 				\text{ Parte non controllabile di ordine } n - n_c
 			\end{cases}
 			\]
+			\bigskip
 			
+			\tikzset{
+				block/.style = {draw, fill=white, rectangle, minimum height=3em, minimum width=3em},
+				tmp/.style  = {coordinate}, 
+				sum/.style= {draw, fill=white, circle, node distance=2cm},
+				input/.style = {coordinate},
+				output/.style= {coordinate},
+				pinstyle/.style = {pin edge={to-,thin,black}},
+				triangle/.style = {draw, regular polygon, regular polygon sides=3, node distance=2cm,shape border rotate=-90, minimum height=3em, minimum width=3em }
+			}
 			
+			\begin{tikzpicture}[auto, node distance=2cm,>=latex',decoration={brace,amplitude=10pt}]
+				\node[input, name=rinput] (rinput) {};
+				\node[block, right of=rinput] (B) {$ \vec{B}_c' $};
+				\node[sum, right of=B] (sum1) {};
+				\node[triangle, right of=sum1] (int1) {$ \int $};
+				\node[block, below of=int1] (Ac) {$ \vec{A}_c' $};
+				\node[block, below of=Ac] (A1) {$ \vec{A}_1' $};
+				\node[triangle, below of=A1] (int2) {$ \int $}; 
+				\node[block, below of=int2] (Anc) {$ \vec{A}_{nc}' $};
+				\node[input, name=routput, right of=int1, xshift=1cm] (routput) {};
+				\node[input, name=routput1, right of=A1, xshift=1cm] (routput1) {};
+				\draw[->] (rinput) -- node[above] {$ \vec{u} $} (B);	\draw[->] (B) -- node[above, xshift=.5cm] {$ + $} (sum1) ; 
+				\draw[->] (sum1) -- node[above] {$ \dot{\vec{z}}_{c} $} (int1); 	\draw[->] (int1) --  (routput) node[above] {$ \vec{z}_c $};
+				\draw[->] ($ (int1) +(2,0) $) -- ($ (Ac) +(2,0) $) -- (Ac.east);
+				\draw[->] (Ac.west) -- ($ (sum1) +(0,-2) $) -- node[right, yshift=.65cm] {$ + $} (sum1.south);
+				\draw (A1.west) -- ($ (sum1) +(0,-4) $) -- +(0,2);
+				\draw[->] (A1) -- (routput1) node[above] {$ \vec{z}_{nc} $};
+				\draw[->] ($ (A1) +(2,0) $) -- ($ (Anc) +(2,0) $) -- (Anc);
+				\draw (int2) -- +(2,0); \draw[->] (Anc) -- +(-2,0) -- ($ (int2) +(-2,0) $) -- node[above] {$ \dot{\vec{z}} $} (int2);
+				\draw[dashed] (0.5,1) -- ($ (rinput) + (0.5,-5) $) -- ($ (A1) +(1,-1) $) -- +(0,2) -- +(2.5,2) -- (9.5,1) -- cycle;
+				\draw[dashed] ($ (B) +(1,-5) $) -- +(0,-4) -- ($ (routput1) +(0.5,-5) $) -- +(0,6);
+				\draw[decorate,thick] (10,1) -- (10,-3)	node [midway,right=15pt] {Controllabile};
+				\draw[decorate,thick] (10,-3) -- (10,-9) node [midway,right=15pt] {Non controllabile};
+			\end{tikzpicture}
+			
+			\bigskip
+			
+			\noindent
+			Dato un sistema $ \ \vec{\dot{x}}(t) = \vec{A}\vec{x}(t) + \vec{B}\vec{u}(t)\ $ esso può essere ricondotto alla forma canonica controllabile di Kalman attraverso la trasformazione di similitudine:
+			\[
+				\vec{x}(t) = \vec{P}\vec{z}(t)
+			\]
+			dove $\ \vec{P}\ $ è una matrice \textit{non singolare} le cui prime $ n_c $ colonne corrispondono alle prime $ n_c $ colonne linearmente indipendenti della matrice $ \mathcal{T} $, e le rimanenti $ n - n_c $ colonne sono linearmente indipendenti tra loro e dalle $ n_c $ colonne precedenti. La trasformazione che porta alla forma di Kalman \textit{non è unica}. 
+			
+		\subsection{Retroazione dello stato}
+			\begin{tikzpicture}[auto, node distance=2cm,>=latex', scale=0.7, every node/.style={scale=0.8}]
+				\node[input, name=rinput] (rinput) {};
+				\node[sum, right of=rinput] (sum1) {};
+				\node[block, right of=sum1] (B) {$ \vec{B} $};
+				\node[sum, right of=B] (sum2) {};
+				\node[triangle, right of=sum2] (int) {$ \int $};
+				\node[block, right of=int, xshift=1.5cm] (C) {$ \vec{C} $};
+				\node[block, below of=int] (A) {$ \vec{A} $};
+				\node[block, below of=B, yshift=-1cm] (K) {$ \vec{K}(t) $};
+				\node[output, right of=C] (routput) {};
+				\draw[->] (rinput) node[above] {$ \vec{r} $} -- node[above, xshift=.7cm] {$ + $} (sum1) ;
+				\draw[->] (sum1) -- (B) node[midway, above] {$ \vec{u} $};
+				\draw[->] (B) -- node[above, xshift=.5cm] {$ + $}  (sum2);
+				\draw[->] (sum2) -- (int) node[midway, above] {$ \dot{\vec{x}} $};
+				\draw[->] (int) -- (C) node[midway, above] {$ \vec{x} $};
+				\draw[->] (C) -- (routput) node[above] {$ \vec{y} $};
+				\draw[->] ($ (int) +(1.75,0) $) -- ($ (A) +(1.75,0) $) -- (A);
+				\draw[->] (A) -- ($ (sum2) +(0,-2.25) $) -- (sum2) node[right, yshift=-.25cm] {$ + $};
+				\draw[->] ($ (B) +(6.5,0) $) -- ($ (K) +(6.5,0) $) -- (K);
+				\draw[->] (K) -- +(-2.25,0) -- (sum1.south) node[right, yshift=-.25cm] {$ - $};
+			\end{tikzpicture}
+			
+			Se $ \vec{r} = \vec{0} $ (set point) ho che $\ \vec{u}(t) = -\vec{K}(t)\vec{x}(t) $. L'equazione del sistema con retroazione è la seguente:
+			\[
+				\dot{\vec{x}}(t) = \vec{A}\vec{x}(t) + \vec{B}\vec{u}(t) = (\vec{A} - \vec{B}\vec{K}(t))\vec{u}(t)
+			\]
+			dove $ \vec{K}(t) $ è la \textbf{matrice di retroazione} $ \vec{K} \in \R^{r\times n} $, e $ \ (\vec{A} - \vec{B}\vec{K}(t))\ $ è detta \textit{matrice dinamica a ciclo chiuso}.
+		
+			Il sistema è controllabile sse scelto un qualunque insieme di $ n $ numeri reali e/o coppie di numeri complessi coniugati $\ \bar{\lambda}_1, \bar{\lambda}_2, \dots, \bar{\lambda}_n\ $ esiste una matrice di retroazione $ \vec{K} \in \R^{r\times n} $ tale che gli autovalori di $ (\vec{A} - \vec{B}\vec{K}(t)) $ siano pari a $\ \bar{\lambda}_1, \bar{\lambda}_2, \dots, \bar{\lambda}_n\ $.
+			
+		\subsection{Tutorial retroazione}
+			\begin{enumerate}
+				\item Vedo se il sistema è controllabile, cioè guardo il rango della matrice
+				\[
+					\mathcal{T} = 
+					\begin{bmatrix}
+						\vec{A} & \vec{A}\vec{B} & \vec{A}^2\vec{B} & \cdots & & \vec{A}^{n-1}\vec{B}
+					\end{bmatrix}
+				\]
+				Se ha rango uguale all'ordine del sistema allora è controllabile.
+				\item Calcolo il polinomio caratteristico e quello desiderato:
+				\[
+					P(s) = \text{det}(s\vec{I} - \vec{A}) \qquad P_c(s) = (s - \bar{\lambda}_1)(s - \bar{\lambda}_2)\cdots (s - \bar{\lambda}_n)
+				\]
+				da questi due mi ricavo: $ \ \alpha_0, \alpha_1, \dots, \alpha_{n-1}\ $ e $ \ \bar{\alpha}_0, \bar{\alpha}_1, \dots, \bar{\alpha}_{n-1} $.
+				\item Trovo la matrice 
+				\[
+					\mathcal{T}_c^{-1} =
+					\begin{bmatrix}
+						\alpha_1 & \alpha_2 & \alpha_3 & \cdots & \alpha_{n-1} & 1 \\
+						\alpha_2 & \alpha_3 & \vdots & \iddots & 1 & 0 \\
+						\alpha_3 & \vdots & \alpha_{n-1} & \iddots & 0 & 0 \\
+						\vdots & \alpha_{n-1} & 1 & \cdots & 0 & 0 \\
+						\alpha_{n-1} & 1 & 0 & \cdots & 0 & 0 \\
+						1 & 0 & 0 & \cdots & 0 & 0
+					\end{bmatrix}
+				\]
+				\item Trovo
+				\[
+					\vec{K}_c = 
+					\begin{bmatrix}
+						\bar{\alpha}_0 - \alpha_0 & \bar{\alpha}_1 - \alpha_1 & \cdots & \bar{\alpha}_{n-1} - \alpha_{n-1}
+					\end{bmatrix}
+				\]
+				\item Calcolo la matrice di retroazione
+				\[
+					\vec{K} =\vec{K}_c \vec{P}^{-1} = K_c (\mathcal{T}\mathcal{T}_c^{-1})
+				\] 
+				\item Calcolo le altre matrici:
+				\begin{align*}
+					& \vec{A}_c = \vec{P}^{-1} \vec{A} \vec{P} \qquad & \vec{C}_c = \vec{C}\vec{P} \\
+					& \vec{B}_c = \vec{P}^{-1} \vec{B} \qquad & \vec{D}_c = \vec{D}
+				\end{align*}
+			\end{enumerate}
+			
+			\newpage
+			
+	\section{Osservabilità}
+		\begin{defn}[Osservabilità]
+			Un sistema lineare stazionario
+			\[
+				\begin{cases}
+					\dot{\vec{x}}(t) = \vec{A}\vec{x}(t) \\
+					\vec{y}(t) = \vec{C}\vec{x}(t)
+				\end{cases}
+			\]
+			è detto \textbf{osservabile} sse, qualunque stato iniziale $ \ \vec{x}_0 = \vec{x}(\vec{0}) $, tale valore dello stato, può essere determinato sulla base dell'osservazione dell'evoluzione libera per un tempo finito $ \ t_f\geq 0 $.
+		\end{defn}
+		
+		\begin{defn}[Gramiano di osservabilità]
+			Dato un sistema lineare e stazionario $ \begin{cases}
+				\dot{\vec{x}}(t) = \vec{A}\vec{x}(t) \\
+				\vec{y}(t) = \vec{C}\vec{x}(t)
+			\end{cases} $
+			 dove $\ \vec{x} \in \R^n \ $ e $ \vec{y} \in \R^p $, il \textbf{gramiano di osservabilità} è la matrice $ n\times n $
+			 \[
+				 \vec{O}(t) = \int_0^t e^{\vec{A}^T\tau}\vec{C}^T\vec{C}e^{\vec{A}\tau}d\tau
+			 \]
+			 Il sistema è \textbf{osservabile} sse il \textit{gramiano non è singolare} $ \forall t > 0 $.
+		\end{defn}
+		
+		\begin{defn}[Matrice di osservabilità]
+			La matrice di osservabilità è una $\ (p\cdot n)\times n\  $ definita come segue:
+			\[
+				\mathcal{O} =
+				\begin{bmatrix}
+					\vec{C} \\\vec{C}\vec{A} \\ \vec{C}\vec{A}^2 \\ \vdots \\ \vec{C}\vec{A}^{n-1} \\
+				\end{bmatrix}
+			\]
+			Condizione \textit{necessaria e sufficiente} affinché il sistema sia osservabile:
+			\[
+				n_o \stackrel{def}{=} \text{rango}(\mathcal{O}) = n
+			\]
+		\end{defn}
+		
+		\begin{prop}
+			Dato il sistema con:
+			\[
+				\begin{bmatrix}
+					\lambda_1 & 0 & \cdots & 0 \\
+					0 & \lambda_2 & \cdots & 0 \\
+					\vdots & \vdots & \ddots & \vdots \\
+					0 & 0 & \cdots & \lambda_n
+				\end{bmatrix}\qquad \qquad
+				\begin{bmatrix}
+					c_{11} & c_{12} & \cdots & c_{1n} \\
+					c_{21} & c_{22} & \cdots & c_{2n} \\
+					\vdots & \vdots & \ddots & \vdots \\
+					c_{n1} & c_{n2} & \cdots & c_{pn} \\
+				\end{bmatrix}
+			\]
+			dove $ \vec{A} $ è in forma diagonale con autovalori tutti distinti, la condizione necessaria e sufficiente affinché sia \textbf{osservabile} è che $ \vec{C} $ \textit{non} abbia \textbf{colonne identicamente nulle}.
+		\end{prop}
+		
+		\begin{prop}
+			La trasformazione di \textbf{similitudine} preserva l'osservabilità.
+		\end{prop}
+		
+		\begin{defn}[Forma canonica di Kalman]
+			Dato il sistema
+			\[
+				\begin{cases}
+					\dot{\vec{z}}(t) = \vec{A}'\vec{z}(t) \\
+					\vec{y}(t) = \vec{C}'\vec{z}(t)
+				\end{cases}
+			\]
+			è nella forma canonica di Kalman se:
+			\[
+				\vec{A}' =
+				\left[
+				\begin{BMAT}(e,10pt,10pt){c1c}{c1c}
+					\vec{A}_o' & \vec{0} \\
+					\vec{A}_1' & \vec{A}_{no}'
+				\end{BMAT}
+				\right]
+				\qquad
+				\vec{C}' =
+				\left[
+				\begin{BMAT}(e,10pt,10pt){c1c}{c}
+					\vec{C}_o' & 0
+				\end{BMAT}
+				\right]
+			\]
+		\end{defn}
+		dove:
+		\begin{itemize}
+			\item $ A_o' $ è quadrata con ordine uguale al rango $ n_o $ della matrice di osservabilità $ \mathcal{O} $.
+			\item $ C_o ' $ ha numero di \textit{colonne} uguale al rango $ n_o $ della matrice di osservabilità $ \mathcal{O}$.
+		\end{itemize}
+		In particolare la coppia $ (\vec{A}_o', \vec{C}_o') $ è controllabile.
+		
+		Il vettore $ \vec{z} $ può essere riscritto come:
+		\[
+			\vec{z} =
+			\left[
+			\begin{BMAT}(e,10pt,10pt){c}{c1c}
+				\vec{z}_o\tikzmark{A}\\
+				\vec{z}_{no}\tikzmark{B}
+			\end{BMAT}
+			\right]
+		\]
+		\begin{tikzpicture}[overlay, remember picture, >=latex]
+			\draw[thick, ->] (A.east) -- +(1,0) node [right] {$ \in \R^{n_o} $};
+			\draw[thick, ->] (B.east) -- +(1,0)	node [right] {$ \in \R^{n - n_o} $};
+		\end{tikzpicture}
+		
+		Quindi il sistema può essere decomposto in tre parti:
+		\[
+			\begin{cases}
+				\dot{\vec{z}}_o (t) = \vec{A}_o'\vec{z}_o(t) \qquad &
+				\text{ Parte osservabile di ordine } n_o \\  
+				\dot{\vec{z}}_{no}(t) = \vec{A}_{no}'\vec{z}_{no}(t) + \vec{A}_1'\vec{z}_{o}(t) \qquad &
+				\text{ Parte non osservabile di ordine } n - n_o \\
+				\vec{y}(t) = \vec{C}_o'\vec{z}_o(t) \qquad &
+				\text{ Trasformazione in uscita, non influenzata da } \vec{z}_{no}
+			\end{cases}
+		\]
+		\bigskip
+		
+		\begin{tikzpicture}[auto, node distance=2cm,>=latex',decoration={brace,amplitude=10pt}]
+			\node[input, name=rinput] (rinput) {};
+			\node[block, right of=rinput] (A1) {$ \vec{A}_1' $};
+			\node[sum, right of=A1] (sum1) {};
+			\node[triangle, right of=sum1] (int1) {$ \int $};
+			\node[block, below of=int1] (Ano) {$ \vec{A}_{no}' $};
+			\node[triangle, below of=A1, yshift=-2cm] (int2) {$ \int $};
+			\node[block, below of=Ano] (Co) {$ \vec{C}_{o}' $};
+			\node[block, below of=int2] (Ao) {$ \vec{A}_{o}' $};
+			\node[output, right of=Co, xshift=1cm] (routput) {};
+			\draw[->] (rinput) -- (A1);\draw[->] (A1) -- node[above,xshift=.5cm] {$ + $} (sum1); 
+			\draw[->] (sum1) -- (int1) node[above, midway] {$ \dot{\vec{z}}_{no} $};
+			\draw[->]  (int1) node[above,xshift=1.5cm] {$ \vec{z}_{no} $} -- +(2,0) -- ($ (Ano) +(2,0) $) -- (Ano);
+			\draw[->] (Ano) -- ($ (sum1) +(0,-2) $) -- (sum1) node[right, yshift=-.35cm] {$ + $};
+			\draw (rinput) -- +(0,-2.5) -- +(4,-2.5) -- +(4,-4);
+			\draw[->] (int2) -- (Co) node[above, midway,xshift=-.5cm] {$ \vec{z}_o $}; \draw[->] (Co) -- (routput) node[above] {$ \vec{y} $};
+			\draw[->] ($ (int2) +(1.5,0)$) -- +(0,-2) -- (Ao);
+			\draw[->] (Ao) -- +(-2,0) -- +(-2,2) -- (int2) node[above, midway] {$ \dot{\vec{z}}_{o} $} ;
+			\draw[dashed] (-1,1) rectangle (9.5,-3);
+			\draw[dashed] (-1,-3) -- (-1,-7) -- (9.5,-7) -- (9.5,-3);
+			\draw[decorate,thick] (10,1) -- (10,-3)	node [midway,right=15pt] {Non Osservabile};
+			\draw[decorate,thick] (10,-3) -- (10,-7) node [midway,right=15pt] {Osservabile};
+		\end{tikzpicture}
+			\bigskip
+			
+			\noindent
+			Dato un sistema $ \begin{cases}
+			\dot{\vec{x}}(t) = \vec{A}\vec{x}(t) \\
+			\vec{y}(t) = \vec{C}\vec{x}(t)
+			\end{cases} $ esso può essere ricondotto alla forma canonica osservabile di Kalman attraverso la trasformazione di similitudine:
+			\[
+			\vec{x}(t) = \vec{P}\vec{z}(t)
+			\]
+			dove $\ \vec{P}\ $ è una matrice \textit{non singolare} le cui prime $ n_o $ colonne corrispondono alle prime $ n_o $ righe trasposte linearmente indipendenti della matrice $ \mathcal{O} $, e le rimanenti $ n - n_o $ colonne sono linearmente indipendenti tra loro e dalle $ n_o $ colonne precedenti. La trasformazione che porta alla forma di Kalman \textit{non è unica}. 
 \end{document}
