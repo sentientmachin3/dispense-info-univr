@@ -1872,4 +1872,61 @@ rounded corners, minimum width=2cm, minimum height=2cm,text centered, draw=black
 			\vec{x}(t) = \vec{P}\vec{z}(t)
 			\]
 			dove $\ \vec{P}\ $ è una matrice \textit{non singolare} le cui prime $ n_o $ colonne corrispondono alle prime $ n_o $ righe trasposte linearmente indipendenti della matrice $ \mathcal{O} $, e le rimanenti $ n - n_o $ colonne sono linearmente indipendenti tra loro e dalle $ n_o $ colonne precedenti. La trasformazione che porta alla forma di Kalman \textit{non è unica}. 
+			
+	\subsection{Dualità controllabilità-osservabilità}
+		Dati due sistemi:
+		\[
+			S_1
+			\begin{cases}
+				\dot{\vec{x}}(t) = \vec{A}\vec{x}(t) + \vec{B}\vec{u}(t) \\
+				\vec{y}(t) = \vec{C}\vec{x}(t)
+			\end{cases}
+			\qquad\qquad
+			S_2
+			\begin{cases}
+				\dot{\vec{z}}(t) = \vec{A}^T\vec{z}(t) + \vec{C}^T\vec{v}(t) \\
+				\vec{s}(t) = \vec{B}^T\vec{z}(t)
+			\end{cases}
+		\]
+		con $ \ \vec{x}\in\R^n, \vec{u}\in\R^r, \vec{y}\in\R^p, \vec{A}\in\R^{n\times n}, \vec{B}\in\R^{n\times r}, \vec{C}\in\R^{p\times n}, \vec{z}\in\R^n, \vec{v}\in\R^r, \vec{s}\in\R^p $.\\
+		$ S_1 $ è \textbf{controllabile} (osservabile) sse $ S_2 $ è \textbf{osservabile} (controllabile).
+		
+	\subsection{Osservatore asintotico dello stato (Luenberger)}
+		\begin{defn}[Osservatore asintotico]
+		Dati due sistemi:
+			\[
+				S_1
+				\begin{cases}
+					\dot{\vec{x}}(t) = \vec{A}\vec{x}(t) + \vec{B}\vec{u}(t) \\
+					\vec{y}(t) = \vec{C}\vec{x}(t)
+				\end{cases}
+				\qquad\qquad
+				S_2
+				\begin{cases}
+					\dot{\bar{\vec{x}}}(t) = \bar{\vec{A}}\bar{\vec{x}}(t) + \bar{\vec{B}}\bar{\vec{u}}(t) \\
+					\bar{\vec{y}}(t) = \bar{\vec{C}}\bar{\vec{x}}(t)
+				\end{cases}
+			\]
+			dove: $ \ \bar{\vec{A}} = \vec{A} - \vec{K}_o \vec{C}, \qquad \bar{\vec{B}} = \begin{bmatrix}
+			\vec{B} & \vec{K}_o
+			\end{bmatrix}, \qquad \bar{\vec{C}} = \vec{C}, \qquad \bar{\vec{u}}(t) = \begin{bmatrix}
+			\vec{u}(t) \\ \vec{y}(t)
+			\end{bmatrix}  $\\
+			$ \vec{K}_o \in \R^{n\times p} $ è un \textbf{osservatore (o stimatore) asintotico} del sistema $ S_1 $ se vale
+			\[
+				\lim_{t\rightarrow \infty} \| \vec{x}(t) - \bar{\vec{x}}(t) \| = 0
+			\]
+			per tutte le possibili funzioni $ \vec{u}(t)\ $ e $\ \vec{x}(\vec{0}), \bar{\vec{x}}(\vec{0}) $.\\
+			L'\textbf{equazione di stato} dell'osservatore asintotico è
+			\[
+				\dot{\bar{\vec{x}}}(t) = \bar{\vec{A}}\bar{\vec{x}}(t) + \bar{\vec{B}}\bar{\vec{u}}(t) + 
+				\vec{K}_o(\vec{y}(t) - \bar{\vec{y}}(t))
+			\]
+		\end{defn}
+		
+		\begin{prop}
+			Il sistema $ S_2 $ è \textbf{stimatore asintotico} di $ S_1 $ sse la matrice $ \bar{\vec{A}} = \vec{A} - \vec{K}_o\vec{C} $ ha \textit{tutti autovalori} a \textbf{parte reale negativa}.
+		\end{prop}
+	
+		
 \end{document}
