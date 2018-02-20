@@ -21,6 +21,7 @@
 \newcommand{\bool}{\textup{bool}}
 \newcommand{\skipp}{\textup{skip}}
 \newtheorem{thm}{Teorema}[]
+\newtheorem{lemma}{Lemma}
 \theoremstyle{definition}
 \newtheorem{prf}{Proof}[]
 \newtheorem{base}{Caso Base}
@@ -114,7 +115,7 @@
 		&\infer{(op+)}{-}{\srule{n_1 + n_2,s}{n,s}}{n=add(n_1,n_2)} \\ \\
 		&\infer{(op-geq)}{-}{\srule{n_1 \geq n_2,s}{b,s}}{b=geq(n_1, n_2)} 
 		&\infer{(op1)}{\srule{e_1,s}{e_1', s'}}{\srule{e_1 + e_2,s}{e_1' + e_2,s'}}{} \qquad\qquad
-		&\infer{(op2)}{\srule{e_2,s}{e_2', s'}}{\srule{v + e_2,s}{v + e_2',s}}{} \\ \\
+		&\infer{(op2)}{\srule{e_2,s}{e_2', s'}}{\srule{v + e_2,s}{v + e_2',s'}}{} \\ \\
 		&\infer{(op1b)}{\srule{e_2,s}{e_2', s'}}{\srule{e_1 + e_2,s}{e_1 + e_2',s'}}{} 
 		&\infer{(op2b)}{\srule{e_1,s}{e_1', s'}}{\srule{e_1 + v,s}{e_1' + v',s'}}{} \qquad\qquad
 		&\infer{(deref1)}{-}{\srule{!l,s}{v,s}}{\text{if } l \in dom(s) \wedge s(l)=v} \\ \\
@@ -122,13 +123,13 @@
 		&\infer{(ref1)}{-}{\srule{\text{ref }v, s}{l, \memrep{s}{l}{v}}}{l \notin dom(s)} \qquad\qquad
 		&\infer{(ref2)}{\srule{e,s}{e',s'}}{\srule{\text{ref }e,s}{\text{ref } e',s}}{}\\ \\
 		&\infer{(assign1)}{-}{\srule{l:=v,s}{\text{skip}, \memrep{s}{l}{v}}}{\text{if } l \in dom(s)} 
-		&\infer{(assign2)}{\srule{e,s}{e',s'}}{\srule{l:=e,s}{l:=e',s}}{} \qquad\qquad
+		&\infer{(assign2)}{\srule{e,s}{e',s'}}{\srule{l:=e,s}{l:=e',s'}}{} \qquad\qquad
 		&\infer{(assign3)}{\srule{e_1,s}{e_1',s'}}{\srule{e_1:=e_2,s}{e_1':=e_2,s'}}{}
 	\end{align*}
 	\begin{align*}
 		&\infer{(if-tt)}{-}{\srule{\text{if } true \text{ then } e_1 \text{ else } e_2,s}{e_1,s}}{}
 		&\infer{(if-ff)}{-}{\srule{\text{if } false \text{ then } e_1 \text{ else } e_2,s}{e_2,s}}{}\qquad
-		&\infer{(if)}{\srule{e,s}{e',s'}}{\srule{\text{if } e \text{ then } e_1 \text{ else } e_2,s}{\text{if } e' \text{ then } e_1 \text{ else } e_2,s}}{}
+		&\infer{(if)}{\srule{e,s}{e',s'}}{\srule{\text{if } e \text{ then } e_1 \text{ else } e_2,s}{\text{if } e' \text{ then } e_1 \text{ else } e_2,s'}}{}
 	\end{align*}
 	\begin{align*}
 		\infer{(while)}{-}{\srule{\text{while } e \text{ do } e_1, s}{\text{if } e \text{ then } (e_1; \text{while } e \text{ do } e_1) \text{ else } skip, s}}{}\qquad
@@ -170,7 +171,7 @@
 \subsection*{Call-By-Name}
 	\begin{align*}
 		&\infer{(CBN-app)}{\srule{e_1, s}{e_1', s'}}{\srule{e_1e_2, s}{e_1'e_2, s'}}{} \qquad
-		\infer{(CBN-fn)}{-}{\srule{(fn\ x\colon T\Rightarrow e)e_2, s}{\subs{e}{e_2}{x},x}}{} \\ \\
+		\infer{(CBN-fn)}{-}{\srule{(fn\ x\colon T\Rightarrow e)e_2, s}{\subs{e}{e_2}{x},s}}{} \\ \\
 		&\infer{(CBN-let)}{-}{\srule{\letin{x\colon T = e_1}{e_2, s}}{\subs{e_2}{e_1}{x}, s}}{} \\ \\
 		&\infer{(CBN-fix)}{-}{\srulea{\text{fix}.e}{e(\text{fix}.e)}}{}
 	\end{align*}
@@ -455,4 +456,7 @@ E:\colon = x \ \big|\ n \ \big|\ E_1 + E_2 \ \big|\ \textup{fn}\ x\colon T \Righ
 	\end{ind}
 \end{prf}
 \end{multicols}
+
+
+
 \end{document}
