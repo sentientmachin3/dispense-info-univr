@@ -1,0 +1,81 @@
+\documentclass[a4paper]{article}
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{csquotes}
+\renewcommand{\mkbegdispquote}[2]{\itshape}
+\usepackage{palatino}
+\usepackage{frontespizio}
+\usepackage{mathtools, nccmath}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage[margin=3cm]{geometry}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{\nouppercase{\leftmark}}
+\rhead{\nouppercase{\rightmark}}
+\chead{}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\usepackage{hyperref}
+\usepackage{xcolor}
+\hypersetup{
+	hidelinks, 
+	colorlinks = true,
+	linkcolor = black,
+}
+\usepackage[OT1]{eulervm}
+
+\begin{document}
+	\begin{frontespizio}
+		\Universita{Verona}
+		\Dipartimento{Informatica}
+		\Scuola{Laurea Magistrale in Ingegneria e Scienze Informatiche}
+		\Titoletto{Algoritmi}
+		\Titolo{Complessità}
+		\Sottotitolo{Riassunto dei principali argomenti}
+		\Candidato{Davide Bianchi}
+		\Candidato{Matteo Danzi}
+		\Annoaccademico{2017/2018}
+		\NCandidato{Autori}
+	\end{frontespizio}
+	
+	\tableofcontents
+	
+	\newpage
+
+	\section{Introduzione}
+	
+	\subsection{Cos'è la complessità computazionale}
+		Nella teoria della complessità ci si pone la seguente domanda:
+		
+		\begin{displayquote}
+		Come scalano le risorse necessarie per risolvere un problema all'aumentare delle dimensioni del problema?
+		\end{displayquote} 
+
+		La teoria della \textit{complessità computazionale} è una parte dell’informatica teorica che si
+		occupa principalmente di classificare i problemi in base alla quantità di \textit{risorse computazionali} (come il tempo di calcolo e lo spazio di memoria) che essi richiedono per
+		essere risolti. Tale quantità è detta anche \textit{costo computazionale} del problema.
+		
+	\subsection{Problemi \textit{facili} e \textit{difficili}}
+		Vediamo quattro esempi di problemi che classificheremo come facili o difficili:
+		\begin{enumerate}
+			\item (\textbf{Eulerian Cycle}) Esiste un modo per attraversare ogni arco di un grafo una e una sola volta?
+			
+			Il problema si può vedere anche nella forma più piccola del problema dei \textit{sette ponti di Königsberg}:
+			
+			A Königsberg ci sono 7 ponti, esiste un percorso che attraversa tutti i ponti una e una sola volta per poi tornare al punto di partenza?
+			\item (\textbf{Hamiltonian Cycle}) Esiste un modo per attraversare ogni nodo di un grafo una e una sola volta? 
+			\item N è un numero primo?
+			\item Quali sono i fattori primi di un numero?
+		\end{enumerate}
+		
+		
+
+\end{document}
