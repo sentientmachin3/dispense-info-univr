@@ -224,15 +224,29 @@ La proiezione parallela gode delle seguenti proprietà:\begin{enumerate}
 
 \subsection{Controllabilità e osservabilità di un linguaggio}
 
+Diamo la definizione formale di controllabilità, poi passeremo ad una descrizione più semplice.
 \begin{definit}[Controllabilità]
 	Siano $K$ e $M = \overline{M}$ linguaggi dell'alfabeto di eventi $E$, con $E_{uc} \subseteq E$. Si dice che $K$ è controllabile rispetto a $M$ e $E_{uc}$ se per tutte le stringhe $s \in \overline{K}$ e per tutti gli eventi $\sigma \in E_{uc}$ vale \[s \sigma \in M \Rightarrow s\sigma \in \overline{K}\footnotemark \]
 \end{definit}
 \footnotetext{Equivalente a $\overline{K}E_{uc} \cap M \subseteq\overline{K}$.}
 
-\subsection{Osservabilità}
+La concezione di controllabilità si rende necessaria in quanto un evento incontrollabile può portare ad un crash o ad un fallimento del sistema. 
+
+Supponiamo che $E = E_c \cup E_{uc}$ dove: \begin{itemize}
+	\item $E_c$ è l'insieme di eventi controllabili;
+	\item $E_{uc}$ è l'insieme di eventi non controllabili.
+\end{itemize}
+
+Supponiamo inoltre che la funzione di transizione di un automa $G$ possa essere controllata da un agente esterno, che abbia la capacità di disabilitare gli eventi incontrollabili.
+
+
+
+
+\begin{definit}[Osservabilità]
 Si considerino i linguaggi K e M = $\overline{M}$ definiti sull'alfabeto di eventi E, con $E_{c} \subseteq E, E_o \subseteq E$ e $P$ la proiezione naturale da $E^\ast \Rightarrow E_0^\ast$ .\\ Si dice che $K$ è osservabile rispetto a $M, E_{o},E_{c}$ se per tutte le stringhe s $\in$ $\overline{K}$ e per tutti gli eventi $\sigma$ $\in$ $E_c$ abbiamo: 
 \begin{center}(s$\sigma$ $\notin$ K) $\land$ (s$\sigma$ $\in$ M) $\Rightarrow$ $P^{-1}$[P(s)] $\sigma$  $\cap$ $\overline{K}$ = $\emptyset$
 \end{center}
+\end{definit}
 L'insieme di stringhe denotato dal termine $P^{-1}$[P(s)] $\sigma$  $\cap$ $\overline{K}$ contiene tutte le stringhe che hanno la medesima proiezione di s e possono essere prolungate in K con il simbolo $\sigma$. SE tale insieme non è vuoto, allora K contiene due stringhe s e s' tali che P(s)=P(s') per cui s$\sigma$ $\notin$ $\overline{K}$ e s'$\sigma$ $\in$ $\overline{K}$. Tali due stringhe richiederebbero un'azione di controllo diversa rispetto a $\sigma$ (disabilitare $\sigma$ nel caso di s, abilitare $\sigma$ nel caso di s'), ma un supervisore non saprebbe distinguere tra s e s' per l'osservabilità ristretta. Non potrebbe quindi esistere un supervisore che ottiene esattamente il linguaggio $\overline{K}$.
 
 \subsection{Proprietà di Controllabilità}

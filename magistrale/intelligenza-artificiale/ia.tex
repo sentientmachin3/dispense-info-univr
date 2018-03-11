@@ -1,0 +1,72 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[margin=3cm]{geometry}
+\usepackage{libertine}
+\usepackage{hyperref}
+\hypersetup{
+	hidelinks, 
+	colorlinks = true,
+	linkcolor = black,
+}
+
+
+\begin{document}
+ \clearpage
+ \begin{titlepage}
+ 	\centering
+ 	\vspace*{\fill}
+ 	{\scshape\LARGE Università degli Studi di Verona \par}
+ 	\vspace{1.5cm}
+ 	\line(1,0){280} \\
+ 	{\huge\bfseries Intelligenza Artificiale\par}
+ 	\line(1,0){280} \\
+ 	\vspace{0.5cm}
+ 	{\scshape\Large Riassunto dei principali argomenti\par}
+ 	\vspace{2cm}
+ 	{\Large\itshape Davide Bianchi\par}
+ 	\vspace{1cm}
+
+ 	\vspace{5cm}
+ 	\vspace*{\fill}
+ 	% Bottom of the page
+ 	{\large \today\par}
+ \end{titlepage}
+ \thispagestyle{empty}
+\newpage
+\tableofcontents
+\newpage
+
+
+\section{Agenti razionali}
+\paragraph{Agenti.}
+Un agente è semplicemente un'entità che riceve percezioni e produce una risposta con delle azioni. Formalmente un agente è una funzione \[ f:P^\ast \to A \] dove $P^\ast$ è lo storico delle percezioni e $A$ è un insieme di azioni.
+
+Notare che se un agente ha $\vert P \vert$ possibili percezioni in ingresso, dopo $T$ unità di tempo la funzione agente avrà il seguente numero di entries: \[ \sum_{t=1}^{T} \vert P \vert^t  \]
+
+Un agente è in generale una struttura formata da un'architettura fisica e un programma, e prende in input una percezione attuale e ritorna in output l'azione successiva da svolgere. 
+
+Esistono principalmente 4 tipi di agenti: \begin{itemize}
+	\item agenti \textit{simple-reflex};
+	\item agenti \textit{reflex} con stato;
+	\item agenti \textit{goal-based};
+	\item agenti \textit{utility-based}.
+\end{itemize}
+
+\paragraph{Performace measure.} La \textit{performance-measure} costituisce una sorta di punteggio che misura il comportamento dell'agente nell'ambiente in cui opera. Quindi, data una performance measure e le percezioni attuale dell'agente, questo sceglie la sequenze di azioni che la massimizzano.
+
+\paragraph{Ambienti.} Un ambiente, ovvero lo spazio in cui l'agente opera, è caratterizzato dai seguenti tratti: \begin{itemize}
+	\item Osservabilità;
+	\item Determinismo;
+	\item Episodicità;
+	\item Staticità;
+	\item Discretezza;
+	\item Presenza di altri agenti.
+\end{itemize}
+
+Il tipo di ambiente povviamente condiziona il design degli agenti che vi operano.
+
+\end{document}
