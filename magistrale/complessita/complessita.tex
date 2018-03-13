@@ -13,9 +13,11 @@
 \usepackage{amssymb}
 \usepackage[margin=3cm]{geometry}
 \usepackage{booktabs,caption}
+\usepackage{epigraph}
 \usepackage{fancyhdr}
 \usepackage{listings}
 \usepackage[dvipsnames]{xcolor}
+\usepackage{tikz}
 \lstset{language = C,
 	basicstyle=\ttfamily ,
 	tabsize = 4,
@@ -29,6 +31,9 @@
 \cfoot{\thepage}
 \rfoot{}
 \renewcommand{\headrulewidth}{0.4pt}
+\newtheorem{thm}{Teorema}[]
+\theoremstyle{definition}
+\newtheorem{esempio}{Esempio}
 
 \usepackage{hyperref}
 \usepackage{xcolor}
@@ -150,5 +155,43 @@ output Eulerian
 			\item Una domanda per ogni possibile istanza
 			\item Ogni domanda è dello stesso tipo (appartiene alla stessa classe)
 		\end{itemize}
+		
+		\begin{esempio}
+			Il seguente esempio è un problema computazionale:
+			\begin{itemize}
+				\item Input: Qualsiasi grafo G
+				\item Domanda: Il grafo G contiene un ciclo Euleriano?
+			\end{itemize}
+		\end{esempio}
+		\begin{esempio}
+			Il seguente esempio \textit{non} è un problema computazionale:
+			\begin{itemize}
+				\item Domanda: È vero che il bianco vince sempre a scacchi, sotto l'ipotesi della giocata perfetta?
+			\end{itemize}
+			Non è un problema computazionale perché non ho un insieme infinito di possibili partite in input.
+		\end{esempio}
+		
+		\subsection{Risolvere un problema computazionale}
+			Risolvere un problema computazionale significa trovare un \textbf{algoritmo}, cioè una procedura che risolve il problema matematico in un numero finito di passi (di computazione elementare), che solitamente include la ripetizione di un operazione. È un procedimento deterministico che mappa l'input sull'output.
+			\epigraph{
+				Un algoritmo è una procedura \textit{finita}, \textit{definita}, \textit{efficace} e con un input e un output.}{\textit{Donald Knuth -- The Art of Computer Programming }}
+			
+		\subsection{Complessità di un problema computazionale}
+			Come misuro la complessità di un problema computazionale? Come faccio a dire quanto è facile rispetto ad altri problemi?
+			\begin{itemize}
+				\item Do un \textbf{upper bound}: trovo un algoritmo qualsiasi che risolve il problema in modo da calcolare qual è il suo costo.
+				\item Do un \textbf{lower bound}: trovo la minima quantità di risorse che ogni algoritmo utilizza per risolvere il problema. Tutti gli algoritmi sono \textit{al minimo} complessi come il limite inferiore che abbiamo stabilito. Nessuno può fare di meglio.
+			\end{itemize}
+			
+			\begin{figure}[h]
+				\centering
+				\begin{tikzpicture}
+					\draw (0,0) -- (0,-3);
+					\node[right, xshift=.1cm] at (0,-.5) {$ O(n^2) $};
+					\node[right, xshift=.1cm] at (0,-2.5) {$ \Omega (n) $};
+					\draw[ultra thick] (0,-.5) -- (0,-2.5);
+					\draw (-.15,-.5) -- (.15,-.5); \draw (-.15,-2.5) -- (.15,-2.5);
+				\end{tikzpicture}
+			\end{figure}
 
 \end{document}
