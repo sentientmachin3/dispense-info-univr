@@ -12,8 +12,15 @@
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage[margin=3cm]{geometry}
-\usepackage{booktabs}
+\usepackage{booktabs,caption}
 \usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage[dvipsnames]{xcolor}
+\lstset{language = C,
+	basicstyle=\ttfamily ,
+	tabsize = 4,
+	showstringspaces=false}
+
 \pagestyle{fancy}
 \lhead{\nouppercase{\leftmark}}
 \rhead{\nouppercase{\rightmark}}
@@ -68,14 +75,80 @@
 		\begin{enumerate}
 			\item (\textbf{Eulerian Cycle}) Esiste un modo per attraversare ogni arco di un grafo una e una sola volta?
 			
-			Il problema si può vedere anche nella forma più piccola del problema dei \textit{sette ponti di Königsberg}:
+			\begin{itemize}
+				\item Il problema si può vedere anche nella forma più piccola del problema dei \textit{sette ponti di Königsberg}:
 			
-			A Königsberg ci sono 7 ponti, esiste un percorso che attraversa tutti i ponti una e una sola volta per poi tornare al punto di partenza?
+				A Königsberg ci sono 7 ponti, esiste un percorso che attraversa tutti i ponti una e una sola volta per poi tornare al punto di partenza?
+			
+				Se avessi $ n $ ponti e su ogni riva partissero 2 ponti avrei $ 2^n $ possibili percorsi.
+			
+				\item La \textbf{soluzione di Eulero} dice che un grafo connesso non orientato ha un percorso che parte e inizia esattamente nello stesso vertice e attraversa ogni arco esattamente una volta se e solo se ogni vertice ha grado dispari (grado = numero di archi uscenti).
+				
+				Se ci sono esattamente due vertici $ v $ e $ u $, di grado dispari, allora esiste un percorso che parte da $ u $ e attraversa ogni arco esattamente una volta e finisce in $ v $.
+				
+				\item Seguendo quindi la soluzione di Eulero, \textit{quanto costa decidere} se un grafo G ha un tour Euleriano?
+				\begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
+odd-vertex-num = 0;
+For each vertex v of G
+	if (deg(v) is odd)
+		increment odd_vertex-num
+If(odd-vertex-num is neither 0 nor 2)
+	output no Eulerian tour
+output Eulerian	
+				\end{lstlisting}
+				Questo algoritmo ha complessità: $ O(|E| + |V|) $
+				
+				Il costo e l'algoritmo sono gli stessi se vogliamo \textit{provare} che $ G $ \textit{non} ha un tour Euleriano.
+				
+			\end{itemize}
+			
 			\item (\textbf{Hamiltonian Cycle}) Esiste un modo per attraversare ogni nodo di un grafo una e una sola volta? 
+			
+			Esistono diverse soluzioni:
+			\begin{itemize}
+				\item Provo tutte le possibilità ogni volta, costo: $ O(2^n) $
+				\item Provo tutte le possibili permutazioni, costo: $ O(n!) $
+				\item La soluzione migliore ad oggi è: $ O(1.657^n) $
+			\end{itemize}
+			Alla domanda: \textit{Quanto costa decidere se un grafo ha un tour hamiltoniano?} Non sappiamo rispondere. Non sappiamo dire se il problema ha una soluzione non esponenziale. Per quanto ne sappiamo meglio di $ O(1.657^n) $ non sappiamo fare.
+			
+			Non sappiamo nemmeno dire se Hamiltonian Cycle è più difficile di Eulerian Cycle.
 			\item N è un numero primo?
+			
+			Il migliore algoritmo conosciuto per decidere se N è un numero primo impiega $ O((\log N)^{6 + \epsilon}) $
 			\item Quali sono i fattori primi di un numero?
+			
+			Ad oggi non conosciamo una procedure per fattorizzare un numero molto grande nei suoi divisori, che non sia provare tutte le possibilità.
 		\end{enumerate}
 		
+		\subsection{Risolvere vs Verificare}
+			La seguente tabella riassume in modo generico quanto detto nella sezione precedente riguardo alla difficoltà di risolvere problemi e verificare tali problemi su un istanza.
+			
+			\begin{table}[h]
+				\centering
+				\caption{Risolvere vs Verificare}
+				\label{tab:intro}
+				\begin{tabular}{lcc}
+					\toprule
+					\textbf{Problema} & \textbf{Risolvere} & \textbf{Verificare} \\
+					\midrule
+					Eulerian Cycle & \textit{facile} & \textit{facile} \\
+					Hamiltonian Cycle & \textit{difficile?} & \textit{facile} \\
+					N è primo? & \textit{facile} & \textit{facile} \\
+					N ha un numero piccolo di fattori? & \textit{difficile?} & \textit{facile} \\
+					\bottomrule
+				\end{tabular}
+			\end{table}
 		
+	\section{Problema computazionale}
+		Un problema computazionale è una semplice relazione $ p $ che mappa l'insieme \textit{infinito} di possibili input (domande o istanze) con un insieme \textit{finito} (non vuoto) di output, cioè di risposte o soluzioni alle istanze.
+		\[
+			p\ \colon\ \text{istanze infinite}\ \mapsto\ \text{soluzioni finite alle istanze} 
+		\]
+		Un problema computazionale non è una singola domanda, ma è una \textbf{famiglia di domande}:
+		\begin{itemize}
+			\item Una domanda per ogni possibile istanza
+			\item Ogni domanda è dello stesso tipo (appartiene alla stessa classe)
+		\end{itemize}
 
 \end{document}
