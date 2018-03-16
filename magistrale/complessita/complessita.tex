@@ -34,6 +34,7 @@
 \newtheorem{thm}{Teorema}[]
 \theoremstyle{definition}
 \newtheorem{esempio}{Esempio}
+\newtheorem{definit}{Definizione}[subsection]
 
 \usepackage{hyperref}
 \usepackage{xcolor}
@@ -44,19 +45,37 @@
 }
 \usepackage[OT1]{eulervm}
 
+\newcommand{\Exp}{\mathbf{Exp}}
+\newcommand{\p}{\mathbf{P}}
+\newcommand{\np}{\mathbf{NP}}
+\newcommand{\prob}[1]{\mathbb{A}}
+\newcommand{\instance}[1]{J(\prob{#1})}
+\newcommand{\alg}[1]{\mathcal{#1}}
+\newcommand{\compl}[2]{T_\prob{#1}( \vert #2 \vert)}
+
 \begin{document}
-	\begin{frontespizio}
-		\Universita{Verona}
-		\Dipartimento{Informatica}
-		\Scuola{Laurea Magistrale in Ingegneria e Scienze Informatiche}
-		\Titoletto{Algoritmi}
-		\Titolo{Complessità}
-		\Sottotitolo{Riassunto dei principali argomenti}
-		\Candidato{Davide Bianchi}
-		\Candidato{Matteo Danzi}
-		\Annoaccademico{2017/2018}
-		\NCandidato{Autori}
-	\end{frontespizio}
+ \clearpage
+ \begin{titlepage}
+ 	\centering
+ 	\vspace*{\fill}
+ 	{\scshape\LARGE Università degli Studi di Verona \par}
+ 	\vspace{1.5cm}
+ 	\line(1,0){145} \\
+ 	{\huge\bfseries Complessità\par}
+ 	\line(1,0){145} \\
+ 	\vspace{0.5cm}
+ 	{\scshape\Large Riassunto dei principali argomenti\par}
+ 	\vspace{2cm}
+ 	{\Large\itshape Matteo Danzi, Davide Bianchi\par}
+ 	\vspace{1cm}
+ 	
+ 	\vspace{5cm}
+ 	\vspace*{\fill}
+ 	% Bottom of the page
+ 	{\large \today\par}
+ \end{titlepage}
+  \thispagestyle{empty}
+  \newpage
 	
 	\tableofcontents
 	
@@ -177,6 +196,7 @@ output Eulerian
 				Un algoritmo è una procedura \textit{finita}, \textit{definita}, \textit{efficace} e con un input e un output.}{\textit{Donald Knuth -- The Art of Computer Programming }}
 			
 		\subsection{Complessità di un problema computazionale}
+		\paragraph{Misura della complessità.}
 			Come misuro la complessità di un problema computazionale? Come faccio a dire quanto è facile rispetto ad altri problemi?
 			\begin{itemize}
 				\item Do un \textbf{upper bound}: trovo un algoritmo qualsiasi che risolve il problema in modo da calcolare qual è il suo costo.
@@ -193,5 +213,29 @@ output Eulerian
 					\draw (-.15,-.5) -- (.15,-.5); \draw (-.15,-2.5) -- (.15,-2.5);
 				\end{tikzpicture}
 			\end{figure}
+			
+			\subsection{Trattabilità di un problema.} La crescità della complessità di un problema è riducibile a 2 categorie fondamentali.
+			
+			\paragraph{Crescita polinomiale.} Un problema ha crescita polinomiale quando le risorse necessarie alla sua risoluzione sono limitate ad $n^k$, per qualche $k$. Se la taglia del problema aumenta, la sua complessità aumenta di un qualche fattore costante. Infatti, se la taglia dell'input va da $n$ a $2n$ allora la complessità del problema si modifica in $(2n)^k = 2^kn^k$, ovvero aumenta di un fattore $2^k$ (costante). Raggruppiamo nella classe $\p$ i problemi di questo tipo.
+			
+			\paragraph{Crescita esponenziale.} Un problema ha crescita esponenziale la necessità di risorse necessarie alla sua risoluzione è proporzionale a $c^n$, per qualche costante $c > 1$. Se la taglia dell'input va da $n$ a  $2n$ $c^n$ allora la richiesta di risorse si diventa $c^{2n} = c^n * c^n$, aumentando quindi di un fattore che cresce con l'aumentare di $n$. Raggruppiamo nella classe $\Exp$ i problemi di questo tipo.
+			
+			\subsection{Le classi P ed Exp}
+			\paragraph{Notazione e idee di base.}
+			Formalmente definiamo un problema come un elemento $ \prob{A} $ di una relazione \[ \mathcal{R} \subseteq \instance{A} \times Sol \] dove $\instance{A}$ è l'insieme delle istanze del problema $\prob{A}$ e $Sol$ l'insieme delle soluzioni delle istanze di $\prob{A}$. Si può quindi dire che \[ \forall x \in \instance{A},\ Sol(x) = \lbrace \text{Soluzioni di } x \rbrace \]
+			
+			Non è restrittivo restringersi ai problemi di tipo decisionale, ovvero quei problemi che hanno come soluzione una risposta del tipo \textit{si} o \textit{no}, quindi i problemi del tipo \[ \prob{A} : \instance{A} \to \lbrace yes, no \rbrace \]
+			
+			
+			L'algoritmo $\alg{A}$ per un problema $\prob{A}$ è un algoritmo che dato il problema, $\forall x \in \instance{A},\ \alg{A}(x) = \prob{A}(x)$. Inoltre, dato un problema $\prob{A}$, definiamo $\compl{A}{x}$ la sua complessità. Notare che $\vert x \vert$ è la taglia di $x$.
+			
+			\paragraph{Classe P.} Intuitivamente la classe $\p$ è definita come la classe di problemi di complessità polinomiale. Introduciamo qui la definizione formale.
+			
+			\begin{definit}[Classe P]
+				Definiamo la classe di problemi $\p$ come l'insieme dei problemi di complessità polinomiale, ovvero \[ \p = \big\lbrace \prob{A}\ \vert\ \exists \alg{A}\ t.c.\ \exists c \text{ costante e } \forall x \in \instance{A}, \alg{A}(x) = \prob{A}(x) \text{ e } \compl{A}{x} \leq \vert x \vert ^ c \big\rbrace \]
+			\end{definit}
+		
+			
+			
 
 \end{document}
