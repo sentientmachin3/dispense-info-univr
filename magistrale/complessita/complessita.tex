@@ -48,7 +48,7 @@
 \newcommand{\Exp}{\mathbf{Exp}}
 \newcommand{\p}{\mathbf{P}}
 \newcommand{\np}{\mathbf{NP}}
-\newcommand{\prob}[1]{\mathbb{A}}
+\newcommand{\prob}[1]{\mathbb{#1}}
 \newcommand{\instance}[1]{J(\prob{#1})}
 \newcommand{\alg}[1]{\mathcal{#1}}
 \newcommand{\compl}[2]{T_\prob{#1}( \vert #2 \vert)}
@@ -234,6 +234,19 @@ output Eulerian
 			\begin{definit}[Classe P]
 				Definiamo la classe di problemi $\p$ come l'insieme dei problemi di complessità polinomiale, ovvero \[ \p = \big\lbrace \prob{A}\ \vert\ \exists \alg{A}\ t.c.\ \exists c \text{ costante e } \forall x \in \instance{A}, \alg{A}(x) = \prob{A}(x) \text{ e } \compl{A}{x} \leq \vert x \vert ^ c \big\rbrace \]
 			\end{definit}
+			
+			Un semplice esempio di problema appartenente alla classe $\p$ è il problema del tour euleriano.
+			
+			\paragraph{Classe Exp.}
+			Dal momento che non sappiamo se alcuni problemi stiano oppure no nella classe $\p$ (dal momento che non si conosce un algoritmo che li risolva in tempo polinomiale), si definisce la classe $\Exp$, che racchiude tutte le istanze di questa tipologia di problemi.
+			
+			\begin{definit}[Classe Exp]
+				Definiamo la classe di problemi $\Exp$ come la classe di problemi di complessità esponenziale, ovvero \[ \Exp = \big\lbrace \prob{A}\ \vert\ \exists \alg{A}\ t.c.\ \forall x \in \instance{A}, \alg{A}(x) = \prob{A}(x) \text{ e } \compl{A}{x} \leq 2^{\vert x \vert ^ c} \big\rbrace \]
+			\end{definit}
+			
+			\paragraph{Relazione tra P ed Exp.} La domanda che sorge spontanea è $ \p \subseteq \Exp $ ?
+			
+			La risposta alla domanda è banalmente \textbf{si}, in quanto, dato un algoritmo con complessità $\compl{B}{x}$, possiamo dire che \[ \compl{B}{x} = O(\vert x \vert ^ c) = O(2^{\vert x \vert ^ c}) \Rightarrow \prob{A} \in \Exp \]
 		
 			
 			
