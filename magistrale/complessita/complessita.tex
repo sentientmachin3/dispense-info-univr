@@ -49,7 +49,7 @@
 \newcommand{\p}{\mathbf{P}}
 \newcommand{\np}{\mathbf{NP}}
 \newcommand{\prob}[1]{\mathbb{#1}}
-\newcommand{\instance}[1]{J(\prob{#1})}
+\newcommand{\instance}[1]{\mathcal{I}(\prob{#1})}
 \newcommand{\alg}[1]{\mathcal{#1}}
 \newcommand{\compl}[2]{T_\prob{#1}( \vert #2 \vert)}
 
@@ -220,11 +220,23 @@ output Eulerian
 			
 			\paragraph{Crescita esponenziale.} Un problema ha crescita esponenziale la necessità di risorse necessarie alla sua risoluzione è proporzionale a $c^n$, per qualche costante $c > 1$. Se la taglia dell'input va da $n$ a  $2n$ $c^n$ allora la richiesta di risorse si diventa $c^{2n} = c^n * c^n$, aumentando quindi di un fattore che cresce con l'aumentare di $n$. Raggruppiamo nella classe $\Exp$ i problemi di questo tipo.
 			
-			\subsection{Le classi P ed Exp}
+			\section{Le classi P ed Exp}
 			\paragraph{Notazione e idee di base.}
-			Formalmente definiamo un problema come un elemento $ \prob{A} $ di una relazione \[ \mathcal{R} \subseteq \instance{A} \times Sol \] dove $\instance{A}$ è l'insieme delle istanze del problema $\prob{A}$ e $Sol$ l'insieme delle soluzioni delle istanze di $\prob{A}$. Si può quindi dire che \[ \forall x \in \instance{A},\ Sol(x) = \lbrace \text{Soluzioni di } x \rbrace \]
+			Formalmente definiamo un problema come un elemento $ \prob{A} $ di una relazione 
+			\[ 
+				\mathcal{R} \subseteq \instance{A} \times Sol 
+			\] 
+			dove: 
+			\begin{itemize}
+				\item $\instance{A}$ è l'insieme delle istanze del problema $\prob{A}$
+				\item $Sol$ è l'insieme delle soluzioni delle istanze di $\prob{A}$
+			\end{itemize}
+			Si può quindi dire che 
+			\[ 
+				\forall x \in \instance{A},\ Sol(x) = \lbrace \text{Soluzioni di } x \rbrace 
+			\]
 			
-			Non è restrittivo restringersi ai problemi di tipo decisionale, ovvero quei problemi che hanno come soluzione una risposta del tipo \textit{si} o \textit{no}, quindi i problemi del tipo \[ \prob{A} : \instance{A} \to \lbrace yes, no \rbrace \]
+			Non è restrittivo restringersi ai \textbf{problemi di tipo decisionale}, ovvero quei problemi che hanno come soluzione una risposta del tipo \textit{si} o \textit{no}, quindi i problemi del tipo \[ \prob{A} : \instance{A} \to \lbrace yes, no \rbrace \]
 			
 			
 			L'algoritmo $\alg{A}$ per un problema $\prob{A}$ è un algoritmo che dato il problema, $\forall x \in \instance{A},\ \alg{A}(x) = \prob{A}(x)$. Inoltre, dato un problema $\prob{A}$, definiamo $\compl{A}{x}$ la sua complessità. Notare che $\vert x \vert$ è la taglia di $x$.
@@ -232,7 +244,10 @@ output Eulerian
 			\paragraph{Classe P.} Intuitivamente la classe $\p$ è definita come la classe di problemi di complessità polinomiale. Introduciamo qui la definizione formale.
 			
 			\begin{definit}[Classe P]
-				Definiamo la classe di problemi $\p$ come l'insieme dei problemi di complessità polinomiale, ovvero \[ \p = \big\lbrace \prob{A}\ \vert\ \exists \alg{A}\ t.c.\ \exists c \text{ costante e } \forall x \in \instance{A}, \alg{A}(x) = \prob{A}(x) \text{ e } \compl{A}{x} \leq \vert x \vert ^ c \big\rbrace \]
+				Definiamo la classe di problemi $\p$ come l'insieme dei problemi di complessità polinomiale, ovvero 
+				\[ 
+					\p = \big\lbrace \prob{A}\ \vert\ \exists \alg{A}\ t.c.\ \exists c \text{ costante e }\ \forall x \in \instance{A},\ \ \alg{A}(x) = \prob{A}(x)\ \text{ e }\ \compl{A}{x} \leq \vert x \vert ^ c \big\rbrace 
+				\]
 			\end{definit}
 			
 			Un semplice esempio di problema appartenente alla classe $\p$ è il problema del tour euleriano.
@@ -241,12 +256,18 @@ output Eulerian
 			Dal momento che non sappiamo se alcuni problemi stiano oppure no nella classe $\p$ (dal momento che non si conosce un algoritmo che li risolva in tempo polinomiale), si definisce la classe $\Exp$, che racchiude tutte le istanze di questa tipologia di problemi.
 			
 			\begin{definit}[Classe Exp]
-				Definiamo la classe di problemi $\Exp$ come la classe di problemi di complessità esponenziale, ovvero \[ \Exp = \big\lbrace \prob{A}\ \vert\ \exists \alg{A}\ t.c.\ \forall x \in \instance{A}, \alg{A}(x) = \prob{A}(x) \text{ e } \compl{A}{x} \leq 2^{\vert x \vert ^ c} \big\rbrace \]
+				Definiamo la classe di problemi $\Exp$ come la classe di problemi di complessità esponenziale, ovvero 
+				\[ 
+					\Exp = \big\lbrace \prob{A}\ \vert\ \exists \alg{A}\ t.c.\ \forall x \in \instance{A},\ \alg{A}(x) = \prob{A}(x)\ \text{ e }\ \compl{A}{x} \leq 2^{\vert x \vert ^ c} \big\rbrace 
+				\]
 			\end{definit}
 			
 			\paragraph{Relazione tra P ed Exp.} La domanda che sorge spontanea è $ \p \subseteq \Exp $ ?
 			
-			La risposta alla domanda è banalmente \textbf{si}, in quanto, dato un algoritmo con complessità $\compl{B}{x}$, possiamo dire che \[ \compl{B}{x} = O(\vert x \vert ^ c) = O(2^{\vert x \vert ^ c}) \Rightarrow \prob{A} \in \Exp \]
+			La risposta alla domanda è banalmente \textbf{si}, in quanto, dato un algoritmo con complessità $\compl{B}{x}$, possiamo dire che 
+			\[ 
+				\compl{B}{x} = O(\vert x \vert ^ c) = O(2^{\vert x \vert ^ c}) \Rightarrow \prob{A} \in \Exp 
+			\]
 		
 			
 			
