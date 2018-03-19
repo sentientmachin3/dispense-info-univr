@@ -13,11 +13,13 @@
 \usepackage{amssymb}
 \usepackage[margin=3cm]{geometry}
 \usepackage{booktabs,caption}
+\usepackage{subcaption}
 \usepackage{epigraph}
 \usepackage{fancyhdr}
 \usepackage{listings}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{tikz}
+\usepackage{lipsum}
 \lstset{language = C,
 	basicstyle=\ttfamily ,
 	tabsize = 4,
@@ -289,8 +291,44 @@ output Eulerian
 			\[ 
 				\compl{B}{x} = O(\vert x \vert ^ c) = O(2^{\vert x \vert ^ c}) \Rightarrow \prob{A} \in \Exp 
 			\]
+			
+			\paragraph{Problema K-Graph-Colouring.} Analizziamo ora il problema della K-colorabilità di un grafo $ G $:
+			\begin{itemize}
+				\item Input: $ G $ non orientato.
+				\item Output: $ yes \Leftrightarrow \exists\ $ colorazione \textit{propria} dei vertici di $ G $ ovvero:
+				\[
+					\exists f\ \colon\ v \mapsto \{0,\dots, k-1 \}\quad t.c.\quad \forall (u,v)\in E(G)\quad f(u) \neq f(v)
+				\]
+			\end{itemize}
+			
+			\begin{figure}[h!]
+				\centering
+				\begin{subfigure}{.5\textwidth}
+					\centering
+					\begin{tikzpicture}
+						\node[draw, circle] (a) at (0,0) {};
+						\node[draw, circle, fill=black] (b) at (1.5,1) {};
+						\node[draw, circle] (c) at (3,0) {};
+						\node[draw, circle, fill=black] (d) at (1.5,-1) {};
+						\draw (a) -- (b) -- (c) -- (d) -- (a) -- (c);
+					\end{tikzpicture}
+					\caption{Grafo con colorazione \textit{non} propria}
+				\end{subfigure}%
+				\begin{subfigure}{.5\textwidth}
+					\centering
+					\begin{tikzpicture}
+						\node[draw, circle, fill=gray] (a) at (0,0) {};
+						\node[draw, circle, fill=black] (b) at (1.5,1) {};
+						\node[draw, circle] (c) at (3,0) {};
+						\node[draw, circle, fill=black] (d) at (1.5,-1) {};
+						\draw (a) -- (b) -- (c) -- (d) -- (a) -- (c);
+					\end{tikzpicture}
+					\caption{Grafo con colorazione propria}
+				\end{subfigure}%
+			\end{figure}
 		
 			\subsection{Classe Time(n)}
 			
+			\lipsum[0-1]
 
 \end{document}
