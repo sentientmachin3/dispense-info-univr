@@ -33,7 +33,7 @@
 \renewcommand{\headrulewidth}{0.4pt}
 \newtheorem{thm}{Teorema}[]
 \theoremstyle{definition}
-\newtheorem{esempio}{Esempio}
+\newtheorem{esempio}{Esempio}[subsection]
 \newtheorem{definit}{Definizione}[subsection]
 
 \usepackage{hyperref}
@@ -51,7 +51,7 @@
 \newcommand{\prob}[1]{\mathbb{#1}}
 \newcommand{\instance}[1]{\mathcal{I}(\prob{#1})}
 \newcommand{\alg}[1]{\mathcal{#1}}
-\newcommand{\compl}[2]{T_\prob{#1}( \vert #2 \vert)}
+\newcommand{\compl}[2]{T_\alg{#1}( \vert #2 \vert)}
 
 \begin{document}
  \clearpage
@@ -220,7 +220,7 @@ output Eulerian
 			
 			\paragraph{Crescita esponenziale.} Un problema ha crescita esponenziale la necessità di risorse necessarie alla sua risoluzione è proporzionale a $c^n$, per qualche costante $c > 1$. Se la taglia dell'input va da $n$ a  $2n$ $c^n$ allora la richiesta di risorse si diventa $c^{2n} = c^n * c^n$, aumentando quindi di un fattore che cresce con l'aumentare di $n$. Raggruppiamo nella classe $\Exp$ i problemi di questo tipo.
 			
-			\section{Le classi P ed Exp}
+			\section{Le classi di problemi computazionali}
 			\paragraph{Notazione e idee di base.}
 			Formalmente definiamo un problema come un elemento $ \prob{A} $ di una relazione 
 			\[ 
@@ -239,9 +239,10 @@ output Eulerian
 			Non è restrittivo restringersi ai \textbf{problemi di tipo decisionale}, ovvero quei problemi che hanno come soluzione una risposta del tipo \textit{si} o \textit{no}, quindi i problemi del tipo \[ \prob{A} : \instance{A} \to \lbrace yes, no \rbrace \]
 			
 			
-			L'algoritmo $\alg{A}$ per un problema $\prob{A}$ è un algoritmo che dato il problema, $\forall x \in \instance{A},\ \alg{A}(x) = \prob{A}(x)$. Inoltre, dato un problema $\prob{A}$, definiamo $\compl{A}{x}$ la sua complessità. Notare che $\vert x \vert$ è la taglia di $x$.
+			L'algoritmo $\alg{A}$ per un problema $\prob{A}$ è un algoritmo che dato il problema, $\forall x \in \instance{A},\ \alg{A}(x) = \prob{A}(x)$. Inoltre, dato un algoritmo $ \alg{A} $, definiamo $\compl{A}{x}$ la sua \textbf{complessità}, cioè il \textit{tempo che impiega} $\alg{A}$ sull'istanza di taglia $\vert x \vert$. Notare che $\vert x \vert$ è la taglia dell'istanza $x$.
 			
-			\paragraph{Classe P.} Intuitivamente la classe $\p$ è definita come la classe di problemi di complessità polinomiale. Introduciamo qui la definizione formale.
+			\subsection{Classe P} 
+			Intuitivamente la classe $\p$ è definita come la classe di problemi di \textbf{complessità polinomiale}. Introduciamo qui la definizione formale.
 			
 			\begin{definit}[Classe P]
 				Definiamo la classe di problemi $\p$ come l'insieme dei problemi di complessità polinomiale, ovvero 
@@ -250,10 +251,30 @@ output Eulerian
 				\]
 			\end{definit}
 			
-			Un semplice esempio di problema appartenente alla classe $\p$ è il problema del tour euleriano.
+			\begin{esempio}[Eulerian Cycle]
+				Un semplice esempio di problema appartenente alla classe $\p$ è il problema del tour euleriano. Per questo problema infatti abbiamo che è un problema computazionale di decisione:
+				\begin{itemize}
+					\item Input: grafo $ G $
+					\item Output: $ yes \Leftrightarrow \exists $ Eulerian Cycle in $ G $.
+				\end{itemize}
+				Come abbiamo già visto quindi:
+				\[
+					\exists \alg{A}\ t.c.\ \compl{A}{G} = O(\vert E\vert + \vert V\vert) = O(\vert G\vert) 
+				\] 
+				Eulerian Cycle $ \in \p\ $ perché $\ \exists \alg{A}\ $ che impiega un tempo che è nell'ordine della taglia di $ G $, in particolare $ \ \exists c \text{ costante } $ dove $ c=1 $.
+			\end{esempio}
 			
-			\paragraph{Classe Exp.}
-			Dal momento che non sappiamo se alcuni problemi stiano oppure no nella classe $\p$ (dal momento che non si conosce un algoritmo che li risolva in tempo polinomiale), si definisce la classe $\Exp$, che racchiude tutte le istanze di questa tipologia di problemi.
+			
+			\begin{esempio}[Hamiltonian Cycle]
+				Ci chiediamo allora se anche Hamiltonian Cycle $ \in \p\ $ ? La risposta è che non lo sappiamo dire. Quello che sappiamo per questo problema è che:
+				\[
+					\exists \alg{A}\ t.c.\ \compl{A}{G} = O(a^{\vert G \vert})
+				\]
+				dove $ a $ è costante.
+			\end{esempio}
+			
+			\subsection{Classe Exp}
+			Dal momento che non sappiamo se alcuni problemi stiano oppure no nella classe $\p$ (dal momento che non si conosce un algoritmo che li risolva in tempo polinomiale), si definisce la classe $\Exp$, che racchiude tutte le istanze di questa tipologia di problemi di \textbf{complessità esponenziale}.
 			
 			\begin{definit}[Classe Exp]
 				Definiamo la classe di problemi $\Exp$ come la classe di problemi di complessità esponenziale, ovvero 
@@ -264,12 +285,12 @@ output Eulerian
 			
 			\paragraph{Relazione tra P ed Exp.} La domanda che sorge spontanea è $ \p \subseteq \Exp $ ?
 			
-			La risposta alla domanda è banalmente \textbf{si}, in quanto, dato un algoritmo con complessità $\compl{B}{x}$, possiamo dire che 
+			La risposta alla domanda è banalmente \textbf{si}, in quanto, dato un algoritmo $ \alg{B} $ con complessità $\compl{B}{x}$, possiamo dire che 
 			\[ 
 				\compl{B}{x} = O(\vert x \vert ^ c) = O(2^{\vert x \vert ^ c}) \Rightarrow \prob{A} \in \Exp 
 			\]
 		
-			
+			\subsection{Classe Time(n)}
 			
 
 \end{document}
