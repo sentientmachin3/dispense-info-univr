@@ -7,11 +7,18 @@
 \usepackage[margin=3cm]{geometry}
 \usepackage{libertine}
 \usepackage{hyperref}
+\usepackage{listings}
+\usepackage{courier}
 \hypersetup{
 	hidelinks, 
 	colorlinks = true,
 	linkcolor = black,
 }
+
+\lstset {
+	tabsize=2,
+	basicstyle=\footnotesize\ttfamily
+	}
 
 
 \begin{document}
@@ -68,5 +75,64 @@ Esistono principalmente 4 tipi di agenti: \begin{itemize}
 \end{itemize}
 
 Il tipo di ambiente povviamente condiziona il design degli agenti che vi operano.
+
+\section{Problemi di ricerca}
+Dividiamo i problemi in due macro-categorie:
+\begin{itemize}
+	\item Deterministici e completamente osservabili, richiedono un singolo stato;
+	\item Non osservabili, in tal caso gli agenti non sanno dove la soluzione possa risiedere;
+	\item Non deterministici o parzialmente osservabili; problema di contingenza/eventualità (??);
+	\item Lo spazio degli stati è sconosciuto (problemi di esplorazione).
+\end{itemize}
+
+\subsection{Formulazione di problemi a stato singolo}
+Un problema a stato singolo è definito da 4 elementi: \begin{enumerate}
+	\item uno stato iniziale;
+	\item una funzione successore (insieme di coppie azione-stato successivo);
+	\item un test di \textit{goal};
+	\item consto del percorso (costo dei singoli step).
+\end{enumerate}
+
+Una soluzione è quindi una sequenza di azioni che portano dallo stato iniziale allo stato di goal.
+
+\subsection{Ricerca su alberi}
+In generale ogni algoritmo di ricerca su alberi funziona come segue:
+	\begin{lstlisting}
+function tree-search(problem, strategy)
+	inizializza l'abero di ricerca usando lo stato iniziale del problema;
+	loop:
+		se non ci sono candidati per l'espansione:
+			return failure
+		scegli un nodo foglia per l'espansione rispettando strategy;
+		se il nodo contiene uno stato goal:
+			return solution;
+		altrimenti:
+			espandi il nodo e aggiungi il nodo risultante all'albero
+	\end{lstlisting}
+	
+\noindent
+\textbf{Nota: un nodo è una struttura dati, uno stato è una rappresentazione fisica di un nodo, non ha stati padre, ecc.}
+
+Il metodo generale per eseguire una ricerca sugli alberi è il seguente:
+\begin{lstlisting}
+function tree-search(problem, fringe):
+	fringe = insert(make-node(initial-state[problem]), fringe) 
+	loop:
+		if fringe is empty
+			return failure
+		if goal-test(problem,state(node))
+			return node
+		fringe = insert-all(expand(node, problem), fringe)
+\end{lstlisting}
+
+
+\subsection{Ricerca non informata}
+I problemi di ricerca non informata utilizzano solo le informazioni presenti nella definizione del problema. 
+\paragraph{Breadth-first search.} Espande il nodo non espanso più in superficie.
+
+
+
+
+
 
 \end{document}
