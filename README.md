@@ -21,3 +21,4 @@ Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman
 - Sistemi ad Eventi Discreti (In progress)
 - Complessità (In progress)
 - Intelligenza Artificiale (In progress)
+- Sistemi informativi (In progress)
