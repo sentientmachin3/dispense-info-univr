@@ -1,5 +1,5 @@
 \documentclass[a4paper, 11pt]{article}
-\usepackage[english]{babel}
+\usepackage[english, italian]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath}
@@ -74,8 +74,9 @@ Esistono principalmente 4 tipi di agenti: \begin{itemize}
 	\item Presenza di altri agenti.
 \end{itemize}
 
-Il tipo di ambiente povviamente condiziona il design degli agenti che vi operano.
+Il tipo di ambiente ovviamente condiziona il design degli agenti che vi operano.
 
+\newpage
 \section{Problemi di ricerca}
 Dividiamo i problemi in due macro-categorie:
 \begin{itemize}
@@ -95,9 +96,18 @@ Un problema a stato singolo è definito da 4 elementi: \begin{enumerate}
 
 Una soluzione è quindi una sequenza di azioni che portano dallo stato iniziale allo stato di goal.
 
-\subsection{Ricerca su alberi}
+
+
+
+\subsection{Ricerca non informata}
+\subsubsection{Ricerca su alberi}
+Le strutture dati utilizzate nelle ricerche su alberi, oltre alla struttura dati contenente l'albero, sono le seguenti:
+\begin{itemize}
+	\item una lista \lstinline|fringe| (una coda FIFO), contenente la \textit{frontiera}, ovvero i nodi foglia disponibili;
+	\item una lista \lstinline|closed|, contente i nodi di frontiera espansi in passi precedenti.
+\end{itemize}
 In generale ogni algoritmo di ricerca su alberi funziona come segue:
-	\begin{lstlisting}
+\begin{lstlisting}
 function tree-search(problem, strategy)
 	inizializza l'abero di ricerca usando lo stato iniziale del problema;
 	loop:
@@ -108,10 +118,10 @@ function tree-search(problem, strategy)
 			return solution;
 		altrimenti:
 			espandi il nodo e aggiungi il nodo risultante all'albero
-	\end{lstlisting}
-	
+\end{lstlisting}
+
 \noindent
-\textbf{Nota: un nodo è una struttura dati, uno stato è una rappresentazione fisica di un nodo, non ha stati padre, ecc.}
+\textbf{Nota:} un nodo è una struttura dati, uno stato è una rappresentazione fisica di un nodo, non ha stati padre, ecc.
 
 Il metodo generale per eseguire una ricerca sugli alberi è il seguente:
 \begin{lstlisting}
@@ -125,10 +135,18 @@ function tree-search(problem, fringe):
 		fringe = insert-all(expand(node, problem), fringe)
 \end{lstlisting}
 
-
-\subsection{Ricerca non informata}
 I problemi di ricerca non informata utilizzano solo le informazioni presenti nella definizione del problema. 
-\paragraph{Breadth-first search.} Espande il nodo non espanso più in superficie.
+\paragraph{Uniform-cost search.} È l'algoritmo più semplice: espande il nodo con il costo di percorso minore. La frontiera è quindi una coda ordinata per costo. Non guarda al numero di nodi espansi ma unicamente al loro costo.
+
+\paragraph{Breadth-first search.} Espande il nodo non espanso più in superficie. Il problema di questo algoritmo è lo \textbf{spazio usato}. Infatti, dal momento che deve tenere ogni nodo in memoria, con grandi alberi occupa molto spazio; inoltre ha complessità $O(b^{d+1})$, sia spazialmente che temporalmente.
+
+\paragraph{Depth-first search.} Mentre BFS lavora in ampiezza, DFS lavora in profondità, andando ad espandere il nodo non espanso più a fondo possibile. La complessità spaziale è $O(bm)$, che sarebbe ideale se non per il fatto che fallisce in spazi infiniti oppure in spazi con cicli. Temporalmente ha complessità $O(b^m)$, una complessità peggiore quanto più $m$ è maggiore di $d$.
+
+\paragraph{Depth-limited search.} In realtà è solo una variante della DFS, alla quale viene imposto un limite di profondità da raggiungere. La profondità limite, oltre a ridurre lo spazio utilizzato, risolve anche il problema dei cammini infiniti, che nella DFS standard erano il problema più grande che si potesse avere. È anche vero che viene introdotto un altro punto di debolezza, ovvero quello in cui il goal è oltre la profondità limite.
+
+\paragraph{Iterative-deepening search.} È una tecnica usata in combinazione con la DLS per trovare il limite minimo necessario al raggiungimento del goal. Lavora su una profondità variabile chiamando ad ogni iterazione la DLS con il limite corrente. Le complessità sono $O(b^d)$ (temporale) e $O(bd)$ (spaziale).
+
+\paragraph{Confronto tra gli algoritmi.} aaa
 
 
 
