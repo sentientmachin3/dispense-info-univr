@@ -146,7 +146,27 @@ I problemi di ricerca non informata utilizzano solo le informazioni presenti nel
 
 \paragraph{Iterative-deepening search.} È una tecnica usata in combinazione con la DLS per trovare il limite minimo necessario al raggiungimento del goal. Lavora su una profondità variabile chiamando ad ogni iterazione la DLS con il limite corrente. Le complessità sono $O(b^d)$ (temporale) e $O(bd)$ (spaziale).
 
-\paragraph{Confronto tra gli algoritmi.} aaa
+\paragraph{Confronto tra gli algoritmi.} Presentiamo di seguito un confronto riepilogativo dei vari algoritmi di ricerca su alberi. \\
+\begin{center}
+	\begin{tabular}{cccccc}
+		\textbf{Criterio} & \textbf{BF} & \textbf{UC} & \textbf{DF} & \textbf{DL} & \textbf{ID} \\
+		\hline
+		\hline
+		Completezza & Si$^\ast$ & Si$^{\ast, \dagger}$ & No & Si, se $l \geq d$ & Si$^\ast$ \\
+		\hline
+		Tempo & $b^{d+1}$ & $b^{\lceil C^\ast / \epsilon \rceil}$ & $b^m$ & $b^l$ & $b^d$ \\
+		\hline
+		Spazio & $b^{d+1}$ & $b^{\lceil C^\ast / \epsilon \rceil}$ & $bm$ & $bl$ & $bd$ \\
+		\hline
+		Ottimale & Si$^\star$ & Si & No & Si$^\star$, se $l \geq d$ & Si$^\star$ 
+		
+	\end{tabular}
+\end{center}
+dove: \begin{itemize}
+	\item $\ast$: completo se il branching factor è finito;
+	\item $\dagger$: completo se uno step ha costo $\geq \epsilon$;
+	\item $\star$:ottimale se tutti i costi dei singoli step sono uguali.
+\end{itemize}
 
 
 
