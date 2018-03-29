@@ -19,11 +19,15 @@
 \usepackage{listings}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{tikz}
+\usepackage{textcomp}
+\usetikzlibrary{shapes,arrows,positioning,calc}
+\usetikzlibrary{decorations.pathreplacing}
 \usepackage{lipsum}
 \lstset{language = C,
-	basicstyle=\ttfamily ,
+	basicstyle=\ttfamily\linespread{5} ,
 	tabsize = 4,
 	morekeywords={VerifyHamCycle},
+	escapechar=",
 	showstringspaces=false}
 
 \pagestyle{fancy}
@@ -58,6 +62,9 @@
 \newcommand{\alg}[1]{\mathcal{#1}}
 \newcommand{\compl}[2]{T_\alg{#1}( \vert #2 \vert)}
 \newcommand{\compld}[3]{T_\alg{#1}( \vert #2 \vert + \vert #3 \vert)}
+
+\newcommand{\tikzmark}[1]{\tikz[overlay,remember picture,baseline=(#1.base)]
+	\node (#1) {\strut};}
 
 \begin{document}
  \clearpage
@@ -441,13 +448,41 @@ output Eulerian
 			
 			\begin{lstlisting}[mathescape=true]
 VerifyHamCycle(G = (V,E), C=$ x_1, \dots, x_n $)
-	if r != |V|: return $ no $
-	for each v$ \in $ V
-		if v non appare in C: return $ no $
+	if r != |V|: return $ no $ "\tikzmark{a}"
+	for each v$ \in $ V 
+		if v non appare in C: return $ no $ "\tikzmark{c}"
 	for i=1 to n-1
-		if $ ( x_i, x_{i+1} )\notin $ E: return $ no $
-	if $ ( x_1, x_n )\notin $ E: return $ no $
+		if $ ( x_i, x_{i+1} )\notin $ E: return $ no $ "\tikzmark{b}"
+	if $ ( x_1, x_n )\notin $ E: return $ no $ "\tikzmark{d}"
 	return $ yes $
 			\end{lstlisting}
+			\begin{tikzpicture}[overlay, remember picture,decoration={brace,amplitude=2pt}]
+				\draw[decorate,thick] ($ (a.east) +(2.7,-0.1) $) -- ($ (a.east) +(2.7,-.5) $)
+				node [midway,right, xshift=.2cm] {$ O(\vert w\vert) $};
+				\draw[decorate,thick] ($ (c.east) +(0,.4) $) -- ($ (c.east) +(0,-.5) $)
+				node [midway,right, xshift=.2cm] {$ O(\vert V\vert\cdot\vert C\vert) $};
+				\draw[decorate,thick] ($ (b.east) +(1.5,.4) $) -- ($ (b.east) +(1.5,-.5) $)
+				node [midway,right, xshift=.2cm] {$ O(\vert C\vert) $};
+				\draw[decorate,thick] ($ (d.east) +(2.6,-0.1) $) -- ($ (d.east) +(2.6,-.5) $)
+				node [midway,right, xshift=.2cm] {$ O(1) $};
+			\end{tikzpicture}
+		Il tempo di esecuzione del verificatore è polinomiale e quindi posso dire che Hamiltonian Cycle $ \in \np$ .
 			
+		\paragraph{K-Colouring $ \in $ NP ?} Per vederlo costruisco il verificatore:
+		\begin{lstlisting}[mathescape=true]
+VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
+	for each $ E(u,v)  $
+		if $ f(u) = f(v) $: return $ no $ "\tikzmark{a}"
+	for i=1 to n
+		if $ f(v_i) \geq K $: return $ no $ "\tikzmark{b}"
+	return $ yes $
+		\end{lstlisting}
+		\begin{tikzpicture}[overlay, remember picture,decoration={brace,amplitude=2pt}]
+			\draw[decorate,thick] ($ (a.east) +(0,.4) $) -- ($ (a.east) +(0,-.5) $)
+			node [midway,right, xshift=.2cm] {$ O(\vert E\vert) $};
+			\draw[decorate,thick] ($ (b.east) +(0.2,.4) $) -- ($ (b.east) +(0.2,-.5) $)
+			node [midway,right, xshift=.2cm] {$ O(\vert V\vert) $};
+		\end{tikzpicture}
+		Il tempo di esecuzione del verificatore è polinomiale e quindi posso dire che K-Colouring $ \in \np$ .
+		
 \end{document}
