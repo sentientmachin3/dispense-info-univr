@@ -23,6 +23,7 @@
 \lstset{language = C,
 	basicstyle=\ttfamily ,
 	tabsize = 4,
+	morekeywords={VerifyHamCycle},
 	showstringspaces=false}
 
 \pagestyle{fancy}
@@ -33,10 +34,11 @@
 \cfoot{\thepage}
 \rfoot{}
 \renewcommand{\headrulewidth}{0.4pt}
-\newtheorem{thm}{Teorema}[]
+\newtheorem{thm}{Teorema}[subsection]
 \theoremstyle{definition}
 \newtheorem{esempio}{Esempio}[subsection]
 \newtheorem{definit}{Definizione}[subsection]
+\newtheorem{prop}{Proposizione}[subsection]
 
 \usepackage{hyperref}
 \usepackage{xcolor}
@@ -49,11 +51,13 @@
 
 \newcommand{\Exp}{\mathbf{Exp}}
 \newcommand{\p}{\mathbf{P}}
+\newcommand{\tim}{\mathbf{Time(n)}}
 \newcommand{\np}{\mathbf{NP}}
 \newcommand{\prob}[1]{\mathbb{#1}}
 \newcommand{\instance}[1]{\mathcal{I}(\prob{#1})}
 \newcommand{\alg}[1]{\mathcal{#1}}
 \newcommand{\compl}[2]{T_\alg{#1}( \vert #2 \vert)}
+\newcommand{\compld}[3]{T_\alg{#1}( \vert #2 \vert + \vert #3 \vert)}
 
 \begin{document}
  \clearpage
@@ -285,6 +289,12 @@ output Eulerian
 				\]
 			\end{definit}
 			
+			\begin{esempio}[Hamiltonian Cycle]
+				Ci chiediamo se Hamiltonian Cycle $ \in \Exp$ ? Se prendiamo l'algoritmo che prova tutte le combinazioni di archi cioè $ \binom{\vert E \vert}{n} $ per vedere se formano un ciclo hamiltoniano. La complessità di quest'algoritmo è al massimo $\ 2^{\vert E \vert^2} $. 
+				
+				Se invece prendiamo l'algoritmo che considera tutte le possibili permutazioni dei vertici del grafo abbiamo che la complessità è $ n! $. Quindi il problema Hamiltonian Cycle $ \notin \Exp $
+			\end{esempio}
+			
 			\paragraph{Relazione tra P ed Exp.} La domanda che sorge spontanea è $ \p \subseteq \Exp $ ?
 			
 			La risposta alla domanda è banalmente \textbf{si}, in quanto, dato un algoritmo $ \alg{B} $ con complessità $\compl{B}{x}$, possiamo dire che 
@@ -326,9 +336,118 @@ output Eulerian
 					\caption{Grafo con colorazione propria}
 				\end{subfigure}%
 			\end{figure}
+			
+			\paragraph{Problema 2-Graph-Colouring.}
+			Consiste nel trovare se esiste una 2 colorazione del grafo dato in input in modo tale che un arco non si trovi tra due vertici dello stesso colore. Questo problema corrisponde a dire se il grafo è \textbf{bipartito}, cioè se \textit{posso suddividere il grafo in due classi diverse}. \\
+			Per vedere se è bipartito si effettua una \textbf{BFS}, cioè una visita in ampiezza, e si controlla se c'è un ciclo dispari. Se c'è allora non è bipartito e quindi nemmeno 2-colorabile.\\
+			
+			\noindent
+			È 2-colorabile $ \Leftrightarrow $ è Bipartito $ \Leftrightarrow $ non contiene un ciclo dispari. La visita BFS ha una complessità pari a $ O(\vert E \vert + \vert V \vert) $, perciò il problema è risolvibile in tempo polinomiale, perciò possiamo concludere che 2-Graph-Colouring $ \in \p $.
+			
+			\paragraph{Problema 3-Graph Colouring}
+			Il problema 3-Graph Colouring $ \in \p $? Non sappiamo rispondere a questa domanda, poiché non sappiamo se esiste un algoritmo che lo svolga in tempo polinomiale.\\
+			Il problema 3-Graph Colouring $ \in \Exp $? Se consideriamo l'algoritmo che prova tutte le possibili colorazioni abbiamo che:
+			\[
+				3^n \text{ sono le colorazioni dei vertici, dove }\ n = \vert V(G) \vert 
+			\]
+			Bisogna vedere se ci sono archi monocolore e quindi la complessità diventa:
+			\[
+				O(3^n\cdot\vert E \vert) = O(3^{2n}) = O((2^{\log_2 3})^{2n}) = O(2^{2n\log_2 3})
+			\]
+			Perciò possiamo concludere che il problema 3-Graph Colouring $ \in \Exp $.
 		
 			\subsection{Classe Time(n)}
 			
-			\lipsum[0-1]
-
+			\begin{definit}[Classe Time(n)]
+				Definiamo la classe $ \tim $ come l'insieme dei problemi di complessità lineare, ovvero
+				\[
+					\tim = \big\lbrace \prob{A}\ \vert\ \exists \alg{B} \text{ per } \prob{A}\quad t.c.\quad
+					\forall x \in \instance{A}\quad \compl{\alg{B}}{x} = O(n) = O(f(\vert x \vert))\ \big\rbrace  
+				\]
+			\end{definit}
+			
+			\begin{thm}
+				$ \forall \alg{B}\quad t.c.\quad \alg{B}(x) = \prob{A}(x)\quad \compl{\alg{B}}{x} > \vert x \vert^c\quad \forall c\text{ costante} $
+			\end{thm}
+			
+			\begin{thm}
+				\label{thm:sort}
+				Qualsiasi \textbf{algoritmo di ordinamento} che usa \textit{confronti} su $ n $ elementi ha tempo di esecuzione pari a
+				\[
+					\Omega(n\log n)
+				\]
+			\end{thm}
+			
+			\noindent
+			Possiamo dire quindi che:
+			\begin{itemize}
+				\item \textbf{Eulerian Cycle} $ \in \tim $ perché esiste un problema che lo risolve in tempo lineare.
+				\item \textbf{Sorting} $ \notin \tim $ per il teorema \ref{thm:sort}.
+			\end{itemize}
+			
+			\begin{figure}[h]
+				\centering\vspace{-.2cm}
+				\begin{tikzpicture}[scale=.5,every node/.style={scale=0.8}]
+					\draw (0,0) circle (3cm);
+					\draw (-.5,0) circle (2cm);
+					\draw (-1,0) circle (1cm);
+					\node at (2.25,0) {$ \Exp $};
+					\node at (.75,0) {$ \p $};
+					\node at (-1,0) {$ \tim $};
+				\end{tikzpicture}
+			\end{figure}
+			
+			\newpage
+			
+			Possiamo riassumere quindi che:
+			\begin{itemize}
+				\item \textbf{Eulerian Cycle} $ \in \p $, \textbf{Eulerian Cycle} $ \in \tim $.
+				\item \textbf{Hamiltonian Cycle} $ \in \Exp $
+				\item \textbf{Hamiltonian Cycle} $ \in \p $ ? non lo sappiamo dire.
+				\item \textbf{K-Colouring} $ \in \Exp $
+				\item \textbf{K-Colouring} $ \in \p $? \\
+				per $ k\geq 3 $ non lo sappiamo dire\\
+				per $ k = 2 $ sì.
+			\end{itemize}
+			Inoltre, con la definizione della classe $ \tim $ si può dire che:
+			\[
+				\p = \bigcup_{k \geq 0} \mathbf{Time(n^k)}
+			\]
+			\[
+				\Exp = \bigcup_{k\geq 0} \mathbf{Time(2^{n^k})}
+			\]
+			
+		\subsection{Classe NP}
+			La classe $ \np $ (\textit{non deterministic polinomial time}) è la classe di problemi tali che se la soluzione per un'istanza del problema è \textit{yes}, allora è facile verificarlo.
+			
+			\begin{definit}(Classe NP)
+				\begin{align*}
+					\np = \big\lbrace & \prob{A} \quad \big| \quad \exists \alg{B}(\stackrel{x}{\cdot}, \stackrel{w}{\cdot})\quad t.c.\quad 
+					\compld{\alg{B}}{x}{w}= O((\vert x\vert + \vert w\vert)^c) \\
+					& \forall x \in \instance{\prob{A}}\quad \prob{A}(x) = yes\ \Leftrightarrow\ \exists w\ t.c.\quad \vert w \vert = O(\vert x\vert^d)\ \text{ e }\ \alg{B}(x, w) = yes 
+					\big\rbrace
+				\end{align*}
+					
+				dove:
+				\begin{itemize}
+					\item $ \alg{B}(\stackrel{x}{\cdot}, \stackrel{w}{\cdot}) $ è detto \textbf{verificatore} per $ \prob{A} $. Se la risposta di $ \prob{A} $ esiste, allora $ \alg{B} $ dice \textit{yes}. Il verificatore impiega \textbf{tempo polinomiale} nella taglia dell'istanza per rispondere.
+					\item $ x $ è l'istanza
+					\item $ w $ è il certificato.
+				\end{itemize}
+				
+			\end{definit}
+			
+			\paragraph{Hamiltonian Cycle $ \in $ NP ?} Per vedere se il problema Hamiltonian cycle appartiene alla classe $ \np $ dobbiamo costruire un verificatore $ \alg{B} $ che agisca in tempo polinomiale.
+			
+			\begin{lstlisting}[mathescape=true]
+VerifyHamCycle(G = (V,E), C=$ x_1, \dots, x_n $)
+	if r != |V|: return $ no $
+	for each v$ \in $ V
+		if v non appare in C: return $ no $
+	for i=1 to n-1
+		if $ ( x_i, x_{i+1} )\notin $ E: return $ no $
+	if $ ( x_1, x_n )\notin $ E: return $ no $
+	return $ yes $
+			\end{lstlisting}
+			
 \end{document}
