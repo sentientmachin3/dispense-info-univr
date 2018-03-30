@@ -9,17 +9,24 @@
 \usepackage{hyperref}
 \usepackage{listings}
 \usepackage{courier}
+\usepackage{wrapfig}
+\usepackage{centernot}
 \hypersetup{
 	hidelinks, 
 	colorlinks = true,
 	linkcolor = black,
 }
 
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,calc}
+\usetikzlibrary{decorations.pathreplacing}
+
 \lstset {
 	tabsize=2,
 	basicstyle=\footnotesize\ttfamily
 	}
 
+\newcommand{\astar}{$A^\ast$ }
 
 \begin{document}
  \clearpage
@@ -100,7 +107,6 @@ Una soluzione è quindi una sequenza di azioni che portano dallo stato iniziale 
 
 
 \subsection{Ricerca non informata}
-\subsubsection{Ricerca su alberi}
 Le strutture dati utilizzate nelle ricerche su alberi, oltre alla struttura dati contenente l'albero, sono le seguenti:
 \begin{itemize}
 	\item una lista \lstinline|fringe| (una coda FIFO), contenente la \textit{frontiera}, ovvero i nodi foglia disponibili;
@@ -148,7 +154,7 @@ I problemi di ricerca non informata utilizzano solo le informazioni presenti nel
 
 \paragraph{Confronto tra gli algoritmi.} Presentiamo di seguito un confronto riepilogativo dei vari algoritmi di ricerca su alberi. \\
 \begin{center}
-	\begin{tabular}{cccccc}
+	\begin{tabular}{c | ccccc}
 		\textbf{Criterio} & \textbf{BF} & \textbf{UC} & \textbf{DF} & \textbf{DL} & \textbf{ID} \\
 		\hline
 		\hline
@@ -167,6 +173,54 @@ dove: \begin{itemize}
 	\item $\dagger$: completo se uno step ha costo $\geq \epsilon$;
 	\item $\star$:ottimale se tutti i costi dei singoli step sono uguali.
 \end{itemize}
+
+\subsection{Ricerca informata}
+Le strategie di ricerca informata utilizzano conoscenze specifiche riguardanti il problema oltre alla definizione dello stesso, pertanto sono più efficienti.
+Gli approcci generali sono 2: \begin{itemize}
+	\item euristiche greedy best-first;
+	\item euristiche su \astar;
+\end{itemize}
+
+\paragraph{Greedy best-first.} Questo approccio cerca di espandere il nodo più vicino al goal, usando una funzione di valutazione. La funzione di valutazione è detta \textbf{euristica} ($h(n)$).
+
+La ricerca greedy non è completa (può fallire in caso di cicli). La sua complessità temporale è $O(b^m)$, ma si può migliorare utilizzando euristiche migliori. La complessità spaziale è la stessa, in quanto è necessario tenere in memoria tutti i nodi.
+
+\paragraph{Ricerca con \astar.} L'idea è quella di evitare di espandere percorsi che sono già costosi di suo. La funzione di valutazione in tal caso è così composta: \[ f(n) = g(n) + h(n) \] dove: \begin{itemize}
+	\item $f(n)$ è il costo complessivo del percorso attraverso $n$ al goal;
+	\item $h(n)$ è il costo stimato fino al goal a partire da $n$;
+	\item $g(n)$ è il costo per raggiungere $n$.
+\end{itemize}
+
+La ricerca con \astar usa un'euristica ammissibile, ovvero un euristica in cui $h(n) \leq h^\star(n)$, dove $h^\star(n)$ è il costo vero da $n$. Inoltre si richiede che $h(n) \geq 0$, quindi si ha che $h(G) = 0$ per ogni goal.
+
+\astar è completo, però deve tenere tutti i nodi in memoria e ha complessità esponenziale nell'errore relativo di $h$ per la lunghezza della soluzione. Inoltre si può dimostrare che \astar è ottimale.
+
+\subsection{Caratteristiche delle funzioni euristiche}
+Un'euristica si dice consistente se si ha che $h(n) \leq c(n,a,n') + h(n')$.
+\begin{wrapfigure}{R}{0.3\textwidth}
+	\begin{tikzpicture}
+	\node[draw, circle] (a) at (0,0) {$n$};
+	\node[draw, circle] (b) at (0,-2) {$n'$};
+	\node[draw, circle] (c) at (2,-4) {$G$};
+	\draw[->,>=stealth] (a) -- (b) node[midway,left]{$c(n,a,n')$};
+	\draw[->,>=stealth](b) -- (c) node[midway,left]{$h(n')$};
+	\draw[->,>=stealth] (a) -- (c)node[midway,right]{$h(n)$};
+	\end{tikzpicture}
+\end{wrapfigure}
+
+È importante notare che 
+\begin{align*} 
+	\text{consistenza} &\implies \text{ammissibilità} \\ 
+	\text{ammissibilità} &\centernot\implies \text{consistenza}  
+\end{align*}
+
+Inoltre si definisce un'euristica dominante $h_2$ se vale che, $\forall n$ \[ h_2(n) \geq h_1(n) \]
+L'euristica dominante è sempre migliore dal punto di vista prestazionale.
+
+
+
+
+
 
 
 
