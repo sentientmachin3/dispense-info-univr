@@ -485,4 +485,65 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 		\end{tikzpicture}
 		Il tempo di esecuzione del verificatore è polinomiale e quindi posso dire che K-Colouring $ \in \np$ .
 		
+		\paragraph{P $ \subseteq $ NP ?} Vogliamo capire in che classe è $ \np $. Se include la classe $ \p $ allora significa che un problema che appartiene a quest'ultima, se lo sappiamo risolvere, lo sappiamo anche verificare. Infatti se $ \prob{A} \in \p $ dobbiamo dimostrare che esiste un verificatore. Tale verificatore per $ \prob{A} $ sarà: $\quad \alg{B}'(x,w) = \alg{B}(x)\ $ privo di certificato.
+		Dobbiamo dimostrare che se l'istanza è \textit{yes} allora $ \alg{B}(x) = yes $ altrimenti $ \alg{B}(x) = no $.
+		
+		\paragraph{NP $ \subseteq $ Exp ? } Vogliamo capire in che classe è $ \np $
+		
+		Possiamo supporre che $ \p \subseteq \np \subseteq \Exp $.
+		
+		\begin{figure}[h!]
+			\centering
+			\begin{tikzpicture}
+			\draw (0,0) ellipse (3.5cm and 2cm);
+			\draw (-.5,0) ellipse (2.5cm and 1.5cm);
+			\draw (-1,0) ellipse (1cm and 1cm);
+			\node at (2.5,.5) {$ \Exp $};
+			\node (np) at (.75,.5) {$ \np $};
+			\node (p) at (-1,.5) {$ \p $};
+			\node at ($ (p.south) +(0,-.2) $) {eulercycle};
+			\node at ($ (p.south) +(0,-.5) $) {2-colouring};
+			\node[rotate=20] at ($ (np.south) +(0,-.7) $) {hamcycle};
+			\node[rotate=20] at ($ (np.south) +(-.5,-1.2) $) {k-colouring};
+		\end{tikzpicture}
+		\end{figure}
+		
+	\section{Riduzione alla Karp tra problemi di decisione}
+		\begin{definit}[Riduzione alla Karp]
+			Un problema di decisione $ \prob{A} $ si riduce alla Karp al problema $ \prob{B} $: $ \quad \prob{A} \leqslant_K \prob{B} \quad $ se esiste un algoritmo polinomiale $ \alg{A} $ tale che 
+			\[
+				\forall x \in \instance{A},\ \prob{B}(\alg{A}(x)) = yes \ \Leftrightarrow \ \prob{A}(x) = yes
+			\]
+		\end{definit}
+		
+		\begin{prop}
+			Se $ \prob{A} \leqslant_K \prob{B} \quad\text{ e }\quad \prob{B}\in \p \quad \Rightarrow\quad \prob{A}\in\p $
+		\end{prop} 
+		\begin{prop}
+			Se $ \prob{A} \leqslant_K \prob{B} \quad\text{ e }\quad \prob{B}\notin \p \quad \Rightarrow\quad \prob{A}\notin\p $
+		\end{prop} 
+		
+		Come effettivamente svolgiamo le trasformazioni?
+		
+		\subsection{Problema SAT}
+			\begin{definit}[SAT]
+				Il problema di soddisfacibilità di una formula booleana è definito nel seguente modo:
+				\begin{itemize}
+					\item Input: formula booleana : $ \phi (x_1, \dots, x_n) = C_1 \wedge C_2 \wedge \dots \wedge C_n $\\
+					Dove: \begin{itemize}
+						\item $ C_i = l_{i1} \vee l_{i2} \vee \dots \vee l_{ik} $ (clausola)
+						\item $ l_{ij} = x_k \text{ oppure } \bar{x}_k $ (letterale)
+					\end{itemize}
+					\item Output: \textit{yes} $ \Leftrightarrow\quad\exists a_1\dots a_n \in {T,F}^n\quad t.c.\quad \phi(a_1,\dots, a_n) = T $ 
+				\end{itemize}
+			\end{definit}
+			
+			\begin{esempio}
+				$ \phi(x_1, x_2, x_3) = (x_1\vee \bar{x}_2\vee x_3)\wedge (\bar{x}_1\vee\bar{x}_2\vee x_3) \wedge (x_1\vee \bar{x}_3) $ \\
+				Assegnamento che soddisfa la formula booleana $ \phi(x_1, x_2, x_3) $:
+				\begin{align*}
+					x_1 =& T\quad x_2 = F\quad x_3 = F \\
+					a_1 =& T\quad a_2 = F\quad a_3 = F
+				\end{align*}
+			\end{esempio}
 \end{document}
