@@ -546,4 +546,74 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 					a_1 =& T\quad a_2 = F\quad a_3 = F
 				\end{align*}
 			\end{esempio}
+			
+		\paragraph{SAT $ \in $ NP ?} Ci chiediamo se il problema SAT sta nella classe $ \np $. Vediamo dunque se esiste un certificato e un verificatore che attesta, dato una formula booleana, se essa è soddisfacibile in tempo polinomiale.
+		\begin{itemize}
+			\item Si può notare facilmente che il certificato è un assegnamento per la formula booleana, dunque è polinomialmente correlato alla grandezza delle variabili della formula, sarà al massimo $ n $.
+			\item Il verificatore viene costruito analizzando la formula booleana, controllando ogni letterale di ciascuna clausola. Ho quindi $ m\times n \times n $ controlli, dove $ m = $ numero di clausole, $ n = $ numero di letterali. Il verificatore è quindi polinomiale.
+		\end{itemize}
+		Possiamo concludere che il problema SAT $ \in \np $. Questa affermazione si può tradurre con: \textit{data una formula booleana di cui sappiamo essere soddisfacibile, allora è facile (polytime) costruire un verificatore che attesta che essa è SAT.}
+		
+		\paragraph{Problema K-SAT:} è il problema SAT in cui l'input ha come restrizione il vincolo che ogni clausola ha esattamente $ k $ letterali.
+		
+		\begin{esempio}[3-SAT]
+			$ \phi(x_1, x_2, x_3) = (x_1\vee x_2 \vee x_3)\wedge (\bar{x}_1\vee x_2 \vee x_3 ) \wedge (\bar{x}_1 \vee x_2\vee \bar{x}_3) $
+		\end{esempio}
+		  
+		\subsection{Alcuni esempi di riduzioni tra problemi}
+			\paragraph{K-colouring $ \leq_K $ (K+1)-colouring} Vediamo se il problema (K+1)-colouring non è più facile del problema K-colouring. Dobbiamo in sostanza dimostrare che decidere se possiamo colorare un grafo con $ k+1 $ colori non è più facile che decidere se possiamo colorare un grafo con $ k $ colori. \textbf{N.B.:} da notare che i due grafi non sono necessariamente uguali, parliamo di qualsiasi grafo che appartiene al problema.
+			
+			\begin{align*}
+				\alg{A}\ : \quad & x\in \mathcal{I}(K-COL)\quad \mapsto\quad \alg{A}(x)\in \mathcal{I}((K+1)-COL) \\
+							 & K-COL(x) = yes\quad \Leftrightarrow\quad (K+1)-COL(\alg{A}(x)) = yes   
+			\end{align*}
+			
+			Prendiamo quindi il grafo $ G' $:
+			
+			\begin{center}
+				\begin{tikzpicture}[scale=0.7,every node/.style={scale=0.8}]
+					\draw (0,0) ellipse (3cm and 2cm);
+					\draw (-1,-.5) circle (1cm);
+					\node at (0,1.7) {$ G' = \alg{A}(x) $};
+					\node at (-1,-.5) {$ G = x$};
+					\node[draw, circle] (a) at (-.5,0) {}; \node[draw, circle] (b) at (-.5,-.9) {};
+					\node[draw, circle] (c) at (-1.3,0) {};
+					\node[draw, circle] (d) at (1,1) {};
+					\draw[bend right] (d) to (c); \draw[bend left] (d) to (b); \draw (d) -- (a);
+				\end{tikzpicture}
+			\end{center}
+			per cui
+			\begin{align*}
+				G &= (V, E) \\
+				G'&= (V \cup \{v'\}, E \cup {(v, u')\ \vert\ v \in V})
+			\end{align*}
+			in tempo lineare e quindi sotto il polinomiale riesco a costruire il grafo G'.\\
+			Se G è K-colorabile allora G' è (K+1)-colorabile. Mi basta assegnare a $ v' $ il colore $ k $ (il k+1-esimo colore) e mantenere la colorazione di G.\\
+			Se G non è K-colorabile allora G' non è K+1-colorabile. Equivale a dire che se G' è K+1-colorabile allora G è k-colorabile. Quindi se $ v' $ ha un colore $ f(v') = x $ allora ogni $ v \in V(G) $ ha un colore $ f(v') \neq x $, al più usano k colori.
+			
+			Da questa dimostrazione ricaviamo anche che 2-col $ \leq_K $ 3-col $ \leq_K $ 4-col $ \leq_K $ 5-col
+			
+			
+			\paragraph{SAT $ \leq_K $ 3-SAT} Vogliamo dimostrare che data una formula booleana $ \phi $ CNF esiste una trasformazione polytime che mi porta a una formula booleana $ \phi' $ 3CNF (ogni clausola ha esattamente 3 letterali). E inoltre che $ \phi $ è soddisfacibile se e solo se $ \phi' $ è soddisfacibile.
+			
+			Possiamo iniziare dicendo che $ \ (x_1 \vee x_2) \equiv (x_1 \vee x_1 \vee x_2) $. Le clausole più piccole possono essere espanse. Seguendo questa intuizione arriviamo a dire che:
+			\begin{align*}
+				&(l_1 \vee l_2 \vee l_3 \vee \dots \vee l_k)\quad \rightsquigarrow\quad \\
+				&(l_1\vee l_2\vee z_1) \wedge (\bar{z}_1\vee l_3 \vee z_2) \wedge (\bar{z}_2 \vee l_4\vee z_3)
+				\wedge (\bar{z}_3 \vee l_5 \vee z_4) \wedge \dots \wedge (\bar{z}_{k-1} \vee l_{k+1} \vee z_k)
+			\end{align*}
+			
+			Dimostriamo che se $ \phi $ non è soddisfacibile allora non lo è neanche $ \phi' $.
+			\begin{itemize}
+				\item Prendiamo $ \phi = (x_1 , \dots, x_n) $. Per questa formula prendiamo un assegnamento $ a_1, \dots, a_n $ che non la rende soddisfacibile, quello in cui ogni letterale viene assegnato a F.
+				\item Prendiamo dunque $ \phi' = (x_1, \dots, x_n, z_1, \dots z_r) $. Per questa formula prendiamo lo stesso assegnamento di $ \phi $ e vediamo cosa succede con i letterali $ z $:
+			\[
+				(\underset{F}{l_1} \vee \underset{F}{l_2}\vee \underset{V}{z_1}) 
+				\wedge (\underset{F}{\bar{z}_1}\vee \underset{F}{l_3} \vee \underset{V}{z_2}) 
+				\wedge (\underset{F}{\bar{z}_2}\vee \underset{F}{l_4} \vee \underset{V}{z_3}) 
+				\wedge (\underset{F}{\bar{z}_3}\vee \underset{F}{l_5} \vee \underset{V}{z_4})  \wedge 
+				\dots \wedge (\underset{F}{\bar{z}_{k-1}}\vee \underset{F}{l_{k+1}} \vee \underset{F}{z_{k}}) 
+			\]
+			risulta che l'ultimo letterale $ z_k $ è falso, e quindi $ \phi' $ non è soddisfacibile.
+ 			\end{itemize}
 \end{document}
