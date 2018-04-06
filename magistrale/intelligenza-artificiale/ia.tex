@@ -64,22 +64,23 @@ Notare che se un agente ha $\vert P \vert$ possibili percezioni in ingresso, dop
 
 Un agente è in generale una struttura formata da un'architettura fisica e un programma, e prende in input una percezione attuale e ritorna in output l'azione successiva da svolgere. 
 
-Esistono principalmente 4 tipi di agenti: \begin{itemize}
-	\item agenti \textit{simple-reflex};
-	\item agenti \textit{reflex} con stato;
-	\item agenti \textit{goal-based};
-	\item agenti \textit{utility-based}.
+Esistono principalmente 4 tipi di agenti (ordinati per generalità crescente): 
+\begin{itemize}
+	\item agenti \textit{simple-reflex} $ \rightarrow $ agiscono in base alla percezione dell'ambiente;
+	\item agenti \textit{reflex} con stato (model based agents) $ \rightarrow $ agiscono in base allo stato, le azioni sono condizionate da regole;
+	\item agenti \textit{goal-based} $ \rightarrow $ le azioni sono condizionate in base al goal prefissato, anche qui è presente uno stato che influisce sul raggiungimento del goal;
+	\item agenti \textit{utility-based} $ \rightarrow $ le azioni sono condizionate in base ad una utility che rappresenta un valore, si cerca di arrivare nello stato che massimizza questo valore.
 \end{itemize}
 
 \paragraph{Performace measure.} La \textit{performance-measure} costituisce una sorta di punteggio che misura il comportamento dell'agente nell'ambiente in cui opera. Quindi, data una performance measure e le percezioni attuale dell'agente, questo sceglie la sequenze di azioni che la massimizzano.
 
 \paragraph{Ambienti.} Un ambiente, ovvero lo spazio in cui l'agente opera, è caratterizzato dai seguenti tratti: \begin{itemize}
-	\item Osservabilità;
+	\item Osservabilità (ho sensori con cui osservo);
 	\item Determinismo;
-	\item Episodicità;
-	\item Staticità;
+	\item Episodicità (non ho bisogno dello storico delle percezioni, mi basta la percezione corrente);
+	\item Staticità (l'ambiente non cambia indipendentemente dall'azione dell'agente);
 	\item Discretezza;
-	\item Presenza di altri agenti.
+	\item Presenza di altri agenti (Multi o Single Agent).
 \end{itemize}
 
 Il tipo di ambiente ovviamente condiziona il design degli agenti che vi operano.
