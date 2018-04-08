@@ -14,6 +14,8 @@
 \usepackage[margin=3cm]{geometry}
 \usepackage{booktabs,caption}
 \usepackage{subcaption}
+\usepackage{float}
+\usepackage{wrapfig}
 \usepackage{epigraph}
 \usepackage{fancyhdr}
 \usepackage{listings}
@@ -616,4 +618,79 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 			\]
 			risulta che l'ultimo letterale $ z_k $ è falso, e quindi $ \phi' $ non è soddisfacibile.
  			\end{itemize}
+ 			
+ 			\paragraph{K-COL $ \leq_K $ K-SAT} Vogliamo dimostrare che il problema di colorare un grafo con k colori è riducibile al problema di soddisfacibilità di una formula booleana k-CNF.
+ 			
+ 			Cerchiamo un modo per esprimere in modo logico il fatto che due nodi adiacenti non abbiano lo stesso colore.
+ 			Supponiamo che il nodo $ v $ abbia colore $ i $ e il nodo $ u $ abbia colore $ i $ con $ i= 0,1, \dots, k-1 $.
+ 			Per ogni $ v \in V $: $ \quad x_0^{(v)} \ x_1^{(v)} \ x_2^{(v)} \dots \ x_{k-1}^{(v)}  $ dove $ x_i^{(v)} = T $ se il vertice $ v $ ha colore $ i $.
+ 			
+ 			Ci chiediamo quindi quand'è che la formula è K-colorabile?
+ 			\[
+	 			\forall v \in V
+	 			\begin{cases}
+		 			x_0^{(v)} \vee x_1^{(v)} \vee x_2^{(v)} \vee \dots \vee x_{k-1}^{(v)} \quad \text{ogni vertice ha un colore}\\ \\
+		 			\overline{x_i^{(v)} \wedge x_j^{(v)}} = \overline{x_i^{(v)}} \vee \overline{x_j^{(v)}} \quad \forall i,j
+	 			\end{cases}
+ 			\]
+	 		\[
+		 		\forall e =(u, v) \in E\ \text{ i due vertici non devono avere lo stesso colore}
+	 		\]
+	 		\[
+		 		\forall i \quad \overline{x^{(v)}_i \wedge x_i^{(u)}} =
+		 		\overline{x_i^{(v)}} \vee \overline{x_i^{(u)}}
+	 		\]
+	 		
+	 		\begin{esempio}
+
+	 			Prendiamo per esempio il seguente grafo:	 
+	 			\begin{center}
+					\begin{tikzpicture}
+						\node[draw, circle] (u) at (0,0) {u};
+						\node[draw, circle] (v) at (0,-1.5) {v};
+						\node[draw, circle] (z) at (1.5,-.75) {z};
+						\draw (u) -- (v) -- (z) -- (u);
+					\end{tikzpicture}
+				\end{center}
+	 			La formula booleana corrispondente sarà:
+	 			\begin{align*}
+		 			&\tikzmark{a}(x_0^{(u)} \vee x_1^{(u)} \vee x_2^{(u)}) \wedge 
+		 			\tikzmark{c}(\overline{x_0^{(u)}} \vee \overline{x_1^{(u)}}) \wedge
+		 			(\overline{x_0^{(u)}} \vee \overline{x_2^{(u)}}) \wedge
+		 			(\overline{x_1^{(u)}} \vee \overline{x_2^{(u)}})\tikzmark{d} \wedge \\
+		 			&(x_0^{(v)} \vee x_1^{(v)} \vee x_2^{(v)}) \wedge 
+		 			(\overline{x_0^{(v)}} \vee \overline{x_1^{(v)}}) \wedge
+		 			(\overline{x_0^{(v)}} \vee \overline{x_2^{(v)}}) \wedge
+		 			(\overline{x_1^{(v)}} \vee \overline{x_2^{(v)}}) \wedge \\
+		 			&\tikzmark{b}(x_0^{(z)} \vee x_1^{(z)} \vee x_2^{(z)}) \wedge 
+		 			(\overline{x_0^{(z)}} \vee \overline{x_1^{(z)}}) \wedge
+		 			(\overline{x_0^{(z)}} \vee \overline{x_2^{(z)}}) \wedge
+		 			(\overline{x_1^{(z)}} \vee \overline{x_2^{(z)}}) \wedge \\
+		 			&\tikzmark{e}(\overline{x_0^{(v)}} \vee \overline{x_0^{(u)}}) \wedge
+		 			(\overline{x_1^{(v)}} \vee \overline{x_1^{(u)}}) \wedge
+		 			(\overline{x_2^{(v)}} \vee \overline{x_2^{(u)}}) \wedge \\
+		 			&(\overline{x_0^{(v)}} \vee \overline{x_0^{(z)}}) \wedge
+		 			(\overline{x_1^{(v)}} \vee \overline{x_1^{(z)}}) \wedge
+		 			(\overline{x_2^{(v)}} \vee \overline{x_2^{(z)}}) \wedge \\
+		 			&\tikzmark{f}(\overline{x_0^{(z)}} \vee \overline{x_0^{(u)}}) \wedge
+		 			(\overline{x_1^{(z)}} \vee \overline{x_1^{(u)}}) \wedge
+		 			(\overline{x_2^{(z)}} \vee \overline{x_2^{(u)}})
+	 			\end{align*}
+				
+				\begin{tikzpicture}[overlay, remember picture,decoration={brace,amplitude=3pt}]
+					\draw[decorate,thick] ($ (b) +(-0.3,-.2) $) -- ($ (a) +(-0.3,.2) $)
+					 node[midway, left, align=left] {Ogni vertice\\ ha un colore}; 
+					\draw[decorate,thick] ($ (f) +(-0.3,-.2) $) -- ($ (e) +(-0.3,.2) $)
+					 node[midway, left, align=left] {Ogni arco ha\\ colori diversi}; 
+					\draw[decorate,thick] ($ (c) +(0,.5) $) -- ($ (d) +(0,.5) $)
+					node[midway, above, align=left] {Un vertice non\\ può avere 2 colori}; 
+					
+				\end{tikzpicture}
+	 		\end{esempio}
+	 	La trasformazione è polinomiale? La complessità della trasformazione è:
+	 	\[
+		 	\vert V \vert \cdot \Big(K + 2 \binom{k}{2}\Big) + \vert E \vert K\cdot 2 \quad \leq\quad
+		 	(\vert E \vert + \vert V \vert) K^2
+	 	\]
+	 	Quindi è polinomiale.
 \end{document}
