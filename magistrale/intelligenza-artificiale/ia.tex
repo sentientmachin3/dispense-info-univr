@@ -7,11 +7,13 @@
 \usepackage[margin=3cm]{geometry}
 \usepackage{libertine}
 \usepackage{hyperref}
+\usepackage{fancyhdr}
 \usepackage{listings}
 \usepackage{booktabs}
 \usepackage{courier}
 \usepackage{wrapfig}
 \usepackage{centernot}
+
 \hypersetup{
 	hidelinks, 
 	colorlinks = true,
@@ -22,10 +24,24 @@
 \usetikzlibrary{shapes,arrows,positioning,calc}
 \usetikzlibrary{decorations.pathreplacing}
 
-\lstset {
+\lstset {language = C,
 	tabsize=2,
-	basicstyle=\footnotesize\ttfamily
+	basicstyle=\footnotesize\ttfamily,
+	morekeywords={function, then, treeSearch, loop, insert, insertAll, goalTest,
+		makeNode, expand, initialState, DLS, recursiveDLS, end},
+	showstringspaces=false
 	}
+	
+\pagestyle{fancy}
+\lhead{\nouppercase{\leftmark}}
+\rhead{\nouppercase{\rightmark}}
+\chead{}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\renewcommand{\lstlistingname}{Algorithm}
 
 \newcommand{\astar}{$A^\ast$ }
 
@@ -68,7 +84,7 @@ Esistono principalmente 4 tipi di agenti (ordinati per generalità crescente):
 \begin{itemize}
 	\item agenti \textit{simple-reflex} $ \rightarrow $ agiscono in base alla percezione dell'ambiente;
 	\item agenti \textit{reflex} con stato (model based agents) $ \rightarrow $ agiscono in base allo stato, le azioni sono condizionate da regole;
-	\item agenti \textit{goal-based} $ \rightarrow $ le azioni sono condizionate in base al goal prefissato, anche qui è presente uno stato che influisce sul raggiungimento del goal;
+	\item agenti \textit{goal-based} $ \rightarrow $ le azioni sono condizionate in base al goal prefissato, anche qui è presente uno stato che influisce sul raggiungimento del goal. La soluzione al problema viene eseguita ignorando le percezioni;
 	\item agenti \textit{utility-based} $ \rightarrow $ le azioni sono condizionate in base ad una utility che rappresenta un valore, si cerca di arrivare nello stato che massimizza questo valore.
 \end{itemize}
 
@@ -115,8 +131,8 @@ Le strutture dati utilizzate nelle ricerche su alberi, oltre alla struttura dati
 	\item una lista \lstinline|closed|, contente i nodi di frontiera espansi in passi precedenti.
 \end{itemize}
 In generale ogni algoritmo di ricerca su alberi funziona come segue:
-\begin{lstlisting}
-function tree-search(problem, strategy)
+\begin{lstlisting}[frame=tb]
+function treeSearch(problem, strategy)
 	inizializza l'abero di ricerca usando lo stato iniziale del problema;
 	loop:
 		se non ci sono candidati per l'espansione:
@@ -132,27 +148,126 @@ function tree-search(problem, strategy)
 \textbf{Nota:} un nodo è una struttura dati, uno stato è una rappresentazione fisica di un nodo, non ha stati padre, ecc.
 
 Il metodo generale per eseguire una ricerca sugli alberi è il seguente:
-\begin{lstlisting}
-function tree-search(problem, fringe):
-	fringe = insert(make-node(initial-state[problem]), fringe) 
+\begin{lstlisting}[frame=tb]
+function treeSearch(problem, fringe):
+	fringe = insert(makeNode(initialState[problem]), fringe) 
 	loop:
 		if fringe is empty
 			return failure
-		if goal-test(problem,state(node))
+		if goalTest(problem,state(node))
 			return node
-		fringe = insert-all(expand(node, problem), fringe)
+		fringe = insertAll(expand(node, problem), fringe)
 \end{lstlisting}
+
+Metodo di espansione dei nodi:
+\begin{lstlisting}[frame=tb]
+	function expand(node, problem):
+		successors = {}
+		for each action, result in successorFn(problem, state[node]) do
+			s = nuovo nodo
+			parentNode[s] = node
+			action[s] = action
+			state[s] = result
+			pathCost[s] = pathCost[node] + stepCost(state[node], action, result)
+			depth[s] = depth[node] + 1
+			aggiungi s ai successors
+		return successors
+\end{lstlisting}
+Una strategia possibile è quella di scegliere l'ordine dei nodi da espandere.\\
+Le strategie sono valutate a seconda delle seguenti dimensioni:
+\begin{itemize}
+	\item \textit{Completezza}: trova sempre una soluzione se essa esiste?
+	\item \textit{Complessità} in termini di \textit{tempo}: numero di nodi generati/espansi
+	\item \textit{Complessità} in termini di \textit{spazio}: massimo numero di nodi in memoria
+	\item \textit{Ottimalità}: trova sempre la soluzione a costo minore?
+\end{itemize}
+La complessità in termini di tempo e spazio fa affidamento sui seguenti termini:
+\begin{itemize}
+	\item \textit{b}: massimo fattore di ramificazione del search tree
+	\item \textit{d}: profondità della soluzione a costo minimo
+	\item \textit{m} massima profondità dello spazio degli stati (può essere $ \infty $)
+\end{itemize}
 
 I problemi di ricerca non informata utilizzano solo le informazioni presenti nella definizione del problema. 
 \paragraph{Uniform-cost search.} È l'algoritmo più semplice: espande il nodo con il costo di percorso minore. La frontiera è quindi una coda ordinata per costo. Non guarda al numero di nodi espansi ma unicamente al loro costo.
 
-\paragraph{Breadth-first search.} Espande il nodo non espanso più in superficie. Il problema di questo algoritmo è lo \textbf{spazio usato}. Infatti, dal momento che deve tenere ogni nodo in memoria, con grandi alberi occupa molto spazio; inoltre ha complessità $O(b^{d+1})$, sia spazialmente che temporalmente.
+\paragraph{Breadth-first search (BFS).} Espande il nodo non espanso più in superficie. La frontiera è una coda FIFO. Il problema di questo algoritmo è lo \textbf{spazio usato}. Infatti, dal momento che deve tenere ogni nodo in memoria, con grandi alberi occupa molto spazio; inoltre ha complessità $O(b^{d+1})$, sia spazialmente che temporalmente.
 
-\paragraph{Depth-first search.} Mentre BFS lavora in ampiezza, DFS lavora in profondità, andando ad espandere il nodo non espanso più a fondo possibile. La complessità spaziale è $O(bm)$, che sarebbe ideale se non per il fatto che fallisce in spazi infiniti oppure in spazi con cicli. Temporalmente ha complessità $O(b^m)$, una complessità peggiore quanto più $m$ è maggiore di $d$.
+\begin{figure}[h!]
+	\begin{tikzpicture}[scale=.5,every node/.style={scale=0.8}, >=latex]
+	\node[draw, circle] (A) at (3,4) {A}; \node[draw, circle] (B) at (1,2) {B}; \node[draw, circle] (C) at (5,2) {C}; 
+	\node[draw, circle] (D) at (0,0) {D}; \node[draw, circle] (E) at (2,0) {E}; \node[draw, circle] (F) at (4,0) {F}; 
+	\node[draw, circle] (G) at (6,0) {G}; 
+	\draw (A) -- (B) -- (D); \draw (A) -- (C) -- (F); \draw (C) -- (G); \draw (B) -- (E); 
+	\draw[->, ultra thick] ($ (B) +(-1,0) $) -- (B.west) ;
+\end{tikzpicture}
+\hspace{1cm}
+\begin{tikzpicture}[scale=.5,every node/.style={scale=0.8}, >=latex]
+	\node[draw, circle] (A) at (3,4) {A}; \node[draw, circle] (B) at (1,2) {B}; \node[draw, circle] (C) at (5,2) {C}; 
+	\node[draw, circle] (D) at (0,0) {D}; \node[draw, circle] (E) at (2,0) {E}; \node[draw, circle] (F) at (4,0) {F}; 
+	\node[draw, circle] (G) at (6,0) {G}; 
+	\draw (A) -- (B) -- (D); \draw (A) -- (C) -- (F); \draw (C) -- (G); \draw (B) -- (E); 
+	\draw[->, ultra thick] ($ (C) +(-1,0) $) -- (C.west) ;
+\end{tikzpicture}
+\hspace{1cm}
+\begin{tikzpicture}[scale=.5,every node/.style={scale=0.8}, >=latex]
+	\node[draw, circle] (A) at (3,4) {A}; \node[draw, circle] (B) at (1,2) {B}; \node[draw, circle] (C) at (5,2) {C}; 
+	\node[draw, circle] (D) at (0,0) {D}; \node[draw, circle] (E) at (2,0) {E}; \node[draw, circle] (F) at (4,0) {F}; 
+	\node[draw, circle] (G) at (6,0) {G}; 
+	\draw (A) -- (B) -- (D); \draw (A) -- (C) -- (F); \draw (C) -- (G); \draw (B) -- (E); 
+	\draw[->, ultra thick] ($ (D) +(-1,0) $) -- (D.west) ;
+\end{tikzpicture}
+	\label{tikz:bfs}
+	\caption{BFS}
+\end{figure}
+
+\paragraph{Depth-first search (DFS).} Mentre BFS lavora in ampiezza, DFS lavora in profondità, andando ad espandere il nodo non espanso più a fondo possibile. La complessità spaziale è $O(bm)$, che sarebbe ideale se non per il fatto che fallisce in spazi infiniti oppure in spazi con cicli. Temporalmente ha complessità $O(b^m)$, una complessità peggiore quanto più $m$ è maggiore di $d$.
+
+\begin{figure}[h!]
+	\centering
+	\begin{tikzpicture}[scale=.4,every node/.style={scale=0.6}, >=latex]
+	\node[draw, circle, fill=gray!30] (A) at (7,6) {A}; \node[draw, circle, fill=black] (B) at (3,4) {B}; 
+	\node[draw, circle, fill=gray!30] (C) at (11,4) {C}; 
+	\node[draw, circle, fill=black] (D) at (1,2) {D}; \node[draw, circle, fill=black] (E) at (5,2) {E}; 
+	\node[draw, circle, fill=gray!30] (F) at (9,2) {F}; \node[draw, circle] (G) at (13,2) {G}; 
+	\node[draw, circle, fill=black] (H) at (0,0) {I}; \node[draw, circle, fill=black] (I) at (2,0) {I}; 
+	\node[draw, circle, fill=black] (L) at (4,0) {I}; \node[draw, circle, fill=black] (M) at (6,0) {I}; 
+	\node[draw, circle, fill=black] (N) at (8,0) {I}; \node[draw, circle] (O) at (10,0) {O}; \node[draw, circle] (P) at (12,0) {P}; \node[draw, circle] (Q) at (14,0) {Q};
+	\draw (A) -- (B) -- (D) -- (H); \draw (A) -- (C) -- (F) -- (N); \draw (C) -- (G) -- (Q); \draw (B) -- (E) -- (M); 
+	\draw (E) -- (L); \draw (B) -- (E) -- (M); \draw (D) -- (I); \draw (F) -- (O); \draw (G) -- (P);
+	\draw[->, ultra thick] ($ (O) +(-1,0) $) -- (O.west) ;
+	\end{tikzpicture}
+	\label{tikz:dfs}
+	\caption{DFS}
+\end{figure}
 
 \paragraph{Depth-limited search.} In realtà è solo una variante della DFS, alla quale viene imposto un limite di profondità da raggiungere. La profondità limite, oltre a ridurre lo spazio utilizzato, risolve anche il problema dei cammini infiniti, che nella DFS standard erano il problema più grande che si potesse avere. È anche vero che viene introdotto un altro punto di debolezza, ovvero quello in cui il goal è oltre la profondità limite.
 
-\paragraph{Iterative-deepening search.} È una tecnica usata in combinazione con la DLS per trovare il limite minimo necessario al raggiungimento del goal. Lavora su una profondità variabile chiamando ad ogni iterazione la DLS con il limite corrente. Le complessità sono $O(b^d)$ (temporale) e $O(bd)$ (spaziale).
+\begin{lstlisting}[frame=tb, caption={Recursive implementation of DLS}]
+	function DLS(problem, limit):
+		recursiveDLS(makeNode(initialState[problem]), problem, limit)
+		
+	function recursiveDLS(node, problem, limit):
+		cutoffOccurred = false
+		if goalTest(problem, state[node]) then return node
+		else if depth[node] = limit then return cutoff
+		else for each successor in expand(node, problem) do
+			result = recursiveDLS(successor, problem, limit)
+			if result = cutoff then cutoffOccurred = true
+			else if result != failure then return result
+		if cutoffOccurred then return cutoff
+		else return failure		
+\end{lstlisting}
+
+\paragraph{Iterative-deepening search (IDS).} È una tecnica usata in combinazione con la DLS per trovare il limite minimo necessario al raggiungimento del goal. Lavora su una profondità variabile chiamando ad ogni iterazione la DLS con il limite corrente. Le complessità sono $O(b^d)$ (temporale) e $O(bd)$ (spaziale).
+
+\begin{lstlisting}[frame=tb, caption={IDS}]
+	function IDS(problem)
+		for depth = 0 to inf do
+			result = DLS(proble, depth)
+			if result != cutoff then return result
+		end
+\end{lstlisting}
 
 \paragraph{Confronto tra gli algoritmi.} Presentiamo di seguito un confronto riepilogativo dei vari algoritmi di ricerca su alberi. \\
 \begin{center}
