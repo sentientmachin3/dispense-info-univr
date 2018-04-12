@@ -13,6 +13,7 @@ Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman
 - Sistemi Operativi (Laboratorio)
 - Sicurezza di Rete (In progress, teoria)
 - Fondamenti dell'informatica
+- Elaborazione segnali e immagini (In progress)
 
 #### MAGISTRALE
 - Linguaggi (In progress, con schema delle regole di inferenza)
