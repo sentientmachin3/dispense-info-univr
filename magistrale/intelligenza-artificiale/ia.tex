@@ -8,6 +8,7 @@
 \usepackage{libertine}
 \usepackage{hyperref}
 \usepackage{fancyhdr}
+\usepackage{multicol}
 \usepackage{listings}
 \usepackage{booktabs}
 \usepackage{courier}
@@ -27,7 +28,7 @@
 \lstset {language = C,
 	tabsize=2,
 	basicstyle=\footnotesize\ttfamily,
-	morekeywords={function, then, treeSearch, loop, insert, insertAll, goalTest,
+	morekeywords={function, then, foreach, treeSearch, loop, insert, insertAll, goalTest,
 		makeNode, expand, initialState, DLS, recursiveDLS, end},
 	showstringspaces=false
 	}
@@ -191,38 +192,44 @@ La complessità in termini di tempo e spazio fa affidamento sui seguenti termini
 I problemi di ricerca non informata utilizzano solo le informazioni presenti nella definizione del problema. 
 \paragraph{Uniform-cost search.} È l'algoritmo più semplice: espande il nodo con il costo di percorso minore. La frontiera è quindi una coda ordinata per costo. Non guarda al numero di nodi espansi ma unicamente al loro costo.
 
-\paragraph{Breadth-first search (BFS).} Espande il nodo non espanso più in superficie. La frontiera è una coda FIFO. Il problema di questo algoritmo è lo \textbf{spazio usato}. Infatti, dal momento che deve tenere ogni nodo in memoria, con grandi alberi occupa molto spazio; inoltre ha complessità $O(b^{d+1})$, sia spazialmente che temporalmente.
-
+\paragraph{Breadth-first search (BFS).} Espande il nodo non espanso più in superficie. La frontiera è una coda FIFO. Il problema di questo algoritmo è lo \textbf{spazio usato}. Infatti, dal momento che deve tenere ogni nodo in memoria, con grandi alberi occupa molto spazio; inoltre ha complessità $O(b^{d+1})$, sia spazialmente che temporalmente. In particolare la complessità in termini di tempo è data dalla seguente formula:
+\[
+	1 + b + b^2 + b^3 + \dots + b^d + b(b^d -1)
+\]
 \begin{figure}[h!]
 	\begin{tikzpicture}[scale=.5,every node/.style={scale=0.8}, >=latex]
-	\node[draw, circle] (A) at (3,4) {A}; \node[draw, circle] (B) at (1,2) {B}; \node[draw, circle] (C) at (5,2) {C}; 
-	\node[draw, circle] (D) at (0,0) {D}; \node[draw, circle] (E) at (2,0) {E}; \node[draw, circle] (F) at (4,0) {F}; 
+	\node[draw, circle,fill=gray!30] (A) at (3,4) {A}; \node[draw, circle] (B) at (1,2) {B}; 
+	\node[draw, circle] (C) at (5,2) {C}; \node[draw, circle] (D) at (0,0) {D}; \node[draw, circle] (E) at (2,0) {E}; \node[draw, circle] (F) at (4,0) {F}; 
 	\node[draw, circle] (G) at (6,0) {G}; 
 	\draw (A) -- (B) -- (D); \draw (A) -- (C) -- (F); \draw (C) -- (G); \draw (B) -- (E); 
 	\draw[->, ultra thick] ($ (B) +(-1,0) $) -- (B.west) ;
 \end{tikzpicture}
 \hspace{1cm}
 \begin{tikzpicture}[scale=.5,every node/.style={scale=0.8}, >=latex]
-	\node[draw, circle] (A) at (3,4) {A}; \node[draw, circle] (B) at (1,2) {B}; \node[draw, circle] (C) at (5,2) {C}; 
-	\node[draw, circle] (D) at (0,0) {D}; \node[draw, circle] (E) at (2,0) {E}; \node[draw, circle] (F) at (4,0) {F}; 
+	\node[draw, circle,fill=gray!30] (A) at (3,4) {A}; \node[draw, circle,fill=gray!30] (B) at (1,2) {B}; 
+	\node[draw, circle] (C) at (5,2) {C}; \node[draw, circle] (D) at (0,0) {D}; \node[draw, circle] (E) at (2,0) {E}; \node[draw, circle] (F) at (4,0) {F}; 
 	\node[draw, circle] (G) at (6,0) {G}; 
 	\draw (A) -- (B) -- (D); \draw (A) -- (C) -- (F); \draw (C) -- (G); \draw (B) -- (E); 
 	\draw[->, ultra thick] ($ (C) +(-1,0) $) -- (C.west) ;
 \end{tikzpicture}
 \hspace{1cm}
 \begin{tikzpicture}[scale=.5,every node/.style={scale=0.8}, >=latex]
-	\node[draw, circle] (A) at (3,4) {A}; \node[draw, circle] (B) at (1,2) {B}; \node[draw, circle] (C) at (5,2) {C}; 
-	\node[draw, circle] (D) at (0,0) {D}; \node[draw, circle] (E) at (2,0) {E}; \node[draw, circle] (F) at (4,0) {F}; 
-	\node[draw, circle] (G) at (6,0) {G}; 
+	\node[draw, circle,fill=gray!30] (A) at (3,4) {A}; \node[draw, circle,fill=gray!30] (B) at (1,2) {B}; 
+	\node[draw, circle,fill=gray!30] (C) at (5,2) {C}; \node[draw, circle] (D) at (0,0) {D}; 
+	\node[draw, circle] (E) at (2,0) {E}; \node[draw, circle] (F) at (4,0) {F}; 
+	\node[draw, circle] (G) at (6,0) {G};
+	\node at ($ (A.east) +(4,0) $) {$ b^0 $}; \node at ($ (C.east) +(2,0) $) {$ b^1 $}; 
+	\node at ($ (G.east) +(2.5,0) $) {$ b^2 + (b^2 -1)b $}; 
 	\draw (A) -- (B) -- (D); \draw (A) -- (C) -- (F); \draw (C) -- (G); \draw (B) -- (E); 
 	\draw[->, ultra thick] ($ (D) +(-1,0) $) -- (D.west) ;
 \end{tikzpicture}
 	\label{tikz:bfs}
 	\caption{BFS}
+	\vspace*{-2.5cm}
 \end{figure}
 
 \paragraph{Depth-first search (DFS).} Mentre BFS lavora in ampiezza, DFS lavora in profondità, andando ad espandere il nodo non espanso più a fondo possibile. La complessità spaziale è $O(bm)$, che sarebbe ideale se non per il fatto che fallisce in spazi infiniti oppure in spazi con cicli. Temporalmente ha complessità $O(b^m)$, una complessità peggiore quanto più $m$ è maggiore di $d$.
-
+\vspace{.45cm}
 \begin{figure}[h!]
 	\centering
 	\begin{tikzpicture}[scale=.4,every node/.style={scale=0.6}, >=latex]
@@ -251,7 +258,7 @@ I problemi di ricerca non informata utilizzano solo le informazioni presenti nel
 		cutoffOccurred = false
 		if goalTest(problem, state[node]) then return node
 		else if depth[node] = limit then return cutoff
-		else for each successor in expand(node, problem) do
+		else foreach successor in expand(node, problem) do
 			result = recursiveDLS(successor, problem, limit)
 			if result = cutoff then cutoffOccurred = true
 			else if result != failure then return result
@@ -259,7 +266,10 @@ I problemi di ricerca non informata utilizzano solo le informazioni presenti nel
 		else return failure		
 \end{lstlisting}
 
-\paragraph{Iterative-deepening search (IDS).} È una tecnica usata in combinazione con la DLS per trovare il limite minimo necessario al raggiungimento del goal. Lavora su una profondità variabile chiamando ad ogni iterazione la DLS con il limite corrente. Le complessità sono $O(b^d)$ (temporale) e $O(bd)$ (spaziale).
+\paragraph{Iterative-deepening search (IDS).} È una tecnica usata in combinazione con la DLS per trovare il limite minimo necessario al raggiungimento del goal. Lavora su una profondità variabile chiamando ad ogni iterazione la DLS con il limite corrente. Le complessità sono $O(b^d)$ (temporale) e $O(bd)$ (spaziale). La complessità in termini di tempo in particolare è:
+\[
+	(d+1) b^0 + db^1 + (d-1)b^2 + \dots + b^d
+\]
 
 \begin{lstlisting}[frame=tb, caption={IDS}]
 	function IDS(problem)
@@ -287,6 +297,36 @@ dove: \begin{itemize}
 	\item $\dagger$: completo se uno step ha costo $\geq \epsilon$;
 	\item $\star$:ottimale se tutti i costi dei singoli step sono uguali.
 \end{itemize}
+
+\subsection{Esempi}
+	\paragraph{BFS vs IDS.} prendiamo un albero che abbia le seguenti caratteristiche:
+	\begin{itemize}
+		\item Sia un albero di ricerca ben bilanciato
+		\item Lo stato di goal è l'ultimo ad essere espanso nel suo livello (rightmost)
+	\end{itemize}
+	Prendiamo, dato l'albero, i seguenti casi
+	\begin{multicols}{2}
+		\noindent
+		$ b = 3,\ d = 3 $ \\
+		\textbf{BFS}
+		\begin{align*}
+			& b^0 + b^1 + \dots + b^d + b(b^d - 1) =\\
+			& 3^0 + 3^1 + 3^2 + 3^3 + 3(3^3 -1) = 118
+		\end{align*}
+		\columnbreak
+		
+		\noindent
+		$ b = 4,\ d = 3 $ \\
+		\textbf{IDS}\vspace*{-9pt}
+		\begin{align*}
+			& b^0(d + 1) + b^1d + \dots + b^d =\\
+			& 4^0(3 + 1) + 4^1\cdot 3 + 4^2\cdot 2 + 4^3\cdot 1 = 112
+		\end{align*}
+	\end{multicols}
+	
+	Cosa succede se il controllo del goal viene effettuato quando si inserisce nella frontiera invece che quando si rimuove? (come avviene in tree search)\\
+	Per l'IDS non cambia nulla, il numero di nodi sarà sempre 112.\\
+	Per la BFS, ci si ferma al nodo goal, senza espandere i nodi sottostanti, quindi il costo cala drasticamente: $ b^0 + b^1 + b^2 + b^3 = 40 $
 
 \subsection{Ricerca informata}
 Le strategie di ricerca informata utilizzano conoscenze specifiche riguardanti il problema oltre alla definizione dello stesso, pertanto sono più efficienti.
