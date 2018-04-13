@@ -371,7 +371,49 @@ Un'euristica si dice consistente se si ha che $h(n) \leq c(n,a,n') + h(n')$.
 Inoltre si definisce un'euristica dominante $h_2$ se vale che, $\forall n$ \[ h_2(n) \geq h_1(n) \]
 L'euristica dominante è sempre migliore dal punto di vista prestazionale.
 
+\newpage
+\section{Constraint reasoning}
+\subsection{Problemi combinatori}
+Portiamo come principale categoria di problemi risolvibili tramite reti a vincoli i problemi combinatori, ovvero quei problemi dei quali si deve scegliere la soluzione migliore tra le molti possibili.
+Alcuni di questi problemi sono i problemi di decisione e di ottimizzazione.
 
+Ogni problema combinatorio può essere formulato come, dati un insieme di variabili e domini, la ricerca dei valori delle variabili per i quali vale una certa relazione.
+
+\subsection{Reti a vincoli}
+Una rete a vincoli è una struttura rappresentata come segue: \begin{itemize}
+	\item un insieme di variabili $X = \lbrace x_1, x_2, \dots, x_n \rbrace$;
+	\item un insieme di domini $D = \lbrace D_1, D_2, \dots, D_n \rbrace$;
+	\item insieme di vincoli $(S_i, R_i)$
+	\end{itemize}
+Si noti che un vincolo è una coppia $(S_i, R_i)$ dove $S_i$ è una o più variabili $S_i \subseteq X$, mentre $R_i$ è un sottoinsieme del prodotto cartesiano in $S_i$.
+
+La soluzione di una rete a vincoli è l'assegnamento di tutte le variabili in modo tale che tutti i vincoli siano soddisfatti.
+
+\textbf{Nota: }una soluzione parziale (ovvero un parziale assegnamento delle variabili) potrebbe non essere un sottoinsieme dell'assegnamento facente parte della soluzione.
+
+\paragraph{Esempio.}
+Il problema del \textit{map-colouring} è l'esempio più indicato. In poche parole in una mappa ogni regione deve avere colore diverso dalle regioni adiacenti.
+
+Supponendo di avere 5 regioni $r_1, ..., r_5$, costruiamo il grafo dei vincoli. Le regioni confinanti dovranno essere collegate tra loro da un arco per rappresentare il vincolo del \textit{non avere lo stesso colore}.
+
+Ogni vincolo sarà così formato (ne diamo solo uno di esempio, gli altri sono analoghi): \[ C_1 = (\lbrace r_1, r_2 \rbrace, r_1 \neq r_2) \]
+
+\begin{wrapfigure}{R}{0.3\textwidth}
+\begin{tikzpicture}
+	\node[draw, circle] (a) at (0,-1.7) {$r_1$};
+	\node[draw, circle] (b) at (1,0) {$r_2$};
+	\node[draw, circle] (c) at (0,-3) {$r_3$};
+	\node[draw, circle] (d) at (2,-2) {$r_4$};
+	\node[draw, circle] (e) at (4,-2) {$r_5$};
+	\draw (b)--(d)--(a);
+	\draw (b)--(e)--(d);
+	\draw (a)--(c)--(d);
+	\draw (a)--(b)node[midway,left]{$C_1$};
+\end{tikzpicture}
+\end{wrapfigure}
+
+Definiamo due nuovi tipi di grafo, ovvero il grafo \textbf{primale} e quello \textbf{duale}.
+Il grafo primale ha come nodi le variabili e come archi i vincoli, mentre quello duale è esattamente il contrario: ha come nodi i vincoli, mentre come archi ha le variabili comuni ai vincoli collegati.
 
 
 
