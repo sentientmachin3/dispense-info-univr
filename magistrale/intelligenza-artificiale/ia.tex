@@ -358,8 +358,8 @@ Supponendo di avere 5 regioni $r_1, ..., r_5$, costruiamo il grafo dei vincoli. 
 
 Ogni vincolo sarà così formato (ne diamo solo uno di esempio, gli altri sono analoghi): \[ C_1 = (\lbrace r_1, r_2 \rbrace, r_1 \neq r_2) \]
 
-\begin{wrapfigure}{R}{0.3\textwidth}
-\begin{tikzpicture}
+\begin{center}
+	\begin{tikzpicture}
 	\node[draw, circle] (a) at (0,-1.7) {$r_1$};
 	\node[draw, circle] (b) at (1,0) {$r_2$};
 	\node[draw, circle] (c) at (0,-3) {$r_3$};
@@ -369,14 +369,58 @@ Ogni vincolo sarà così formato (ne diamo solo uno di esempio, gli altri sono a
 	\draw (b)--(e)--(d);
 	\draw (a)--(c)--(d);
 	\draw (a)--(b)node[midway,left]{$C_1$};
-\end{tikzpicture}
-\end{wrapfigure}
+	\end{tikzpicture}
+\end{center}
+
 
 Definiamo due nuovi tipi di grafo, ovvero il grafo \textbf{primale} e quello \textbf{duale}.
 Il grafo primale ha come nodi le variabili e come archi i vincoli, mentre quello duale è esattamente il contrario: ha come nodi i vincoli, mentre come archi ha le variabili comuni ai vincoli collegati.
 
+\subsection{Forzatura di vincoli e propagazione}
+Quando si parla di soluzioni di reti a vincoli, le tecniche risolutive più utilizzate sono quelle basate su: \begin{itemize}
+	\item \textit{inferenza}: generazione di nuovi vincoli a partire da quelli già esistenti;
+	\item \textit{ricerca}: ricerca della soluzione per tentativi/backtracking.
+\end{itemize}
 
+L'idea del backtracking è quella di, scelta una variabile, aggiungere un nuovo vincolo su quella variabile e tentare di risolvere il resto del problema. L'assegnamento parziale di una variabile può comunque violare alcuni vincoli del problema, violando la consistenza del vincolo. In tal caso si fa backtracking per tornare alla situazione precedente e procedere per un'altra via.
 
+\subsubsection{Consistency}
+Lo scopo della \textit{constraint inference} è  quello di generare reti più forti con uno spazio di ricerca più piccolo, quindi di migliorare prestazionalmente la ricerca della soluzione. Grazie alla propagazione di nuovi vincoli è possibile ridurre lo spazio di valori accettabili da una sola variabile che a sua volta riduce lo spazio di un'altra variabile ecc.
+
+\paragraph{Node consistency.} Una variabile $x_i$ del dominio $D_i$ è \textit{node-consistent} se ogni suo valore all'interno del dominio soddisfa ogni vincolo unario. In generale, se una variabile non è \textit{node-consistent}, si possono rimuovere tutti i suoi valori nel dominio che non soddisfano tutti i vincoli unari per quella variabile. 
+
+Il nuovo dominio della variabile diventa un dominio $D'_i$ tale per cui: \[ D_i' = D_i \setminus \lbrace v \vert \exists C = \lbrace \langle x_i \rangle, R_{x_i} \rbrace \wedge v \notin R_{x_i}  \rbrace\]
+
+In tal modo il nuovo dominio conterrà solo valori che soddisfano tutti i vincoli, e quelli esclusi non potranno far parte della soluzione.
+
+\paragraph{Arc consistency.} Date due variabili $x_i$ e $x_j$, diciamo che $x_i$ è \textit{arc-consistent} rispetto a $x_j$ se vale che \[ \forall a_i \in D_i\ \exists a_j \in D_j \vert (a_i, a_j) \in R_{x_i, x_j} \]
+Da questo si conclude che $R_{x_i, x_j}$ è  \textit{arc-consistent} se $x_i$ è arc-consistent rispetto a $x_j$ e viceversa.
+
+Diamo qui di seguito gli algoritmi possibili per verificare l'\textit{arc-consistency}.
+\subparagraph{AC1.}L'algoritmo \textbf{AC1} ha complessità $O(nek^3)$, dove $n$ sono i nodi, $e$ gli archi e $k$ è il massimo numero di valori in un dominio.
+\begin{lstlisting}[escapeinside={(*}{*)}]
+repeat
+	for all Pairs (*$x_i, x_j$*) that participate in a constraint do
+		Revise((*$(x_i),x_j$*));
+		Revise((*$(x_j),x_i$*));
+	end for
+until no domain is changed
+	\end{lstlisting}
+	
+\subparagraph{AC3.} L'algoritmo \textbf{AC3} ha complessità $O(ek^3)$ e procede come segue:\begin{lstlisting}[escapeinside={(*}{*)}]
+for all every pairs (*$x_i, x_j$*) that participate in a constraint (*$R_{x_i, x_j} \in R$*) do
+	Q = Q (*$\cup \lbrace (x_i, x_j), (x_j, x_i) \rbrace$ *)
+end for
+
+while Q (*$\neq \lbrace \rbrace$*) do
+	pop (*$(x_i, x_j)$*) from Q
+	REVISE((*$(x_i),x_j$*))
+
+	if (*$D_i$*) changed then
+		Q = Q (*$\cup \lbrace (x_k, x_i), k\neq i, k\neq j \rbrace$ *)
+	end if
+end while
+\end{lstlisting}
 
 
 
