@@ -512,15 +512,102 @@ Come per i segnali, anche i sistemi possono essere classificati in varie categor
 	\item ...
 \end{itemize}
 
-\subsubsection{Sistemi lineari e non lineari}
+\subsubsection{Proprietà dei sistemi lineari}
 Elenchiamo di seguito alcune proprietà dei sistemi lineari:
 \begin{itemize}
 	\item \textbf{Additività}\\
 	$f_{1} \rightarrow y_{1}$ e $f_{2} \rightarrow y_{2}$ allora $f_{1} +f_{2} \rightarrow y_{1}+y_{2}$
 	\item \textbf{Omogeneità}\\
 	$f_{1} \rightarrow y_{1}$ allora $a_{1} \times f_{1}\rightarrow a_{1}\times y_{1}$
-	\item \textbf{Superposizione\footnote{Non sono sicuro di come tradurre questa parola, la prof usa la parola "superposition"}}\\
+	\item \textbf{Sovrapposizione}\\
 	$a_{1} \times f_{1} + a_{2}\times f_{2} \rightarrow a_{1}\times y_{1}+a_{2}\times y_{2}$
 \end{itemize}
+
+\subsubsection{Risposta libera e risposta forzata}
+La \textbf{risposta libera} di un sistema è la sua risposta quando l'ingresso è nullo.
+L'output di un sistema per $t\geq0$ è il risultato di due cause indipendenti: le \textbf{condizioni iniziali} del sistema al tempo $t=0$ e l'input $f(t)$ per $t\geq0$.
+Grazie alla \textit{linearità} la risposta totale del sistema è la \textbf{somma} della risposta libera e della risposta forzata.
+Nella realtà abbiamo sistemi che sono lineari solo \textit{localmente}, che in genere rispondo linearmente a piccoli segnali e non linearmente a grandi segnali.
+\begin{center}
+	\begin{tikzpicture}
+	\begin{axis}[xlabel=f,ylabel=y,axis lines=left,]
+	\addplot[
+	color=red,
+	line width=1.25pt,
+	]{x+2};
+	\addlegendentry{Causale, lineare};
+	\addplot[
+	color=blue,
+	line width=1.25pt,
+	domain=-10:-4
+	]{x+2};	
+	\addplot[
+	color=blue,
+	line width=1.25pt,
+	domain=-4:4,
+	]{x^2+10*x+22};
+	\addlegendentry{Causale, non lineare};
+	\end{axis}
+	\end{tikzpicture}
+\end{center}
+
+I sistemi i cui parametri \textit{non} cambiano nel tempo vengono detti \textbf{tempo invarianti}.
+Per questi sistemi se l'input viene ritardato di $T$ secondi, l'output rimane identico a prima, ma ritardato di $T$.
+
+I sistemi \textbf{istantanei} (senza memoria) sono quelli in cui l'output al tempo $t$ dipende esclusivamente dall'input al tempo $t$.
+Se l'output dipende dagli eventi passati, il sistema viene definito \textbf{dinamico} (un sistema con memoria).
+Un sottogruppo dei sistemi dinamici sono i sistemi con \textbf{memoria finita}, per i quali l'output al tempo $t$ è completamente determinato
+dai segnali in input per gli ultimi $T$ istanti (il sistema ha quindi una memoria di capacità massima $T$).
+
+\section{Analisi dei sistemi a tempo continuo}
+Quando si studia un sistema, uno degli scopi più comuni è ricostruire le equazioni che lo regolano, permettendoci quindi di calcolare l'output del sistema dato un preciso input.
+Uno degli strumenti fondamentali per questo scopo è la \textbf{risposta impulsiva} del sistema, che caratterizza completamente il comportamento di un sistema lineare tempo invariante.
+
+Per fare ciò occorrono due cose: la \textbf{risposta libera} e la \textbf{risposta forzata}.
+Ricordiamo che trattandosi di sistemi lineari, valgono le proprietà di \textit{additività}, \textit{omogeneità} e \textit{sovrapposizione}.
+
+Un sistema lineare tempo invariante (LTI) può essere descritto da un'equazione differenziale:
+\begin{align*}
+&\frac{d^ny}{dt^n}+a_{n-1}\frac{d^{n-1}y}{dt^{n-1}}+...+a_{1}\frac{dy}{dt}+a_{0}y(t)\\
+=\quad &b_{m}\frac{d^mf}{dt^m}+b_{m-1}\frac{d^{m-1}f}{dt^{m-1}}+...+b_{1}\frac{df}{dt}+b_{0}f(t)
+\end{align*}
+dove tutti i coefficienti $a_{i}$ e $b_{i}$ sono costanti.
+
+\subsection{Calcolo della risposta libera}
+Riscriviamo l'equazione differenziale che descrive un sistema LTI usando una notazione più compatta:
+\begin{align*}
+&(D^n+a_{n-1}D^{n-1}+...+a_1D+a_{0})y(t)\\
+=\quad &(b_mD^m+b_{m-1}D^{m-1}+...+b_1D+b_0)f(t)
+\end{align*}
+dove $D=\frac{d}{dt}.$
+
+La risposta libera si calcola ponendo $f(t)=0$:
+$$ (D^n+a_{n-1}D^{n-1}+...+a_1D+a_{0})y_0(t)=0 $$
+Questa equazione ci dice che una combinazione lineare di $y_0(t)$ e delle sue $n$ derivate successive
+è $0$ per \textit{tutti} gli istanti $t$. Ciò è possibile solamente \textit{se e solo se} $y_0(t)$ e tutte
+le derivate successive sono della stessa forma. Solo la funzione esponenziale $e^{\lambda t}$ ha questa proprietà.
+
+Quindi assumiamo che la soluzione sia $y_0(t)=ce^{\lambda t}$, quindi
+$$ Dy_0{t}=\frac{dy_0}{dt}=c\lambda e^{\lambda t} $$
+$$ D^2y_0{t}=\frac{d^2y_0}{dt^2}=c\lambda^2 e^{\lambda t} $$
+$$ ... $$
+$$ D^ny_0{t}=\frac{d^ny_0}{dt^n}=c\lambda^n e^{\lambda t} $$
+sostituendo all'indietro, otteniamo
+$$ c(\lambda^n+a_{n-1}\lambda^{n-1}+...+a_1\lambda+a_0)e^{\lambda t}=0 $$
+$$ \lambda^n+a_{n-1}\lambda^{n-1}+...+a_1\lambda+a_0 = 0 $$
+Naturalmente $ce^{\lambda t}$ è anch'essa una soluzione dell'equazione. Notiamo che il polinomio di sopra
+è uguale all'altro con $\lambda$ che sostituisce $D$. Quindi, può essere espresso come
+$$ Q(\lambda)=0$$
+e quando $Q(\lambda)$ è espresso in forma fattorizzata, possiamo riscrivere l'equazione così:
+$$ Q(\lambda) = (\lambda-\lambda_1)(\lambda-\lambda_2)...(\lambda-\lambda_n)=0 .$$
+Chiaramente $\lambda$ ha $n$ soluzioni: $\lambda_1, \lambda_2, ..., \lambda_n$, di conseguenza abbiamo $n$ possibili soluzioni: $c_1e^{\lambda_1t},c_2e^{\lambda_2t},...,c_ne^{\lambda_nt}$, con $c_1,c_2,...,c_n$ costanti arbitrarie.
+Possiamo mostrare che una soluzione generale è data dalla somma di queste $n$ soluzioni:
+$$ y_0(t)=c_1e^{\lambda_1t}+c_2e^{\lambda_2t}+...+c_ne^{\lambda_nt}$$
+dove $c_1,c_2,...,c_n$ sono costanti.
+
+Il polinomio che abbiamo trovato si chiama \textbf{polinomio caratteristico} del sistema, e l'equazione
+$Q(\lambda)=0$ è chiamata \textbf{equazione caratteristica}.
+$\lambda_1, \lambda_2, ..., \lambda_n$ sono le radici dell'equazione caratteristica. Gli esponenziali $e^{\lambda_i t} \qquad (i=1,2,...,n)$ sono i \textbf{modi caratteristici} (o \textbf{modi naturali}) del sistema.
+C'è quindi un modo caratteristico per ogni radice, e la risposta libera è una combinazione lineare dei modi caratteristici.
 
 \end{document}
