@@ -692,5 +692,119 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 		 	\vert V \vert \cdot \Big(K + 2 \binom{k}{2}\Big) + \vert E \vert K\cdot 2 \quad \leq\quad
 		 	(\vert E \vert + \vert V \vert) K^2
 	 	\]
-	 	Quindi è polinomiale.
+		Quindi è polinomiale.
+	 	
+	 \subsection{Problema NAE-K-SAT}
+		 \paragraph{NAE-K-SAT (Not All Equivalent-K-SAT):} 
+		 \begin{itemize}
+		 	\item Input: $ \phi $ K-CNF $ \quad \phi:\ \{T,F\}^n \mapsto \{T,F\} $
+		 	\item Output: $ yes \ \Leftrightarrow \ \exists \underline{a} \in \{T,F\}^n \quad t.c.\quad \phi(\underline{a}) = T \ $ e, in ogni clausola $ \ C_i = l^{(i)}_1 \vee l^{(i)}_2 \vee \dots \vee l^{(i)}_k \ $ con $ \ \underline{a} \ $, almeno un $ \ l^{(i)}_j \ $ è vero e almeno un $ \ l^{(i)}_j \ $ è falso.
+ 		 \end{itemize}
+ 		 
+ 		 \begin{esempio}
+ 		 	\[
+	 		 	\phi(x_1, x_2, x_3) = (\overline{x_1} \vee x_2 \vee x_3) \wedge (\overline{x_1} \vee \overline{x_2} \vee \overline{x_3})
+ 		 	\]
+		 	\begin{align*}
+	 		 	x_1 =& F \quad x_2 = F \quad x_3 = F \quad \text{\textit{non} è NAE-K-SAT}\\
+	 		 	x_1 =& F \quad x_2 = T \quad x_3 = F \quad \text{è NAE-K-SAT}\\
+			\end{align*}
+		\end{esempio}
+ 		 
+		\begin{prop}
+			Se $ \ \underline{a} \ $ è un assegnamento che soddisfa $ \phi $ (è NAE), allora anche il negato $ \ \overline{\underline{a}} \ $ soddisfa  $ \phi $ (è NAE).
+		\end{prop}
+ 		 
+		\paragraph{3-SAT $ \leq_K $ NAE-4-SAT} Vogliamo dimostrare che data una qualsiasi formula $\ \phi \ $ 3-CNF la trasformo in una formula $\ \psi \ $ 4-CNF in tempo polinomiale.
+		\[
+	 		 \phi \ \text{3-CNF} \ \Longrightarrow \ \psi \ \text{4-CNF}
+		\]
+		\begin{align*}
+			\phi &= C_1 \wedge C_2 \wedge \dots \wedge C_n \quad C_i = l^{(i)}_1 \vee l^{(i)}_2 \vee l^{(i)}_3 \quad i = 1 \dots n \\
+			\psi &= C'_1 \wedge C'_2 \wedge \dots \wedge C'_n \quad C'_i = l^{(i)}_1 \vee l^{(i)}_2 \vee l^{(i)}_3 \vee z \quad i = 1 \dots n \\
+		\end{align*}
+		Per creare $ \psi $ espando le variabili e ne aggiungo sempre una. 
+		La trasformazione da $ \phi $ a $ \psi $ è polinomiale nella taglia della formula $ \phi $, perché la scorro tutta per creare $ \psi $.\\
+		Ora dobbiamo dimostrare che se $ \phi $ è soddisfacibile allora anche $ \psi $ è soddisfacibile:
+		\begin{itemize}
+			\item $ \phi $ è soddisfacibile $ \ \Rightarrow \ \exists \underline{a} \in \{T,F\}^n \quad t.c.\quad \phi(\underline{a}) = T $.
+			\item Se prendiamo l'assegnamento $ \ \underline{b} = \underline{a} \quad z = F \quad \psi(\underline{b}) = T\ $ e ogni clausola ha un letterale a FALSE.
+			\item Vogliamo dimostrare che se esiste un assegnamento $ \underline{b} $ che soddisfa $ \psi $ allora esiste un assegnamento $ \underline{a} $ che soddisfa $ \phi $.
+			\item Se secondo $ \underline{b}\quad z = F\ $ allora, la parte rimanente di $ \underline{b} $ soddisfa $ \psi $
+			\item Se secondo $ \underline{b}\quad z = T\ $ allora, lo nego e torno al primo caso. Perciò se $ \psi $ è nae-soddisfatta con $ \ z = F\ $ allora $ \phi $ è soddisfatta. 
+		\end{itemize}
+		
+		\paragraph{NAE-3-SAT $ \leq_K $ 3-COL } Vogliamo dimostrare che data la formula $ \phi $ 3-CNF esiste una trasformazione polinomiale che la rende un grafo $ G $ tale che $ \phi $ è NAE-soddisfacibile se e solo se il grafo $ G $ è 3-colorabile.
+			 		
+ 		Mappo variabili (letterali) che possono valere T o F, su vertici (elementi del grafo) che hanno colore $ 0, 1, 2 $.
+ 		
+ 		\begin{tikzpicture}
+	 		\node (x) at (0,0) {$ x $}; \node (t) at ($ (x) +(.75,.5)$) {$ T $}; \node (f) at ($ (x) +(.75,-.5)$) {$ F $}; 
+	 		\draw (x) -- (t); \draw (x) -- (f); 
+	 		\node at ($ (x) +(2,0)$) {$ \longmapsto $};
+	 		\node (r) at ($ (x) +(3,0)$) {$ r $}; \node (0) at ($ (r) +(.75,.75)$) {$ 0 $}; \node (1) at ($ (r) +(.75,0)$) {$ 1 $};\node (2) at ($ (r) +(.75,-.75)$) {$ 2 $}; 
+	 		\draw (r) -- (0); \draw (r) -- (1); \draw (r) -- (2); 
+ 		\end{tikzpicture}
+ 		 
+ 		 Partendo dalla formula $ \ \phi(x_1, x_2, x_3) = (x_1\vee x_2\vee x_3)\wedge(\overline{x}_1\vee x_2\vee\overline{x}_3) \ $ costruiamo il grafo nel seguente modo:
+ 		 \begin{itemize}
+ 		 	\item Creo un nodo per ogni letterale e per il suo negato, poi aggiungo un vertice perché per ogni vertice $ x $ uso la stessa coppia di colori.
+ 		 	\item Per ogni clausola metto un triangolo che corrisponde ai letterali della clausola
+ 		 	\item Se ho una 3-colorazione ho un assegnamento corrispondente per la clausola che mi mette un letterale T e uno F.
+ 		 	\item Ora aggiungo gli archi, collego i letterali che hanno valori di verità opposti.
+ 		 \end{itemize}
+
+		Se associamo $ 0\mapsto T $, $ 1\mapsto F $, e 2 libero, abbiamo il seguente risultato:
+ 		 
+ 		 \begin{figure}[h!]
+ 		 	\centering
+ 		 	\begin{tikzpicture}
+	 		 	\node[draw, circle] (s) at (5,1.5) {$ 2 $};
+			 	\node[draw, circle] (x1) at (0,0) {$ x_1 $}; \node[draw, circle] (nx1) at (2,0) {$ \overline{x}_1 $}; 
+			 	\node[draw, circle] (x2) at (4,0) {$ x_2 $}; \node[draw, circle] (nx2) at (6,0) {$ \overline{x}_2 $}; 
+			 	\node[draw, circle] (x3) at (8,0) {$ x_3 $}; \node[draw, circle] (nx3) at (10,0) {$ \overline{x}_3 $}; 
+			 	\draw (s) -- (x1); \draw (s) -- (x2); \draw (s) -- (x3); \draw (s) -- (nx1); \draw (s) -- (nx2);
+			 	\draw (s) -- (nx3); \draw (x1) -- (nx1); \draw (x2) -- (nx2); \draw (x3) -- (nx3); 
+			 	\node[draw, circle] (c1) at (3,-1) {$ x_1 $}; \node[draw, circle] (c2) at (2,-2.5) {$ x_2 $}; 
+			 	\node[draw, circle] (c3) at (4,-2.5) {$ x_3 $};
+			 	\node[draw, circle] (b1) at (7,-1) {$ \overline{x}_1 $}; \node[draw, circle] (b2) at (6,-2.5) {$ x_2 $}; 
+			 	\node[draw, circle] (b3) at (8,-2.5) {$ \overline{x}_3 $};
+			 	\draw (c1) -- (c2); \draw (c1) -- (c3);  \draw (c2) -- (c3);
+			 	\draw (b1) -- (b2); \draw (b1) -- (b3);  \draw (b2) -- (b3);
+			 	\draw (c1) -- (nx1); \draw (c2) -- (nx2); \draw (c3) -- (nx3);
+			 	\draw (b1) -- (x1); \draw (b2) -- (nx2); \draw (b3) -- (x3);
+			 	\node at ($ (x1.north) +(0,.3) $) {0};\node at ($ (nx1.north) +(0,.3) $) {1}; 
+			 	\node at ($ (x2.north) +(0,.3) $) {0};\node at ($ (nx2.north) +(0,.3) $) {1};
+			 	\node at ($ (x3.north) +(0,.3) $) {1};\node at ($ (nx3.north) +(0,.3) $) {0};
+			 	\node at ($ (c1.east) +(.3,0) $) {0};
+			 	\node at ($ (c2.north) +(0,.3) $) {1};
+			 	\node at ($ (c3.north) +(0,.3) $) {2};
+			 	\node at ($ (b1.north) +(0,.3) $) {1};
+			 	\node at ($ (b2.west) +(-.3,0) $) {2};
+			 	\node at ($ (b3.east) +(.3,0) $) {0};
+	 		\end{tikzpicture}
+ 		 \end{figure}
+ 		 
+	 Perciò la trasformazione garantisce che se $ \exists \underline{a} \ \ t.c.\ \ \phi(\underline{a}) $ è nae-soddisfatta allora esiste una 3-colorazione per il grafo G che associa ai valori di verità i colori in modo tale da rendere G 3-colorabile. È facile vedere anche l'implicazione nel verso opposto.
+	 
+	 \subsection{Transitività della riduzione alla Karp}
+		 La riduzione $ \leq_K $ è transitiva, ciò implica che:
+		 \[
+			 \prob{A} \leq_K \prob{B}\ \text{ e }\ \prob{B}\leq_K \prob{C} \ \Rightarrow \ \prob{A}\leq_K \prob{C}
+		 \]
+		 in particolare abbiamo che:
+		 \begin{align*}
+			 \prob{A} &\leq_K \prob{B} \quad \exists \alg{A} \text{ polytime } \ x\in \instance{A},\ \alg{A}(x)\in \instance{B}\quad \prob{A}(x) = yes \Leftrightarrow \prob{B}(\alg{A}(x)) = yes \\
+			 \prob{B} &\leq_K \prob{C} \quad \exists \alg{B} \text{ polytime } \ y\in \instance{B},\ \alg{B}(y)\in \instance{C}\quad \prob{B}(y) = yes \Leftrightarrow \prob{C}(\alg{B}(y)) = yes
+		 \end{align*}
+		 Perciò
+		 \[
+			 \forall x \in \instance{A},\ \alg{B}(\alg{A}(x)) \in \instance{C} \quad \prob{A}(x) = yes \Leftrightarrow
+			 \prob{C}(\alg{B}(\alg{A}(x))) = yes \quad \Rightarrow \ \ \prob{C}(x) = \alg{B}(\alg{A}(x))
+		 \]
+
+ 	\subsection{Problema Reachability}
+	 
+	\subsection{Classe di problemi NP-Completi}
+		
 \end{document}
