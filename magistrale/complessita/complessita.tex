@@ -1007,4 +1007,22 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 		\begin{thm}
 			Se $ \exists \prob{A} \ t.c. \ \prob{A} \in \npc \cap \conp \ $ allora $ \np \equiv \conp $.   
 		\end{thm}
+		\begin{proof}[$ \conp \subseteq \np $]
+			Supponiamo che $ \prob{A}\in \npc $ allora $ \prob{A} \in \np \ $ e $ \ \forall \prob{C}\in \np \quad \prob{C}\leq_K\prob{A} $.\\
+			Se prendiamo il problema $ \prob{B}\in \conp \quad \overline{\prob{B}}\in\np $.\\
+			Allora esiste una riduzione alla Karp $ \overline{\prob{B}}\leq_K \prob{A} $ che mappa le istanze $ yes $ di $ \prob{B} $ alle istanze $ no $ di $ \prob{A} $ ed esiste anche una riduzione $ \prob{B}\leq_K \overline{\prob{A}} $ che è duale alla precedente.\\
+			Poiché $ \prob{A}\in \conp $ allora $ \overline{\prob{A}}\in \np $. Quindi $ \prob{B} $ si riduce polinomialmente ad un problema in $ \np $. Quindi $ \prob{B}\in\np $. Quindi per estensione $ \conp \subseteq\np $.
+ 		\end{proof}
+ 		\begin{proof}[$ \np \subseteq \conp $] 
+ 			Sia $ \prob{C}\in \np\quad \prob{C}\leq_K \prob{A}\quad \overline{\prob{C}}\leq_K\overline{\prob{A}} $. Poiché $ \prob{A}\in \conp $ allora $ \overline{\prob{A}}\in \np $. Quindi $ \overline{\prob{C}}\in\np \ \Rightarrow\ \prob{C}\in\conp \ \Rightarrow \ \np \subseteq \conp $.
+ 		\end{proof}
+ 		
+ 		\begin{figure}[h!]
+ 			\centering
+ 			\begin{tikzpicture}[scale=0.6]
+	 		\draw (0,0) ellipse (3cm and 2cm) node[xshift=-.5cm] {$ \np $};
+	 		\draw (3,0) ellipse (3cm and 2cm) node[xshift= .7cm] {$ \conp $};
+	 		\draw (1.5,0) circle (1cm) node {$ \p $};
+ 		\end{tikzpicture}
+ 		\end{figure}
 \end{document}
