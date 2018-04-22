@@ -41,10 +41,12 @@
 \rfoot{}
 \renewcommand{\headrulewidth}{0.4pt}
 \newtheorem{thm}{Teorema}[subsection]
+\newtheorem{coroll}{Corollario}[subsection]
 \theoremstyle{definition}
 \newtheorem{esempio}{Esempio}[subsection]
 \newtheorem{definit}{Definizione}[subsection]
 \newtheorem{prop}{Proposizione}[subsection]
+\newtheorem{obs}{Osservazione}[subsection]
 
 \usepackage{hyperref}
 \usepackage{xcolor}
@@ -59,6 +61,8 @@
 \newcommand{\p}{\mathbf{P}}
 \newcommand{\tim}{\mathbf{Time(n)}}
 \newcommand{\np}{\mathbf{NP}}
+\newcommand{\npc}{\mathbf{NPC}}
+\newcommand{\conp}{\mathbf{CO}\text{-}\mathbf{NP}}
 \newcommand{\prob}[1]{\mathbb{#1}}
 \newcommand{\instance}[1]{\mathcal{I}(\prob{#1})}
 \newcommand{\alg}[1]{\mathcal{#1}}
@@ -717,7 +721,7 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
  		 
 		\paragraph{3-SAT $ \leq_K $ NAE-4-SAT} Vogliamo dimostrare che data una qualsiasi formula $\ \phi \ $ 3-CNF la trasformo in una formula $\ \psi \ $ 4-CNF in tempo polinomiale.
 		\[
-	 		 \phi \ \text{3-CNF} \ \Longrightarrow \ \psi \ \text{4-CNF}
+	 		 \phi \ \text{3-CNF} \ \longmapsto \ \psi \ \text{4-CNF}
 		\]
 		\begin{align*}
 			\phi &= C_1 \wedge C_2 \wedge \dots \wedge C_n \quad C_i = l^{(i)}_1 \vee l^{(i)}_2 \vee l^{(i)}_3 \quad i = 1 \dots n \\
@@ -804,7 +808,203 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 		 \]
 
  	\subsection{Problema Reachability}
+	 	\begin{itemize}
+	 		\item Input: Grafo G diretto, due nodi $ s $ e $ t $.
+	 		\item Output: $ yes $ $ \Leftrightarrow $ esiste un cammino che va da $ s $ a $ t $.
+	 	\end{itemize}
+	 	Quanto costa risolvere Reachablity?\\
+	 	Una possibile soluzione potrebbe essere applicare BFS partendo da $ s $. Se si trova $ t $, allora ritorno $ yes $, altrimenti $ no $. Questo procedimento richiede $ O(\vert V\vert+\vert E\vert) $. Quindi \textit{Reachability} $ \in \p $ 
+	 	
+	 \section{Riduzione alla Turing tra problemi di decisione}
+		 \begin{definit}[Riduzione alla Turing]
+		 	$ \prob{A}\leq_T \prob{B} \ $ se esiste un algoritmo con complessità polinomiale $ \alg{A} $ che data un'istanza $ \ x \in \instance{A} \ $ utilizzando chiamate ad un \textit{oracolo} per $ \prob{B} $ che hanno costo $ O(1) $, $ \ \alg{A}(x) = \prob{A}(x) $.
+		 \end{definit}
 	 
-	\subsection{Classe di problemi NP-Completi}
+	\section{Classe di problemi NP-Completi}
+		\begin{definit}(Classe NPC)
+			Un problema $\ \prob{A}\ $ è NP-completo (NPC) se
+			\begin{itemize}
+				\item $ \prob{A} \in \np $
+				\item $ \prob{A}\ $ è \textit{NP-hard}, cioè se $ \ \forall \prob{B} \in \np \quad \prob{B}\leq_K \prob{A} $
+			\end{itemize}
+		\end{definit}
 		
+	\subsection{Circuito Booleano}
+		\begin{definit}[Circuito Booleano]
+			Un circuito booleano è un grafo aciclico orientato (DAG) $ C_n $ con $ n $ input e ha le seguenti caratteristiche:
+			\begin{itemize}
+				\item $ \exists n $ vertici che hanno \textit{in-degree} = 0
+				\item $ \exists 1 $ vertice che ha \textit{out-degree} = 0
+				\item Ogni altro vertice ha \textit{in-degree} = 1 o 2 ed è etichettato con $ and, or, not $.
+				\item La taglia di $ C_n $ è il numero di vertici.
+			\end{itemize}
+		\end{definit}
+		
+		\begin{esempio}
+			Per $ n = 4 $ abbiamo $ C_4(x_1, x_2, x_3, x_4) $:
+			\begin{figure}[h!]
+				\centering
+				\begin{tikzpicture}[>=latex]
+					\node[draw, circle] (a) at (0,0) {0};\node[draw, circle] (b) at (2,0) {1};
+					\node[draw, circle] (c) at (4,0) {1};\node[draw, circle] (d) at (6,0) {1};
+					\node[draw,circle] (out) at (3,-4) {0};
+					\node[draw,rectangle] (and) at (1,-1) {and};\node[draw,rectangle] (or) at (5,-1) {or};
+					\node[draw,rectangle] (not) at (4,-2) {not};\node[draw,rectangle] (and1) at (3,-3) {and};
+					\draw[->] (a) -- (and);\draw[->] (and) -- (and1); \draw[->] (b) -- (and);
+					\draw[->] (c) -- (or);\draw[->] (d) -- (or); \draw[->] (or) -- (not); \draw[->] (not) -- (and1); 
+					\draw[->] (and1.south) -- (out);
+					\node[xshift=.2cm] at (and.east) {0};\node[xshift=.2cm] at (or.east) {1};\node[xshift=.2cm] at (not.east) {0};\node[xshift=.2cm] at (and1.east) {0};
+				\end{tikzpicture}
+				\caption{Esempio di circuito booleano con 4 input, il nodo finale di output è detto nodo \textit{sink}.}
+			\end{figure}
+		\end{esempio}
+		
+	\subsection{Problema Circuit-SAT}
+		\begin{itemize}
+			\item Input: Circuito booleano $ C_n $
+			\item Output: $ yes \ \Leftrightarrow \ \exists \underline{x} \ t.c. \ C(x) = 1 \ $ (il circuito booleano è soddisfacibile).
+		\end{itemize}
+		Definiamo una famiglia di circuiti $ C_{n\geq 0} $ (per ogni numero di input) di complessità $ T(n) $ tale che la taglia di $ C_n $ è $ O(T(n)) $.
+		
+		Vogliamo mappare il verificatore di ogni problema in $ \np $ in un circuito:
+		\begin{align*}
+			\prob{A} \qquad &\longmapsto \qquad V(\cdot, \cdot)\\ \\
+			\prob{A}(x) = yes\ &\Leftrightarrow\ \exists w \ t.c.\ V(x, w) = yes
+		\end{align*}
+		Dove $ V(x, w) $ è un circuito che prende $ x $ in input e che mi dice se esiste un certificato $ w $ tale che rende soddisfatto il circuito.
+		
+		\begin{thm}
+			\label{thm:circfam}
+			Se $ \prob{A} \in TIME(f(n)) $ allora esiste una famiglia di circuiti $ C_{n\geq 0} $ di complessità $ T(n) = O(f(n)^2) $ tale che $ \ \forall \underline{x} \in \instance{A}\ $ e $ \ n = \vert x \vert\ $ $ C_n(x) = \prob{A}(x)\ $ e $ C_n $ è costruibile in tempo polinomiale.
+		\end{thm}
+		
+		\begin{coroll}
+			Se $ \prob{A} \in \p $ ($ f(n) $ è un polinomio in $ TIME(f(n)) $) allora esiste una famiglia di circuiti di complessità polinomiale ($ T(n) = n^k $) tale che $ \ \forall\underline{x} \in \instance{A} \ $ e $ \ n = \vert x \vert \ \ $ $ C_n(\underline{x}) = \prob{A}(x) \ $ e $ C_n $ è costruibile in tempo polinomiale in $ \vert x \vert = n $. 
+		\end{coroll}
+		
+		\paragraph{Circuit SAT è NP-completo} Dimostriamo prima a parole che Circuit-SAT $ \in \np $. Forniamo il verificatore $ V(x,w) $ verifica se un'istanza soddisfa il problema. Il certificato $ w $ è l'assegnamento che soddisfa il circuito, mentre il verificatore scorre ogni nodo e ne valuta il valore, ritorna $ yes $ se il nodo finale (sink) è a 1, altrimenti $ no $.
+		
+		Ora dimostriamo che Circuit-SAT è NP-hard, ovvero che $ \ \forall \prob{A} \in \np \quad \prob{A} \leq_K \text{Circuit-SAT} $. Dobbiamo mostrare dunque che esiste tale trasformazione polinomiale:
+		\[
+			\underline{x} \in \instance{A} \ \longmapsto \ C\in \instance{\text{Circuit-SAT}}
+		\]
+		e vale anche che:
+		\[
+			\prob{A} = yes \ \Leftrightarrow \ \exists w \ t.c. \ C(w) = 1 (\text{C è soddisfacibile})
+		\]
+		Sia $ \prob{A} \in \np $ allora $ \exists V_{\prob{A}}(x, w) $ per le istanze $ x \in \instance{A} $, tale che $ V_{\prob{A}} $ ha complessità $ O(p(\vert x\vert)) = \vert w \vert $ (polinomiale). Allora per il teorema \ref{thm:circfam} sappiamo che esiste una famiglia di circuiti $ C_m $ che fa esattamente ciò che fa il verificatore $ V_{\prob{A}} $ :
+		\[
+			C_m = V_{\prob{A}} \quad m = \vert x \vert + p(\vert x\vert)
+		\]
+		perciò, se consideriamo $ C_x'(x) = C_m(x, w) $
+		\[
+			\prob{A}(x) = yes \ \Leftrightarrow \ \exists w\ t.c. \ V_{\prob{A}}(x, w) = yes \ \Leftrightarrow \ \exists w\ t.c. \ C_m(x, w) = 1 \ \Leftrightarrow \ \exists w\ t.c. \ C_x'(x) = 1 
+		\]
+		
+		\paragraph{SAT è NP-completo} Vogliamo dimostrare che dato un circuito booleano soddisfacibile esiste una riduzione che lo trasforma in tempo polinomiale in una formula booleana soddisfacibile.
+		\begin{align*}
+			 \text{Circuit-SAT } &\leq_K \text{ SAT} \\
+			\forall C \in \instance{\text{Circuit-SAT}} \ &\longmapsto \ \phi(\dots)\\
+			C \text{ è soddisfacibile } &\Leftrightarrow \ \phi \text{ è soddisfacibile }
+		\end{align*}
+		
+		\begin{obs}
+			Ogni funzione di gate ($ and, or, not, \dots $) può essere espressa con una formula booleana CNF $ \phi $:
+			\begin{align*}
+				&c = a\ and\ b \quad \quad (\overline{c}\vee a)\wedge(\overline{c}\vee b)\wedge(c\vee \overline{a}\vee\overline{b}) \\
+				&c = a\ or\ b \quad \quad (\overline{c}\vee a\vee b)\wedge(c\vee\overline{b})\wedge(c\vee\overline{a})\\
+				&c = not\ a \quad \quad (\overline{c}\vee\overline{a})\wedge(c\vee a)
+			\end{align*}
+			Quindi un circuito booleano è soddisfatto quando ogni formula è soddisfatta e il nodo sink è soddisfatto (= 1).
+		\end{obs}
+		Perciò se ogni funzione di gate sottoforma di circuito booleano rappresenta ogni clausola della formula CNF $ \phi $, allora possiamo mettere in and tutte le clausole e dire che il circuito $ C $ è soddisfatto se e solo se $ \phi $ è soddisfatta.\\
+		Con questo e con la dimostrazione che Circuit-SAT è NP-completo possiamo dire che
+		\[
+			\forall \prob{B} \in \np \quad \prob{B}\leq_K\text{Circuit-SAT}\leq_K \text{SAT}
+		\]
+		Perciò, per la proprietà transitiva della riduzione alla Karp tra problemi di decisione, deduciamo che SAT è NP-completo.
+		
+	\subsection{Relazione tra P, NP, e NP-completo}
+		Distinguiamo principalmente due casi che rappresentano le relazioni tra le classi di problemi $ \p, \np $ e NP-completo:
+		\begin{figure}[h!]
+			\centering
+			\begin{tikzpicture}[scale=0.6]
+				\draw (0,0) ellipse (3cm and 2cm) node[yshift=.7cm] {$ \npc $};
+				\draw (-1.3,0) circle (1cm) node {$ \p $};
+				\draw (1.3,0) circle (1cm) node {$ \np $};
+				\node at (4.5,0) {oppure};
+				\draw (9,0) ellipse (3cm and 2cm) node {$ \npc \equiv \np \equiv \p $};
+			\end{tikzpicture}
+		\end{figure}
+		
+		\begin{thm}
+			Se $\ \npc \cap \p \neq \emptyset\ $ e $\ \prob{A} \in \np \quad t.c. \ \prob{A} $ \textbf{non è banale}, ovvero 
+			\begin{align*}
+			&\exists x \in \instance{A} \quad t.c. \ \prob{A}(x) = yes\\ 
+			&\exists y \in \instance{A} \quad t.c. \ \prob{A}(y) = no 
+			\end{align*}
+			Allora $ \prob{A} \in \npc $
+		\end{thm}
+		\begin{proof}
+			Se $\ \npc \cap \p \neq \emptyset\quad \exists \prob{B}\ \text{ Np-hard }\ t.c.\ \prob{B}\in\p \wedge \forall \prob{C}\in \np \ \ \prob{C} \leq_K \prob{B} $. Perciò deduciamo che $ \prob{C}\in\p $, quindi ogni problema che è in $ \np $ è anche in $ \p $ e viceversa. Quindi $ \p \equiv \np $.
+			
+			Dobbiamo quindi dimostrare che ogni problema in $ \np $ si riduce polinomialmente ad $ \prob{A} $\\
+			Prendiamo come esempio il seguente problema \textit{bit}:
+			\begin{itemize}
+				\item Input: Bit $ b $
+				\item Output: $ yes \Leftrightarrow b = 1 $ 
+			\end{itemize}
+			Sia $ \prob{D} $ un problema $ \prob{D} \in \np $ e quindi $ \prob{D} \in \p $ (c'è un risolutore polinomiale per $ \prob{D} $). Dobbiamo trovare una trasformazione $ f(x) $ tale che riduce il problema $ \prob{D} $ al problema \textit{bit}:
+			\[	
+				f(x) = 
+				\begin{cases}
+					1 & \mbox{ se } \prob{D}(x) = yes \\
+					0 & \mbox{ altrimenti}
+				\end{cases}
+			\]
+			dove $ x \in \instance{D} $.\\
+			Sappiamo quindi risolvere $ f(x) $ in tempo polinomiale perché sappiamo risolvere $ \prob{D} $ in tempo polinomiale poiché $ \prob{D} \in \np \wedge \prob{D} \in \p  $. Quindi siano $ x $ e $ y $
+			\begin{align*}
+				&x_{yes}\in \instance{A} \quad t.c.\ \prob{A}(x_{yes}) = yes\\
+				&x_{no}\in \instance{A} \quad t.c.\ \prob{A}(x_{no}) = no
+			\end{align*}
+			allora la trasformazione $ f(x) $ sarà:
+			\[
+				f(x) = 
+				\begin{cases}
+					x_{yes} & \mbox{ se } \prob{D}(x) = yes \\
+					x_{no}  & \mbox{ se } \prob{D}(x) = no
+				\end{cases}
+			\]
+		\end{proof}
+		
+	\section{Classe di problemi $ \conp $}
+		\begin{definit}(Classe $ \conp $)
+			L'insieme dei problemi $ \conp $ è definito nel seguente modo:
+			\[
+				\conp = \{\prob{A}\ \big| \ \overline{\prob{A}} \in \np \}
+			\]
+			Sono quei problemi per cui è ``facile'' verificare le istanze $ no $.
+		\end{definit}
+		Di seguito forniamo un paio di esempi di problemi:
+		\begin{esempio} Problema:
+			\begin{itemize}
+				\item Input: Grafo G
+				\item Output: $ yes $ se G non è colorabile con 7 colori.
+			\end{itemize}
+			Questo problema è il complemento del problema 7-COL. Quest'ultimo appartiene alla classe $ \np $ quindi il problema in esempio è in $ \conp $.
+		\end{esempio}
+		
+		\begin{esempio} Problema:
+			\begin{itemize}
+				\item Input: formula booleana $ \phi $
+				\item Output: $ yes $ se $ \forall \underline{a} \ \phi(a) = T $
+			\end{itemize}
+			Per questo problema è facile vedere che esiste un'istanza $ no $ poiché basta che ci sia almeno una clausola con tutti i letterali a false. Quindi appartiene a $ \conp $.
+		\end{esempio}
+		
+	\subsection{Relazione tra $ \p, \np $ e $ \conp $}
+		\begin{thm}
+			Se $ \exists \prob{A} \ t.c. \ \prob{A} \in \npc \cap \conp \ $ allora $ \np \equiv \conp $.   
+		\end{thm}
 \end{document}
