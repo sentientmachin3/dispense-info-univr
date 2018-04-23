@@ -452,7 +452,7 @@ output Eulerian
 			
 			\paragraph{Hamiltonian Cycle $ \in $ NP ?} Per vedere se il problema Hamiltonian cycle appartiene alla classe $ \np $ dobbiamo costruire un verificatore $ \alg{B} $ che agisca in tempo polinomiale.
 			
-			\begin{lstlisting}[mathescape=true]
+			\begin{lstlisting}[mathescape=true, frame=tb]
 VerifyHamCycle(G = (V,E), C=$ x_1, \dots, x_n $)
 	if r != |V|: return $ no $ "\tikzmark{a}"
 	for each v$ \in $ V 
@@ -475,7 +475,7 @@ VerifyHamCycle(G = (V,E), C=$ x_1, \dots, x_n $)
 		Il tempo di esecuzione del verificatore è polinomiale e quindi posso dire che Hamiltonian Cycle $ \in \np$ .
 			
 		\paragraph{K-Colouring $ \in $ NP ?} Per vederlo costruisco il verificatore:
-		\begin{lstlisting}[mathescape=true]
+		\begin{lstlisting}[mathescape=true, frame=tb]
 VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 	for each $ E(u,v)  $
 		if $ f(u) = f(v) $: return $ no $ "\tikzmark{a}"
