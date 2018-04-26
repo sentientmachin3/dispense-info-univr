@@ -63,6 +63,7 @@
 \newcommand{\np}{\mathbf{NP}}
 \newcommand{\npc}{\mathbf{NPC}}
 \newcommand{\conp}{\mathbf{CO}\text{-}\mathbf{NP}}
+\newcommand{\ph}{\mathbf{PH}}
 \newcommand{\prob}[1]{\mathbb{#1}}
 \newcommand{\instance}[1]{\mathcal{I}(\prob{#1})}
 \newcommand{\alg}[1]{\mathcal{#1}}
@@ -1003,7 +1004,7 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 			Per questo problema è facile vedere che esiste un'istanza $ no $ poiché basta che ci sia almeno una clausola con tutti i letterali a false. Quindi appartiene a $ \conp $.
 		\end{esempio}
 		
-	\subsection{Relazione tra $ \p, \np $ e $ \conp $}
+	\subsection{Relazione tra $ \p$,$ \np $ e $ \conp $}
 		\begin{thm}
 			Se $ \exists \prob{A} \ t.c. \ \prob{A} \in \npc \cap \conp \ $ allora $ \np \equiv \conp $.   
 		\end{thm}
@@ -1025,4 +1026,146 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 	 		\draw (1.5,0) circle (1cm) node {$ \p $};
  		\end{tikzpicture}
  		\end{figure}
+ 		
+ 		\paragraph{Cosa succede se $ \p\equiv\conp $ ?} Se abbiamo l'equivalenza di queste due classi di problemi si ha che:
+ 		\begin{align*}
+	 		\prob{A}(x) \in \np \qquad & \alg{A}(x) = \exists w \ B(x,w) \in \p \\
+	 		\prob{A}(x) \in \conp \quad & \alg{A}(x) = \forall w \ B(x,w) \in \p
+ 		\end{align*}
+ 		
+ 		\begin{itemize}
+ 			\item Se $ \np\neq \conp \ \Rightarrow \ \p\neq\np $
+ 			\item Se $ \p = \np\ $ siccome $ \ \p = \conp\quad \forall \prob{A}\in \np , \prob{A}\in \p \ \Rightarrow \ \overline{\prob{A}}\in \p = \np \quad \Rightarrow \ \np = \conp $ 
+ 		\end{itemize}
+ 		
+ 		\begin{definit}[Hardness del problema $ \prob{A} $ nella classe $ \conp $]
+ 			$ \prob{A}\ $ è $ \ \conp\text{\textbf{-completo}} $ se $ \prob{A}\in \conp\ $ e $ \ \forall \prob{B} \in \conp \ \ \prob{B}\leq_K\prob{A} $. 
+ 		\end{definit}
+ 		
+ 		\begin{thm}
+ 			Se $ \prob{A}\ $ è $ \ \np\text{\textbf{-completo}} $ allora $ \overline{\prob{A}}\ $ è  $ \ \conp\text{\textbf{-completo}} $ e viceversa.
+ 		\end{thm}
+ 		
+ 		\begin{proof}
+ 			Se $ \prob{A}\ $ è $ \ \np\text{\textbf{-completo}} $, allora
+ 			\begin{itemize}
+ 				\item $ \prob{A}\in\np $
+ 				\item $ \forall \prob{B} \in \np \ \ \prob{B}\leq_K\prob{A} $
+ 			\end{itemize}
+ 			Dalla prima deduciamo che $\  \Rightarrow\quad \overline{\prob{A}}\in\conp $ \\
+  			Dalla seconda invece, se $ \prob{C}\in\conp,\quad \overline{\prob{C}}\in \conp \quad \Rightarrow \quad
+  			\overline{\prob{C}}\leq_K\prob{A}\quad \Rightarrow \prob{C}\leq_K\overline{\prob{A}} $\\
+  			$ \Rightarrow \ \forall\prob{C}\in\conp \quad \Rightarrow \prob{C}\leq_K\overline{\prob{A}}  $\\
+  			Da queste due deduzioni abbiamo quindi la definizione di $ \conp\text{\textbf{-completo}} $ per $ \overline{\prob{A}} $
+ 		\end{proof}
+ 		
+ 		\begin{enumerate}
+ 			\item Se vogliamo dimostrare che è $ \conp\text{\textbf{-completo}} $ possiamo dimostrare che \textit{il complemento} è $ \np\text{\textbf{-completo}} $.
+ 			\item Per dimostrare che $ \prob{A} $ è $ \np\text{\textbf{-completo}} $
+ 			\begin{enumerate}
+ 				\item $ \prob{A} \in \np $
+ 				\item $ \forall\prob{B} \quad \prob{B}\leq_K \prob{A} $
+ 			\end{enumerate}
+ 		\end{enumerate}
+ 		
+	 \subsection{Problema Minimo circuito booleano}
+		 \begin{itemize}
+		 	\item Input: Circuito booleano $ C_n $ (con $ n $ input)
+		 	\item Output: $ yes \ \Leftrightarrow \ \nexists \ $ circuito $ C' \quad t.c.\quad \forall x \ C'(x) = C(x) \ $ con  $ \vert C'\vert < \vert C \vert $ 
+		 \end{itemize}
+		 Consideriamo l'algoritmo $ \alg{A} $
+		\[
+			\alg{A}(x) = \forall w_1 \exists w_2 \quad B(x, w_1, w_2) = yes \quad \text{ con }\ B\in \p \
+			\text{ e } \ \vert w_i \vert = O(p_i(\vert x \vert))
+		\]
+		Se minimo circuito booleano $ \in \np \ $ allora: $ \ \forall w_1 \exists w_2 \quad B(x, w_1, w_2) \ \equiv \ 
+		\exists w'\quad B'(x, w') $.\\
+		Se minimo circuito booleano $ \in \conp \ $ allora: $\ \forall w''\quad B''(x, w'') $.
+		
+	\section{Gerarchia Polinomiale}
+		\begin{definit}[Classe di problemi $ \Pi_i P $]
+			\[
+				\Pi_i \p = \{ \alg{A}(x) = \forall w_1\exists w_2 \forall w_3 \exists w_4 \dots Q_i w_i \quad B(x, w_1, \dots, w_i) \quad \text{ dove } \ \vert w_i \vert = O(p_i(\vert x \vert)) \ \text{ e } \ B\in\p \}
+			\]
+		\end{definit}
+		
+		\begin{definit}[Classe di problemi $ \Sigma_i P $]
+			\[
+			\Sigma_i \p = \{ \alg{A}(x) = \exists w_1\forall w_2 \exists w_3 \forall w_4 \dots Q_i w_i \quad B(x, w_1, \dots, w_i) \quad \text{ dove } \ \vert w_i \vert = O(p_i(\vert x \vert)) \ \text{ e } \ B\in\p \}
+			\]
+		\end{definit}
+		Dalla definizione di queste classi di problemi deduciamo che:
+		\begin{align*}
+			&\Pi_0 \p = \Sigma_0 \p = \p \qquad \alg{A}(x) = \alg{B}(x) \text{ non ho quantificatori} \\
+			&\Pi_1 \p = \np \\
+			&\Sigma_1 \p = \conp \\
+			&\text{Minimo circuito booleano } \in \Pi_2 \p
+		\end{align*}
+		
+		\begin{obs}
+			$ \alg{A}(x) \in \Pi_i \p \quad \Leftrightarrow \quad \overline{\alg{A}(x)} \in \Sigma_i \p $.
+		\end{obs}
+		
+		\begin{obs}
+			$ \Pi_i \p \subseteq \Sigma_{i+1} \p \quad $ e $ \quad \Sigma_i \p \subseteq \Pi_{i+1} \p $.  \\
+			Infatti se aggiungo un quantificatore all'inizio, ho che
+			\begin{align*}
+				\alg{A}(x) &\in \Pi_i \p \\ 
+				\alg{A}(x) &= \forall w_1 \exists w_2 \dots Q_i w_i \quad B(x, w_1, w_2, \dots, w_i) \\
+				\Sigma_{i+1} \p &= \exists w^* \forall w_1 \exists w_2 \dots Q_i w_i \quad B'(x, w^*, w_1, w_2, \dots, w_i)
+			\end{align*}
+			Perciò $ B'(\dots) = B(\dots) $
+		\end{obs}
+		
+		\begin{obs}
+			Per lo stesso motivo dell'osservazione precedente vale che:\\
+			$ \Pi_i \p \subseteq \Pi_{i+1} \p \quad $ e $ \quad \Sigma_i \p \subseteq \Sigma_{i+1} \p $.  
+		\end{obs}
+		
+		\begin{obs}
+			Se $ \p \equiv \np \quad \Rightarrow \quad \forall i \ \Sigma_i \p = \p \ \wedge \ \Pi_i \p = \p $ \\
+			cioè abbiamo che:
+			\[
+				B(x, w_1, w_2, \dots, w_i) = B'(x) \ \text{ (elimino tutte le quantificazioni)}
+			\]
+		\end{obs}
+		
+		\begin{prop}
+			Se $ \np = \conp \quad \Rightarrow \quad \Sigma_1 \p = \Pi_1 \p $.\\
+			Quindi $ \ \Sigma_i \p = \Pi_i \p = \Sigma_1 \p = \Pi_1 \p \quad \forall i \geq 1 $.\\
+			Tutte le classi sopra collassano sulla classe 1. 
+		\end{prop}
+		
+		\begin{proof}
+			Assumiamo che $ \np \equiv \conp $: \\
+			$ \alg{A}(x) = \exists w_1 \quad B(x, w_1) \ \Leftrightarrow \ \alg{A}(x) = \forall w_1 \quad B'(x,w_1) $ \\
+			Sia $ \alg{A}'(x) \in \Sigma_1 \p \qquad \alg{A}'(x) = \exists w_1 \forall w_2 \quad C(x, w_1, w_2) = \alg{D}_{w_2}(x) $. \\
+			$ \alg{D}_{w_2}(x) \in \conp \equiv \np \quad $ quindi $ \ \alg{D}_{w_2}(x) = \exists w_1'\quad C'(x, w_1', w_2) \ $ perciò diventa:
+			\begin{align*}
+				\prob{A}'(x) &= \exists w_2 \exists w_1'' \quad C'(x, w_1'', w_2) \\
+							 &= \exists w_{1 2} \quad C'(x, w_{1 2}) \quad \in \np
+			\end{align*}
+			Quindi deduciamo che se $ \np \equiv \conp \quad \Rightarrow \quad \Sigma_2 \p = \Sigma_1 \p $
+		\end{proof}
+		
+		\begin{definit}[Gerarchia Polinomiale]
+			Definiamo gerarchia polinomiale la classe $ \ph $ delle proprietà $ \prob{A} $ che possono essere espresse da una formula con quantificatori contenente un numero costante di quantificatori alternati:
+			\[
+				\ph = \bigcup_k \Sigma_k \p = \bigcup_k \Pi_k \p
+			\]
+		\end{definit}
+		
+		\begin{thm}[Collasso della gerarchia polinomiale]
+			Se 
+			\[
+				\p = \np \quad \Rightarrow \quad \np = \conp = \p \quad \Rightarrow \quad \Sigma_i \p = \Pi_i \p = \p \quad \forall i
+			\]
+			la gerarchia polinomiale collassa in $ \p $.\\
+			Se $ \ \np = \conp \quad \Rightarrow \quad \ph = \np = \conp $.
+		\end{thm}
+		
+		\begin{thm}
+			Se $ \ \Pi_i \p = \Sigma_i \p \quad \Rightarrow \quad \ph = \Pi_i \p = \Sigma_i \p $
+		\end{thm}
+		
 \end{document}
