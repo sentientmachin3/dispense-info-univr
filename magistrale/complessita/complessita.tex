@@ -1168,4 +1168,35 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 			Se $ \ \Pi_i \p = \Sigma_i \p \quad \Rightarrow \quad \ph = \Pi_i \p = \Sigma_i \p $
 		\end{thm}
 		
+	\subsection{Funzione time-costruibile}
+	
+		\begin{prop}
+			Nel modello computazionale in oggetto è possibile simulare $ t $ passi di un algoritmo (programma) mentre controlliamo che $ \leq t $ passi sono fatti in $ s(t) $ passi.
+		\end{prop}
+		
+		\begin{esempio}
+			Se il modello computazionale è la Macchina di Turing, allora $ s(t) = O(t\log t) $.
+		\end{esempio}
+		\begin{esempio}
+			Se il modello computazionale è la RAM, allora $ s(t) = O(t) $
+		\end{esempio}
+		
+		\begin{definit}
+			Diciamo che $ f(n) $ è \textbf{Time-costruibile} se esiste un programma (algoritmo) che calcola $ f(n) $ in $ O(f(n)) $.
+		\end{definit}
+	
+		\begin{thm}
+			Data l'assunzione precedente, per ogni funzione $ f(n) $ \textit{time-costruibile} e per ogni $ g(n) = o(f(n)) $ la classe \textbf{TIME(g(n))} $ \subset $ \textbf{TIME(s(f(n)))}
+		\end{thm}
+		\begin{figure}[h!]
+			\centering
+			\begin{tikzpicture}[scale=0.7,every node/.style={scale=0.7}]
+			\draw (0,0) ellipse (2.5cm and 1.7cm) node[yshift=1.3cm] {\textbf{TIME(s(f(n)))}};
+			\draw (0,0) ellipse (1.5cm and 1cm) node {\textbf{TIME(g(n))}};
+			\draw[fill=black] (2,0) circle (.02cm) node[above] {$ \prob{A} $};
+			\end{tikzpicture}
+		\end{figure}
+		
+		
+		
 \end{document}
