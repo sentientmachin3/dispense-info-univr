@@ -1197,6 +1197,172 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 			\end{tikzpicture}
 		\end{figure}
 		
+	\subsection{Problema Catch 22}
+		\begin{itemize}
+			\item Input: $ \Pi $ (programma)
+			\item Output: se $ \Pi(\Pi) $ termina in meno di $ f(\vert \Pi \vert) $ passi allora ritorna $ \overline{\Pi(\Pi)} $ altrimenti ritorna $ 0 $.
+		\end{itemize}
 		
+		Supponiamo che esista un algoritmo $ \Pi_{22} $ tale che risolve il problema Catch 22 in $ g(n) $ passi, dove $ g(n) < f(n) $. Questo è equivalente a dire che Catch 22 $ \in $ \textbf{TIME(g(n))}.\\
+		Se $ \Pi_{22}(\Pi_{22}) = \text{Catch 22}(\Pi_{22}) $ siccome ci mette meno di $ f(\Pi_{22}) $ passi, allora e uguale a $ \overline{\Pi_{22}(\Pi_{22})} $. Questo è assurdo perché non può essere che $ \Pi_{22}(\Pi_{22}) = \overline{\Pi_{22}(\Pi_{22})} $, quindi \textit{non} esiste l'algoritmo $ \Pi_{22} $ che impiega $ g(n) < f(n) $ passi.
+		
+		\bigskip
+		
+		Supponiamo che il programma $ \Pi $ risolve Catch 22 se e solo se $ \ \forall x \in \instance{\text{Catch 22}} \quad \Pi(x) = \text{Catch 22}(x) $. Se $ \Pi $ termina in $ \leq f(n) $ passi per ogni $ x $, allora $ \ \exists x \ t.c. \quad \Pi(x)\neq \text{Catch 22}(x) $. 
+		
+		\begin{prop}
+			Per ogni algoritmo esistono infiniti programmi $ \Pi $ che implementano l'algoritmo (fanno la stessa cosa) di lunghezza arbitrariamente grandi.
+		\end{prop}
+		
+		\begin{prop}
+			Per ogni $ n \geq \vert \Pi_{22} \vert $ fissato esiste un altro $ \Pi_{22}' $ tale che $ \vert \Pi_{22}' \vert = n $. Quindi $ \ \Pi_{22}'(\Pi_{22}') = \Pi_{22}(\Pi_{22}) $.
+		\end{prop}
+		
+	\section{Teorema di Ladner}
+		Ci chiediamo se esiste un problema $ \np $ che non appartiene nè alla classe $ \p $	nè alla classe $ \npc $.
+		\begin{figure}[h!]
+			\centering
+			\begin{tikzpicture}[scale=0.7,every node/.style={scale=0.7}]
+				\draw (0,0) ellipse (3cm and 2cm) node[yshift=1cm] {$ \npc $};
+				\draw (-1.3,0) circle (1cm) node {$ \p $};
+				\draw (1.3,0) circle (1cm) node {$ \np $};
+				\draw[fill=black] (0,-1) circle (.02cm) node[above] {$ \prob{A} $};
+			\end{tikzpicture}
+			\caption{Esiste il problema $ \prob{A} $?}
+		\end{figure}
+		
+		\begin{thm}[Teorema di Ladner]
+			Se $ \p \neq \np $ allora esiste un problema $ \prob{A} \in \np \setminus (\p \cup \npc) $.
+		\end{thm}
+		
+		\begin{proof}
+			Vediamo un problema esempio che soddisfa il \textit{teorema di Ladner}:\\
+			\textbf{Graph Isomorphism}
+			\begin{itemize}
+				\item Input: $ G_1, G_2 \ $ grafi
+				\item Output: $ yes \Leftrightarrow \ G_1 \ $ è \textit{isomorfo} a $ \ G_2 $.
+			\end{itemize}
+			\begin{definit}[Isomorfismo]
+				$ \exists f: \quad V(G_1) \mapsto V(G_2) $ \\ $ t.c.\quad (v,u) \in E(G_1) \Leftrightarrow (f(v), f(u))\in E(G_2) $
+			\end{definit}
+			
+			\begin{esempio}[Grafi isomorfi]
+				Ecco un esempio di due grafi isomorfi:
+				\begin{figure}[h!]
+					\centering
+					\begin{tikzpicture}[scale=0.7,every node/.style={scale=0.7}]
+						\node[draw, circle] (1) at (0,0) {1};\node[draw, circle] (2) at (2,0) {2};
+						\node[draw, circle] (3) at (3,1) {3};\node[draw, circle] (4) at (2,-2) {4};
+						\node[draw, circle] (a) at (5,0) {a};\node[draw, circle] (b) at (7,0) {b};
+						\node[draw, circle] (c) at (7,-2) {c};\node[draw, circle] (d) at (5,-2) {d};
+						\draw (1) -- (2) -- (3) -- (4) -- (2);\draw (1) -- (3);
+						\draw (a) -- (b) -- (c) -- (d) -- (b);\draw (a) -- (d);
+					\end{tikzpicture}
+				\end{figure}
+				\begin{align*}
+					f(1) = a \quad f(2) &= b \\
+					f(3) = c \quad f(4) &= d
+				\end{align*}
+			\end{esempio}
+			
+			\[
+				\prob{A}(x)=
+				\begin{cases}
+					SAT(x) & \mbox{ se } f(\vert x\vert) \text{ è pari} \\
+					0	   & \mbox{ se } f(\vert x\vert) \text{ è dispari}
+				\end{cases}
+			\]
+			Vogliamo far vedere che:
+			\begin{enumerate}
+				\item $ \prob{A} \in \np $
+				\item $ \prob{A} \notin \p $, cioè $ \ \forall \Pi \ $ polinomiale $ \ \exists x \ t.c. \ \Pi(x) \neq \prob{A}(x) $.
+				\item $ \prob{A} \notin \npc $, cioè $ \ \forall \Pi \ $ polinomiale $ \ \exists x \ t.c. \ SAT(x) \neq \prob{A}(\Pi(x)) $.\\ Se SAT è $ \npc $ sappiamo che $ SAT\leq_K \prob{A} $
+			\end{enumerate}
+		\end{proof}
+		
+	\subsection{Problema Clique}
+		\begin{itemize}
+			\item grafo $ G = (V, E), K $
+			\item $ yes\ \Leftrightarrow \ G\ $ contiene una clique di taglia $ K $
+		\end{itemize}
+		\textbf{Clique} è un insieme di vertici tutti connessi a due a due da un arco.
+		
+		\bigskip
+		
+		\paragraph{Clique $ \in \npc $} Facciamo vedere che il problema Clique appartiene alla classe $ \npc $ e che quindi appartiene alla classe $ \np $ e che esiste la riduzione $ \text{3-SAT } \leq_K $ Clique che trasforma in tempo polinomiale una formula $ \phi $ CNF in un grafo per il problema  Clique.
+		
+		\subparagraph{Clique $ \in \np $} Creiamo un verificatore per il problema Clique:
+		\begin{itemize}
+			\item Conta i vertici del grafo C. $ \quad \left[ O(n) \right] $
+			\item Per ogni $ (u, v) \in C \ $ verifica che $ (u, v) \in E $. 
+			$ \quad \left[ O(\vert K \vert^2 \times \vert E \vert ) \right] $
+		\end{itemize}
+		Questo verificatore è polinomiale. \\
+		Il certificato per il verificatore è una clique $ C $ di taglia K in G, tale clique ha taglia polinomiale perché $ K $ può essere al massimo $ n $. Perciò Clique $ \in \np $.
+		
+		\subparagraph{$ \text{3-SAT } \leq_K $ Clique} Vediamo la seguente riduzione che mappa la formula 
+		\[
+			\phi= (x_1\vee \overline{x}_2\vee x_3) \wedge (\overline{x}_1\vee \overline{x}_2\vee x_3) \wedge (\overline{x}_1\vee x_2\vee \overline{x}_3)
+		\]
+		in un grafo che soddisfa il problema Clique.
+		
+		\begin{figure}[h!]
+			\centering
+			\begin{tikzpicture}
+				\node[draw, circle] (a) at (0,0) {$ x_1 $}; 
+				\node[draw, circle] (b) at (3,0) {$ \overline{x}_1 $}; 
+				\node[draw, circle] (c) at (6,0) {$ \overline{x}_1 $}; 
+				\node[draw, circle] (1) at (-1,-2) {$ x_3 $}; \node[draw, circle] (2) at (1,-2) {$ \overline{x}_2 $}; 
+				\node[draw, circle] (3) at (2,-2) {$ x_3 $}; \node[draw, circle] (4) at (4,-2) {$ \overline{x}_2 $}; 
+				\node[draw, circle] (5) at (5,-2) {$ \overline{x}_3 $}; \node[draw, circle] (6) at (7,-2) {$ x_2 $};
+				\foreach \i in {a,b,c}
+				{
+					\foreach \x in {1,2,...,6}
+					{
+						\draw (\i) -- (\x);
+					}
+				}
+				\draw (b) -- (c);\draw (1) -- (2) -- (3) -- (4) -- (5) -- (6);
+				\draw[bend right] (1) to (3);\draw[bend right] (1) to (4);\draw[bend right] (1) to (6);
+				\draw[bend right] (2) to (4);\draw[bend right] (2) to (5);
+				\draw[bend right] (3) to (6);
+			\end{tikzpicture}
+			\caption{Grafo in cui c'è un arco per ogni letterale diverso dal proprio negato}
+		\end{figure}
+		
+		Il grafo mostra le seguenti caratteristiche:
+		\begin{itemize}
+			\item Numero di vertici: $\ \vert V \vert = 3m \ $ con $ \ \phi = C^{(1)}\wedge\dots\wedge C^{(m)} $.
+			\item Numero di archi: $ \ \vert E \vert \leq 9m^2 $
+		\end{itemize}
+		Quindi il grafo, e di conseguenza la riduzione, è costruibile in tempo polinomiale.
+		
+		\bigskip
+		
+		Dimostriamo ora che se $ \phi $ è soddisfacibile allora esiste un assegnamento $ a_1, a_2,\dots, a_n $ per $\ x_1, \dots, x_n $ tale che in ogni clausola un letterale è posto a T.\\
+		Siano $ v_{i1}^{(1)} v_{i2}^{(2)}\cdots v_{in}^{(n)} $ i vertici corrispondenti ai letterali posti a T dell'assegnamento (uno per clausola). Tali vertici rappresentano nel grafo una clique.
+		
+		\bigskip
+		
+		Dimostriamo ora che se $ G $ ha una clique di taglia $ m $ allora $ \phi $ è soddisfacibile. Supponiamo che $ G $ abbia una clique $ C $ è taglia $ m $.
+		\begin{enumerate}
+			\item Gli $ m $ vertici di $ C $ sono uno per tripla. Le triple corrispondono alle clausole.
+			\item Due vertici in $ C $ non corrispondono a letterali opposti di $ \phi $.
+		\end{enumerate}
+		Dall'ultimo punto in questione costruiamo un assegnamento che soddisfa $ \phi $. Se prendiamo i vertici di $ C $ e li assegniamo a T, gli altri vengono assegnati di conseguenza:
+		\begin{align*}
+			\overline{x}_2 &= T \quad x_2 = F \\
+			\overline{x}_3 &= T	\quad x_3 = F \\
+						   &    \quad x_1 = F 
+		\end{align*}
+		Perciò abbiamo che
+		\[
+			\phi(F,F,F) =
+			(\underset{F}{x_1} \vee \underset{T}{\overline{x}_2}\vee \underset{F}{x_3}) 
+			\wedge (\underset{T}{\overline{x}_1}\vee \underset{F}{x_2} \vee \underset{F}{x_3}) 
+			\wedge (\underset{T}{\overline{x}_1}\vee \underset{F}{x_2} \vee \underset{F}{x_3}) = T
+		\]
+		
+	\subsection{Problema Independent Set}
 		
 \end{document}
