@@ -5,6 +5,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
 \usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage{mathtools}
 \hypersetup{
 	colorlinks,
@@ -563,51 +564,59 @@ dai segnali in input per gli ultimi $T$ istanti (il sistema ha quindi una memori
 Quando si studia un sistema, uno degli scopi più comuni è ricostruire le equazioni che lo regolano, permettendoci quindi di calcolare l'output del sistema dato un preciso input.
 Uno degli strumenti fondamentali per questo scopo è la \textbf{risposta impulsiva} del sistema, che caratterizza completamente il comportamento di un sistema lineare tempo invariante.
 
-Per fare ciò occorrono due cose: la \textbf{risposta libera} e la \textbf{risposta forzata}.
+Per il calcolo della risposta impulsiva ci serve prima la \textbf{risposta libera}.
 Ricordiamo che trattandosi di sistemi lineari, valgono le proprietà di \textit{additività}, \textit{omogeneità} e \textit{sovrapposizione}.
 
 Un sistema lineare tempo invariante (LTI) può essere descritto da un'equazione differenziale:
-\begin{align*}
-&\frac{d^ny}{dt^n}+a_{n-1}\frac{d^{n-1}y}{dt^{n-1}}+...+a_{1}\frac{dy}{dt}+a_{0}y(t)\\
-=\quad &b_{m}\frac{d^mf}{dt^m}+b_{m-1}\frac{d^{m-1}f}{dt^{m-1}}+...+b_{1}\frac{df}{dt}+b_{0}f(t)
-\end{align*}
-dove tutti i coefficienti $a_{i}$ e $b_{i}$ sono costanti.
+\[a_n\frac{d^nv(t)}{dt^n} + \ldots + a_1\frac{dv(t)}{dt} + a_0v(t) = b_m\frac{d^mu(t)}{dt^m} + \ldots + b_1\frac{du(t)}{dt} + b_0u(t),\]
+in forma compatta
+\begin{equation*}
+	\sum_{i=0}^{n}a_i\frac{d^iv(t)}{dt^i} = \sum_{j=0}^{m}b_j\frac{d^ju(t)}{dt^j}
+\end{equation*}
+Nella pratica, $m$ è sempre minore di $n$.
 
 \subsection{Calcolo della risposta libera}
-Riscriviamo l'equazione differenziale che descrive un sistema LTI usando una notazione più compatta:
-\begin{align*}
-&(D^n+a_{n-1}D^{n-1}+...+a_1D+a_{0})y(t)\\
-=\quad &(b_mD^m+b_{m-1}D^{m-1}+...+b_1D+b_0)f(t)
-\end{align*}
-dove $D=\frac{d}{dt}.$
+Nella teoria dei sistemi dinamici, la \textbf{risposta libera} o risposta ad ingresso nullo di un sistema dinamico, anche detta ‘‘risposta libera nello stato’’ in quanto interessa le variabili di stato del sistema,
+è la sua risposta quando l'ingresso è nullo, in modo che il comportamento del sistema dipende soltanto dalle condizioni iniziali.
+Nei sistemi lineari il principio di sovrapposizione stabilisce in particolare che è possibile scomporre l'uscita come la somma della risposta libera più la risposta forzata, quindi possiamo dividere il segnale di uscita $v(t)$ come:
+\[
+v(t)=
+\begin{cases}
+	u(t) \ne 0, c.i. = 0\\
+	u(t) = 0, c.i. \ne 0
+\end{cases}
+\]
+La risposta libera si calcola come:
+\begin{equation*}
+	\sum_{i=0}^{n}a_i\frac{d^iv(t)}{dt^i}=0
+\end{equation*}
+All'equazione differenziale omogenea associamo un’equazione algebrica detta \textbf{equazione caratteristica} del sistema:
+\begin{equation*}
+	\sum_{i=0}^{n}a_is^i=0, \quad s \in C
+\end{equation*}
+Se $\lambda_1,...,\lambda_r$ sono le $r\leq n$ soluzioni distinte dell'equazione caratteristica, e $\mu_1,....,\mu_r \in \mathbb{N}$ rappresentano le rispettive molteplicità, ogni soluzione dell'omogenea, in particolare la risposta libera, può essere espressa nella forma:
+\begin{equation*}
+	v_l(t)=\sum_{i=1}^{r}\sum_{l=0}^{\mu_i-1}c_{i,l}e^{\lambda_it}\frac{t^l}{l!}
+\end{equation*}
+per opportuni $c_{i,l} \in \mathbb{C}$. Le soluzioni dell'omogenea del tipo $e^{\lambda_it}\frac{t^l}{l!}, t \in \mathbb{R}$, vengono dette \textbf{modi naturali}.
 
-La risposta libera si calcola ponendo $f(t)=0$:
-$$ (D^n+a_{n-1}D^{n-1}+...+a_1D+a_{0})y_0(t)=0 $$
-Questa equazione ci dice che una combinazione lineare di $y_0(t)$ e delle sue $n$ derivate successive
-è $0$ per \textit{tutti} gli istanti $t$. Ciò è possibile solamente \textit{se e solo se} $y_0(t)$ e tutte
-le derivate successive sono della stessa forma. Solo la funzione esponenziale $e^{\lambda t}$ ha questa proprietà.
+\subsection{Calcolo della risposta impulsiva}
+La risposta impulsiva di un sistema è la sua uscita quando è soggetto ad un ingresso a \textbf{delta di Dirac};
+viene utilizzata per descrivere la \textbf{risposta in frequenza} di un sistema dinamico ad una perturbazione generica.
+La delta di Dirac vista come ‘‘funzione’’ contiene equamente tutte le frequenze, e si presta particolarmente bene allo studio teorico nel dominio della frequenza di un sistema lineare.
 
-Quindi assumiamo che la soluzione sia $y_0(t)=ce^{\lambda t}$, quindi
-$$ Dy_0{t}=\frac{dy_0}{dt}=c\lambda e^{\lambda t} $$
-$$ D^2y_0{t}=\frac{d^2y_0}{dt^2}=c\lambda^2 e^{\lambda t} $$
-$$ ... $$
-$$ D^ny_0{t}=\frac{d^ny_0}{dt^n}=c\lambda^n e^{\lambda t} $$
-sostituendo all'indietro, otteniamo
-$$ c(\lambda^n+a_{n-1}\lambda^{n-1}+...+a_1\lambda+a_0)e^{\lambda t}=0 $$
-$$ \lambda^n+a_{n-1}\lambda^{n-1}+...+a_1\lambda+a_0 = 0 $$
-Naturalmente $ce^{\lambda t}$ è anch'essa una soluzione dell'equazione. Notiamo che il polinomio di sopra
-è uguale all'altro con $\lambda$ che sostituisce $D$. Quindi, può essere espresso come
-$$ Q(\lambda)=0$$
-e quando $Q(\lambda)$ è espresso in forma fattorizzata, possiamo riscrivere l'equazione così:
-$$ Q(\lambda) = (\lambda-\lambda_1)(\lambda-\lambda_2)...(\lambda-\lambda_n)=0 .$$
-Chiaramente $\lambda$ ha $n$ soluzioni: $\lambda_1, \lambda_2, ..., \lambda_n$, di conseguenza abbiamo $n$ possibili soluzioni: $c_1e^{\lambda_1t},c_2e^{\lambda_2t},...,c_ne^{\lambda_nt}$, con $c_1,c_2,...,c_n$ costanti arbitrarie.
-Possiamo mostrare che una soluzione generale è data dalla somma di queste $n$ soluzioni:
-$$ y_0(t)=c_1e^{\lambda_1t}+c_2e^{\lambda_2t}+...+c_ne^{\lambda_nt}$$
-dove $c_1,c_2,...,c_n$ sono costanti.
+Il comportamento ingresso-uscita di un sistema dinamico lineare stazionario (LTI) è completamente caratterizzato dalla sua risposta impulsiva, la cui trasformata di Laplace viene detta funzione di trasferimento del sistema LTI.
 
-Il polinomio che abbiamo trovato si chiama \textbf{polinomio caratteristico} del sistema, e l'equazione
-$Q(\lambda)=0$ è chiamata \textbf{equazione caratteristica}.
-$\lambda_1, \lambda_2, ..., \lambda_n$ sono le radici dell'equazione caratteristica. Gli esponenziali $e^{\lambda_i t} \qquad (i=1,2,...,n)$ sono i \textbf{modi caratteristici} (o \textbf{modi naturali}) del sistema.
-C'è quindi un modo caratteristico per ogni radice, e la risposta libera è una combinazione lineare dei modi caratteristici.
+La risposta impulsiva, che denoteremo con $h(t)$, si calcola come:
+$$ h(t)=d_0\delta(t)+\left(\sum_{i=1}^{r} \sum_{l=0}^{\mu_i-1} d_{i,l}e^{\lambda_it}\frac{t^l}{l!}\right)\delta_{-1}(t) $$
+
+Notiamo che la risposta impulsiva contiene la risposta libera, ovvero tutti i modi naturali del sistema dopo l'impulso. Il termine $d_0\delta(t)$ è non nullo se $m=n$ e indica il termine impulsivo.
+La risposta libera viene moltiplicata per la funzione gradino in modo da "tagliare" tutto ciò che c'era prima di $t=0$ e garantire che le c.i. a $t=0^-$ siano nulle.
+
+\subsection{Integrale di convoluzione}
+Date le funzioni $v_1(t)$ e $v_2(t)$, con $t\in \mathbb{R}$, definiamo \textbf{integrale di convoluzione} di $v_1$ e $v_2$ la funzione definita come:
+\begin{equation*}
+	[v_1]
+\end{equation*}
 
 \end{document}
