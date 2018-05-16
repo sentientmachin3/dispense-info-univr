@@ -1282,8 +1282,8 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 		
 	\subsection{Problema Clique}
 		\begin{itemize}
-			\item grafo $ G = (V, E), K $
-			\item $ yes\ \Leftrightarrow \ G\ $ contiene una clique di taglia $ K $
+			\item Input: grafo $ G = (V, E), K $
+			\item Output: $ yes\ \Leftrightarrow \ G\ $ contiene una clique di taglia $ K $
 		\end{itemize}
 		\textbf{Clique} è un insieme di vertici tutti connessi a due a due da un arco.
 		
@@ -1364,5 +1364,73 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 		\]
 		
 	\subsection{Problema Independent Set}
+		\begin{itemize}
+			\item Input: Grafo $ G = (V, E), k $
+			\item Output: $ yes\ \Leftrightarrow\  $ in $\ G\ $ c'è un Indipendent Set di taglia $\ \geq k $.
+		\end{itemize}
+		\begin{definit}[Independent Set]
+			Un indipendent set è un insieme $ I $:
+			\[
+				I\subseteq V\quad t.c.\quad \forall (u,v)\in I\qquad (u,v)\notin E
+			\]
+			
+		\end{definit}
+		\begin{esempio}[Independent Set]
+			Vediamo un esempio di independent set:\\
+			\begin{figure}[h!]
+				\centering
+				\begin{tikzpicture}
+					\node[draw, circle, fill=gray] (a) at (0,0) {}; \node[draw, circle] (b) at (2,0) {};
+					\node[draw, circle] (c) at (0,-2) {}; \node[draw, circle, fill=gray] (d) at (2,-2) {};
+					\node[draw, circle] (e) at (1,-1) {}; \node[draw, circle, fill=gray] (f) at (3,-1) {};
+					\draw (a) -- (b) -- (d) -- (c) -- (a); \draw (a) -- (e) -- (d); \draw (b) -- (f) -- (e);
+				\end{tikzpicture}
+			\end{figure}
+		\end{esempio}
 		
+		\paragraph{IndSet $ \in \npc $} Esiste una riduzione Clique $ \leq_K $ IndSet tale che
+		\[
+			\big( G = (V, E), k\big) \ \mapsto \ \big(G' = (V, E), k\big)
+		\]
+		
+		\paragraph{Problema TreeIndependentSet} Dimostriamo che il seguente problema appartiene alla classe $ \p $:
+		\begin{itemize}
+			\item Input: grafo \textit{connesso} e \textit{aciclico} $ G = (V, E), k $.
+			\item Output: $ yes\ \Leftrightarrow\ G $ ha un Independent Set di taglia $ k $.
+		\end{itemize}
+		
+		\begin{figure}[h!]
+			\centering
+			\begin{tikzpicture}[scale=0.6]
+				\node[draw, circle] (r) at (3,2) {};
+				\node[draw, circle] (a) at (0,0) {}; \node[draw, circle] (b) at (3,0) {}; 
+				\node[draw, circle] (c) at (6,0) {}; \node[draw, circle] (1) at (-1,-2) {}; 
+				\node[draw, circle] (2) at (1,-2) {}; \node[draw, circle, fill=gray] (3) at (2,-2) {}; 
+				\node[draw, circle] (4) at (4,-2) {}; \node[draw, circle, fill=gray] (5) at (5,-2) {}; 
+				\node[draw, circle] (6) at (7,-2) {}; 
+				\node[draw, circle, fill=gray] (7) at (-1.5,-4) {}; \node[draw, circle, fill=gray] (8) at (-.5,-4) {}; 
+				\node[draw, circle, fill=gray] (9) at (1.5,-4) {}; \node[draw, circle, fill=gray] (10) at (.5,-4) {}; 
+				\node[draw, circle, fill=gray] (11) at (3.5,-4) {}; \node[draw, circle, fill=gray] (12) at (4.5,-4) {}; 
+				\node[draw, circle, fill=gray] (13) at (6.5,-4) {}; \node[draw, circle, fill=gray] (14) at (7.5,-4) {}; 
+				\draw (r) -- (a) -- (1) -- (7); \draw (a) -- (2) -- (10); \draw (1) -- (8); \draw (2) -- (9); 
+				\draw (r) -- (b) -- (3); \draw (b) -- (4) -- (11); \draw (4) -- (12);
+				\draw (r) -- (c) -- (5); \draw (c) -- (6) -- (13); \draw (6) -- (14);
+			\end{tikzpicture}
+			\caption{Esempio di Tree independent Set}
+		\end{figure}
+		
+		\begin{obs}
+			Si può osservare che le \textit{foglie} di un albero (grafo connesso e aciclico) rappresentano un independent set massimo.
+		\end{obs}
+		
+		Costruiamo quindi l'algoritmo che dimostra che il problema è in $ \p $:
+		\begin{lstlisting}[frame=tb, mathescape= true]
+$ I\ \leftarrow\ \emptyset $
+while $\ V\neq \emptyset $:
+	foreach $ \ v \quad t.c.\quad d(v)\leq 1 $:
+		$I\ \leftarrow\ I \cup \{v\} $
+		remove i vicini $\ v\ $ da $\ G $
+if $\ \big| I\big| \geq k \ $ return yes
+else return no
+		\end{lstlisting}
 \end{document}
