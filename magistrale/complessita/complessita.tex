@@ -57,6 +57,7 @@
 }
 \usepackage[OT1]{eulervm}
 
+\newcommand{\N}{\mathcal{N}}
 \newcommand{\Exp}{\mathbf{Exp}}
 \newcommand{\p}{\mathbf{P}}
 \newcommand{\tim}{\mathbf{Time(n)}}
@@ -1429,8 +1430,83 @@ $ I\ \leftarrow\ \emptyset $
 while $\ V\neq \emptyset $:
 	foreach $ \ v \quad t.c.\quad d(v)\leq 1 $:
 		$I\ \leftarrow\ I \cup \{v\} $
-		remove i vicini $\ v\ $ da $\ G $
+		remove i vicini $ v $ da $ G $
 if $\ \big| I\big| \geq k \ $ return yes
 else return no
 		\end{lstlisting}
+		
+		\paragraph{Problema Only Small Independent Set} Vediamo ora il problema OSIS:
+		\begin{itemize}
+			\item Input: $ G = (V, E), k $
+			\item Output: $ yes\ \Leftrightarrow\ $ ogni Independent Set $ I,\ \big| I \big| \leq k $.
+		\end{itemize}
+		
+		Se esiste un algoritmo $ \alg{A} $ che risolve questo problema in tempo polinomiale allora 
+		\[ 
+			\np \cap \p \neq \emptyset\quad \Rightarrow\quad \p = \np 
+		\]
+		Perciò avremmo che
+		\[
+			\forall (G, k)\quad \alg{A}(G, k) = yes\ \Leftrightarrow\ OSIS(G, k) = yes
+		\]
+		dove la taglia di $ \alg{A} $ è 
+		$ \ T_{\alg{A}} = \Big( O\big(\big| G \big| + (\log \big|k \big|)^c\big) \Big) $.\\
+		
+		Abbiamo dunque un algoritmo $\ \alg{B}^{\text{IndSet}} = \overline{\alg{A}(G, k-1)} $.
+		
+		\begin{obs}
+			Osserviamo che è facile verificare il $ no $ di istanze del problema OSIS, inoltre si può vedere che tale problema è il duale di IndSet, il quale appartiene alla classe $ \npc $.\\
+			Concludiamo dunque dicendo che OSIS $ \in \text{\textbf{CO-}}\npc $.
+		\end{obs}
+		\noindent
+		Vediamo ora diverse formulazioni per il problema Independent Set: 
+		\begin{itemize}
+			\item \textbf{Optimization Problem:} \textbf{IndSet-Opt}
+			\begin{itemize}
+				\item Input: $ G $
+				\item Output: un IndSet di massima cardinalità
+			\end{itemize}
+			\item \textbf{Decision Problem:} \textbf{IndSet-Dec}
+			\begin{itemize}
+				\item Input: $ G, k\in \N $
+				\item Output: $ yes\ \Leftrightarrow\ G\ $ ha un IndSet di cardinalità $ \geq k $
+			\end{itemize}
+			\item \textbf{Search Problem:} \textbf{IndSet-Search}
+			\begin{itemize}
+				\item Input: $ G, k\in N $
+				\item Output: un IndSet di $ \ G\quad t.c.\quad \big| I \big|\geq k \ $ se esiste, altrimenti $\ no $.
+			\end{itemize}
+		\end{itemize}
+		
+		Dimostriamo che se $ \p = \np $ allora esiste un algoritmo che in tempo polinomiale trova un Independent Set di taglia massima in $ G $.\\
+		Se $ \p = \np $ allora esiste un algoritmo $ \alg{A} $ polinomiale per \textbf{IndSet-Dec}:
+		\begin{itemize}
+			\item[$\Rightarrow$] $ \forall (G, k)\quad \alg{A}(G, k) = yes\ \Leftrightarrow\ $ esiste in $ G $ un IndSet di taglia $ k $.
+			\item[$\Rightarrow$] In tempo polinomiale posso trovare $ k^* $ tale che esiste un IndSet in $ G $ di taglia $ k^* $ e ogni IndSet di $ G $ ha taglia al più 
+			\[
+				k^* = \max\{\ k\big| \exists I,\ \text{IndSet di } G,\ I = K \} 
+			\]
+			Per $ v\in V $ se in $ G - v - \{\ u\big| (u,v) \in E \} $ (i vicini di $ u $) non esiste un IndSet di taglia $ k^* - 1 $ allora nessun IndSet di taglia $ k^* $ contiene $ v $.
+		\end{itemize}
+		
+		Per $ v\in V $ se in $ G - v - \{\ u\big| (u,v) \in E \} $ contiene un IndSet $ I' $ di taglia $ k^* - 1 $ allora $ I' \cup \{v \} $ è un IndSet di $ G $. Dove $ \ \big|I\cup\{v\}\big| = k^* $
+		
+		Vediamo ora l'algoritmo che permette di costruire un IndSet:
+		
+		\begin{lstlisting}[frame=tb, mathescape=true]
+CostruisciIndSet($ G $, $ k^* $)
+	if $ \alg{A}(G,\ k^*) = no $:
+		return $ no $
+	else
+		$ \tilde{G} \leftarrow G,\ I\leftarrow \emptyset $
+		foreach $ v \in V $:
+			if $ \alg{A}(\tilde{G} - v - N(v),\ k-1) = yes $:
+				$ I\leftarrow I\cup \{v\} $
+				$ \tilde{G}\leftarrow\tilde{G} - v - N(v) $
+				$ k\leftarrow k - 1 $
+		return $ I $
+		\end{lstlisting}
+		Dove $ N(v) = \{u\big| (u, v) \in E \} $\\
+		Se $ \alg{A} $ utilizza tempo $ T_{\alg{A}}(G) $, il tempo di \lstinline|CostruisciIndSet| è $ O(nT_{\alg{A}}(G)) $\\
+		Quindi sapendo risolvere il problema di decisione in tempo polinomiale, riusciamo a risolvere il problema di ottimizzazione in tempo polinomiale.
 \end{document}
