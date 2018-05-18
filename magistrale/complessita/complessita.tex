@@ -31,6 +31,7 @@
 	morekeywords={VerifyHamCycle},
 	escapechar=",
 	showstringspaces=false}
+\renewcommand{\lstlistingname}{Algorithm}
 
 \pagestyle{fancy}
 \lhead{\nouppercase{\leftmark}}
@@ -454,7 +455,7 @@ output Eulerian
 			
 			\paragraph{Hamiltonian Cycle $ \in $ NP ?} Per vedere se il problema Hamiltonian cycle appartiene alla classe $ \np $ dobbiamo costruire un verificatore $ \alg{B} $ che agisca in tempo polinomiale.
 			
-			\begin{lstlisting}[mathescape=true, frame=tb]
+			\begin{lstlisting}[mathescape=true, frame=tb, caption={Verificatore per HamCycle}]
 VerifyHamCycle(G = (V,E), C=$ x_1, \dots, x_n $)
 	if r != |V|: return $ no $ "\tikzmark{a}"
 	for each v$ \in $ V 
@@ -477,7 +478,7 @@ VerifyHamCycle(G = (V,E), C=$ x_1, \dots, x_n $)
 		Il tempo di esecuzione del verificatore è polinomiale e quindi posso dire che Hamiltonian Cycle $ \in \np$ .
 			
 		\paragraph{K-Colouring $ \in $ NP ?} Per vederlo costruisco il verificatore:
-		\begin{lstlisting}[mathescape=true, frame=tb]
+		\begin{lstlisting}[mathescape=true, frame=tb, caption={Verificatore per K-Colouring}]
 VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 	for each $ E(u,v)  $
 		if $ f(u) = f(v) $: return $ no $ "\tikzmark{a}"
@@ -1224,9 +1225,9 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 		\begin{figure}[h!]
 			\centering
 			\begin{tikzpicture}[scale=0.7,every node/.style={scale=0.7}]
-				\draw (0,0) ellipse (3cm and 2cm) node[yshift=1cm] {$ \npc $};
+				\draw (0,0) ellipse (3cm and 2cm) node[yshift=1cm] {$ \np $};
 				\draw (-1.3,0) circle (1cm) node {$ \p $};
-				\draw (1.3,0) circle (1cm) node {$ \np $};
+				\draw (1.3,0) circle (1cm) node {$ \npc $};
 				\draw[fill=black] (0,-1) circle (.02cm) node[above] {$ \prob{A} $};
 			\end{tikzpicture}
 			\caption{Esiste il problema $ \prob{A} $?}
@@ -1425,14 +1426,15 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 		\end{obs}
 		
 		Costruiamo quindi l'algoritmo che dimostra che il problema è in $ \p $:
-		\begin{lstlisting}[frame=tb, mathescape= true]
-$ I\ \leftarrow\ \emptyset $
-while $\ V\neq \emptyset $:
-	foreach $ \ v \quad t.c.\quad d(v)\leq 1 $:
-		$I\ \leftarrow\ I \cup \{v\} $
-		remove i vicini $ v $ da $ G $
-if $\ \big| I\big| \geq k \ $ return yes
-else return no
+		\begin{lstlisting}[frame=tb, mathescape= true, caption={Algoritmo che risolve TreeIndependentSet}]
+TreeIndSetSolver($ G =(V, E),\ k $)
+	$ I\ \leftarrow\ \emptyset $
+	while $\ V\neq \emptyset $:
+		foreach $ \ v \quad t.c.\quad d(v)\leq 1 $:
+			$I\ \leftarrow\ I \cup \{v\} $
+			remove i vicini $ v $ da $ G $
+	if $\ \big| I\big| \geq k \ $ return yes
+	else return no
 		\end{lstlisting}
 		
 		\paragraph{Problema Only Small Independent Set} Vediamo ora il problema OSIS:
@@ -1458,7 +1460,13 @@ else return no
 			Osserviamo che è facile verificare il $ no $ di istanze del problema OSIS, inoltre si può vedere che tale problema è il duale di IndSet, il quale appartiene alla classe $ \npc $.\\
 			Concludiamo dunque dicendo che OSIS $ \in \text{\textbf{CO-}}\npc $.
 		\end{obs}
-		\noindent
+		
+		\newpage
+		
+	\section{Ricavare problemi di ottimizzazione e ricerca}
+		
+		\subsection{Independent Set}
+		
 		Vediamo ora diverse formulazioni per il problema Independent Set: 
 		\begin{itemize}
 			\item \textbf{Optimization Problem:} \textbf{IndSet-Opt}
@@ -1493,7 +1501,7 @@ else return no
 		
 		Vediamo ora l'algoritmo che permette di costruire un IndSet:
 		
-		\begin{lstlisting}[frame=tb, mathescape=true]
+		\begin{lstlisting}[frame=tb, mathescape=true, caption={Algoritmo di Ottimizzazione per IndSet}]
 CostruisciIndSet($ G $, $ k^* $)
 	if $ \alg{A}(G,\ k^*) = no $:
 		return $ no $
@@ -1509,4 +1517,98 @@ CostruisciIndSet($ G $, $ k^* $)
 		Dove $ N(v) = \{u\big| (u, v) \in E \} $\\
 		Se $ \alg{A} $ utilizza tempo $ T_{\alg{A}}(G) $, il tempo di \lstinline|CostruisciIndSet| è $ O(nT_{\alg{A}}(G)) $\\
 		Quindi sapendo risolvere il problema di decisione in tempo polinomiale, riusciamo a risolvere il problema di ottimizzazione in tempo polinomiale.
+		
+	\subsection{Problema SAT-Search}
+		\begin{itemize}
+			\item Input: $ \phi $ CNF
+			\item Output: assegnamento $ \underline{a}\ t.c.\ \phi(\underline{a}) = T $, se esiste, altrimenti $ no $.
+		\end{itemize}
+		Vediamo ora che dato un algoritmo polinomiale $ \alg{A} $ per il problema \textbf{SAT-Dec}, riusciamo a trovare un algoritmo polinomiale per \textbf{SAT-Search}.
+		
+		L'idea è di procedere per passi. Prendiamo la seguente formula booleana CNF:
+		\[
+			\phi(x_1, x_2, x_3) = (x_1\vee x_2\vee x_3)\wedge(\overline{x_1}\vee\overline{x_2}\vee x_3)\wedge(\overline{x_1}\vee x_2\overline{x_3})
+		\]
+		Assegniamo $ x_1 = T $ ed eliminiamo così la prima clausola, poiché è sempre vera dato l'assegnamento:
+		\[
+			\phi'(x_2, x_3) = (\overline{x_2}\vee x_3)\wedge(x_2\vee \overline{x_3})
+		\]
+		L'algoritmo procede facendo lo stesso per $ x_2 $ e $ x_3 $. Infine otteniamo la formula $ \phi_{x_1 = a_1 \dots x_i = a_i} $ ottenuta dopo aver fissato ogni variabile.
+		
+		\begin{lstlisting}[frame = tb, mathescape=true, caption={Algoritmo di Ricerca per SAT}]
+SAT-Solver($ \phi $)
+	if $ \alg{A}(\phi) = no $:
+		return $ no $
+	for $ i = 1 $ to $ n $:
+		$ a_i \leftarrow T $
+		if $ \alg{A}(\phi_{x_1 = a_1 \dots x_i = a_i}) = no $:
+			$ a_i \leftarrow F $
+	return $ a_1, a_2, \dots, a_i $
+		\end{lstlisting}
+		Qual è la complessità? 
+		$ T_{\text{\lstinline|SAT-Solver|}}(\vert \phi \vert) = O \big(\vert\phi \vert\cdot T_{\alg{A}}(\vert \phi \vert) \big) $, è quindi polytime.\\
+		Abbiamo dimostrato quindi che se sappiamo risolvere il problema di decisione in tempo polinomiale, allora sappiamo risolvere anche il relativo problema di ricerca in tempo polinomiale.
+		
+	\subsection{Self Reducible}
+		\begin{prop}
+			Abbiamo visto che per ogni problema $ \npc $, se esiste un algoritmo polinomiale per il problema di \textit{decisione}, esiste un algoritmo polinomiale per il problema di \textit{ricerca} corrispondente.\\
+			Se $ \p \neq \np $ esiste un problema in $ \np $ per cui \textit{non} vale "quanto sopra".
+		\end{prop}
+		
+		\paragraph{Decision e search per i problemi in $ \np $} Vediamo le definizioni dei problemi di decisione e di ricerca per i problemi della classe $ \np $, cioè i problemi per cui
+		\[
+			\prob{A}\in \np \ \Leftrightarrow\ \exists V_{\prob{A}}(\cdot,\ \cdot)\ t.c.\ \prob{A}(x) = yes\ \Leftrightarrow\ \exists w\ V_{\prob{A}}(x, w) = yes
+		\]
+		
+		Dato $ \prob{A} \in \np $ e il verificatore $ V_{\prob{A}}(\cdot,\ \cdot) $:
+		\begin{definit}[problema di decisione-$\prob{A} $]
+			Dato $ x\quad \exists w\quad t.c.\quad V_{\prob{A}}(x,\ w) = yes $
+		\end{definit}
+		\begin{definit}[problema di ricerca-$\prob{A} $]
+			Dato $ x \text{ produci } w \text{, se esiste, } t.c. \quad V_{\prob{A}}(x,\ w) = yes $
+		\end{definit}
+		
+		\bigskip
+		
+		\begin{definit}[Self Reducible]
+			$ \prob{A}\in \np $ (rispetto a $ V_{\prob{A}} $) è \textbf{self reducible} se, dato un \textbf{oracolo} per il problema di decisione-$\prob{A} $, esiste un algoritmo polinomiale per il problema di ricerca-$\prob{A} $.
+		\end{definit}
+		
+		\begin{definit}[Oracolo]
+			Un \textbf{oracolo} è una black box che prende in input un'istanza di decisione-$\prob{A} $ e ritorna in tempo costante $ O(1) $ la soluzione (è specifico per il problema $ \prob{A} $).
+		\end{definit}
+		
+		Abbiamo visto che \textbf{IndSet} è \textit{Self Reducible} e \textbf{SAT} è \textit{Self Reducible}.
+		
+		\begin{thm}
+			Ogni problema $ \npc $ è \textbf{Self Reducible}
+		\end{thm}
+		
+		Con la seguente dimostrazione vediamo come sfruttare un algoritmo \textit{"debole"} (decision) per costruirne uno \textit{"forte"} (search).
+		
+		\begin{proof}
+			\textbf{Assunzione:} assumiamo che esista un oracolo $ \mathcal{O}_{\prob{A}} $ per il problema $ \prob{A} $.\\
+			Data l'istanza $ x \in \instance{A} $ vogliamo un certificato $ w $ tale che $ \ V_{\prob{A}}(x, w) = yes $, se $ w $ esiste.
+			
+			Sappiamo che se $ \prob{A}\in \npc $ allora $ \prob{A}\leq_K SAT $.\\
+			
+			Partiamo dal teorema \textit{Cook-Levin} per cui Circuit-Sat $ \in \npc $ e SAT $ \in \npc $. Abbiamo che la riduzione da $ \prob{A} $ a SAT è tale che il certificato per l'istanza prodotta di SAT è un certificato per il verificatore $ V_{\prob{A}} $. 
+			Inoltre sappiamo che possiamo trovare un certificato per SAT se abbiamo un oracolo per SAT.\\
+			
+			Se $ \prob{A}\in\npc $ allora $ SAT\leq_K\prob{A} $ e quindi \textit{un oracolo per $ \prob{A} $ implica un oracolo per SAT}.\\
+			
+			Prendiamo $ x\in\instance{A} $ e lo trasformiamo in $ \phi^{(x)} $ di SAT utilizzando il teorema \textit{Cook-Levin}. Sappiamo che
+			\begin{align*}
+				SAT(\phi^{(x)}) &= yes \ \Leftrightarrow\ \prob{A}(x) = yes \\
+				V_{\prob{A}}(x, w) &= yes\ \Leftrightarrow\ V_{SAT}(\phi^{(x)}, \underline{w} ) = yes
+			\end{align*}
+			Possiamo produrre $ w $ usando l'algoritmo SAT-solver. La risposta di tale algoritmo sarà uguale alla risposta dell'oracolo
+			\[
+				\mathcal{O}_{\prob{A}}(f(\phi_{x_1 = a_1, \dots, x_i = a_i}))
+			\]
+			dove $ f $ è la riduzione polinomiale da SAT a $ \prob{A} $. In questo modo il certificato $ w $ che costruisce SAT-solver è lo stesso che serve a $ V_{\prob{A}} $.
+		\end{proof}
+		
+		
+		
 \end{document}
