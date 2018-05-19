@@ -18,7 +18,7 @@ Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman
 #### MAGISTRALE
 - Linguaggi (In progress, con schema delle regole di inferenza)
 - Analisi di Sistemi Informatici
-- Progettazione di sistemi embedded (In progress)
+- Progettazione di sistemi embedded
 - Sistemi Dinamici (In progress)
 - Sistemi ad Eventi Discreti (In progress)
 - Complessità (In progress)
