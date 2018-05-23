@@ -28,7 +28,7 @@
 \lstset{language = C,
 	basicstyle=\ttfamily\linespread{5} ,
 	tabsize = 4,
-	morekeywords={VerifyHamCycle},
+	morekeywords={VerifyHamCycle, foreach},
 	escapechar=",
 	showstringspaces=false}
 \renewcommand{\lstlistingname}{Algorithm}
@@ -135,7 +135,7 @@
 				\item Seguendo quindi la soluzione di Eulero, \textit{quanto costa decidere} se un grafo G ha un tour Euleriano?
 				\begin{lstlisting}[basicstyle=\footnotesize\ttfamily]
 odd-vertex-num = 0;
-For each vertex v of G
+foreach vertex v of G
 	if (deg(v) is odd)
 		increment odd_vertex-num
 If(odd-vertex-num is neither 0 nor 2)
@@ -263,7 +263,7 @@ output Eulerian
 			
 			L'algoritmo $\alg{A}$ per un problema $\prob{A}$ è un algoritmo che dato il problema, $\forall x \in \instance{A},\ \alg{A}(x) = \prob{A}(x)$. Inoltre, dato un algoritmo $ \alg{A} $, definiamo $\compl{A}{x}$ la sua \textbf{complessità}, cioè il \textit{tempo che impiega} $\alg{A}$ sull'istanza di taglia $\vert x \vert$. Notare che $\vert x \vert$ è la taglia dell'istanza $x$.
 			
-			\subsection{Classe P} 
+			\subsection{Classe $ \p $} 
 			Intuitivamente la classe $\p$ è definita come la classe di problemi di \textbf{complessità polinomiale}. Introduciamo qui la definizione formale.
 			
 			\begin{definit}[Classe P]
@@ -295,10 +295,10 @@ output Eulerian
 				dove $ a $ è costante.
 			\end{esempio}
 			
-			\subsection{Classe Exp}
+			\subsection{Classe $ \Exp $}
 			Dal momento che non sappiamo se alcuni problemi stiano oppure no nella classe $\p$ (dal momento che non si conosce un algoritmo che li risolva in tempo polinomiale), si definisce la classe $\Exp$, che racchiude tutte le istanze di questa tipologia di problemi di \textbf{complessità esponenziale}.
 			
-			\begin{definit}[Classe Exp]
+			\begin{definit}[Classe $ \Exp $]
 				Definiamo la classe di problemi $\Exp$ come la classe di problemi di complessità esponenziale, ovvero 
 				\[ 
 					\Exp = \big\lbrace \prob{A}\ \vert\ \exists \alg{A}\ t.c.\ \forall x \in \instance{A},\ \alg{A}(x) = \prob{A}(x)\ \text{ e }\ \compl{A}{x} \leq 2^{\vert x \vert ^ c} \big\rbrace 
@@ -311,7 +311,7 @@ output Eulerian
 				Se invece prendiamo l'algoritmo che considera tutte le possibili permutazioni dei vertici del grafo abbiamo che la complessità è $ n! $. Quindi il problema Hamiltonian Cycle $ \notin \Exp $
 			\end{esempio}
 			
-			\paragraph{Relazione tra P ed Exp.} La domanda che sorge spontanea è $ \p \subseteq \Exp $ ?
+			\paragraph{Relazione tra $ \p $ ed $ \Exp $.} La domanda che sorge spontanea è $ \p \subseteq \Exp $ ?
 			
 			La risposta alla domanda è banalmente \textbf{si}, in quanto, dato un algoritmo $ \alg{B} $ con complessità $\compl{B}{x}$, possiamo dire che 
 			\[ 
@@ -433,10 +433,10 @@ output Eulerian
 				\Exp = \bigcup_{k\geq 0} \mathbf{Time(2^{n^k})}
 			\]
 			
-		\subsection{Classe NP}
+		\subsection{Classe $ \np $}
 			La classe $ \np $ (\textit{non deterministic polinomial time}) è la classe di problemi tali che se la soluzione per un'istanza del problema è \textit{yes}, allora è facile verificarlo.
 			
-			\begin{definit}(Classe NP)
+			\begin{definit}(Classe $ \np $)
 				\begin{align*}
 					\np = \big\lbrace & \prob{A} \quad \big| \quad \exists \alg{B}(\stackrel{x}{\cdot}, \stackrel{w}{\cdot})\quad t.c.\quad 
 					\compld{\alg{B}}{x}{w}= O((\vert x\vert + \vert w\vert)^c) \\
@@ -458,7 +458,7 @@ output Eulerian
 			\begin{lstlisting}[mathescape=true, frame=tb, caption={Verificatore per HamCycle}]
 VerifyHamCycle(G = (V,E), C=$ x_1, \dots, x_n $)
 	if r != |V|: return $ no $ "\tikzmark{a}"
-	for each v$ \in $ V 
+	foreach v$ \in $ V 
 		if v non appare in C: return $ no $ "\tikzmark{c}"
 	for i=1 to n-1
 		if $ ( x_i, x_{i+1} )\notin $ E: return $ no $ "\tikzmark{b}"
@@ -480,7 +480,7 @@ VerifyHamCycle(G = (V,E), C=$ x_1, \dots, x_n $)
 		\paragraph{K-Colouring $ \in $ NP ?} Per vederlo costruisco il verificatore:
 		\begin{lstlisting}[mathescape=true, frame=tb, caption={Verificatore per K-Colouring}]
 VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
-	for each $ E(u,v)  $
+	foreach $ E(u,v)  $
 		if $ f(u) = f(v) $: return $ no $ "\tikzmark{a}"
 	for i=1 to n
 		if $ f(v_i) \geq K $: return $ no $ "\tikzmark{b}"
@@ -927,7 +927,7 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 		\]
 		Perciò, per la proprietà transitiva della riduzione alla Karp tra problemi di decisione, deduciamo che SAT è NP-completo.
 		
-	\subsection{Relazione tra P, NP, e NP-completo}
+	\subsection{Relazione tra $ \p $, $ \np $, e $ \np$-completo}
 		Distinguiamo principalmente due casi che rappresentano le relazioni tra le classi di problemi $ \p, \np $ e NP-completo:
 		\begin{figure}[h!]
 			\centering
@@ -1535,7 +1535,7 @@ CostruisciIndSet($ G $, $ k^* $)
 		\]
 		L'algoritmo procede facendo lo stesso per $ x_2 $ e $ x_3 $. Infine otteniamo la formula $ \phi_{x_1 = a_1 \dots x_i = a_i} $ ottenuta dopo aver fissato ogni variabile.
 		
-		\begin{lstlisting}[frame = tb, mathescape=true, caption={Algoritmo di Ricerca per SAT}]
+		\begin{lstlisting}[frame = tb, mathescape=true, caption={Algoritmo di Ricerca per SAT}, label={lst:algo5}]
 SAT-Solver($ \phi $)
 	if $ \alg{A}(\phi) = no $:
 		return $ no $
@@ -1549,7 +1549,7 @@ SAT-Solver($ \phi $)
 		$ T_{\text{\lstinline|SAT-Solver|}}(\vert \phi \vert) = O \big(\vert\phi \vert\cdot T_{\alg{A}}(\vert \phi \vert) \big) $, è quindi polytime.\\
 		Abbiamo dimostrato quindi che se sappiamo risolvere il problema di decisione in tempo polinomiale, allora sappiamo risolvere anche il relativo problema di ricerca in tempo polinomiale.
 		
-	\subsection{Self Reducible}
+	\subsection{Self Reduciblility}
 		\begin{prop}
 			Abbiamo visto che per ogni problema $ \npc $, se esiste un algoritmo polinomiale per il problema di \textit{decisione}, esiste un algoritmo polinomiale per il problema di \textit{ricerca} corrispondente.\\
 			Se $ \p \neq \np $ esiste un problema in $ \np $ per cui \textit{non} vale "quanto sopra".
@@ -1602,13 +1602,110 @@ SAT-Solver($ \phi $)
 				SAT(\phi^{(x)}) &= yes \ \Leftrightarrow\ \prob{A}(x) = yes \\
 				V_{\prob{A}}(x, w) &= yes\ \Leftrightarrow\ V_{SAT}(\phi^{(x)}, \underline{w} ) = yes
 			\end{align*}
-			Possiamo produrre $ w $ usando l'algoritmo SAT-solver. La risposta di tale algoritmo sarà uguale alla risposta dell'oracolo
+			Possiamo produrre $ w $ usando l'algoritmo \lstinline|SAT-Solver| (\ref{lst:algo5}). La risposta di tale algoritmo sarà uguale alla risposta dell'oracolo
 			\[
 				\mathcal{O}_{\prob{A}}(f(\phi_{x_1 = a_1, \dots, x_i = a_i}))
 			\]
 			dove $ f $ è la riduzione polinomiale da SAT a $ \prob{A} $. In questo modo il certificato $ w $ che costruisce SAT-solver è lo stesso che serve a $ V_{\prob{A}} $.
 		\end{proof}
 		
+		\begin{figure}[h!]
+			\centering
+			\begin{tikzpicture}[scale=0.7,every node/.style={scale=0.7}]
+				\draw (0,0) ellipse (3cm and 2cm) node[yshift=1cm] {$ \np $};
+				\draw (-1.3,0) circle (1cm) node {$ \p $};
+				\draw (1.3,0) circle (1.2cm) node[align=center] {$ \npc $\\self reducible};
+				\draw[fill=black] (0,-1) circle (.02cm) node[above] {};
+			\end{tikzpicture}
+		\end{figure}
+		Vediamo ora un problema in $ \np $ che non crediamo sia in $ \npc $.
 		
+	\subsection{Problema Graph Isomorphism}
+		Versione Graph Isomorphism-Search:
+		\begin{itemize}
+			\item Input: $ G_1 = (V_1, E_1),\ G_2 = (V_1, E_2) $ semplici e non diretti
+			\item Output: una funzione $ f: v_1\mapsto v_2\quad t.c.\quad \forall (v, u) \in V_1 $\\
+			$ (u,v)\in E_1\ \Leftrightarrow\ (f(u), f(v)) \in E_2 $. Se esiste una tale $ f $, altrimenti $ no $.
+		\end{itemize}
+		Dato un oracolo $ \mathcal{O}_{\text{GI-Dec}} $ per il problema Graph-Isomorphism-Decision, allora esiste un algoritmo polinomiale (che usa $ \mathcal{O}_{\text{GI-Dec}} $) per il problema di ricerca Graph-Isomorphism-Search.
 		
+		\begin{figure}[h!]
+			\centering
+			\begin{tikzpicture}[>=latex, scale=0.5]
+				\node at (0,2.5) {$ G_1 $};
+				\draw (0,0) circle (2cm);
+				\node at (7,2.5) {$ G_2 $};
+				\draw (7,0) circle (2cm);
+				\draw[fill=black] (0,1) circle (.03cm) node[above] (v) {$ v $};
+				\draw[fill=black] (7,1) circle (.03cm) node[above] (vt) {$ \tilde{v} $};
+				\draw[fill=black] (0,-1) circle (.03cm) node[above] {$ u $};
+				\draw[fill=black] (7,-1) circle (.03cm) node[above] {$ \tilde{u} $};
+				\draw[->, bend right] (0,1) to (7,1);
+				
+				\draw[fill=black] (-2.5,0.25) circle (.03cm) node[above] {};
+				\draw[fill=black] (-2.5,0.75) circle (.03cm) node[above] {};
+				\draw[fill=black] (-2.5,1.25) circle (.03cm) node[above] {};
+				\draw[fill=black] (-2.5,1.75) circle (.03cm) node[above] {};
+				
+				\draw[fill=black] (9.5,0.25) circle (.03cm) node[above] {};
+				\draw[fill=black] (9.5,0.75) circle (.03cm) node[above] {};
+				\draw[fill=black] (9.5,1.25) circle (.03cm) node[above] {};
+				\draw[fill=black] (9.5,1.75) circle (.03cm) node[above] {};
+				
+				\foreach \i in {0.25, 0.75, ..., 1.75} {\draw[ultra thin, draw=gray] (0,1) -- (-2.5,\i);}
+				\foreach \i in {0.25, 0.75, ..., 1.75} {\draw[ultra thin, draw=gray] (7,1) -- (9.5,\i);}
+				
+				\node at (0,-2.5) {$ \vert V_1 \vert = n $}; \node at (7,-2.5) {$ \vert V_1 \vert = n $};
+			\end{tikzpicture}
+			\vspace{-0.5cm}
+		\end{figure}
+		
+		\begin{lstlisting}[frame=tb, mathescape=true, caption={Graph Isomorphism Search}]
+GraphIsomorphismSearch($ G_1, G_2 $)
+	if $ \mathcal{O}^{\text{GI-Decision}}(G_1, G_2) = no $:
+		return $ no $
+	foreach $ v_i\in V_1 $: // $\text{Fissiamo } v\in V_1, \tilde{v}\in V_2 $
+		foreach $ \tilde{v}_i \in V_2 $: 
+			$ \tilde{G}_1 \ \leftarrow\ \text{aggiungiamo } n \text{ vertici a } V_1 \text{ come vicini di } v $
+			$ \tilde{G}_2 \ \leftarrow\ \text{aggiungiamo } n \text{ vertici a } V_2 \text{ come vicini di } \tilde{v} $
+			if $ \mathcal{O}^{\text{GI-Decision}}(G_1, G_2) = yes $:
+				$ f( v ) = \tilde{v} $
+				$ G_1\ \leftarrow\ \tilde{G}_1,\ G_2\ \leftarrow\ \tilde{G}_2 $
+				break
+		\end{lstlisting}
+		
+		\begin{thm}
+			Se $ \np\cup\conp \neq \p $ allora esiste un problema non self-reducible di ricerca il cui problema di decisione è in $ \np $.
+		\end{thm}
+		
+		\begin{proof}
+			Partiamo dunque dall'ipotesi che
+			\[
+				\exists \prob{A}\in\ (\np \cap \conp)\setminus \p\ \quad\ \prob{A}\notin\p,\ \prob{A}\in\np,\ \prob{A}\in\conp
+			\]
+			\begin{itemize}
+				\item[$ \rightarrow $] $ \prob{A}\in\np $ esiste un verificatore $ V_{\text{yes}}(x, w) $ polinomiale per le istanze $ yes $ tale che 
+				\[
+					\forall x \in \instance{A},\ \prob{A}(x) = yes\ \Leftrightarrow\ \exists w\ \ V_{\text{yes}}(x, w) = yes
+				\] 
+				\item[$ \rightarrow $] $ \prob{A}\in\conp $ esiste un verificatore $ V_{\text{no}}(x, w') $ polinomiale per le istanze $ no $ tale che 
+				\[
+					\forall x \in \instance{A},\ \prob{A}(x) = no\ \Leftrightarrow\ \exists w'\ \ V_{\text{no}}(x, w') = yes
+				\] 
+			\end{itemize}
+			Definiamo $ \ \forall x \in \instance{A} $ un verificatore 
+			\[
+				V^*(x, w) = yes \ \Leftrightarrow\ V_{\text{yes}}(x, w) = yes\quad OR\quad V_{\text{no}}(x, w) = yes
+			\]
+			$ V^* $ è polinomiale perché $ V_{\text{yes}}\ $ e $\ V_{\text{no}} $ sono polytime. Questo verificatore è associato al problema $ \prob{B}\in \np $ per cui $ \instance{A} = \instance{B},\ \forall x \in \instance{B}\ \prob{B}(x) = yes $.\\
+			
+			Il problema di ricerca associato a $ V^* $ è dato per qualche $ w $ tale che $ V^*(x, w) = yes $.\\
+			
+			Se in tempo polinomiale, dato $ x $, trovo un certificato $ w $ tale che  $ V^*(x, w) = yes $
+			\begin{align*}
+				&\text{se } V_{\text{yes}}(x, w) = yes\ \text{ allora } \prob{A}(x) = yes \\
+				&\text{se } V_{\text{no}}(x, w) = yes\ \text{ allora } \prob{A}(x) = no
+			\end{align*}
+			Perciò risolvo $ \prob{A} $ in tempo polinomiale. Questa è una \textit{contraddizione} perché $ \prob{A}\notin \p $. Perciò il problema non è self reducible.
+		\end{proof}
 \end{document}
