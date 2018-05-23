@@ -19,7 +19,9 @@
 \usepackage{epigraph}
 \usepackage{fancyhdr}
 \usepackage{listings}
+\usepackage{graphicx}
 \usepackage[dvipsnames]{xcolor}
+\usepackage{subcaption}
 \usepackage{tikz}
 \usepackage{textcomp}
 \usetikzlibrary{shapes,arrows,positioning,calc}
@@ -1738,5 +1740,79 @@ GraphIsomorphismSearch($ G_1, G_2 $)
 		\begin{tikzpicture}[>=latex, overlay, remember picture]
 			\draw[->, bend left] (qui) to (qui1);
 		\end{tikzpicture}
+	\subsection{Problema Vertex Cover}
+		\begin{itemize}
+			\item Input: grafo $ G $ non diretto, $ k \in \N $
+			\item Output: $ yes\ \Leftrightarrow\ \exists U\subseteq v\quad \vert U\vert \leq k,\quad \forall(u,v)\in E\quad \{u, v\}\cap U \neq \emptyset $
+		\end{itemize}
+		\begin{figure}[h!]
+			\begin{subfigure}{.5\textwidth}
+				\centering
+				\begin{tikzpicture}
+					\node[draw, circle, fill=gray] (a) at (0,0) {}; \node[draw, circle] (b) at (1,0) {};
+					\node[draw, circle] (c) at (-.5,-1) {}; \node[draw, circle, fill=gray] (d) at (.5,-1) {};
+					\node[draw, circle, fill=gray] (e) at (1.5,-1) {};
+					\draw (a) -- (b) -- (d) -- (c) -- (a); \draw (b) -- (e) -- (d);
+				\end{tikzpicture}
+				\caption{è vertex cover}
+			\end{subfigure}
+			\begin{subfigure}{.5\textwidth}
+				\centering
+				\begin{tikzpicture}
+				\node[draw, circle, fill=gray] (a) at (0,0) {}; \node[draw, circle] (b) at (1,0) {};
+				\node[draw, circle] (c) at (-.5,-1) {}; \node[draw, circle, fill=gray] (d) at (.5,-1) {};
+				\node[draw, circle] (e) at (1.5,-1) {};
+				\draw (a) -- (b) -- (d) -- (c) -- (a); \draw (b) -- (e) -- (d);
+				\end{tikzpicture}
+				\caption{\textit{non} è vertex cover}
+			\end{subfigure}
+			\caption{Due esempi di grafi per vertex cover}
+		\end{figure}
 		
+		Dimostriamo che il problema $ \in \npc $, partiamo col dimostrare che $ \in \np $:		
+		\begin{itemize}
+			\item Certificato: $ U,\ \vert U\vert \leq k,\ $ dove $ U $ è vertex cover.
+			\item Verificatore:
+			\begin{itemize}
+				\item Conta i vertici in $ U $ (tempo: $ O(n) $)
+				\item $ \forall (u, v)\in E $ controllo che $ \{u, v\}\cap U\neq \emptyset $
+			\end{itemize}
+			In tutto impiega $ O(n^2)\times O(n) = O(n^3) $. Quindi è polinomiale.
+		\end{itemize}
+		 
+		
+		Dimostriamo che il problema è $ \np-hard $: troviamo $ \prob{A}\in \npc\quad t.c.\quad \prob{A}\leq_K VC $.\\
+		
+		Utilizziamo $ \prob{A} = $ IndSet:
+		\begin{itemize}
+			\item[($ \Leftarrow $)] $ U $ è VC per $ G $, $ \ u, v \in U \ $ se $ \ (u,v)\in E\ \Rightarrow\ U $ non è VC
+			$ \ \Rightarrow\ V\setminus U $ è un IndSet.
+			\item[($ \Rightarrow $)] Sia $ I $ un IndSet per $ G $.\\
+			Se $ \exists (u,v)\in E\quad t.c.\quad \forall w \in V\setminus I\ \ (w\neq u, w\neq v)\ \Rightarrow\ u, v\in I\ \Rightarrow\ I $ non è un IndSet.
+		\end{itemize}
+	
+	\subsection{Problema Hitting Set}
+		\begin{itemize}
+			\item Input: $ U $, $ F = \{M_1, M_2, \dots, M_k\}\quad M_i\subseteq U,\quad m \in\N $
+			\item Output: $ \ yes\ \Leftrightarrow\ \exists D\subseteq U, \quad \vert D\vert \leq m\quad t.c.\quad D\cap M_i \neq \emptyset\quad \forall i $.
+		\end{itemize}
+		Facciamo vedere che Hitting Set $ \in \npc $.
+	
+	\section{Non determinismo e classe NTIME}
+		
+	
+	\section{Alcuni problemi NP-Completi}
+		\subsection{Problema Max-Cut}
+		
+		\subsection{Problema Max-K-SAT}
+		
+		\subsection{Problema Set-Splitting}
+		
+		\subsection{Problema Set-Cover}
+		
+		\subsection{Problema Clique-No-Clique}
+		
+		\subsection{Problema D-HamPath}
+		
+	\section{Complessità di Spazio}
 \end{document}
