@@ -437,7 +437,8 @@ In tal modo il nuovo dominio conterrà solo valori che soddisfano tutti i vincol
 Da questo si conclude che $R_{x_i, x_j}$ è  \textit{arc-consistent} se $x_i$ è arc-consistent rispetto a $x_j$ e viceversa.
 
 Diamo qui di seguito gli algoritmi possibili per verificare l'\textit{arc-consistency}.
-\subparagraph{AC1.}L'algoritmo \textbf{AC1} ha complessità $O(nek^3)$, dove $n$ sono i nodi, $e$ gli archi e $k$ è il massimo numero di valori in un dominio.
+\subparagraph{AC1.}L'algoritmo \textbf{AC1} ha complessità $O(nek^3)$, dove $n$ sono i nodi, $e$ gli archi e $k$ è il massimo numero di valori in un dominio. La procedura di revising è la rimozione dei valori in un dominio per i quali non ha arc-consistency rispetto ad un secondo dominio.
+
 \begin{lstlisting}[escapeinside={(*}{*)}]
 repeat
 	for all Pairs (*$x_i, x_j$*) that participate in a constraint do
@@ -447,6 +448,8 @@ repeat
 until no domain is changed
 	\end{lstlisting}
 	
+\textbf{Nota}: AC1 termina sempre, e mantiene l'arc-consistency. Se la rete è vuota, non esiste alcuna soluzione.
+	
 \subparagraph{AC3.} L'algoritmo \textbf{AC3} ha complessità $O(ek^3)$ e procede come segue:\begin{lstlisting}[escapeinside={(*}{*)}]
 for all every pairs (*$x_i, x_j$*) that participate in a constraint (*$R_{x_i, x_j} \in R$*) do
 	Q = Q (*$\cup \lbrace (x_i, x_j), (x_j, x_i) \rbrace$ *)
@@ -455,13 +458,20 @@ end for
 while Q (*$\neq \lbrace \rbrace$*) do
 	pop (*$(x_i, x_j)$*) from Q
 	REVISE((*$(x_i),x_j$*))
-
 	if (*$D_i$*) changed then
 		Q = Q (*$\cup \lbrace (x_k, x_i), k\neq i, k\neq j \rbrace$ *)
 	end if
 end while
 \end{lstlisting}
 
+\subparagraph{Domini vuoti.} Nel caso in cui un dominio sia vuoto, si ha un problema inconsistente (ovvero non si ha soluzione). Al contrario, il fatto che non tutti i domini siano vuoti non implica che il problema sia consistente. Il principale punto debole dell'arc-consistency sta nel fatto che lavora solamente su vincoli binari e vincoli con un singolo dominio.
+
+\paragraph{Path consistency.} È un'evoluzione dell'arc-consistency che utilizza triple di variabili. Una coppia di variabili si dice \textit{path-consistent} in relazione ad una terza variabile quando, per ogni assegnamento $x_i = a, x_j = b$ esiste un valore per $x_m$ tale per cui sono soddisfatti i vincoli $(x_i, x_m)$ e $(x_m, x_j)$.
+Se i valori cercati violano i vincoli sulla terza variabile, allora tali valori non possono far parte della soluzione, ma \textbf{non possono essere rimossi dai loro domini}.
+
+Quando una coppia di valori $(x=a, y=b)$ non è path-consistent rispetto a $z$ non viene rimossa alcuna soluzione: infatti viene rimossa la \textit{coppia} di valori dalla soluzione, ma non vengono rimossi i valori dai rispettivi domini, in quanto questi potrebbero far parte di altre soluzioni, seppur in coppie differenti da quella scartata.
+
+Per forzare la path-consistency si usa l'algoritmo PC-2 (molto simile a AC-3), che però è computazionalmente più complesso ($O(n^3k^5)$) in quanto lavora su triple.
 
 
 
