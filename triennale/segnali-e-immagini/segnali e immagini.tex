@@ -1,22 +1,16 @@
 % Questo è il mio primo documento serio scritto in Latex, quindi potrebbe contenere degli orrori
 % Chiedo umilmente scusa xD
-\documentclass[a4paper, titlepage]{article}
+\documentclass[a4paper, titlepage, oneside]{scrbook}
 \usepackage[italian]{babel}
 \usepackage[utf8]{inputenc}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{mathtools}
-\hypersetup{
-	colorlinks,
-	citecolor=black,
-	filecolor=black,
-	linkcolor=black,
-	urlcolor=black
-}
 \usepackage{tikz}
 \usetikzlibrary{arrows}
 \usepackage{pgfplots}
+\usepgfplotslibrary{fillbetween}
 
 %opening
 \title{Elaborazione di Segnali e Immagini}
@@ -31,8 +25,8 @@
 	\tableofcontents
 \newpage
 
-\section{Introduzione}
-\subsection{Che cos'è un segnale?}
+\chapter{Introduzione}
+\section{Che cos'è un segnale?}
 Si definisce \textbf{segnale} una qualsiasi grandezza fisica che varia nel tempo e trasporta informazione. 
 In generale esistono diversi tipi di segnali, ma in natura sono quasi sempre casuali e continui.
 
@@ -44,7 +38,7 @@ Altra suddivisione è quella in segnali \textbf{continui} e \textbf{discreti}, a
 Parte della teoria dei segnali è profondamente connessa con la \textbf{teoria dei sistemi}, in quanto molti segnali transitano come input 
 in sistemi che elaborano ovvero trasformano il segnale in ingresso restituendo in uscita un certo output.
 
-\subsection{Che cos'è un sistema?}
+\section{Che cos'è un sistema?}
 Possiamo definire un \textbf{sistema} (dinamico) come un modello matematico che rappresenta un oggetto che evolve nel tempo.
 \begin{figure}[h]
 	\centering
@@ -53,22 +47,27 @@ Possiamo definire un \textbf{sistema} (dinamico) come un modello matematico che 
 	\label{fig:sistema}
 \end{figure}
 
-\subsection{Classificazione dei segnali}
+\section{Classificazione dei segnali}
 Come accennato prima, possiamo suddividere i segnali in diverse categorie:
 \begin{itemize}
-	\item Analogici - Digitali
 	\item Continui nel tempo - Discreti nel tempo
+	\item Analogici - Digitali
 	\item Periodici - Aperiodici
+	\item Causali e non causali
+	\item Pari e dispari
 	\item Deterministici - Casuali
 	\item Segnali di energia - Segnali di potenza
 	\item ...
 \end{itemize}
 È importante notare come le suddivisioni sopra elencate non siano esclusive tra loro, ci sono ad esempio segnali di potenza periodici, analogici e casuali, ecc.
 
-\subsubsection{Segnali a tempo continuo e a tempo discreto}
+\subsection{Segnali a tempo continuo e a tempo discreto}
 Un segnale si definisce \textbf{a tempo continuo} quando il suo dominio ha la stessa cardinalità dei numeri reali, ed è quindi specificato per ogni reale.
+Viceversa si definisce \textbf{discreto} quando il suo dominio ha la stessa cardinalità dei numeri naturali, ed è quindi specificato per valori discreti.
 
-\begin{tikzpicture}
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}
 	\begin{axis}[
 		axis lines=left,
 		xlabel=Tempo,
@@ -81,35 +80,30 @@ Un segnale si definisce \textbf{a tempo continuo} quando il suo dominio ha la st
 		color=blue,
 		line width=1.25pt,
 	]{sin(x)};
-	\end{axis}
-\end{tikzpicture}
-
-Un segnale si definisce \textbf{discreto} quando il suo dominio ha la stessa cardinalità dei numeri naturali, ed è quindi specificato per valori discreti.
-
-\begin{tikzpicture}
-	\begin{axis}[
-		axis lines=left,
-		xlabel=Tempo,
-		ylabel=Ampiezza,
-		trig format plots=rad,
-	]
+	\addlegendentry{Tempo continuo}
 	\addplot[
 		domain=0:4*pi,
 		samples=360,
-		color=blue,
+		color=red,
 		line width=1.25pt,
 		loosely dotted,
 		line cap=round,
-		]{sin(x)};
+	]{sin(x+1)};
+	\addlegendentry{Tempo discreto}
 	\end{axis}
 \end{tikzpicture}
+\caption{Due segnali sinusoidali, uno continuo e l'altro discreto}
+\label{fig:sinusoidi_tempo_continuo_discreto}
+\end{figure}
 
-\subsubsection{Segnali analogici e digitali}
+\subsection{Segnali analogici e digitali}
 Se parlando del dominio abbiamo i segnali a tempo continuo e a tempo discreto, possiamo distinguere i segnali analogici e digitali guardando i valori assunti dal codominio.
-Quando l'ampiezza di un segnale può assumere qualsiasi valore in un intervallo continuo, parliamo di \textbf{segnale analogico}, viceversa quando assume solo un insieme
-finito di valori parliamo di \textbf{segnale digitale}. In quest'ultimo caso il segnale si dice "\textit{quantizzato}".
+Quando l'ampiezza di un segnale può assumere qualsiasi valore in un intervallo continuo, parliamo di segnale \textbf{analogico}, viceversa quando assume solo un insieme
+finito di valori parliamo di segnale \textbf{digitale}. In quest'ultimo caso il segnale si dice "\textit{quantizzato}".
 
-\begin{tikzpicture}
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}
 	\begin{axis}[
 		scale only axis,
 		height=5cm,
@@ -162,24 +156,28 @@ finito di valori parliamo di \textbf{segnale digitale}. In quest'ultimo caso il 
 	\addlegendentry{Segnale digitale}
 	\end{axis}
 \end{tikzpicture}
+\caption{Confronto fra segnale analogico e digitale}
+\label{fig:analogico_vs_digitale}
+\end{figure}
 
-\subsubsection{Segnali periodici e aperiodici}
-Un segnale è periodico se esiste una costante positiva $T_{0}$ tale che
+\subsection{Segnali periodici e aperiodici}
+Un segnale è \textbf{periodico} se esiste una costante positiva $T_{0}$ tale che
 $$
 	f(t+T_{0})=f(t) \qquad \forall t
 $$
 Il più piccolo valore di $T_{0}$ che soddisfa questa relazione è chiamato \textbf{periodo} della funzione. Un segnale periodico rimane invariato quando viene spostato
-nel tempo.
+nel tempo. Un esempio è la funzione seno, che ha un periodo di $2\pi$ (si veda la figura \ref{fig:sinusoidi_tempo_continuo_discreto}).
 
-\subsubsection{Segnali causali e non causali}
+\subsection{Segnali causali e non causali}
 I segnali \textbf{causali} assumono il valore $0$ per $x<0$, viceversa i segnali \textbf{anti-causali} valgono $0$ per $x\geq0$.
-I segnali \textbf{non causali} sono segnali il cui valore è diverso da $0$ da ambo i lati.
+I segnali \textbf{non causali} sono segnali il cui valore è diverso da $0$ ambo i lati.
 
-\subsubsection{Segnali pari e dispari}
+\subsection{Segnali pari e dispari}
 Un segnale \textbf{pari} è un qualsiasi segnale $f$ tale che $f(t)=f(-t)$. Questi segnali sono facilmente riconoscibili in quanto simmetrici rispetto all'asse delle ordinate.
 Un segnale \textbf{dispari} invece segue la relazione $f(t)=-f(-t)$.
 
-\begin{center}
+\begin{figure}[h]
+	\centering
 	\begin{tikzpicture}
 	\begin{axis}[
 		axis lines=center,
@@ -196,7 +194,9 @@ Un segnale \textbf{dispari} invece segue la relazione $f(t)=-f(-t)$.
 	\addlegendentry{Segnale dispari};
 	\end{axis}
 \end{tikzpicture}
-\end{center}
+\caption{$x^2$ è un segnale pari, $x^3$ è dispari}
+\label{fig:segnale_pari_dispari}
+\end{figure}
 
 Qualsiasi segnale può essere riscritto come composizione di segnali pari e dispari:
 \begin{align*}
@@ -208,35 +208,26 @@ Qualsiasi segnale può essere riscritto come composizione di segnali pari e disp
 
 Alcune proprietà delle funzioni pari e dispari:
 \begin{itemize}
-	\item Funzione pari $\times$ Funzione dispari = Funzione dispari
-	\item Funzione dispari $\times$ Funzione dispari = Funzione pari
-	\item Funzione pari $\times$ Funzione pari = Funzione pari
+	\item Funzione pari $\cdot$ Funzione dispari = Funzione dispari
+	\item Funzione dispari $\cdot$ Funzione dispari = Funzione pari
+	\item Funzione pari $\cdot$ Funzione pari = Funzione pari
 	\item Area di una funzione pari:\\
 	$\int_{-a}^{a} f_{e}(t) dt = 2\int_{0}^{a} f_{e}(t) dt$
 	\item Area di una funzione dispari:\\
 	$\int_{-a}^{a} f_{o}(t) dt = 0$
 \end{itemize}
 
-\subsubsection{Segnali deterministici e probabilistici}
-Un segnale \textbf{deterministico} è un segnale la cui \textit{descrizione fisica} è nota a priori, per cui è possibile prevedere in ogni istante il valore del segnale mediante una formula matematica,
-una regola o una tabella.
-Per questo motivo è anche possibile calcolare i valori futuri dai valori passati senza alcuna incertezza sui valori di ampiezza.
-
-\begin{center}
+\subsection{Segnali deterministici e probabilistici}
+Un segnale \textbf{deterministico} è un segnale la cui \textit{descrizione fisica} è nota a priori, per cui è possibile prevedere in ogni istante il valore del segnale mediante una formula matematica, una regola o una tabella. Per questo motivo è anche possibile calcolare i valori futuri dai valori passati senza alcuna incertezza sui valori di ampiezza.
+Un segnale \textbf{probabilistico} invece è un segnale i cui valori di ampiezza non possono essere previsti con precisione, ma per i quali è solo possibile descrivere una probabilità, spesso basandosi sulla media di altri valori.
+\begin{figure}[h]
+	\centering
 	\begin{tikzpicture}
 	\begin{axis}[xlabel=Tempo,ylabel=Ampiezza]
-	\addplot {cos(deg(x))+ln(x)};
-	\addlegendentry{$cos(x)+ln(x)$}
-	\end{axis}
-	\end{tikzpicture}
-\end{center}
-
-Un segnale \textbf{probabilistico} invece è un segnale i cui valori di ampiezza non possono essere previsti con precisione, ma per i quali è solo possibile descrivere una probabilità, spesso basandosi
-sulla media di altri valori.
-
-\begin{center}
-	\begin{tikzpicture}
-	\begin{axis}[xlabel=Tempo,ylabel=Ampiezza]
+	\addplot+[
+	color=blue,
+	domain=0:25,
+	]{cos(deg(x))+ln(x^2)};
 	\addplot+[
 	color=red,
 	line width=1.25pt,
@@ -270,9 +261,11 @@ sulla media di altri valori.
 	};
 	\end{axis}
 	\end{tikzpicture}
-\end{center}
+	\caption{Il grafico blu è deterministico, il rosso è probabilistico}
+	\label{fig:deterministico_vs_probabilistico}
+\end{figure}
 
-\subsection{Caratteristiche dei segnali}
+\section{Caratteristiche dei segnali}
 Si definisce segnale di \textbf{lunghezza finita} un segnale i cui valori sono diversi da $0$ per un intervallo \textit{finito} di valori della variabile indipendente.
 \begin{align*}
 	f=f(t), \quad \forall t:t_{1} \leq t \leq t_{2}\\
@@ -284,25 +277,27 @@ $$
 	f(t)=sin(\omega t)
 $$
 
-La \textbf{dimensione} di un segnale indica la larghezza o la forza di esso. Useremo il concetto di \textit{norma} per quantificare questa nozione sia per segnali a tempo continuo che discreto.\\
-L'area sotto la curva del segnale rappresenta \textbf{l'energia}.
+La \textbf{dimensione} di un segnale indica la larghezza o la forza di esso. Useremo il concetto di \textit{norma} per quantificare questa nozione sia per segnali a tempo continuo che discreto. L'area sotto la curva del segnale rappresenta \textbf{l'energia}.
 
-\begin{center}
+\begin{figure}[h]
+	\centering
 	\begin{tikzpicture}
-	\begin{axis}[xlabel=Tempo,ylabel=Ampiezza,axis lines=left,]
+	\begin{axis}[xlabel=Tempo,ylabel=Ampiezza,axis lines=left,no marks,]
 	\addplot+[
-	color=red,
-	line width=1.25pt,
+	color=blue,
+	name path=A
+	]{x^2};
+	\addplot+[
+	draw=none,
 	mark=none,
-	]
-	coordinates {
-		(0,0)
-		(5,3)
-		(5,0)
-	};
+	name path=B
+	]{0};
+	\addplot+[red!20] fill between[of=A and B];
 	\end{axis}
 	\end{tikzpicture}
-\end{center}
+	\caption{Energia del segnale}
+	\label{fig:energia_segnale}
+\end{figure}
 
 L'\textbf{energia} di un segnale si calcola come:
 $$
@@ -320,11 +315,14 @@ La radice quadrata della potenza è detto \textbf{valore efficace}. Esso costitu
 Possono esistere segnali per i quali né l'energia né la potenza sono finiti. Tuttavia nella pratica i segnali hanno energia finita, per cui sono segnali di energia 
 (risulta impossibile generare un vero e proprio segnale di potenza, in quanto questo richiederebbe durata infinita ed energia infinita).
 
-\subsection{Operazioni sui segnali}
+\section{Operazioni sui segnali}
 \begin{itemize}
 	\item \textbf{Spostamento}: Anticipo o ritardo di un segnale
-	\begin{center}
-		\begin{tikzpicture}
+	\item \textbf{Scala}: Compressione o espansione di un segnale nel tempo
+	\item \textbf{Inversione}: Simmetria rispetto all'asse verticale
+	\begin{figure}[h]
+		\centering
+		\begin{tikzpicture}[scale=0.5]
 		\begin{axis}[xlabel=t,ylabel=f(t),axis lines=left,]
 		\addplot[
 		color=red,
@@ -363,10 +361,7 @@ Possono esistere segnali per i quali né l'energia né la potenza sono finiti. T
 		\addlegendentry{Ritardato};
 		\end{axis}
 		\end{tikzpicture}
-	\end{center}
-	\item \textbf{Scala}: Compressione o espansione di un segnale nel tempo
-	\begin{center}
-		\begin{tikzpicture}
+		\begin{tikzpicture}[scale=0.5]
 		\begin{axis}[xlabel=t,ylabel=f(t),axis lines=left,]
 		\addplot[
 		color=red,
@@ -405,10 +400,7 @@ Possono esistere segnali per i quali né l'energia né la potenza sono finiti. T
 		\addlegendentry{Espanso};
 		\end{axis}
 		\end{tikzpicture}
-	\end{center}
-	\item \textbf{Inversione}: Simmetria rispetto all'asse verticale
-	\begin{center}
-		\begin{tikzpicture}
+		\begin{tikzpicture}[scale=0.5]
 		\begin{axis}[xlabel=t,ylabel=f(t),axis lines=left,]
 		\addplot[
 		color=red,
@@ -435,9 +427,11 @@ Possono esistere segnali per i quali né l'energia né la potenza sono finiti. T
 		\addlegendentry{Inverso};
 		\end{axis}
 		\end{tikzpicture}
-	\end{center}
+		\caption{Spostamento, scala ed inversione}
+		\label{fig:spostamento_scala_inversione_segnale}
+	\end{figure}
 \end{itemize}
-\subsection{Funzioni utili}
+\section{Funzioni utili}
 \begin{itemize}
 	\item Funzione gradino unitaria
 	\begin{align*}
@@ -460,14 +454,14 @@ Possono esistere segnali per i quali né l'energia né la potenza sono finiti. T
 	\right.
 	\end{align*}
 	
+	\item Funzione esponenziale
+	$$f(t)=Ae^{j\omega t}$$
+	
 	\item Impulso unitario
 	\begin{align*}
 	\delta(t)=0,t\neq0\\
 	\int_{-\infty}^{+\infty}\delta(t)dt=1
 	\end{align*}
-	
-	\item Funzione esponenziale
-	$$f(t)=Ae^{j\omega t}$$
 \end{itemize}
 Di seguito elenchiamo alcune delle proprietà fondamentali della funzione \textit{impulso unitario}.
 \begin{itemize}
@@ -499,9 +493,8 @@ Di seguito elenchiamo alcune delle proprietà fondamentali della funzione \texti
 	\end{align*}
 \end{itemize}
 
-\subsection{Sistemi lineari}
+\section{Sistemi lineari}
 Un sistema è caratterizzato da \textbf{input}, \textbf{output} e da un \textbf{modello matematico} del sistema. L'\textbf{analisi} di un sistema prevede di determinare l'output di un sistema dato l'input, mentre l'operazione inversa è la \textbf{sintesi} o \textbf{progettazione}.
-
 Come per i segnali, anche i sistemi possono essere classificati in varie categorie:
 \begin{itemize}
 	\item Lineari - Non lineari
@@ -513,23 +506,24 @@ Come per i segnali, anche i sistemi possono essere classificati in varie categor
 	\item ...
 \end{itemize}
 
-\subsubsection{Proprietà dei sistemi lineari}
+\subsection{Proprietà dei sistemi lineari}
 Elenchiamo di seguito alcune proprietà dei sistemi lineari:
 \begin{itemize}
 	\item \textbf{Additività}\\
 	$f_{1} \rightarrow y_{1}$ e $f_{2} \rightarrow y_{2}$ allora $f_{1} +f_{2} \rightarrow y_{1}+y_{2}$
 	\item \textbf{Omogeneità}\\
-	$f_{1} \rightarrow y_{1}$ allora $a_{1} \times f_{1}\rightarrow a_{1}\times y_{1}$
+	$f_{1} \rightarrow y_{1}$ allora $a_{1} \cdot f_{1}\rightarrow a_{1}\cdot y_{1}$
 	\item \textbf{Sovrapposizione}\\
-	$a_{1} \times f_{1} + a_{2}\times f_{2} \rightarrow a_{1}\times y_{1}+a_{2}\times y_{2}$
+	$a_{1} \cdot f_{1} + a_{2}\cdot f_{2} \rightarrow a_{1}\cdot y_{1}+a_{2}\cdot y_{2}$
 \end{itemize}
 
-\subsubsection{Risposta libera e risposta forzata}
+\subsection{Risposta libera e risposta forzata}
 La \textbf{risposta libera} di un sistema è la sua risposta quando l'ingresso è nullo.
-L'output di un sistema per $t\geq0$ è il risultato di due cause indipendenti: le \textbf{condizioni iniziali} del sistema al tempo $t=0$ e l'input $f(t)$ per $t\geq0$.
+L'output di un sistema per $t\geq0$ è il risultato di due cause indipendenti: le \textbf{condizioni iniziali} del sistema al tempo $t=0$ e l'\textbf{input} $f(t)$ per $t\geq0$.
 Grazie alla \textit{linearità} la risposta totale del sistema è la \textbf{somma} della risposta libera e della risposta forzata.
 Nella realtà abbiamo sistemi che sono lineari solo \textit{localmente}, che in genere rispondo linearmente a piccoli segnali e non linearmente a grandi segnali.
-\begin{center}
+\begin{figure}[h]
+	\centering
 	\begin{tikzpicture}
 	\begin{axis}[xlabel=f,ylabel=y,axis lines=left,]
 	\addplot[
@@ -550,7 +544,9 @@ Nella realtà abbiamo sistemi che sono lineari solo \textit{localmente}, che in 
 	\addlegendentry{Causale, non lineare};
 	\end{axis}
 	\end{tikzpicture}
-\end{center}
+	\caption{Differenza tra un lineare e un non lineare}
+	\label{fig:lineare_vs_nonlineare}
+\end{figure}
 
 I sistemi i cui parametri \textit{non} cambiano nel tempo vengono detti \textbf{tempo invarianti}.
 Per questi sistemi se l'input viene ritardato di $T$ secondi, l'output rimane identico a prima, ma ritardato di $T$.
@@ -560,36 +556,39 @@ Se l'output dipende dagli eventi passati, il sistema viene definito \textbf{dina
 Un sottogruppo dei sistemi dinamici sono i sistemi con \textbf{memoria finita}, per i quali l'output al tempo $t$ è completamente determinato
 dai segnali in input per gli ultimi $T$ istanti (il sistema ha quindi una memoria di capacità massima $T$).
 
-\section{Analisi dei sistemi a tempo continuo}
+\chapter{Analisi dei sistemi a tempo continuo}
 Quando si studia un sistema, uno degli scopi più comuni è ricostruire le equazioni che lo regolano, permettendoci quindi di calcolare l'output del sistema dato un preciso input.
-Uno degli strumenti fondamentali per questo scopo è la \textbf{risposta impulsiva} del sistema, che caratterizza completamente il comportamento di un sistema lineare tempo invariante.
+Uno degli strumenti fondamentali per questo scopo è la \textbf{risposta impulsiva} del sistema, che caratterizza \textit{completamente} il comportamento di un sistema lineare \textit{tempo invariante}.
 
 Per il calcolo della risposta impulsiva ci serve prima la \textbf{risposta libera}.
 Ricordiamo che trattandosi di sistemi lineari, valgono le proprietà di \textit{additività}, \textit{omogeneità} e \textit{sovrapposizione}.
 
 Un sistema lineare tempo invariante (LTI) può essere descritto da un'equazione differenziale:
-\[a_n\frac{d^nv(t)}{dt^n} + \ldots + a_1\frac{dv(t)}{dt} + a_0v(t) = b_m\frac{d^mu(t)}{dt^m} + \ldots + b_1\frac{du(t)}{dt} + b_0u(t),\]
+$$
+	a_n\frac{d^nv(t)}{dt^n} + \ldots + a_1\frac{dv(t)}{dt} + a_0v(t) = b_m\frac{d^mu(t)}{dt^m} + \ldots + b_1\frac{du(t)}{dt} + b_0u(t)
+$$
 in forma compatta
-\begin{equation*}
+\begin{equation}
 	\sum_{i=0}^{n}a_i\frac{d^iv(t)}{dt^i} = \sum_{j=0}^{m}b_j\frac{d^ju(t)}{dt^j}
-\end{equation*}
-Nella pratica, $m$ è sempre minore di $n$.
-
-\subsection{Calcolo della risposta libera}
-Nella teoria dei sistemi dinamici, la \textbf{risposta libera} o risposta ad ingresso nullo di un sistema dinamico, anche detta ‘‘risposta libera nello stato’’ in quanto interessa le variabili di stato del sistema,
-è la sua risposta quando l'ingresso è nullo, in modo che il comportamento del sistema dipende soltanto dalle condizioni iniziali.
+	\label{eqn:sistema}
+\end{equation}
+(nella pratica, $m$ è sempre minore di $n$).
 Nei sistemi lineari il principio di sovrapposizione stabilisce in particolare che è possibile scomporre l'uscita come la somma della risposta libera più la risposta forzata, quindi possiamo dividere il segnale di uscita $v(t)$ come:
-\[
-v(t)=
-\begin{cases}
-	u(t) \ne 0, c.i. = 0\\
-	u(t) = 0, c.i. \ne 0
-\end{cases}
-\]
-La risposta libera si calcola come:
-\begin{equation*}
+$$
+	v(t)=
+		\begin{cases}
+		u(t) \ne 0, c.i. = 0\\
+		u(t) = 0, c.i. \ne 0
+		\end{cases}
+$$
+La soluzione dell'equazione differenziale \ref{eqn:sistema} in corrispondenza ad uno specifico ingresso e ad una specifica scelta delle c.i. può essere sempre ottenuta come somma di una soluzione dell'omogenea ad essa associata
+\begin{equation}
 	\sum_{i=0}^{n}a_i\frac{d^iv(t)}{dt^i}=0
-\end{equation*}
+	\label{eqn:omogenea_associata}
+\end{equation}
+e di una soluzione particolare della \ref{eqn:sistema}.
+L'equazione omogenea viene definita la \textbf{risposta libera} del sistema ($u(t)=0$, $c.i.\ne 0$); la soluzione particolare a partire da $u(t)\ne 0$, $c.i.=0$ è invece detta \textbf{risposta forzata}.
+
 All'equazione differenziale omogenea associamo un’equazione algebrica detta \textbf{equazione caratteristica} del sistema:
 \begin{equation*}
 	\sum_{i=0}^{n}a_is^i=0, \quad s \in C
@@ -600,7 +599,6 @@ Se $\lambda_1,...,\lambda_r$ sono le $r\leq n$ soluzioni distinte dell'equazione
 \end{equation*}
 per opportuni $c_{i,l} \in \mathbb{C}$. Le soluzioni dell'omogenea del tipo $e^{\lambda_it}\frac{t^l}{l!}, t \in \mathbb{R}$, vengono dette \textbf{modi naturali}.
 
-\subsection{Calcolo della risposta impulsiva}
 La risposta impulsiva di un sistema è la sua uscita quando è soggetto ad un ingresso a \textbf{delta di Dirac};
 viene utilizzata per descrivere la \textbf{risposta in frequenza} di un sistema dinamico ad una perturbazione generica.
 La delta di Dirac vista come ‘‘funzione’’ contiene equamente tutte le frequenze, e si presta particolarmente bene allo studio teorico nel dominio della frequenza di un sistema lineare.
@@ -613,10 +611,28 @@ $$ h(t)=d_0\delta(t)+\left(\sum_{i=1}^{r} \sum_{l=0}^{\mu_i-1} d_{i,l}e^{\lambda
 Notiamo che la risposta impulsiva contiene la risposta libera, ovvero tutti i modi naturali del sistema dopo l'impulso. Il termine $d_0\delta(t)$ è non nullo se $m=n$ e indica il termine impulsivo.
 La risposta libera viene moltiplicata per la funzione gradino in modo da "tagliare" tutto ciò che c'era prima di $t=0$ e garantire che le c.i. a $t=0^-$ siano nulle.
 
-\subsection{Integrale di convoluzione}
+\section{Integrale di convoluzione}
 Date le funzioni $v_1(t)$ e $v_2(t)$, con $t\in \mathbb{R}$, definiamo \textbf{integrale di convoluzione} di $v_1$ e $v_2$ la funzione definita come:
 \begin{equation*}
-	[v_1]
+	[v_1 * v_2](t) \triangleq \int_{-\infty}^{+\infty}v_1(\tau)v_2(t - \tau) d\tau = \int_{-\infty}^{+\infty}v_1(t - \tau)v_2(\tau) d\tau
 \end{equation*}
+L'integrale di convoluzione gode delle seguenti proprietà:
+\begin{itemize}
+	\item \textbf{Proprietà commutativa}:\\
+	$f_1(t)*f_2(t) = f_2(t) * f_1(t)$
+	\item \textbf{Proprietà distributiva}:\\
+	$f_1(t)*[f_2(t)+f_3(t)]=f_1(t)*f_2(t)+f_1(t)*f_3(t)$
+	\item \textbf{Proprietà associativa}:\\
+	$f_1(t)*[f_2(t)*f_3(t)]=[f_1(t)*f_2(t)]*f_3(t)$
+	\item \textbf{Spostamento}:\\
+	se $f_1(t)*f_2(t)=c(t)$ allora\\
+	$f_1(t)*f_2(t-T)=c(t-T)$ e $f_1(t-T)*f_2(t)=c(t-T)$, quindi\\
+	$f_1(t-T_1)*f_2(t-T_2)=c(t-T_1-T_2)$
+	\item \textbf{Moltiplicazione con l'impulso}:\\
+	$f(t)*\delta(t)=f(t)$
+	\item \textbf{Proprietà della durata}:\\
+	se le durate di $f_1(t)$ e $f_2(t)$ sono rispettivamente $T_1$ e $T_2$
+	allora la durata di $f_1(t)*f_2(t)=T_1+T_2$.
+\end{itemize}
 
 \end{document}
