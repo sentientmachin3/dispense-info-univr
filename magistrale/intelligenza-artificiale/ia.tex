@@ -473,6 +473,13 @@ Quando una coppia di valori $(x=a, y=b)$ non è path-consistent rispetto a $z$ n
 
 Per forzare la path-consistency si usa l'algoritmo PC-2 (molto simile a AC-3), che però è computazionalmente più complesso ($O(n^3k^5)$) in quanto lavora su triple.
 
+\paragraph{i-consistency.} La \textit{i-consistency} è un'estensione del concetto nato con l'arc-consistency e la path-consistency che si estende a reti di $i-1$ variabili.
+
+Diciamo che una rete è \textit{i-consistent} quando esiste un valore per un assegnamento per le variabili per il quale un valore consistente può sempre essere assegnato alla i-esima variabile.
+
+Inoltre si definisce una rete come \textit{strongly-consistent} se vale che la rete $R$ è j-consistent per ogni $j \leq i$.
+
+\subsection{Tree decomposition}
 
 
 
