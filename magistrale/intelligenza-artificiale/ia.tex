@@ -40,6 +40,8 @@
 \lfoot{}
 \cfoot{\thepage}
 \rfoot{}
+
+\newtheorem{definit}{Definizione}[subsection]
 \renewcommand{\headrulewidth}{0.4pt}
 
 \renewcommand{\lstlistingname}{Algorithm}
@@ -480,6 +482,41 @@ Diciamo che una rete è \textit{i-consistent} quando esiste un valore per un ass
 Inoltre si definisce una rete come \textit{strongly-consistent} se vale che la rete $R$ è j-consistent per ogni $j \leq i$.
 
 \subsection{Tree decomposition}
+Il processo di tree-decomposition è applicato quando da reti cicliche si vuole passare a reti acicliche, in quanto l'inferenza su queste reti è molto più efficiente. 
+
+\paragraph{Ipergrafi.}Introduciamo il concetto base di ipergrafo.
+\begin{definit}[Ipergrafo]
+	Un ipergrafo è una struttura $G= \langle V, S \rangle$ dove $V$ è un insieme di nodi e $S$ è un insieme di iperarchi, ovvero un insieme $S = \lbrace S_1, S_2, \dots, S_n \rbrace$ tale che $S_i \subseteq V$.
+\end{definit}
+
+Il \textit{grafo primale} di un ipergrafo è un grafo in cui i nodi sono i vertici e due vertici sono collegati tra loro solo se appaiono nello stesso iperarco.  Nel \textit{grafo duale} di un ipergrafo invece, i nodi sono gli iperarchi e due nodi sono collegati se e solo se condividono almeno un vertice (gli archi sono etichettati con i vertici condivisi tra gli stessi).
+
+Ogni rete a vincoli può essere rappresentata tramite un ipergrafo. Infatti:
+\begin{align*}
+	\text{La rete a vincoli }\mathcal{R} &= \lbrace X, D, C \rbrace \text{ con } C= \lbrace R_{S_1}, R_{S_2}, \dots, R_{S_n} \rbrace \\
+	\text{Il relativo ipergrafo } H_\mathcal{R} &= (X,H)  \text{ con } H = \lbrace S_1, S_2, \dots, S_n \rbrace \\
+	\text{Il grafo duale } H_\mathcal{R}^d &= (H, E) \text{ con } \langle S_i, S_j \rangle \in E \text{ se e solo se } S_i \cap S_j \neq \lbrace \rbrace\\
+\end{align*}
+
+\paragraph{Reti acicliche.} I concetti principali relativi alle reti acicliche sono i seguenti.
+\begin{definit}[Sottografo]
+	Definiamo come sottografo di un grafo il grafo $G' = (V, E')$ tale per cui $E' \subseteq E$.
+\end{definit}
+
+\begin{definit}[Running intersection property]
+	Dato $G$ come grafo duale di un ipergrafo, il suo sottografo $G'$ soddisfa la running intersection property se tra nodi qualsiasi di $G'$ che condividano una variabile esiste un percorso di archi etichettati con almeno la variabile condivisa.
+\end{definit}
+
+\begin{definit}[Join graph]
+	Il join graph è un sottografo $G'$ di un grafo duale $G$ di un ipergrafo tale per cui $G'$ soddisfa la running intersection property.
+\end{definit}
+
+Definiamo inoltre i concetti di \textit{join-tree}, ovvero un \textit{join-graph} aciclico, e il concetto di \textit{iperalbero}, ovvero un ipergrafo il cui grafo duale ha un join-tree.
+
+Concludiamo definendo una \textit{rete aciclica come una rete il cui ipergrafo è un iperalbero}. 
+Per risolvere la rete è sufficiente risolvere l'albero con l'algoritmo \textit{tree-solver}, ma è necessario prima sapere come fare a determinare se una rete è aciclica. I principali metodi per eseguire questa verifica sono la \textit{primal-based recognition} e la \textit{dual-based recognition}.
+
+
 
 
 
