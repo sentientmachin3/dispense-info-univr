@@ -498,7 +498,8 @@ Ogni rete a vincoli può essere rappresentata tramite un ipergrafo. Infatti:
 	\text{Il grafo duale } H_\mathcal{R}^d &= (H, E) \text{ con } \langle S_i, S_j \rangle \in E \text{ se e solo se } S_i \cap S_j \neq \lbrace \rbrace\\
 \end{align*}
 
-\paragraph{Reti acicliche.} I concetti principali relativi alle reti acicliche sono i seguenti.
+\subsubsection{Reti acicliche.} 
+I concetti principali relativi alle reti acicliche sono i seguenti.
 \begin{definit}[Sottografo]
 	Definiamo come sottografo di un grafo il grafo $G' = (V, E')$ tale per cui $E' \subseteq E$.
 \end{definit}
@@ -515,6 +516,34 @@ Definiamo inoltre i concetti di \textit{join-tree}, ovvero un \textit{join-graph
 
 Concludiamo definendo una \textit{rete aciclica come una rete il cui ipergrafo è un iperalbero}. 
 Per risolvere la rete è sufficiente risolvere l'albero con l'algoritmo \textit{tree-solver}, ma è necessario prima sapere come fare a determinare se una rete è aciclica. I principali metodi per eseguire questa verifica sono la \textit{primal-based recognition} e la \textit{dual-based recognition}.
+
+\paragraph{Dual-based recognition.} \textit{Idea di base:} se un ipergrafo ammette un join-tree, allora ogni massimo spanning-tree del suo grafo duale è un join-tree.
+
+La procedura da seguire è la seguente: \begin{itemize}
+	\item Construire il grafo duale dell'ipergrafo;
+	\item Determinare un maximum spanning tree (usando come peso il numero di variabili condivise);
+	\item Controllare se l'hypertree è un join-tree.
+\end{itemize}
+
+\paragraph{Primal based-recognition.} \textit{Idea di base:} un ipergrafo ammette un join-tree se valogono le proprietà di \textbf{cordalità} e di \textbf{conformalità}.
+\begin{definit}[Conformità]
+	Un grafo primale si dice conforme ad un ipergrafo se esiste una corrispondenza uno-a-uno tra clicche massimali e scoping dei vincoli.
+\end{definit}
+
+\begin{definit}[Cordalità]
+	Un grafo primale si dice cordale se ogni ciclo di lunghezza almeno 4 ha una corda, ovvero un arco che collega due vertici non adiacenti nel ciclo stesso.
+\end{definit}
+
+La verifica di queste due proprietà viene eseguita in maniera efficiente se viene usato un \textbf{ordine di massima cardinalità}. Il grafo quindi risulta essere cordale quando in un ordine di massima cardinalità ogni vertice e i suoi predecessori formano una clicca. 
+
+La procedura da applicare è quindi la seguente:\begin{itemize}
+	\item Costruire un ordine di massima cardinalità;
+	\item Testare se il grafo è cordale (vedi sopra);
+	\item Testare se il grafo è conforme (estraendo la clicca massimale e verificando la conformalità).
+\end{itemize}
+
+\paragraph{Join-tree clustering.} La procedura del clustering consiste nell'accorpare vincoli per ottenere una sttruttura ad albero. Lo scopo dell'ottenere una struttura ad albero consente di risolvere in maniera più efficace la rete, usando l'algoritmo di \textit{tree-solving}.
+
 
 
 
