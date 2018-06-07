@@ -77,6 +77,9 @@
 \newcommand{\tikzmark}[1]{\tikz[overlay,remember picture,baseline=(#1.base)]
 	\node (#1) {\strut};}
 
+\tikzstyle{box} = [rectangle, 
+rounded corners, minimum width=1cm, minimum height=1cm,text centered, draw=black]
+
 \begin{document}
  \clearpage
  \begin{titlepage}
@@ -1798,8 +1801,97 @@ GraphIsomorphismSearch($ G_1, G_2 $)
 		\end{itemize}
 		Facciamo vedere che Hitting Set $ \in \npc $.
 	
+		\paragraph{Hitting Set $ \in \np $} Il problema Hitting Set appartiene alla classe $ \np $:
+		\begin{itemize}
+			\item Certificato: insieme $ D $ con $ \vert D \vert \leq m\quad t.c.\quad D\cap M_i \neq \emptyset\ \forall i $
+			\item Verificatore: 
+			\begin{itemize}
+				\item conta gli elementi di $ D $ \hspace{2cm} $ O(\vert U \vert) $
+				\item $ \forall M_i\  $ controlla che $ \ M_i\cap D \neq \emptyset $ \hspace{.7cm} $ O(k\times\vert U \vert) $
+			\end{itemize}		
+		\end{itemize}
+		
+		\paragraph{Hitting Set è $ \np$-hard} Dimostriamo che esiste la riduzione:
+			\begin{align*}
+				\text{\textbf{Vertex Cover}} &\leq_K \text{\textbf{Hitting Set}} \\
+				G = (V, E), k &\Leftrightarrow (U, F, m)
+			\end{align*}
+			Dove $\ U \equiv V,\ F \equiv E,\ m \equiv k $. Possiamo dunque notare che Vertex Cover è un caso particolare di Hitting Set, il quale, invece di avere $ M_1, M_2, \dots $, ha un insieme di coppie.
+			
 	\section{Non determinismo e classe NTIME}
 		
+		\begin{definit}[Classe $ \np $] Diamo una definizione diversa della classe $ \np $:
+			\[
+				\np = \big\lbrace \prob{A}\ \big|\ \text{ esiste un algoritmo \textbf{non deterministico} che risolve istanze di } \prob{A} \text{ in tempo polinomiale} \big\rbrace
+			\]
+		\end{definit}
+		
+		\begin{definit}[Algoritmo non deterministico]
+			Un algoritmo non deterministico è un programma (pseudocodice) che può usare un'istruzione (non deterministica) \lstinline|goto both x, y|. Il programma, grazie a questa istruzione, si sdoppia in due vie in parallelo. Tale programma ritorna $ yes $ se esiste almeno una traccia di computazione che ritorna $ yes $, altrimenti ritorna $ no $. 
+		\end{definit}
+			
+			\begin{lstlisting}[mathescape= true, frame=tbLr,numbers=left,	stepnumber=1, firstnumber=0, numberstyle=\ttfamily\linespread{5}, caption={Esempio di algoritmo non deterministico} ]
+SAT-Solver-ND($ \phi(x_1, \dots, x_n) $) "\hspace{.8cm}\tikzmark{zero}"
+	for i = 1 to n
+		$ a_i \leftarrow T $
+		goto both 4, 5
+		$ a_i \leftarrow F $
+	end for
+	if($ \phi(a_1, \dots, a_n) $ == $ T $)
+		return $ yes $
+	else
+		return $ no $ 
+		"\hspace{4.5cm}\tikzmark{nine}"
+			\end{lstlisting}
+			
+		\begin{tikzpicture}[>=latex, overlay, remember picture, decoration={brace,amplitude=7pt}]
+			\draw[decorate,thick] ($ (zero) +(-0.3,-.2) $) -- ($ (nine) +(-0.3,.2) $)
+			node[midway, right, align=left, xshift=.3cm] {$ O(\vert x \vert^k) $}; 
+		\end{tikzpicture}
+			
+		\begin{figure}[h!]
+			\centering
+			\begin{tikzpicture}[>=latex,scale=.7,every node/.style={scale=0.8}]
+				\node[box, align = left] (a) at (0,0) {$ i\leftarrow 1 $\\$ a_1\leftarrow T $};
+				\node[box, align = left] (b) at (-5,-2) {$ a_1\leftarrow F $\\$ i\leftarrow 2 $\\$ a_2\leftarrow T $};
+				\node[box, align = left] (c) at (5,-2) {$ i\leftarrow 2 $\\$ a_2\leftarrow T $};
+				\node[box, align = left] (d) at (-8,-5) {$ a_2\leftarrow F $\\
+					\lstinline[mathescape= true]|if($ \phi(F,F) $ == $ T $)|\\
+					\lstinline[mathescape= true]|	return $ yes $|\\
+					\lstinline[mathescape= true]|else|\\
+					\lstinline[mathescape= true]|	return $ no $|};
+				\node[box, align = left] (e) at (-2,-5) {
+					\lstinline[mathescape= true]|if($ \phi(F,T) $ == $ T $)|\\
+					\lstinline[mathescape= true]|	return $ yes $|\\
+					\lstinline[mathescape= true]|else|\\
+					\lstinline[mathescape= true]|	return $ no $|};
+				\node[box, align = left] (f) at (2,-5) {$ a_2\leftarrow F $\\
+					\lstinline[mathescape= true]|if($ \phi(T,F) $ == $ T $)|\\
+					\lstinline[mathescape= true]|	return $ yes $|\\
+					\lstinline[mathescape= true]|else|\\
+					\lstinline[mathescape= true]|	return $ no $|};
+				\node[box, align = left] (g) at (8,-5) {
+					\lstinline[mathescape= true]|if($ \phi(T,T) $ == $ T $)|\\
+					\lstinline[mathescape= true]|	return $ yes $|\\
+					\lstinline[mathescape= true]|else|\\
+					\lstinline[mathescape= true]|	return $ no $|};
+				\draw[->] (a.west) -- (b.north) node[midway, above] {\lstinline|4|};
+				\draw[->] (a.east) -- (c.north) node[midway, above] {\lstinline|5|};
+				\draw[->] (b.west) -- (d.north) node[midway, above] {\lstinline|4|};
+				\draw[->] (b.east) -- (e.north) node[midway, above] {\lstinline|5|};
+				\draw[->] (c.west) -- (f.north) node[midway, above] {\lstinline|4|};
+				\draw[->] (c.east) -- (g.north) node[midway, above] {\lstinline|5|};
+			\end{tikzpicture}
+			\caption{Esempio di albero delle tracce di esecuzione per l'algoritmo SAT-Solver}
+			\vspace{-1cm}
+		\end{figure}
+		
+	\begin{obs} Possiamo vedere che:
+		\begin{itemize}
+			\item L'algoritmo precedentemente descritto si trasforma in diversi programmi. Ogni traccia di esecuzione, che viene rappresentata da un cammino, costituisce un assegnamento diverso.		
+			\item La complessità dell'algoritmo è polinomiale: $ O(\vert x \vert^k) $. Ciò significa che la lunghezza massima di ogni cammino è polinomiale, ogni traccia di esecuzione termina in tempo polinomiale.
+		\end{itemize}
+	\end{obs}
 	
 	\section{Alcuni problemi NP-Completi}
 		\subsection{Problema Max-Cut}
