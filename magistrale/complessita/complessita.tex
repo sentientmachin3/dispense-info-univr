@@ -60,7 +60,7 @@
 }
 \usepackage[OT1]{eulervm}
 
-\newcommand{\N}{\mathcal{N}}
+\newcommand{\N}{\mathbb{N}}
 \newcommand{\Exp}{\mathbf{Exp}}
 \newcommand{\p}{\mathbf{P}}
 \newcommand{\tim}{\mathbf{Time(n)}}
@@ -68,6 +68,9 @@
 \newcommand{\npc}{\mathbf{NPC}}
 \newcommand{\conp}{\mathbf{CO}\text{-}\mathbf{NP}}
 \newcommand{\ph}{\mathbf{PH}}
+\newcommand{\ntime}{\mathbf{NTIME}}
+\newcommand{\nexp}{\mathbf{NEXP}}
+\newcommand{\DP}{\mathbf{DP}}
 \newcommand{\prob}[1]{\mathbb{#1}}
 \newcommand{\instance}[1]{\mathcal{I}(\prob{#1})}
 \newcommand{\alg}[1]{\mathcal{#1}}
@@ -1890,21 +1893,93 @@ SAT-Solver-ND($ \phi(x_1, \dots, x_n) $) "\hspace{.8cm}\tikzmark{zero}"
 		\begin{itemize}
 			\item L'algoritmo precedentemente descritto si trasforma in diversi programmi. Ogni traccia di esecuzione, che viene rappresentata da un cammino, costituisce un assegnamento diverso.		
 			\item La complessità dell'algoritmo è polinomiale: $ O(\vert x \vert^k) $. Ciò significa che la lunghezza massima di ogni cammino è polinomiale, ogni traccia di esecuzione termina in tempo polinomiale.
+			\item Ogni programma non deterministico può essere trasformato in uno equivalente deterministico.
+			\item Se abbiamo un algoritmo non deterministico, possiamo usarlo come \textit{verificatore}, però deve essere deterministico. Il certificato $ w $ di tale verificatore è la scelta che deve fare ogni volta che c'è un'istruzione \lstinline|goto both|.\\
+			Quante sono le scelte che può fare? Sono polinomiali, quindi $ w $ è polinomiale nella taglia dell'input.
 		\end{itemize}
 	\end{obs}
 	
+	\begin{definit}[Classe NTIME]
+		Definiamo la classe $ \ntime(f(n)) $ come:
+		\begin{align*}
+			\ntime(f(n)) = \big\lbrace & \prob{A}\ \Big|\ t.c. \text{ esiste un algoritmo non deterministico che risolve istanze di } \prob{A}\\ 
+			&\text{ di taglia } n \text{ in tempo } O(f(n)) \big\rbrace
+		\end{align*}
+	\end{definit}
+	
+	\begin{obs}
+		Osserviamo che:
+		\[
+			\np = \bigcup_{k > 0} \ntime(n^k)
+		\]
+		\[
+			\nexp = \bigcup_{k > 0} \ntime(2^{n^k})
+		\]
+	\end{obs}
+	
+	\begin{thm}
+		Se $ \nexp  \neq \Exp \quad \Rightarrow\quad \np \neq \p $
+	\end{thm}
+	
 	\section{Alcuni problemi NP-Completi}
+		In questa sezione vediamo alcuni problemi $ \npc $ con le relative dimostrazioni di appartenenza a tale classe.
 		\subsection{Problema Max-Cut}
+			\begin{itemize}
+				\item Input: grafo $ G = (V, E) $ non diretto, $ k $
+				\item Output: $ yes\ \Leftrightarrow\  $ esiste una \textit{bicolorazione} dei vertici di $ G $ tale che almeno $ k $ archi \textit{non} siano monocromatici.
+			\end{itemize}
+			
+			\begin{figure}[h!]
+				\centering
+				\begin{tikzpicture}[scale=0.7]
+					\node[draw, circle, fill=gray] (a) at (0,0) {};
+					\node[draw, circle] (b) at (2,0) {};
+					\node[draw, circle, fill=gray] (c) at (4,0) {};
+					\node[draw, circle] (d) at (1,-2) {};
+					\node[draw, circle, fill=gray] (e) at (3,-2) {};
+					\node[draw, circle] (f) at (5,-2) {};
+					\draw (a)  -- node[midway, above] {nm} (b) -- node[midway, above] {nm} (c) -- node[midway, right] {nm} (f) -- node[midway, below] {nm} (e) -- node[midway, right] {nm} (b) -- (d) -- node[midway, below] {nm} (e) ;
+				\end{tikzpicture}
+				\caption{Esempio di Max Cut con $ k = 5 $ (nm = non monocromatico)}
+			\end{figure}
 		
 		\subsection{Problema Max-K-SAT}
+			\begin{itemize}
+				\item Input: formula $ \phi $ K-CNF, $ t \in \N $
+				\item Output: $ yes\ \Leftrightarrow\  $ esiste un assegnamento che soddisfa almeno $ t $ clausole
+			\end{itemize}
 		
 		\subsection{Problema Set-Splitting}
+			\begin{itemize}
+				\item Input: $ (\mathcal{S}, C),\quad C = \{C_1, C_2, \dots, C_k \} $, con $ C_i \subseteq \mathcal{S}\quad i = 1\dots k $
+				\item Output: $ yes\ \Leftrightarrow\  $ possiamo colorare gli elementi di $ \mathcal{S} $ rosso o blu in modo tale che ogni $ C_i $ \textit{non} è monocromatico.
+			\end{itemize}
 		
 		\subsection{Problema Set-Cover}
+			\begin{itemize}
+				\item Input: $ (\mathcal{S}, C, k),\quad C $ famiglia di sottoinsiemi di $ \mathcal{S} $, $ \ k\in \N $
+				\item Output: $ yes\ \Leftrightarrow\ \exists C_{i 1},\dots, C_{i k} \in C\quad t.c.\quad \bigcup\limits^k_{j = 1} C_{i j} = \mathcal{S} $.
+			\end{itemize}
 		
-		\subsection{Problema Clique-No-Clique}
+		\subsection{Classe di problemi DP e Problema Clique-No-Clique}
+			\begin{definit}[classe di problemi $ \DP $]
+				\[
+					\DP = \big\lbrace \prob{A}\ \Big|\ \exists \prob{B},\prob{C}\in \np\quad \instance{A} = \instance{B} = \instance{C} \ t.c.\ \prob{A}(x) = yes\ \Leftrightarrow\ \prob{B}(x) = yes\ \wedge\ \prob{C}(x) = yes \big\rbrace
+				\]
+			\end{definit}
+			
+			\noindent
+			\textbf{Problema Clique-No-Clique}
+			\begin{itemize}
+				\item Input: Due grafi $ G_1, G_2,\quad k_1, k_2 \in \N $
+				\item Output: $ yes\ \Leftrightarrow\ G_1 $ ha una clique di taglia $ \geq k_1 $ e $ G_2 $ \textit{non} ha alcuna clique di taglia $ \geq k_2 $.
+			\end{itemize}
 		
 		\subsection{Problema D-HamPath}
-		
-	\section{Complessità di Spazio}
+			\begin{itemize}
+				\item Input: grafo diretto $ G = (V, E) $
+				\item Output: $ yes\ \Leftrightarrow\ $ esiste in $ G $ un cammino Hamiltoniano (che percorre tutti i nodi).
+			\end{itemize}
+		\newpage
+	\section{Complessità di Spazio e la classe SPACE}
 \end{document}
