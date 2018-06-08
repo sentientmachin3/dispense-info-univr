@@ -1943,6 +1943,85 @@ SAT-Solver-ND($ \phi(x_1, \dots, x_n) $) "\hspace{.8cm}\tikzmark{zero}"
 				\caption{Esempio di Max Cut con $ k = 5 $ (nm = non monocromatico)}
 			\end{figure}
 		
+		\begin{proof}
+			Max-Cut $ \in \npc $
+			\begin{enumerate}
+				\item Max-Cut $ \in \np $
+				\item Max-Cut è $ \np$-hard.
+			\end{enumerate}
+			\begin{enumerate}
+				\item \textit{Certificato}: cut o bicolorazione\\
+					  \textit{Verificatore}: verifica arco per arco quanto sono non monocromatici ($ O(|E|\times|V|) $).
+				\item Riduzione NAE-3-SAT $ \leq_K $ Max-Cut:\\
+				Data $ \phi = C_1 \wedge C_2 \wedge \dots \wedge C_m $ vogliamo trovare $ (G, k) $.\\
+				Per ogni variabile $ x $ di $ \phi $ aggiungiamo un arco in $ G $ i cui vertici sono etichettati $ x $ e $ \overline{x} $.\\				
+				Per ogni clausola aggiungiamo in $ G $ un triangolo con i vertici etichettati come i letterali. Colleghiamo $ l $ in un triangolo con $ \overline{l} $ negli archi messi sopra.\\
+				es.: $ \phi = (x_1 \vee \overline{x}_2 \vee x_3) \wedge (\overline{x}_1 \vee x_2 \vee x_3) $
+				
+				\begin{figure}[h!]
+					\centering
+					\begin{tikzpicture}
+					\node[draw, circle] (a) at (0,0) {};\node[draw, circle] (b) at (2,0) {};
+					\node[draw, circle] (c) at (3,0) {};\node[draw, circle] (d) at (5,0) {};
+					\node[draw, circle] (e) at (6,0) {};\node[draw, circle] (f) at (8,0) {};
+					\node[draw, circle] (g) at (1,-1) {};\node[draw, circle] (h) at (0,-2) {};
+					\node[draw, circle] (i) at (2,-2) {};
+					\node[draw, circle] (l) at (4,-1) {};\node[draw, circle] (m) at (3,-2) {};
+					\node[draw, circle] (n) at (5,-2) {};
+					\draw (a) node[above, yshift=.3cm] {$ x_1 $} -- (b) node[above, yshift=.3cm] {$ \overline{x}_1 $};
+					\draw (c) node[above, yshift=.3cm] {$ x_2 $} -- (d) node[above, yshift=.3cm] {$ \overline{x}_2 $};
+					\draw (e) node[above, yshift=.3cm] {$ x_3 $} -- (f) node[above, yshift=.3cm] {$ \overline{x}_3 $};
+					\draw (g) -- (h) -- (i) -- (g);\draw (l) -- (m) -- (n) -- (l);
+					\draw (g) -- (b);\draw (h) -- (c);\draw[bend right=90] (i) to (f);\draw (l) -- (a);
+					\draw[bend right=90] (m) to (d);\draw (n) -- (f);
+					\end{tikzpicture}
+				\end{figure}
+				Dove $ m = $ numero di triangoli, $ n = $ numero di letterali. Quanti archi al massimo posso avere bicolorati? $ k = n + 3m + 2m  = n + 5m $.\\
+				$ \phi $ è soddisfacibile $ \ \Rightarrow\ G $ ha un cut di taglia $ k = n + 5m $.\\
+				$ \phi $ è soddisfacibile $ \ \Leftrightarrow\ \exists a_1, \dots, a_n $ tale che in ogni clausola un letterale è $ T $ e un letterale è $ F $. Colora i vertici etichettati $ l $ nero se $ l = T $, bianco se $ l = F $.\\
+				$ \phi(T, T, F) = (\overset{F}{\overline{x}_1}\vee\overset{T}{x_2}\vee\overset{F}{x_3})\wedge
+				(\overset{T}{x_1}\vee\overset{F}{\overline{x}_2}\vee\overset{F}{x_3}) $
+				\begin{figure}[h!]
+					\centering
+					\begin{tikzpicture}
+						\node[draw, circle, fill=gray] (a) at (0,0) {};\node[draw, circle] (b) at (2,0) {};
+						\node[draw, circle, fill=gray] (c) at (3,0) {};\node[draw, circle] (d) at (5,0) {};
+						\node[draw, circle] (e) at (6,0) {};\node[draw, circle, fill=gray] (f) at (8,0) {};
+						\node[draw, circle, fill=gray] (g) at (1,-1) {};\node[draw, circle] (h) at (0,-2) {};
+						\node[draw, circle] (i) at (2,-2) {};
+						\node[draw, circle] (l) at (4,-1) {};\node[draw, circle, fill=gray] (m) at (3,-2) {};
+						\node[draw, circle] (n) at (5,-2) {};
+						\draw (a) node[above, yshift=.3cm] {$ x_1 $} -- node[midway] {|} (b) node[above, yshift=.3cm] {$ \overline{x}_1 $};
+						\draw (c) node[above, yshift=.3cm] {$ x_2 $} -- node[midway] {|} (d) node[above, yshift=.3cm] {$ \overline{x}_2 $};
+						\draw (e) node[above, yshift=.3cm] {$ x_3 $} -- node[midway] {|} (f) node[above, yshift=.3cm] {$ \overline{x}_3 $};
+						\draw (g) node[above, yshift=.2cm] {$ x_1 $} -- node[midway] {|} (h) node[above, yshift=.2cm] {$ \overline{x}_2 $} -- (i) node[above, yshift=.2cm] {$ x_3 $} -- node[midway] {|} (g);
+						\draw (l) node[above, yshift=.2cm] {$ \overline{x}_1 $} -- node[midway] {|} (m) node[above, yshift=.2cm] {$ x_2 $} -- node[midway] {|} (n) node[above, yshift=.2cm] {$ x_3 $} -- (l);
+						\draw (g) -- (b);\draw (h) -- node[midway] {|} (c);\draw[bend right=80] (i) to node[midway] {|} (f);\draw (l) -- (a);
+						\draw (m) to [out=15, in=-20] node[midway] {|} (d);\draw (n) -- node[midway] {|} (f);
+					\end{tikzpicture}
+					\vspace{-.5cm}
+				\end{figure}
+				
+				Esiste un cut di $ G $ di taglia $ n + 5m \ \Rightarrow\ $ esiste un assegnamento $ a_1, \dots, a_n \ t.c.\ \phi(a_1, \dots, a_n) $ è NAE soddisfatta.\\
+				Esiste un cut di $ G $ di taglia $ n + 5m \ \Rightarrow\ $
+				\begin{itemize}
+					\item Tutti gli archi variabile sono bicolorati.
+					\item Tutti gli archi da variabile a triangolo sono bicolorati.
+					\item In ogni triangolo 2 archi sono bicolorati.
+				\end{itemize}
+				Se scelgo
+				\[
+					a_i =
+					\begin{cases}
+						T & \mbox{ se } x_i \text{ è nero (tra gli archi variabile)} \\
+						F & \mbox{ se } x_i \text{ è bianco (tra gli archi variabile)} \\
+					\end{cases}
+				\]
+				
+			\end{enumerate}
+		\end{proof}
+		
+		
 		\subsection{Problema Max-K-SAT}
 			\begin{itemize}
 				\item Input: formula $ \phi $ K-CNF, $ t \in \N $
@@ -1980,6 +2059,8 @@ SAT-Solver-ND($ \phi(x_1, \dots, x_n) $) "\hspace{.8cm}\tikzmark{zero}"
 				\item Input: grafo diretto $ G = (V, E) $
 				\item Output: $ yes\ \Leftrightarrow\ $ esiste in $ G $ un cammino Hamiltoniano (che percorre tutti i nodi).
 			\end{itemize}
+			
+			
 		\newpage
 	\section{Complessità di Spazio e la classe SPACE}
 \end{document}
