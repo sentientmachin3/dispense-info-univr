@@ -2063,4 +2063,15 @@ SAT-Solver-ND($ \phi(x_1, \dots, x_n) $) "\hspace{.8cm}\tikzmark{zero}"
 			
 		\newpage
 	\section{Complessità di Spazio e la classe SPACE}
+		In questa sezione osserviamo quali problemi sono risolvibili sotto limitazioni di memoria (spazio).
+		\paragraph{Modello:} l'istanza viene data in sola lettura e fuori dalla memoria centrale di lavoro. Diciamo che abbiamo limite $ f(n) $ se per istanze lunghe $ n $ possiamo usare al massimo $ f(n) $ bit di memoria di lavoro ($ O(f(n)) $)
+		
+		\begin{definit}[Classe \textbf{SPACE}]
+			La classe \textbf{SPACE} è definita come segue:
+			\begin{align*}
+				\mathbf{SPACE}(f(n)) = \big\lbrace & \prob{A}\ \Big|\ \text{ esiste un programma/algoritmo che risolve istanze di } \prob{A} \\ 
+				&\text{usando al più } O(f(n)) \text{ bit di memoria di lavoro e accede }\\
+				&\text{all'istanza in sola lettura. } n \text{ è la taglia dell'istanza}. \big\rbrace
+			\end{align*}
+		\end{definit}
 \end{document}
