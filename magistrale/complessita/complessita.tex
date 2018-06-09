@@ -71,6 +71,11 @@
 \newcommand{\ntime}{\mathbf{NTIME}}
 \newcommand{\nexp}{\mathbf{NEXP}}
 \newcommand{\DP}{\mathbf{DP}}
+\newcommand{\Space}{\mathbf{SPACE}}
+\newcommand{\pspace}{\mathbf{PSPACE}}
+\newcommand{\nspace}{\mathbf{NSPACE}}
+\newcommand{\npspace}{\mathbf{NPSPACE}}
+\newcommand{\apx}{\mathbf{APX}}
 \newcommand{\prob}[1]{\mathbb{#1}}
 \newcommand{\instance}[1]{\mathcal{I}(\prob{#1})}
 \newcommand{\alg}[1]{\mathcal{#1}}
@@ -2075,4 +2080,120 @@ SAT-Solver-ND($ \phi(x_1, \dots, x_n) $) "\hspace{.8cm}\tikzmark{zero}"
 				&\text{all'istanza in sola lettura. } n \text{ è la taglia dell'istanza}. \big\rbrace
 			\end{align*}
 		\end{definit}
+		
+		\subsection{Classe PSPACE, L e NTIME}
+			\begin{definit}[Classe PSPACE]
+				\[
+					\mathbf{PSPACE} = \bigcup\limits_{k > 0} \Space(n^k)
+				\]
+			\end{definit}
+			
+			\begin{definit}[Classe L]
+				\[
+					\mathbf{L} = \Space(\log n)
+				\]
+			\end{definit}
+			
+			\begin{definit}[Classe NTIME] Ridefiniamo la classe $ \ntime $ nel seguente modo:
+				\begin{align*}
+					\ntime = \big\lbrace & \prob{A} \ \Big| \ \text{esiste un verificatore } V_{\prob{A}}(\cdot, \cdot) \\
+					& \prob{A} = yes \ \Leftrightarrow\ V_{\prob{A}}(x, w) = yes \\
+					& V_{\prob{A}} \text{ impiega tempo } O(f(\vert x \vert)) \\
+					& \vert w \vert = O(f(\vert x \vert)) \ \big\rbrace 
+				\end{align*}
+			\end{definit}
+			
+		\subsection{Classe NSPACE}
+			\begin{definit}[Classe NSPACE]
+				\begin{align*}
+					\nspace = \big\lbrace & \prob{A}\ \Big| \ \text{ esiste un algoritmo/programma } \Pi \text{ \textit{non deterministico}} \\
+					& \text{che risolve } x \in \instance{A} \text{ usando memoria di lavoro } O(f(\vert x\vert)) \quad \Pi(x) = \prob{A}(x) \ \big\rbrace
+				\end{align*}
+			\end{definit}
+		
+		\subsection{Teorema di Savitch}
+			\begin{thm}[Teorema di Savitch]
+				Per ogni funzione $ f(n) \geq \log n \ $ si ha che
+				\[
+					\nspace\big(f(n)\big) \subseteq \Space\Big(\big(f(n)\big)^2\Big)
+				\]
+			\end{thm}
+			
+			\begin{proof}
+				Sappiamo che $ \pspace \subseteq \npspace $
+			\end{proof}
+		
+		\subsection{Classe di problemi PSPACE-completi e problema Q-SAT}
+			\begin{definit}
+				$ \prob{A} $ è $ \pspace$-completo se:
+				\begin{itemize}
+					\item $ \prob{A} \in \pspace $
+					\item $ \forall \prob{B} \in \pspace \quad \prob{B} \leq_K \prob{A} \ $ (hardness)
+				\end{itemize}
+				$ \Rightarrow\ $ se $ \prob{A} $ è $ \pspace$-completo e $ \prob{A}\in \p $ allora $ \p \equiv\pspace $ (implica anche che $ \p \equiv\np $) 
+			\end{definit}
+		
+		\subsection{Problema Geography}
+			\begin{itemize}
+				\item Input: grafo diretto $ G = (V, E) $ diretto, $ \ s \in V $
+				\item Output: $ yes \ \Leftrightarrow\ P_1 \ $ vince nel seguente gioco:\\
+				$ P_1 $ e $ P_2 $ si alternano scegliendo un vertice collegato da un arco nell'ultimo vertice scelto e non scelto ancora. Perde il primo che non ha più mosse.
+			\end{itemize}
+		
+		\subsection{Problema Alternating Hamiltonian Path}
+			\begin{itemize}
+				\item Input: grafo diretto orientato $ G = (V, E) $, $ \ s\in V $
+				\item Output: $ yes\ \Leftrightarrow\ P_1 \ $ vince nel seguente gioco:\\
+				$ P_1 $ e $ P_2 $ si alternano come in Geography. $ P_1 $ vuole completare un HamPath e $ P_2 $ vuole bloccare $ P_1 $.
+			\end{itemize}
+		
+		
+	\section{Approssimazione}
+		
+		\subsection{Approssimazione per il problema Makespan}
+			\begin{itemize}
+				\item Input: $ n $ job/task $ \ \{1, 2,\dots, n \} \ $ di taglia $ \ j_1, j_2,\dots, j_n $
+				\item Output: Partizione di $ \{1 \dots n \},\ M_1 \dots M_n \ $ tale che
+				\[
+					\max\limits{1\leq k\leq m} \sum\limits_{i\in M_k} j_i \text{ è \textit{minimo}}
+				\]
+			\end{itemize}
+			
+		\subsection{PTAS e FPTAS}
+		
+		
+		\subsection{Problema di Traveling Salesman}
+			\begin{itemize}
+				\item Input: Grafo completo diretto pesato $ G = (V, E) $, $ \ w : E \mapsto \N $
+				\item Output: ciclo hamiltoniano di peso minimo.
+			\end{itemize}
+		
+		\subsection{Problema Knapsack}
+			\begin{itemize}
+				\item Input: $ v_1, \dots, v_n $ (valori) $ \quad w_1, \dots, w_n $ (pesi)
+				\item Output: $ A \subseteq \{1\dots n \} \ t.c.\ \sum\limits_{i \in A} w_i \leq W,\quad \sum\limits_{i \in A} v_i \ $ è massima.
+			\end{itemize}
+		
+		\subsection{Classe APX}
+			\begin{definit}[Classe APX]
+				\begin{align*}
+					\apx(r(n)) = \big\lbrace & \prob{A} \text{ di ottimizzazione } \Big| \ \text{ esiste un algoritmo polinomiale per } \prob{A} \\
+					& \text{ che è } r(n)\text{-approssimabile } \big\rbrace
+				\end{align*}
+			\end{definit}
+		
+		\subsection{Tecnica del GAP}
+			\begin{thm}
+				Dato un problema di ottimizzazione $ \prob{A} $ definiamo il problema $ (a, b) - \prob{A} $ il problema \textbf{di decisione} che consiste nel dire se la soluzione ottima ad un'istanza di $ \prob{A} $ è $ \geq a \ $ o $ \ \leq b $.
+			\end{thm}
+		
+		\subsection{Problema Max-k-xor-SAT}
+			\begin{itemize}
+				\item Input: formula k-xor-CNF, esempio: $ \phi = (x_1 \oplus x_2\oplus x_2) \wedge (\overline{x}_1 \oplus x_2 \oplus \overline{x}_3) $.
+				\item Output: il massimo numero dii clausole soddisfacibili.
+			\end{itemize}
+		
+		\subsection{Inapprossimabilità}
+		
+		
 \end{document}
