@@ -1971,9 +1971,10 @@ SAT-Solver-ND($ \phi(x_1, \dots, x_n) $) "\hspace{.8cm}\tikzmark{zero}"
 					\draw (a) node[above, yshift=.3cm] {$ x_1 $} -- (b) node[above, yshift=.3cm] {$ \overline{x}_1 $};
 					\draw (c) node[above, yshift=.3cm] {$ x_2 $} -- (d) node[above, yshift=.3cm] {$ \overline{x}_2 $};
 					\draw (e) node[above, yshift=.3cm] {$ x_3 $} -- (f) node[above, yshift=.3cm] {$ \overline{x}_3 $};
-					\draw (g) -- (h) -- (i) -- (g);\draw (l) -- (m) -- (n) -- (l);
+					\draw (g) node[above, yshift=.2cm] {$ x_1 $} -- (h) node[above, yshift=.2cm] {$ \overline{x}_2 $} -- (i) node[above, yshift=.2cm] {$ x_3 $} -- (g);
+					\draw (l) node[above, yshift=.2cm] {$ \overline{x}_1 $} -- (m) node[above, yshift=.2cm] {$ x_2 $} -- (n) node[above, yshift=.2cm] {$ x_3 $} -- (l);
 					\draw (g) -- (b);\draw (h) -- (c);\draw[bend right=90] (i) to (f);\draw (l) -- (a);
-					\draw[bend right=90] (m) to (d);\draw (n) -- (f);
+					\draw (m) to [out=15, in=-20] (d);\draw (n) -- (f);
 					\end{tikzpicture}
 				\end{figure}
 				Dove $ m = $ numero di triangoli, $ n = $ numero di letterali. Quanti archi al massimo posso avere bicolorati? $ k = n + 3m + 2m  = n + 5m $.\\
@@ -1996,7 +1997,7 @@ SAT-Solver-ND($ \phi(x_1, \dots, x_n) $) "\hspace{.8cm}\tikzmark{zero}"
 						\draw (e) node[above, yshift=.3cm] {$ x_3 $} -- node[midway] {|} (f) node[above, yshift=.3cm] {$ \overline{x}_3 $};
 						\draw (g) node[above, yshift=.2cm] {$ x_1 $} -- node[midway] {|} (h) node[above, yshift=.2cm] {$ \overline{x}_2 $} -- (i) node[above, yshift=.2cm] {$ x_3 $} -- node[midway] {|} (g);
 						\draw (l) node[above, yshift=.2cm] {$ \overline{x}_1 $} -- node[midway] {|} (m) node[above, yshift=.2cm] {$ x_2 $} -- node[midway] {|} (n) node[above, yshift=.2cm] {$ x_3 $} -- (l);
-						\draw (g) -- (b);\draw (h) -- node[midway] {|} (c);\draw[bend right=80] (i) to node[midway] {|} (f);\draw (l) -- (a);
+						\draw (g) -- node[midway] {|} (b);\draw (h) -- node[midway] {|} (c);\draw[bend right=80] (i) to node[midway] {|} (f);\draw (l) -- node[midway] {|} (a);
 						\draw (m) to [out=15, in=-20] node[midway] {|} (d);\draw (n) -- node[midway] {|} (f);
 					\end{tikzpicture}
 					\vspace{-.5cm}
