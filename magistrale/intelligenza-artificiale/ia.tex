@@ -544,6 +544,26 @@ La procedura da applicare è quindi la seguente:\begin{itemize}
 
 \paragraph{Join-tree clustering.} La procedura del clustering consiste nell'accorpare vincoli per ottenere una sttruttura ad albero. Lo scopo dell'ottenere una struttura ad albero consente di risolvere in maniera più efficace la rete, usando l'algoritmo di \textit{tree-solving}.
 
+Per generare un join-tree si usa il seguente metodo:
+\begin{itemize}
+	\item Si sceglie un ordine delle variabili;
+	\item Si crea un grafo indotto per il quale valga la RIP;
+	\item Si crea un join-tree \begin{itemize}
+		\item Identificare tutte le clicche massimali $C_1, C_2, \dots, C_t$ nel grafo indotto;
+		\item Si crea una struttura ad albero con le clicche (ovvero si crea un maximum-spanning-tree dove i pesi sono i numeri di variabili condivise);
+	\end{itemize}
+	\item Si allocano i vincoli af ogni clicca che contenga il relativo scope $P_i$ associato alla relativa clicca $C_i$;
+	\item Si risolve ogni problema $P_i$ ricavando il relativo insieme di soluzioni $R_i'$;
+	\item La soluzione è $C' = \lbrace R_1', \dots, R_t'$.
+\end{itemize}
+
+\subparagraph{Generazione del grafo indotto.} Seguendo l'ordine inverso delle variabili si calcolano gli antenati di ogni variabile. Poi Per ogni variabile si verifica se forma una clicca (in caso si può forzare la cordalità aggiungendo archi).
+
+\subparagraph{Complessità e osservazioni finali.} La complessità di JTC è dominata dal determinare la soluzione per ogni sottoproblema, che è esponenziale nella dimensione della clicca. Notare che l'ordine delle variabili usato per JTC è fondamentale, e trovare l'ordine migliore è estremamente difficile.
+
+Al termine della risoluzione di ogni sottoproblema, si applica tree-solver per determinare la soluzione globale.
+
+
 
 
 
