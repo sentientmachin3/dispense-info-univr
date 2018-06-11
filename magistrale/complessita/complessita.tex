@@ -11,6 +11,7 @@
 \usepackage{amsfonts}
 \usepackage{amsthm}
 \usepackage{amssymb}
+\usepackage{enumitem}
 \usepackage[margin=3cm]{geometry}
 \usepackage{booktabs,caption}
 \usepackage{subcaption}
@@ -2033,12 +2034,117 @@ SAT-Solver-ND($ \phi(x_1, \dots, x_n) $) "\hspace{.8cm}\tikzmark{zero}"
 				\item Input: formula $ \phi $ K-CNF, $ t \in \N $
 				\item Output: $ yes\ \Leftrightarrow\  $ esiste un assegnamento che soddisfa almeno $ t $ clausole
 			\end{itemize}
-		
+			
+			esempio:
+			\[
+				k = 3,\ t = 2\qquad \phi = (\overline{x}_1\vee\overline{x}_2\vee x_3)\wedge (\overline{x}_1\vee x_2\vee \overline{x}_3)\wedge(\overline{x}_1\vee \overline{x}_2\vee \overline{x}_3)
+ 			\]
+ 			
+ 			Per $ k \geq 3 $ il problema è $ \npc $, per questa condizione, con $ t = m $ ($ m = $ numero di clausole ), il problema è identico al problema k-SAT.\\
+			Max-2-SAT con $ t = m $ è risolvibile in tempo polinomiale.\\
+			Max-2-SAT in generale è $ \npc $:
+			
+			\begin{proof}
+				Dimostriamo la \textit{hardness} del problema Max-2-SAT, con la riduzione:
+				\begin{align*}
+					 \text{Max-Cut }& \leq_K  \text{ Max-2-SAT} \\
+					 (G, k) & \ \mapsto\ \phi \text{ 2-CNF }, k'
+				\end{align*}
+				\begin{itemize}
+					\item Idea di fondo: Vero = colore bianco, Falso = colore nero.
+					\item Per ogni $ v \in V $ definiamo la variabile $ x_v $. Quindi 
+					\[
+						\phi(x_{v_1}, \dots, x_{v_n}) \ \text{ dove } \ \{v_1, \dots, v_n \} = V
+					\]
+					\item Per ogni arco $ (u, v)\in E $ aggiungiamo in $ \phi $ la formula che mi rende diversi i nodi, cioè le clausole
+					\[
+						x_u \neq x_v \equiv (x_u\vee x_v)\wedge(\overline{x}_u\vee\overline{x}_v)
+					\]
+					\item Dato $ G $ otteniamo
+					\[
+						\phi(x_{v_1}, \dots, x_{v_n}) = \bigwedge\limits_{l = (u, v)\in E} (x_u\vee x_v)\wedge(\overline{x}_u\vee\overline{x}_v)
+					\]
+				\end{itemize}
+				
+				\begin{figure}[h!]
+					\centering
+					\begin{tikzpicture}
+						\node[draw, circle] (a) at (0,0) {};\node[draw, circle] (b) at (2,0) {};
+						\node[draw, circle] (c) at (1,-1) {};\node[draw, circle] (d) at (3,0) {};
+						\draw (a) -- (b) -- (c) -- (a); \draw (b) -- (d);
+						\node at ($ (a.north) +(0,.2) $) {$ u $};\node at ($ (b.north) +(0,.2) $) {$ z $};
+						\node at ($ (c.north) +(0,.2) $) {$ v $};\node at ($ (d.north) +(0,.2) $) {$ w $};
+					\end{tikzpicture}
+				\end{figure}
+				
+				\begin{align*}
+					\phi(x_u, x_v, x_z, x_w) = & (x_v\vee x_u)\wedge(\overline{x}_v\vee \overline{x}_u)\wedge(x_v\vee x_z)\wedge(\overline{x}_v\vee \overline{x}_z) \\
+					& (x_z\vee x_u)\wedge(\overline{x}_z\vee \overline{x}_u)\wedge(x_z\vee x_w)\wedge(\overline{x}_z\vee \overline{x}_w)
+				\end{align*}
+				
+				
+				\begin{obs}
+					Per un qualsiasi assegnamento, in $ \phi $ almeno la metà delle clausole è soddisfatta, ed in particolare almeno una per ``coppia'' $ (x_a\vee x_b) $.\\
+					$ k' $ non posso prenderlo più piccolo della metà del numero di clausole.
+				\end{obs}
+				
+				\begin{obs}
+					Per ogni coppia entrambe le clausole sono soddisfatte se e solo se le due variabili hanno valore diverso.\\
+					$ k' $ deve essere almeno $ \vert E\vert + k $.\\
+					Quindi per l'esempio sopra $ k = 2, \ k' = \vert E\vert + k = 4 + 2 = 6 $
+				\end{obs}
+				
+				Facciamo vedere che:
+				\begin{enumerate}[label*=\arabic*.]
+					\item La riduzione è polinomiale:\\
+					$ |\phi| = 2 \times 2\cdot|E| $ letterali quindi $ k' = O(k + |E|) $, perciò è polinomiale.
+					\item $ \stackrel{\text{Max-cut}}{yes}\ \Leftrightarrow\ \stackrel{\text{Max-k-SAT}}{yes} $:
+					\begin{enumerate}[label*=\arabic*.]
+						\item $ yes\ \Rightarrow\ yes $: Se $ G $ ha un cut di taglia $ k $ allora esiste una colorazione che bicolora $ k $ archi $ \forall u \in V\quad x_u = T\ \Leftrightarrow\ u $ è bianco.
+						\begin{align}
+							& \Rightarrow \ \forall (u, v) \in E \text{ se } col(u)\neq col(v) \equiv (u, v)\in cut C \label{eq1}\\
+							& \Rightarrow \ (x_v\vee x_u) \text{ è soddisfatta e } (\overline{x}_v\vee \overline{x}_u) \text{ è soddisfatta.} \label{eq2}\\
+							& \Rightarrow \ \forall (u, v) \in E \text{ se } (u, v)\notin cut C \label{eq3}\\
+							& \Rightarrow \ (x_v\vee x_u) \text{ è soddisfatta oppure } (\overline{x}_v\vee \overline{x}_u) \text{ è soddisfatta.} \label{eq4}\\
+							& \Rightarrow 2|C| + |E| - |C| = |E| + |C| \text{ sono soddisfatte.}
+						\end{align}
+						$ 2|C| $ dalla implicazione (\ref{eq1}) e (\ref{eq2}), $ |E| - |C| $ da (\ref{eq3}) e (\ref{eq4}).
+						\item $ yes\ \Leftarrow\ yes $: Assumiamo che in $ \phi \ \ |E| + k \ $ clausole siano soddisfatte dall'assegnamento $ a_1, \dots, a_n\ (n = |V|) $.\\
+						$ \Rightarrow \ $ almeno $ k $ coppie sono soddisfatte,\\
+						$ \Rightarrow \ $ per almeno $ k $ coppie le variabili hanno assegnato un valore opposto.\\
+						Creiamo quindi la bicolorazione del grafo:
+						\[
+							\forall v\quad col(v) =
+							\begin{cases}
+								\text{bianco } & \mbox{ se } x_v = T\\
+								\text{nero }   & \mbox{ se } x_v = F
+							\end{cases}
+						\]
+						Per almeno $ k $ archi i vertici hanno colore diverso $ \ \Rightarrow\ $ esiste un cut di taglia $ k $.
+					\end{enumerate}
+				\end{enumerate}
+			\end{proof}
+			
 		\subsection{Problema Set-Splitting}
 			\begin{itemize}
 				\item Input: $ (\mathcal{S}, C),\quad C = \{C_1, C_2, \dots, C_k \} $, con $ C_i \subseteq \mathcal{S}\quad i = 1\dots k $
 				\item Output: $ yes\ \Leftrightarrow\  $ possiamo colorare gli elementi di $ \mathcal{S} $ rosso o blu in modo tale che ogni $ C_i $ \textit{non} è monocromatico.
 			\end{itemize}
+			
+			\paragraph{Set-Splitting $ \in \np $} Dimostriamo che esiste un verificatore e un certificato che in tempo polinomiale decidono, data un'istanza, se questa appartiene al problema o meno in tempo polinomiale:\\
+			esempio di istanza $ yes $:
+			\[
+				\mathcal{S} = \{\underset{r}{1}, \underset{r}{2}, \underset{b}{3}, \underset{b}{4}, \underset{b}{5}\} \quad
+				C = \big\lbrace \{\underset{r}{1}, \underset{b}{3}, \underset{b}{5}\}, \{\underset{r}{2}, \underset{b}{4}\}, \{\underset{r}{1}, \underset{b}{5}\} \big\rbrace
+			\]
+			
+			Il verificatore scorre tutto l'insieme C, e lo fa al massimo $ |\mathcal{S}| = n $ volte, quindi la complessità è $ \ O(k\times n) $. Perciò è polinomiale.
+			
+			\paragraph{Nae-3-SAT $ \leq_K $ Set-Splitting} Dimostriamo che esiste una riduzione
+			\begin{align*}
+				\text{Nae-3-SAT } & \leq_K \text{ Set-Splitting}\\
+				\phi \text{ 3-CNF } & \mapsto (\mathcal{S}, C)
+			\end{align*}
 		
 		\subsection{Problema Set-Cover}
 			\begin{itemize}
