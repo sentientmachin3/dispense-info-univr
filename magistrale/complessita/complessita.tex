@@ -2145,17 +2145,68 @@ SAT-Solver-ND($ \phi(x_1, \dots, x_n) $) "\hspace{.8cm}\tikzmark{zero}"
 				\text{Nae-3-SAT } & \leq_K \text{ Set-Splitting}\\
 				\phi \text{ 3-CNF } & \mapsto (\mathcal{S}, C)
 			\end{align*}
+			
+			\begin{enumerate}
+				\item $ yes \Rightarrow yes $:\\
+				Mappo ogni clausola di $ \phi \quad \forall i\quad C^{(i)} = (l^{(i)}_1\vee l^{(i)}_2\vee l^{(i)}_3) \ $ in 
+				\[
+				C_i =\{l^{(i)}_1, l^{(i)}_2, l^{(i)}_3) \}\quad \forall j = 1\dots n\quad C_j =\{x_j, \overline{x}_j \} 
+				\]
+				Quindi se abbiamo la formula $ \phi = (x_1\vee x_2 \vee x_3)\wedge(\overline{x}_1\vee x_2\vee \overline{x}_3) $ diventa:
+				\begin{align*}
+				& \mathcal{S} = \{x_1, x_2, x_3, \overline{x}_1, x_2, \overline{x}_3\} \\
+				& C = \big\lbrace \{x_1, x_2, x_3 \}, \{\overline{x}_1, x_2, \overline{x}_3\}, \{x_1, \overline{x}_1\}, \{x_2, \overline{x}_2\}, \{x_3, \overline{x}_3\}\big\rbrace
+				\end{align*}
+				Perciò ad un assegnamento di $ \phi $ che soddisfa la formula in termini NAE corrisponde una bicolorazione non monocromatica di $ C_i $.
+				\item $ yes \Leftarrow yes $:\\
+				Ogni colorazione di $ \mathcal{S} $ che bicolora i vari $ C $ implica un assegnamento che soddisfa $ \phi $ in termini NAE. Devo imporre che colori di letterali uguali opposti siano opposti.
+			\end{enumerate}
+			
+			
 		
 		\subsection{Problema Set-Cover}
 			\begin{itemize}
 				\item Input: $ (\mathcal{S}, C, k),\quad C $ famiglia di sottoinsiemi di $ \mathcal{S} $, $ \ k\in \N $
 				\item Output: $ yes\ \Leftrightarrow\ \exists C_{i 1},\dots, C_{i k} \in C\quad t.c.\quad \bigcup\limits^k_{j = 1} C_{i j} = \mathcal{S} $.
 			\end{itemize}
+			
+			esempio di istanza $ yes $:
+			\[
+				\mathcal{S} = \{1, 2, 3, 4, 5\},\quad C = \big\lbrace \{\underset{C_1}{1, 2} \}, \{\underset{C_2}{2, 3, 5} \}, \{\underset{C_3}{1, 2, 4}\}, \{\underset{C_4}{1, 3, 5}\}\big\rbrace,\quad k = 2 
+			\]
+			Esistono 2 insiemi di $ C $ la cui unione è uguale a $ \mathcal{S} $? Sì, sono $ \ C_2 \cup C_3 = \{1, 2, 3, 4, 5\} = \mathcal{S} $.
+			
+			\paragraph{Vertex-Cover $ \leq_K $ Set-Cover} Dimostriamo che esiste tale riduzione:
+			
+			\begin{figure}[h!]
+				\centering
+				\begin{tikzpicture}[scale=.7,every node/.style={scale=0.7}]
+					\node[draw, circle] (a) at (0,0) {A}; \node[draw, circle] (b) at (2,0) {B}; 
+					\node[draw, circle] (g) at (0,-2) {G}; \node[draw, circle] (c) at (2,-2) {C}; 
+					\node[draw, circle] (d) at (1,-1) {D}; \node[draw, circle] (f) at (-1,-2) {F}; 
+					\node[draw, circle] (e) at (1,-3) {E};
+					\draw (a) -- node[midway, above] {4} (d) -- node[midway, above] {7} (b) -- node[midway, right] {8} (c) -- node[midway, above] {6} (d) -- node[midway, above] {3} (g) -- node[midway, above] {2} (f) -- node[midway, above] {1} (a);
+					\draw (d) -- node[midway, right] {5} (e);
+				\end{tikzpicture}
+				\caption{Per questo grafo esistono $ \tilde{k} $ vertici che toccano tutti gli archi}
+			\end{figure}
+			Perciò il grafo in esempio si traduce in istanza di Set-Cover nel seguente modo:
+			\[
+				(\mathcal{S}, C, k) = \big( \{1, 2, 3, \dots, 8\}, \{\overset{A}{1,4}\}, \{\overset{B}{7,8}\}, \{\overset{C}{6, 8}\}, \{\overset{D}{3, 4, 5, 6, 7}\}, \{\overset{E}{5}\}, \{\overset{F}{1, 2}\}, \{\overset{G}{2, 3}\}, \tilde{k} \big)
+			\]
+			
+			\begin{obs}
+				Possiamo osservare che
+				\[
+					\text{istanze di Vertex-Cover } \subseteq \text{ istanze di Set-Cover}
+				\]
+				Quindi la riduzione ha costo unitario.
+			\end{obs}
 		
 		\subsection{Classe di problemi DP e Problema Clique-No-Clique}
 			\begin{definit}[classe di problemi $ \DP $]
 				\[
-					\DP = \big\lbrace \prob{A}\ \Big|\ \exists \prob{B},\prob{C}\in \np\quad \instance{A} = \instance{B} = \instance{C} \ t.c.\ \prob{A}(x) = yes\ \Leftrightarrow\ \prob{B}(x) = yes\ \wedge\ \prob{C}(x) = yes \big\rbrace
+					\DP = \big\lbrace \prob{A}\ \Big|\ \exists \prob{B},\prob{C}\in \np\quad \instance{A} = \instance{B} = \instance{C} \ t.c.\ \prob{A}(x) = yes\ \Leftrightarrow\ \prob{B}(x) = yes\ \wedge\ \prob{C}(x) = no \big\rbrace
 				\]
 			\end{definit}
 			
@@ -2165,6 +2216,25 @@ SAT-Solver-ND($ \phi(x_1, \dots, x_n) $) "\hspace{.8cm}\tikzmark{zero}"
 				\item Input: Due grafi $ G_1, G_2,\quad k_1, k_2 \in \N $
 				\item Output: $ yes\ \Leftrightarrow\ G_1 $ ha una clique di taglia $ \geq k_1 $ e $ G_2 $ \textit{non} ha alcuna clique di taglia $ \geq k_2 $.
 			\end{itemize}
+			
+			\paragraph{Clique-No-Clique $ \in \DP $} Prendiamo i due problemi $ \prob{B} $ e $ \prob{C} $. Dove:
+			\begin{itemize}
+				\item $ \prob{B} = $ problema che prende in input $ G_1, G_2, k_1, k_2 $ e che ritorna in output $ yes\ \Leftrightarrow\ G_1 $ ha una clique di taglia $ \geq k_1 $.
+				\item $ \prob{C} = $ input uguale a $ \prob{B} $: $ G_1, G_2, k_1, k_2 $ tranne che ritorna in output $ yes\ \Leftrightarrow\ G_2 $ ha una clique di taglia $ \geq k_2 $.
+			\end{itemize}
+			Quindi $ \prob{B}, \prob{C} \in \np $ e Clique-no-Clique$(x) = yes\ \Leftrightarrow\ \prob{B}(x) = yes \ \wedge \ \prob{C}(x) = no $.
+			
+			\paragraph{$ \forall \prob{A}\in \DP, \ \prob{A} \leq_k $ Clique-no-Clique} È vero che esiste tale trasformazione?
+			\begin{align*}
+				\prob{A} \in \DP \ &\Leftrightarrow \ \exists \prob{B}, \prob{C}\in \np\quad t.c.\quad \prob{A}(x) = yes\ \Leftrightarrow\ \prob{B}(x) = yes\ \wedge\ \prob{C}(x) = no \\
+				&\Leftrightarrow \ \exists \prob{B} \in \np, \overline{\prob{C}}\in \conp \quad t.c.\quad \prob{A}(x) = yes\ \Leftrightarrow\ \prob{B}(x) = yes\ \wedge\ \overline{\prob{C}}(x) = yes 
+			\end{align*}
+			Perciò nella riduzione
+			\begin{align*}
+				&\text{Clique-no-Clique}(G_1, G_2, k_1, k_2) = yes\ \Leftrightarrow\ \\
+				&\text{Clique}(G_1, k_1) = yes\ \wedge\ \text{Clique}(G_2, k_2) = no\ \Leftrightarrow\ \\
+				&\text{Clique}(G_1, k_1) = yes\ \wedge\ \overline{\text{Clique}(G_2, k_2)} = yes
+			\end{align*}
 		
 		\subsection{Problema D-HamPath}
 			\begin{itemize}
