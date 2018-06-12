@@ -2225,23 +2225,140 @@ SAT-Solver-ND($ \phi(x_1, \dots, x_n) $) "\hspace{.8cm}\tikzmark{zero}"
 			Quindi $ \prob{B}, \prob{C} \in \np $ e Clique-no-Clique$(x) = yes\ \Leftrightarrow\ \prob{B}(x) = yes \ \wedge \ \prob{C}(x) = no $.
 			
 			\paragraph{$ \forall \prob{A}\in \DP, \ \prob{A} \leq_k $ Clique-no-Clique} È vero che esiste tale trasformazione?
-			\begin{align*}
-				\prob{A} \in \DP \ &\Leftrightarrow \ \exists \prob{B}, \prob{C}\in \np\quad t.c.\quad \prob{A}(x) = yes\ \Leftrightarrow\ \prob{B}(x) = yes\ \wedge\ \prob{C}(x) = no \\
-				&\Leftrightarrow \ \exists \prob{B} \in \np, \overline{\prob{C}}\in \conp \quad t.c.\quad \prob{A}(x) = yes\ \Leftrightarrow\ \prob{B}(x) = yes\ \wedge\ \overline{\prob{C}}(x) = yes 
-			\end{align*}
-			Perciò nella riduzione
-			\begin{align*}
-				&\text{Clique-no-Clique}(G_1, G_2, k_1, k_2) = yes\ \Leftrightarrow\ \\
-				&\text{Clique}(G_1, k_1) = yes\ \wedge\ \text{Clique}(G_2, k_2) = no\ \Leftrightarrow\ \\
-				&\text{Clique}(G_1, k_1) = yes\ \wedge\ \overline{\text{Clique}(G_2, k_2)} = yes
-			\end{align*}
+			\begin{proof}
+				\begin{align*}
+					\prob{A} \in \DP \ &\Leftrightarrow \ \exists \prob{B}, \prob{C}\in \np\quad t.c.\quad \prob{A}(x) = yes\ \Leftrightarrow\ \prob{B}(x) = yes\ \wedge\ \prob{C}(x) = no \\
+					&\Leftrightarrow \ \exists \prob{B} \in \np, \overline{\prob{C}}\in \conp \quad t.c.\quad \prob{A}(x) = yes\ \Leftrightarrow\ \prob{B}(x) = yes\ \wedge\ \overline{\prob{C}}(x) = yes 
+				\end{align*}
+				Perciò nella riduzione
+				\begin{align*}
+					&\text{Clique-no-Clique}(G_1, G_2, k_1, k_2) = yes\ \Leftrightarrow\ \\
+					&\text{Clique}(G_1, k_1) = yes\ \wedge\ \text{Clique}(G_2, k_2) = no\ \Leftrightarrow\ \\
+					&\text{Clique}(G_1, k_1) = yes\ \wedge\ \overline{\text{Clique}(G_2, k_2)} = yes
+				\end{align*}
+				Abbiamo dunque che:
+				\begin{align*}
+					\text{Clique} &\in \npc,      & \overline{\text{Clique}} &\in \conp\mathbf{C} \\
+								  & \Downarrow    &                          &\Downarrow \\
+					\prob{B} &\leq_K \text{Clique}& 	 \overline{\prob{C}} &\leq_K \overline{\text{Clique}} \\
+					\Rightarrow & \exists f_1\ \forall x \in \instance{\prob{B}}
+												  & \Rightarrow & \exists f_2\ \forall x \in \instance{\overline{\prob{C}}} \\
+					t.c.\quad & \prob{B} = yes \ \Leftrightarrow\ \text{Clique}\big(f_1(x)\big) = yes &
+					t.c.\quad & \prob{B} = yes \ \Leftrightarrow\ \overline{\text{Clique}}\big(f_2(x)\big) = yes
+				\end{align*}
+				Quindi $ \ \forall x \in \instance{\prob{A}} = \instance{\prob{B}} = \instance{\prob{C}} $ abbiamo la funzione:
+				\[
+					f(x) = \big(f_1(x), f_2(x)\big)
+				\]
+				\begin{align*}
+					\prob{A}(x) = yes\ &\Leftrightarrow\ \prob{B}(x) = yes\ \wedge \ \overline{\prob{C}}(x) = yes\ \Leftrightarrow\ \text{Clique}\big(f_1(x)\big) = yes \ \wedge \ \overline{\text{Clique}}\big(f_2(x)\big) = yes \\
+					&\Leftrightarrow \ \text{Clique-no-Clique}\big(f(x)\big) = yes
+				\end{align*}
+			\end{proof}
+			
 		
-		\subsection{Problema D-HamPath}
+		\subsection{Problema D-Ham-Path}
 			\begin{itemize}
 				\item Input: grafo diretto $ G = (V, E) $
 				\item Output: $ yes\ \Leftrightarrow\ $ esiste in $ G $ un cammino Hamiltoniano (che percorre tutti i nodi).
 			\end{itemize}
 			
+			\begin{figure}[h!]
+				\centering
+				\begin{subfigure}{.5\textwidth}
+					\centering
+					\begin{tikzpicture}[>=latex,scale=1.3]
+						\node[draw, circle] (a) at (0,0) {}; \node[draw, circle] (b) at (1,0) {}; 
+						\node[draw, circle] (c) at (2,0) {}; \node[draw, circle] (d) at (0,-1) {}; 
+						\node[draw, circle] (e) at (1,-1) {}; \node[draw, circle] (f) at (2,-1) {};
+						\draw[->] (a) -- node[midway, above] {1} (b); \draw[->] (b) -- node[midway, above] {2} (c); \draw[->] (c) -- node[midway, right] {3} (f); \draw[->] (f) -- node[midway, below] {4} (e); \draw[->] (e) -- node[midway, below] {5} (d); \draw[->] (d) -- (b); \draw[->] (b) -- (f); \draw[->] (b) -- (e); \draw[->] (a) -- (d);
+					\end{tikzpicture}
+					\caption{Istanza $ yes $}
+				\end{subfigure}%
+				\begin{subfigure}{.5\textwidth}
+					\centering
+					\begin{tikzpicture}[>=latex,scale=1.7]
+					\node[draw, circle] (a) at (0,0) {}; \node[draw, circle] (b) at (1,0) {}; 
+					\node[draw, circle] (c) at (0,-1) {};\node[draw, circle] (d) at (1,-1) {};
+					\draw[->] (a) -- (b); \draw[->] (b) -- (c); \draw[->] (a) -- (c); \draw[->] (d) -- (b); \draw[->] (d) -- (c); 
+					\end{tikzpicture}
+					\caption{Istanza $ no $}
+				\end{subfigure}%
+			\end{figure}
+			
+			\paragraph{3-SAT $ \leq_K $ D-Ham-Path} Dimostriamo che esiste tale riduzione:
+			\begin{proof}
+				Dobbiamo costruire il grafo a partire dalla formula $ \phi $ 3-CNF:
+				\begin{itemize}
+					\item Per ogni variabile $ x $ di $ \phi $ definiamo un cammino che va in tutte e due le direzioni, con un numero di nodi pari al numero di letterali $ \ x, \overline{x}\ $ in $ \phi + 2 $.
+					\item Aggiungiamo due vertici $ s, t $ e vertici $ y_1, \dots, y_n $ tra i cammini. Colleghiamo $ y_i $ agli estremi del cammino di $ x_{i+1} \quad i = 1\dots n $. Stabilendo che attraversando il cammino $ x_i $ da destra a sinistra (sinistra verso destra) significa $ x_i = T \ (x_i = F) $, abbiamo una corrispondenza tra assegnamenti e cammini hamiltoniani. 
+					\item Per ogni clausola $ \ C^{(i)} = l^{(i)}_1 \vee l^{(i)}_2 \vee l^{(i)}_3 \ $ aggiungiamo un vertice.\\
+					esempio: $ \ \phi(x_1, x_2, x_3) = (\overline{x}_1\vee x_2\vee x_3)\wedge(x_1\vee \overline{x}_2\vee \overline{x}_3) $
+					
+					\vspace{1cm}
+					\begin{figure}[h!]
+						\centering
+						\begin{tikzpicture}[>=latex]
+						\node[draw, circle] (s) at (3.8,1.5) {s};
+						\node (a0) at (0,0) {$ x_1 $};
+						\node[draw, circle, xshift=.5cm] (b0) at (a0.east) {};
+						\node[draw, circle] (b1) at ($ (b0) + (2,0) $) {};
+						\node[draw, circle] (b2) at ($ (b1) + (2,0) $) {};
+						\node[draw, circle] (b3) at ($ (b2) + (2,0) $) {};
+						\node[] (y1) at (3.8,-1) {$ y_1 $};
+						\node (a1) at (0,-2) {$ x_2 $};
+						\node[draw, circle, xshift=.5cm] (c0) at (a1.east) {};
+						\node[draw, circle] (c1) at ($ (c0) + (2,0) $) {};
+						\node[draw, circle] (c2) at ($ (c1) + (2,0) $) {};
+						\node[draw, circle] (c3) at ($ (c2) + (2,0) $) {};
+						\node[] (y2) at (3.8,-3) {$ y_2 $};
+						\node (a2) at (0,-4) {$ x_3 $};
+						\node[draw, circle, xshift=.5cm] (d0) at (a2.east) {};
+						\node[draw, circle] (d1) at ($ (d0) + (2,0) $) {};
+						\node[draw, circle] (d2) at ($ (d1) + (2,0) $) {};
+						\node[draw, circle] (d3) at ($ (d2) + (2,0) $) {};
+						\node[draw, circle] (t) at (3.8,-5.5) {t};
+						\node[draw, circle] (C1) at (10,-1) {$ C_1 $};
+						\node[draw, circle] (C2) at (10,-3) {$ C_2 $};
+						\foreach \i in {b, c, d}{
+								\draw[<->] (\i0) -- (\i1);\draw[->, bend left] (\i1) to node[above] {$ T $} (\i2) ;\draw[->, bend left] (\i2) to node[below] {$ F $} (\i1);\draw[<->] (\i2) -- (\i3);
+						}
+						\draw[->] (s) -- (b0) node[midway, above] {$ T $};
+						\draw[->] (s) -- (b3) node[midway, above] {$ F $};
+						\draw[->] (y1) -- (c0) node[midway, above] {$ T $};
+						\draw[->] (y1) -- (c3) node[midway, above] {$ F $};
+						\draw[->] (y2) -- (d0) node[midway, above] {$ T $};
+						\draw[->] (y2) -- (d3) node[midway, above] {$ F $};
+						\draw[->] (b0) -- (y1);\draw[->] (b3) -- (y1);	
+						\draw[->] (c0) -- (y2);\draw[->] (c3) -- (y2);	
+						\draw[->] (d0) -- (t);\draw[->] (d3) -- (t);
+						\draw[->, bend left, ultra thick] (b2) to (b1);
+						\draw[->, bend left, ultra thick] (c1) to (c2);
+						\draw[->, bend left, ultra thick] (d1) to (d2);
+						\draw[->, dashed] (b2) to [out=45, in=90] (C1);
+						\draw[->, dashed] (C1) to [out=140, in=-60] (b1);
+						\draw[->, dashed] (C1) to [out=180, in=45] (c2);
+						\draw[->, dashed] (c1) to [out=-70, in=220] (C1);
+						\draw[->, dashed] (d1) to [out=-50, in=260] (C1);
+						\draw[->, dashed] (C1) to [out=200, in=45] (d2);
+						\end{tikzpicture}
+						\caption{Rappresentazione per la clausola $ C_1 $ del grafo con cammino Hamiltoniano}
+					\end{figure}
+				\end{itemize}
+				
+				Quindi abbiamo che ci sono:
+				\begin{itemize}
+					\item $ n + 1 $ vertici ($ s, t, y_1, \dots, y_n $)
+					\item $ 2n $ vertici (gli estremi per i cammini per gli $ x $)
+					\item $ 2 * 3m $ vertici nei cammini
+					\item $ n $ vertici (1 per clausola)
+				\end{itemize}
+				Se esiste un assegnamento $ a_1, \dots, a_n\quad t.c.\quad \phi(a_1, \dots, a_n) = T\ $ il cammino che corrisponde a prendere ogni cammino variabile ($ x $) nella direzione corrispondente a $ a_i $ permette di toccare ogni nodo clausola ($ yes\ \Rightarrow\ yes $).\\
+				
+				\noindent
+				Se esiste un cammino Hamiltoniano in $ G $, esso inizia da $ s $ e termina in $ t $, e ogni cammino variabile $ x_i $ è fatto da destra verso sinistra o viceversa. Per toccare i vertici clausola il cammino Hamiltoniano deve aver attraversato almeno uno dei cammini dei letterali della clausola nella direzione corrispondente a rendere il letterale vero. L'assegnamento corrispondente alle direzioni scelte nei cammini variabile soddisfa ogni clausola ($ yes\ \Leftarrow\ yes $).
+ 				
+			\end{proof}
 			
 		\newpage
 	\section{Complessità di Spazio e la classe SPACE}
