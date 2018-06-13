@@ -1744,7 +1744,7 @@ GraphIsomorphismSearch($ G_1, G_2 $)
 			\centering
 			\begin{tikzpicture}[scale=0.4]
 				\draw (0,0) ellipse (3cm and 2cm) node[xshift=-.5cm] {$ \np $};
-				\draw (3,0) ellipse (3cm and 2cm) node[xshift= .7cm] {$ \conp $};
+				\draw (3,0) ellipse (3cm and 2cm) node[xshift= .6cm] {$ \conp $};
 				\draw (1.5,0) circle (1cm) node {$ \p $};
 				\node[] at (1.3, -1.3) {\tikzmark{qui1}};
 			\end{tikzpicture}
@@ -2368,24 +2368,71 @@ SAT-Solver-ND($ \phi(x_1, \dots, x_n) $) "\hspace{.8cm}\tikzmark{zero}"
 		\begin{definit}[Classe \textbf{SPACE}]
 			La classe \textbf{SPACE} è definita come segue:
 			\begin{align*}
-				\mathbf{SPACE}(f(n)) = \big\lbrace & \prob{A}\ \Big|\ \text{ esiste un programma/algoritmo che risolve istanze di } \prob{A} \\ 
+				\Space(f(n)) = \big\lbrace & \prob{A}\ \Big|\ \text{ esiste un programma/algoritmo che risolve istanze di } \prob{A} \\ 
 				&\text{usando al più } O(f(n)) \text{ bit di memoria di lavoro e accede }\\
 				&\text{all'istanza in sola lettura. } n \text{ è la taglia dell'istanza}. \big\rbrace
 			\end{align*}
 		\end{definit}
 		
+		\paragraph{Problema Palindroma $ \in $ L} Osserviamo quanto spazio di memoria occupa l'algoritmo che risolve il problema Palindroma.
+		\begin{lstlisting}[mathescape = true, frame = tb]
+Palindroma(s)
+	for i = 1 to n:
+		if s[i] $ \neq $ s[n - 1 + 1]
+			return $ no $
+	return $ yes $
+		\end{lstlisting}
+		Lo spazio utilizzato è $ O(\log n) $. Quindi Palindroma $ \in \Space(\log n) $.
+		
+		\paragraph{Problema SAT $ \in \pspace $} Osserviamo quanto spazio di memoria occupa l'algoritmo che risolve il problema SAT.
+		\begin{lstlisting}[mathescape = true, frame = tb]
+SAT($ \phi(x_1, \dots, x_n) $)
+	for i = 0 to $ 2^n - 1 $
+		for j = 1 to n
+			$ x_j \ \leftarrow \ j\text{-esimo bit di} $ i
+			if ($ \phi(x_1, \dots, x_n) = T $)
+				return $ yes $
+	return $ no $
+		\end{lstlisting}
+		Questo algoritmo, come già visto, impiega tempo esponenziale, mentre occupa spazio lineare.
+		\begin{itemize}
+			\item Per $ i $: $ n $ bit
+			\item Per $ j $: $ \log n $ bit
+			\item Per \lstinline|x[]|: $ n $ bit
+ 		\end{itemize}
+		Complessità di spazio: $ O(n) $, dove $ n = $ numero di variabili di $ \phi $. $ n \leq |\phi| $.
+		
 		\subsection{Classe PSPACE, L e NTIME}
 			\begin{definit}[Classe PSPACE]
 				\[
-					\mathbf{PSPACE} = \bigcup\limits_{k > 0} \Space(n^k)
+					\pspace = \bigcup\limits_{k > 0} \Space(n^k)
 				\]
 			\end{definit}
+			Abbiamo visto che: \textbf{SAT} $ \in \pspace $
 			
 			\begin{definit}[Classe L]
 				\[
 					\mathbf{L} = \Space(\log n)
 				\]
 			\end{definit}
+			Abbiamo visto che: \textbf{Palindroma} $ \in \mathbf{L} $\\
+			Inoltre sappiamo che $ \np \subseteq \pspace $
+			
+			\begin{prop}
+				$ \forall \prob{A} \in \np $ esiste una riduzione $ \prob{A}\leq_K $ SAT che trasforma l'istanza $ x \in \instance{A} $, in tempo polinomiale ($ n^k $), in una formula $ \phi_x $ tale che $ \ \prob{A} = yes\ \Leftrightarrow\ \text{SAT}(\phi_x) = yes $.\\
+				Tale riduzione utilizza spazio $ O(n^k) $, in più sappiamo che $ \text{SAT}(\phi_x) $ utilizza spazio $ O(n^{k'}) $. Quindi lo spazio totale utilizzato è $ O(n^{k + k'}) $. Perciò è polinomiale in $ n = |x| $.
+			\end{prop}
+			
+			\begin{figure}[h!]
+				\centering
+				\begin{tikzpicture}[scale=0.6, every node/.style={scale=0.7}]
+					\draw (0,0) ellipse (3cm and 2cm) node[yshift=1.3cm] {$ \pspace $};
+					\draw (-1,0) ellipse (1.5cm and 1cm) node[xshift=-.6cm] {$ \np $};
+					\draw (1,0) ellipse (1.5cm and 1cm) node[align=center,xshift=.6cm] {$ \conp $};
+					\node[draw, circle] at (0,0) {$ \p $};
+				\end{tikzpicture}
+				\caption{$ \p \subseteq \np \subseteq \pspace $}
+			\end{figure}
 			
 			\begin{definit}[Classe NTIME] Ridefiniamo la classe $ \ntime $ nel seguente modo:
 				\begin{align*}
@@ -2396,6 +2443,29 @@ SAT-Solver-ND($ \phi(x_1, \dots, x_n) $) "\hspace{.8cm}\tikzmark{zero}"
 				\end{align*}
 			\end{definit}
 			
+			\paragraph{$ \ntime\big(f(n)\big) \subseteq \Space\big(f(n)\big) $} Dimostriamo questa affermazione:
+			\begin{proof}
+				
+			Sia $ \prob{A} \in \ntime\big(f(n)\big) \ $ allora esiste un $ k $ tale che 
+			\begin{align*}
+				&\forall x \in \instance{A} \quad \prob{A} = yes\ \Leftrightarrow \ \exists w \in \{0, 1\}^{k\cdot f(|x|)} \quad t.c. \\ 
+				&V_{\prob{A}}(x, w) = yes\ \text{ e } V_{\prob{A}}(x, w) \text{ impiega tempo al più } k\cdot f(n)
+			\end{align*}
+			Facciamo vedere che $ \prob{A} \in \Space\big(f(n)\big) $: dobbiamo produrre l'algoritmo $ \Pi $ che risolve le istanze di $ \prob{A} $ e usa al massimo $ f(n) $ bit.\\
+			$ \Pi $ costruisce tutti i certificati $ w \in \{0, 1\}^{k\cdot f(|x|)} $ e per ognuno di questi chiama il programma $ V_{\prob{A}}(x, w) $. 
+			\begin{itemize}
+				\item Se per uno dei $ V_{\prob{A}} $ dice $ yes $ allora esiste il certificato, perciò tale istanza è $ yes $.
+				\item Se per tutti i $ V_{\prob{A}} $ dice $ no $ allora è un'istanza $ no $.
+			\end{itemize}
+			Quanto spazio utilizza $ \Pi $?
+			\begin{itemize}
+				\item Per produrre tutti i certificati $ w $ usa spazio $ k\cdot f(|x|)\ \Rightarrow\ O\big(f(n)\big) $ bit.
+				\item Poi utilizza lo spazio che utilizza il verificatore $ V_{\prob{A}}(x, w) $, il quale termina in tempo $ O\big(f(n)\big)\ \Rightarrow\  $ utilizza $ O\big(f(n)\big)\ $ spazio di memoria (ogni operazione usa una quantità fissata di spazio).
+				\item[$ \Rightarrow $] $ O\big(f(n)\big) + O\big(f(n)\big) \ \Rightarrow\ O\big(f(n)\big) $
+			\end{itemize}
+			Perciò $ \prob{A} \in \Space\big(f(n)\big) $ ed è quindi risolvibile in tempo deterministico.
+			
+			\end{proof}
 		\subsection{Classe NSPACE}
 			\begin{definit}[Classe NSPACE]
 				\begin{align*}
