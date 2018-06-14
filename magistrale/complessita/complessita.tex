@@ -2446,26 +2446,84 @@ SAT($ \phi(x_1, \dots, x_n) $)
 			\paragraph{$ \ntime\big(f(n)\big) \subseteq \Space\big(f(n)\big) $} Dimostriamo questa affermazione:
 			\begin{proof}
 				
-			Sia $ \prob{A} \in \ntime\big(f(n)\big) \ $ allora esiste un $ k $ tale che 
-			\begin{align*}
-				&\forall x \in \instance{A} \quad \prob{A} = yes\ \Leftrightarrow \ \exists w \in \{0, 1\}^{k\cdot f(|x|)} \quad t.c. \\ 
-				&V_{\prob{A}}(x, w) = yes\ \text{ e } V_{\prob{A}}(x, w) \text{ impiega tempo al più } k\cdot f(n)
-			\end{align*}
-			Facciamo vedere che $ \prob{A} \in \Space\big(f(n)\big) $: dobbiamo produrre l'algoritmo $ \Pi $ che risolve le istanze di $ \prob{A} $ e usa al massimo $ f(n) $ bit.\\
-			$ \Pi $ costruisce tutti i certificati $ w \in \{0, 1\}^{k\cdot f(|x|)} $ e per ognuno di questi chiama il programma $ V_{\prob{A}}(x, w) $. 
-			\begin{itemize}
-				\item Se per uno dei $ V_{\prob{A}} $ dice $ yes $ allora esiste il certificato, perciò tale istanza è $ yes $.
-				\item Se per tutti i $ V_{\prob{A}} $ dice $ no $ allora è un'istanza $ no $.
-			\end{itemize}
-			Quanto spazio utilizza $ \Pi $?
-			\begin{itemize}
-				\item Per produrre tutti i certificati $ w $ usa spazio $ k\cdot f(|x|)\ \Rightarrow\ O\big(f(n)\big) $ bit.
-				\item Poi utilizza lo spazio che utilizza il verificatore $ V_{\prob{A}}(x, w) $, il quale termina in tempo $ O\big(f(n)\big)\ \Rightarrow\  $ utilizza $ O\big(f(n)\big)\ $ spazio di memoria (ogni operazione usa una quantità fissata di spazio).
-				\item[$ \Rightarrow $] $ O\big(f(n)\big) + O\big(f(n)\big) \ \Rightarrow\ O\big(f(n)\big) $
-			\end{itemize}
-			Perciò $ \prob{A} \in \Space\big(f(n)\big) $ ed è quindi risolvibile in tempo deterministico.
-			
+				Sia $ \prob{A} \in \ntime\big(f(n)\big) \ $ allora esiste un $ k $ tale che 
+				\begin{align*}
+					&\forall x \in \instance{A} \quad \prob{A} = yes\ \Leftrightarrow \ \exists w \in \{0, 1\}^{k\cdot f(|x|)} \quad t.c. \\ 
+					&V_{\prob{A}}(x, w) = yes\ \text{ e } V_{\prob{A}}(x, w) \text{ impiega tempo al più } k\cdot f(n)
+				\end{align*}
+				Facciamo vedere che $ \prob{A} \in \Space\big(f(n)\big) $: dobbiamo produrre l'algoritmo $ \Pi $ che risolve le istanze di $ \prob{A} $ e usa al massimo $ f(n) $ bit.\\
+				$ \Pi $ costruisce tutti i certificati $ w \in \{0, 1\}^{k\cdot f(|x|)} $ e per ognuno di questi chiama il programma $ V_{\prob{A}}(x, w) $. 
+				\begin{itemize}
+					\item Se per uno dei $ V_{\prob{A}} $ dice $ yes $ allora esiste il certificato, perciò tale istanza è $ yes $.
+					\item Se per tutti i $ V_{\prob{A}} $ dice $ no $ allora è un'istanza $ no $.
+				\end{itemize}
+				Quanto spazio utilizza $ \Pi $?
+				\begin{itemize}
+					\item Per produrre tutti i certificati $ w $ usa spazio $ k\cdot f(|x|)\ \Rightarrow\ O\big(f(n)\big) $ bit.
+					\item Poi utilizza lo spazio che utilizza il verificatore $ V_{\prob{A}}(x, w) $, il quale termina in tempo $ O\big(f(n)\big)\ \Rightarrow\  $ utilizza $ O\big(f(n)\big)\ $ spazio di memoria (ogni operazione usa una quantità fissata di spazio).
+					\item[$ \Rightarrow $] $ O\big(f(n)\big) + O\big(f(n)\big) \ \Rightarrow\ O\big(f(n)\big) $
+				\end{itemize}
+				Perciò $ \prob{A} \in \Space\big(f(n)\big) $ ed è quindi risolvibile in tempo deterministico.
 			\end{proof}
+			
+			Ora quindi sappiamo che
+			\[
+				\mathbf{TIME}\big(f(n)\big) \subseteq \ntime\big(f(n)\big) \subseteq \Space\big(f(n)\big)
+			\]
+			
+			\paragraph{$ \Space\big(f(n)\big) \subseteq \mathbf{TIME}\big( 2^{O(f(n))} \big) $} Dimostriamo questa affermazione:
+			
+			
+			\begin{proof}
+				Esiste $ \Pi \quad t.c.\quad \Pi(x) = \prob{A}(x) \ $ con $ \ \prob{A}\in\Space\big(f(n)\big)\ $ e utilizza spazio $ O\big(f(|x|)\big) $.\\
+				Cosa significa che $ \Pi $ utilizza spazio $ O\big(f(|x|)\big) $ ? Significa che tutta la memoria che contiene/usa $ \Pi $ è limitata superiormente da $ f(|x|) $.
+				
+				\vspace{2.5cm}
+				\begin{figure}[h!]
+					\vspace{-2.5cm}
+					\centering
+					\begin{tikzpicture}[scale=0.7, decoration={brace,amplitude=6pt}]
+						\draw (0,0) -- (8,0);
+						\foreach \i in {0, 0.5, ..., 8.0} {
+							\draw (\i, 0) -- (\i,-.5);
+						}
+						\draw (0,-.5) -- (8,-.5);
+						\draw[decorate,thick] (0,0.2) -- (8,0.2)
+						node [midway,above, yshift=.2cm] {$ O\big(f(|x|)\big) $};
+					\end{tikzpicture}
+					\caption{In questa memoria i bit cambiano a seconda delle istruzioni dell'algoritmo}
+				\end{figure}
+
+				In quanti modi questi bit possono cambiare? $ O\big(f(|x|)\big) = k\cdot f(n) $.			 Ci sono al più $\ 2^{k\cdot f(n)}\ $ stati in cui la memoria si può trovare durante l'esecuzione. È deterministico, la memoria mi dice quale operazione bisogna svolgere successivamente, quindi non avremo mai il caso in cui la memoria sarà uguale più di una volta.
+				
+				$ \Rightarrow\ $ Il numero di stati/passi/istruzioni del programma/algoritmo è al più $2^{k\cdot f(n)}  $.
+				
+				$ \Rightarrow\ \prob{A}\in \mathbf{TIME}\big( 2^{O(f(n))} \big) $\\
+				Perciò $ \Space\big(f(n)\big) \subseteq \mathbf{TIME}\big( 2^{O(f(n))} \big) $
+			\end{proof}
+			
+			Quindi osserviamo l'evoluzione del programma osservando \textit{l'evoluzione della memoria}. La conseguenza immediata di questo è che:
+			\[
+				\pspace = \bigcup\limits_{k > 0} \Space(n^k) \subseteq \bigcup\limits_{k > 0} \mathbf{TIME}(2^{n^k}) = \Exp
+			\]
+			\[
+				\Rightarrow \pspace\subseteq\Exp
+			\]
+			\[
+				\Rightarrow \mathbf{L} = \Space(\log n) \subseteq  \mathbf{TIME}\big(\tikzmark{t1} 2^{O(f(n))}\tikzmark{t2} \big)
+			\]
+			
+			\bigskip
+			
+			Perciò abbiamo che:
+			\[
+				\mathbf{L} \subseteq\p\subseteq\np\subseteq\pspace\subseteq\Exp
+			\]
+			
+			\begin{tikzpicture}[overlay, remember picture, decoration={brace,amplitude=3pt}]
+				\draw[decorate,thick] (t2.south) -- (t1.south)
+				node [midway, below, yshift=-.1cm, xshift=1cm] {$ 2^{k\log n} = n^k = \p $};
+			\end{tikzpicture}
 		\subsection{Classe NSPACE}
 			\begin{definit}[Classe NSPACE]
 				\begin{align*}
