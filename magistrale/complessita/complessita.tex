@@ -12,6 +12,7 @@
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{enumitem}
+\usepackage{ifthen}
 \usepackage[margin=3cm]{geometry}
 \usepackage{booktabs,caption}
 \usepackage{subcaption}
@@ -89,6 +90,7 @@
 \tikzstyle{box} = [rectangle, 
 rounded corners, minimum width=1cm, minimum height=1cm,text centered, draw=black]
 
+\newcount\mycount
 \begin{document}
  \clearpage
  \begin{titlepage}
@@ -2363,7 +2365,7 @@ SAT-Solver-ND($ \phi(x_1, \dots, x_n) $) "\hspace{.8cm}\tikzmark{zero}"
 		\newpage
 	\section{Complessità di Spazio e la classe SPACE}
 		In questa sezione osserviamo quali problemi sono risolvibili sotto limitazioni di memoria (spazio).
-		\paragraph{Modello:} l'istanza viene data in sola lettura e fuori dalla memoria centrale di lavoro. Diciamo che abbiamo limite $ f(n) $ se per istanze lunghe $ n $ possiamo usare al massimo $ f(n) $ bit di memoria di lavoro ($ O(f(n)) $)
+		\paragraph{Modello:} l'istanza viene data in sola lettura e fuori dalla memoria centrale di lavoro. Diciamo che abbiamo limite $ f(n) $ se per istanze lunghe $ n $ possiamo usare al massimo $ f(n) $ bit di memoria di lavoro ($ O(f(n)) $).
 		
 		\begin{definit}[Classe \textbf{SPACE}]
 			La classe \textbf{SPACE} è definita come segue:
@@ -2524,13 +2526,67 @@ SAT($ \phi(x_1, \dots, x_n) $)
 				\draw[decorate,thick] (t2.south) -- (t1.south)
 				node [midway, below, yshift=-.1cm, xshift=1cm] {$ 2^{k\log n} = n^k = \p $};
 			\end{tikzpicture}
-		\subsection{Classe NSPACE}
+			
+			
+		\subsection{Non determinismo e classe NSPACE}
 			\begin{definit}[Classe NSPACE]
 				\begin{align*}
 					\nspace = \big\lbrace & \prob{A}\ \Big| \ \text{ esiste un algoritmo/programma } \Pi \text{ \textit{non deterministico}} \\
 					& \text{che risolve } x \in \instance{A} \text{ usando memoria di lavoro } O(f(\vert x\vert)) \quad \Pi(x) = \prob{A}(x) \ \big\rbrace
 				\end{align*}
 			\end{definit}
+			
+			\noindent
+			Nel caso del tempo con limitazione polinomiale in algoritmi non deterministici abbiamo la classe dei problemi $ \np $. Cosa succede nel caso dello spazio? Quali sono i problemi in $ \npspace $ ?
+			
+			\paragraph{$ \nspace \subseteq \mathbf{TIME}\big( 2^{O(f(n))} \big) $} Se ammettiamo non determinismo, dimostriamo che sappiamo risolvere lo stesso problema in tempo $ 2^{O(f(n))} $.
+			
+			\begin{proof}
+				Prendiamo un problema $ \prob{A} \in \nspace\big(f(n)\big) $. Sappiamo che la memoria dell'algoritmo $ \Pi $ può avere $ 2^{k\cdot f(n)} $ configurazioni.
+				\begin{itemize}
+					\item Nel determinismo: ogni configurazione mi porta per forza alla successiva.
+					\item Nel \textit{non} determinismo: ogni configurazione mi può portare al massimo in 2 configurazioni diverse. Rappresentiamo lo spazio di configurazioni con un grafo $ G_x^{\Pi} $ in cui 
+					\begin{itemize}
+						\item Ogni vertice è lo stato della memoria.
+						\item Ogni vertice ha \textit{out-degree} 0, 1, 2.
+						\item Ha $ 2^{k\cdot f(n)} $ vertici.
+						\item Parte da uno stato iniziale e termina in uno stato finale in cui dice $ yes $ o $ no $.
+					\end{itemize}
+					 Ciò significa che $ \prob{A} = yes\ \Leftrightarrow\ $ esiste in $ G_x^{\Pi} $ un cammino dallo stato $ start $ allo stato $ finale $.
+				\end{itemize}
+				
+				\noindent
+				Se conosco $ \Pi $ posso costruire il grafo, poiché conosco l'evoluzione della memoria del programma e quindi simulo il programma e vedo i possibili stati della memoria. Il grafo è costruibile in tempo $ 2^{k\cdot f(n)} $.
+				
+				\begin{figure}[h!]
+					\centering
+					\begin{tikzpicture}[>=latex, scale=0.5]
+						\foreach \u in {0, -4, -7} {
+							\draw (0,\u) -- (4,\u);
+							\foreach \i in {0, 0.5, ..., 4.0} {
+								\draw (\i, \u) -- (\i,\u-1);
+							}
+							\draw (0,\u-1) -- (4,\u-1);
+						}
+						\foreach \u in {-2,-6,-9} {
+							\draw (6,\u) -- (10,\u);
+							\foreach \i in {6, 6.5, ..., 10.0} {
+								\draw (\i, \u) -- (\i,\u-1);
+							}
+							\draw (6,\u-1) -- (10,\u-1);
+						}
+						\draw[->] (4,-.5) -- (8,-2);\draw[->] (2,0) -- (2,-4);\draw[->] (4,-4.5) -- (7,-3);\draw[<-] (8,-6) -- (8,-3);\draw[->] (2,-5) -- (2,-7);\draw[->] (6,-6.5) -- (4,-7.5);\draw[->] (8,-7) -- (8,-9);\draw[->,bend right] (8,-2) to (4,0);
+						\node at (11.4,-9.5) {$ finale $};
+						\node at (2,.5) {$ start $};
+					\end{tikzpicture}
+					\caption{Esempio di grafo $ G_x^{\Pi} $}
+				\end{figure}
+				Sia $ \prob{A} \in \nspace\big(f(n)\big)\ \Rightarrow\ \exists\Pi \ \Rightarrow\ \forall x \ \exists G_x^{\Pi} = (V, E)\ $ con $ |V| = 2^{O(f(|x|))}\ $ ed $ E $ è costruibile in tempo $ 2^{O\big(f(|x|)\big)} $
+				\[
+					\Rightarrow G_x^{\Pi} \text{ è costruibile in } 2^{O\big(f(|x|)\big)}
+				\]
+				Una volta costruito eseguiamo il solutore del problema \textbf{Reachability} su $ \big(G_x^{\Pi}, start, finale\big) $ e ritorna il valore ritornato. Il solutore è una BFS, la quale viene eseguita in tempo $ 2^{O\big(f(|x|)\big)} $.
+			\end{proof}
 		
 		\subsection{Teorema di Savitch}
 			\begin{thm}[Teorema di Savitch]
