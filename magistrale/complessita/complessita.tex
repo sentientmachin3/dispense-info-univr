@@ -2586,7 +2586,96 @@ SAT($ \phi(x_1, \dots, x_n) $)
 					\Rightarrow G_x^{\Pi} \text{ è costruibile in } 2^{O\big(f(|x|)\big)}
 				\]
 				Una volta costruito eseguiamo il solutore del problema \textbf{Reachability} su $ \big(G_x^{\Pi}, start, finale\big) $ e ritorna il valore ritornato. Il solutore è una BFS, la quale viene eseguita in tempo $ 2^{O\big(f(|x|)\big)} $.
+				
+				Perciò $ \nspace \subseteq \mathbf{TIME}\big( 2^{O(f(n))} \big) $.
+				\begin{itemize}
+					\item Se limitiamo il tempo $ \ \Rightarrow\ $ limitiamo la lunghezza del cammino di reachability di $ G_x^{\Pi} $.
+					\item Se limitiamo lo spazio $ \ \Rightarrow\ $ limitiamo la dimensione del grafo $ G_x^{\Pi} $.
+				\end{itemize}
 			\end{proof}
+		
+		\subsection{Problema Reachability in termini di spazio}
+			\begin{itemize}
+				\item Input: grafo $ G $, nodi $ s $ e $ t $.
+				\item Output: $ yes\ \Leftrightarrow\ $ esiste un cammino da $ s $ a $ t $.
+			\end{itemize}
+			Sappiamo che il problema appartiene alla classe $ \p $ poiché utilizzando BFS sappiamo risolverlo in tempo polinomiale, quindi vale anche che Reachability $ \in \pspace \ $ ($ \ \p\subseteq\pspace  $).
+			
+			\paragraph{Reachability $ \in \Space\big((\log n)^2\big) $} Utilizzando BFS non utilizziamo spazio logaritmico ma ne utilizziamo sicuramente di più. 
+			
+		\begin{proof}
+			Dimostriamo l'appartenenza a tale classe utilizzando un algoritmo ricorsivo che utilizza l'induzione:
+			
+			\begin{itemize}
+				\item[$ \rightarrow $] Se esiste un cammino $ s\rightsquigarrow t $ allora esiste un cammino che utilizza al più $ |V| $ vertici che ha lunghezza $ \leq n $ ($ n = |V| $).
+				\item[$ \rightarrow $] Se esiste un cammino $ s\rightsquigarrow t $ di lunghezza al più $ n $ allora esiste un vertice $ u $ tale che:
+				\begin{itemize}
+					\item Esiste un cammino $ s\rightsquigarrow u $ di lunghezza $ \leq \lceil n/2 \rceil $.
+					\item Esiste un cammino $ u\rightsquigarrow t $ di lunghezza $ \leq \lceil n/2 \rceil $.
+				\end{itemize}
+				\item[$ \rightarrow $] Se esiste un cammino $ s\rightsquigarrow t $ di lunghezza $ \leq 1 $ allora $ \ s = t\ $ oppure $ \ (s, t)\in E $.
+			\end{itemize}
+			Scriviamo quindi l'algoritmo ricorsivo:
+			
+			\begin{lstlisting}[mathescape=true, frame=tb, caption={Algoritmo ricorsivo per risolvere Reachability}]
+MiddleSearch($ G, s, t,$ length)
+	if length $ \leq 1 $:
+		if $ s = t $ or $ (s, t)\in E $:
+			return $ yes $
+		else:
+			return $ no $
+	else:
+		risposta $ \leftarrow no $
+		foreach $ u \in V $:
+			if (MiddleSearch($ G, s, u, \dfrac{length}{2} $) $ = yes $ and 
+				MiddleSearch($ G, u, t, \dfrac{length}{2} $) $ = yes $):
+				risposta $ \leftarrow yes $
+		return risposta
+			\end{lstlisting}
+			Quanta memoria utilizza?\\
+			Quanta memoria occupano le variabili?
+			\begin{itemize}
+				\item Per $ s, t $ e $ u $ abbiamo $ O(\log n) $ bit.
+				\item Per \lstinline|risposta| abbiamo 1 bit.
+			\end{itemize}
+			Cosa succede nelle chiamate ricorsive?
+			
+			\begin{figure}[h!]
+				\begin{tikzpicture}[>=latex, decoration={brace,amplitude=6pt}]
+					\node (rt) at (0,0) {MS$(G, s, t, length)$};
+					\node (l) at (-3,-1.5) {MS$\big(G, s, u, \dfrac{length}{2}\big)$};
+					\node (r) at (3,-1.5) {MS$\big(G, u, t, \dfrac{length}{2}\big)$};
+					\node (ll) at (-6,-3) {MS$\big(G, s, u', \dfrac{length}{4}\big)$};
+					\node (lr) at (0,-3) {MS$\big(G, u', u, \dfrac{length}{4}\big)$};
+					\node (dots) at (ll.south) {$ \dots $};
+					\node (dots1) at (lr.south) {$ \dots $};\node (dots2) at (r.south) {$ \dots $};
+					\node[yshift=-1cm] (lb) at ($ (dots.south) +(-1.5,0) $) {MS$(G, s, \hat{u}, 1)$};
+					\node[yshift=-1cm] (rb) at ($ (dots.south) +(1.5,0) $) {0};
+					\draw[->] (rt) -- (r);\draw[->] (rt) -- (l);\draw[->] (l) -- (ll);\draw[->] (l) -- (lr);
+					\draw[->] (ll) -- (lb);\draw[->] (ll) -- (rb);
+					\draw[decorate,thick] (4.7,0) -- (4.7,-5) node [midway,right, xshift=.2cm] {$ O(\log n) $};
+				\end{tikzpicture}
+			\end{figure}
+			\noindent
+			In tutto viene utilizzata $ O(\log n\cdot \log n) = O(\log^2 n)$ memoria:
+			\begin{itemize}
+				\item $ \log n $ bit per ogni cammino radice foglia, poiché è la profondità dell'albero.
+				\item $ \log n $ bit per memorizzare ogni nodo lungo il cammino.
+			\end{itemize}
+			Perciò il problema Reachability $ \in \Space\big((\log n)^2\big) $.
+			
+		\end{proof}
+		
+		
+		\subsection{Classe NPSPACE}
+			\begin{definit}(Classe NPSPACE)
+				Definiamo la classe $ \npspace $ in modo analogo alla classe $ \pspace $ come:
+				\[
+					\npspace = \bigcup\limits_{k > 0} \nspace(n^k)
+				\]
+			\end{definit}
+		
+		Nella successiva sezione vogliamo dimostrare che $ \pspace \equiv \npspace $. Lo facciamo vedere attraverso il teorema di Savitch.
 		
 		\subsection{Teorema di Savitch}
 			\begin{thm}[Teorema di Savitch]
@@ -2597,7 +2686,25 @@ SAT($ \phi(x_1, \dots, x_n) $)
 			\end{thm}
 			
 			\begin{proof}
-				Sappiamo che $ \pspace \subseteq \npspace $
+				Sappiamo che $ \pspace \subseteq \npspace $. Facciamo vedere che 
+				\[
+					\npspace = \bigcup\limits_{k > 0} \nspace(n^k) \subseteq \bigcup\limits_{k > 0} \Space(n^{2k}) \subseteq \bigcup\limits_{k > 0} \Space(n^k) = \pspace
+				\]
+				Sia $ \prob{A}\in \npspace\big(f(n)\big) $:
+				\begin{itemize}
+					\item[$ \Rightarrow $] Esiste un algoritmo $ \Pi $ non deterministico tale che per ogni istanza $ x \in \instance{\prob{A}} $ abbiamo che $ \Pi(x) = \prob{A}(x) $ e $ \Pi $ usa spazio $ O\big(f(n)\big) $.
+					\item[$ \Rightarrow $] Detto $ G_x^{\Pi} $ il grafo degli stati di $ \Pi $ su $ x $, sappiamo che tale grafo avrà $ |V| = 2^{k\cdot f(n)} $ e dati 2 stati $ u, v \in V $ abbiamo che $ (u,v)\in E $ se e solo se $ \Pi $ nello stato $ u $ ha $ v $ tra le possibili transizioni.
+				\end{itemize}
+				$ \Pi(x) = yes $
+				\begin{itemize}
+					\item[$ \Leftrightarrow $] In $ G_x^{\Pi} $ esiste un cammino dallo stato $ start $ allo stato $ finale $.
+					\item[$ \Leftrightarrow $] Reachability$(G_x^{\Pi}, start, finale, 2^{k\cdot f(n)} ) = yes $.
+					\item[$ \Leftrightarrow $] Middlesearch$(G_x^{\Pi}, start, finale, 2^{k\cdot f(n)} ) = yes $. Con al più 
+					\[
+						O\big(\log^2(2^{k\cdot f(n)})\big) = O\Big(k^2\big(f(n)\big)^2\Big) = O\big(f^2(n)\big)
+					\]
+					
+				\end{itemize}
 			\end{proof}
 		
 		\subsection{Classe di problemi PSPACE-completi e problema Q-SAT}
