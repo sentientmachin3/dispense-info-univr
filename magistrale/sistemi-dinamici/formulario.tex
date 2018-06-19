@@ -22,7 +22,7 @@
 \usepackage[thinlines,thiklines]{easybmat}
 \usepackage{fullpage}
 
-\usepackage[top=.25cm, bottom=.25cm, left=0.7cm, right=0.7cm]{geometry}
+\usepackage[top=1cm, bottom=.25cm, left=0.7cm, right=0.7cm]{geometry}
 
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -127,7 +127,7 @@
 		\mathcal{O} =
 		\begin{bmatrix}
 			\vec{C} &\vec{C}\vec{A} & \vec{C}\vec{A}^2 & \cdots & \vec{C}\vec{A}^{n-1} 
-		\end{bmatrix}^T
+		\end{bmatrix}^T \quad
 		\rank (\mathcal{O}) = n
 	\]
 	\begin{multicols}{2}
@@ -172,7 +172,7 @@
 			\end{bmatrix}
 		\]
 		\[
-			\vec{A}_o = \vec{A} - \vec{L}_o \quad
+			\vec{A}_o = \vec{A} - \vec{L}_o\vec{C} \quad
 			\vec{B}_o =
 			\begin{bmatrix}
 				\vec{B} & \vec{L}_o
@@ -184,7 +184,7 @@
 			\overline{\vec{u}} (t) = 
 			\begin{bmatrix}
 				\vec{u}(t) \\
-				\vec{y}()
+				\vec{y}(t)
 			\end{bmatrix}
 		\]
 		
