@@ -1,0 +1,230 @@
+\documentclass[a4paper]{article}
+\usepackage[italian]{babel}
+\usepackage{fetamont}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{physics}
+\usepackage{mathtools, nccmath}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{empheq}
+\usepackage{mathtools}
+\usepackage{mathdots}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{lipsum}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,calc}
+
+\usepackage[thinlines,thiklines]{easybmat}
+\usepackage{fullpage}
+
+\usepackage[top=.25cm, bottom=.25cm, left=0.7cm, right=0.7cm]{geometry}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\rhead{\nouppercase{\textbf{Formulario}}}
+\chead{}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0pt}
+
+
+\renewcommand{\vec}{\bm}
+\pagenumbering{gobble}
+
+\usepackage[OT1]{eulervm}
+
+\begin{document}
+	\section*{Controllabilità}
+	\[
+		\text{\textbf{Gramiano di Controllabilità :} }\ \vec{\Gamma}(t) = \int_{0}^{t} e^{\vec{A}\tau} \vec{B}\vec{B}^T e^{\vec{A}^T\tau}d\tau\quad
+		\text{ non singolare } (\det \neq 0)
+	\]
+	\[
+		\text{\textbf{Matrice di Controllabilità :} }\
+		\mathcal{T} = 
+		\begin{bmatrix}
+		\vec{B} & \vec{A}\vec{B} & \vec{A}^2\vec{B} & \cdots & \vec{A}^{n-1}\vec{B}
+		\end{bmatrix}\quad
+		\rank (\mathcal{T}) = n
+	\]
+	\begin{multicols}{2}
+		\begin{align*}
+			\mathcal{T}^{-1} &= 
+			\begin{bmatrix}
+				\alpha_1 & \alpha_2 & \alpha_3 & \cdots & \alpha_{n-1} & 1 \\
+				\alpha_2 & \alpha_3 & \vdots & \iddots & 1 & 0 \\
+				\alpha_3 & \vdots & \alpha_{n-1} & \iddots & 0 & 0 \\
+				\vdots & \alpha_{n-1} & 1 & \cdots & 0 & 0 \\
+				\alpha_{n-1} & 1 & 0 & \cdots & 0 & 0 \\
+				1 & 0 & 0 & \cdots & 0 & 0
+			\end{bmatrix} \\ \\
+			\vec{A}_c &=
+			\begin{bmatrix}
+				0 & 1 & 0 & \cdots & 0 \\
+				0 & 0 & 1 & \cdots & 0 \\
+				\vdots & \vdots & \vdots & \ddots & \vdots \\
+				0 & 0 & 0 & \cdots & 1 \\
+				\dfrac{-\alpha_0}{\alpha_n} & \dfrac{-\alpha_1}{\alpha_n} & \dfrac{-\alpha_2}{\alpha_n} & \cdots & \dfrac{-\alpha_{n-1}}{\alpha_n}
+			\end{bmatrix}
+			\begin{bmatrix}
+				0 \\
+				0 \\
+				0 \\
+				\vdots\\
+				0 \\
+				1
+			\end{bmatrix}
+			= \vec{B}_c \\
+			\vec{C}_c &=
+			\begin{bmatrix}
+				\beta_0 & \beta_1 & \beta_2 & \beta_3 & \beta_4 & \cdots & \beta_{n-1} 
+			\end{bmatrix}
+			\begin{bmatrix}
+				\beta_n
+			\end{bmatrix}
+			= \vec{D}_c
+		\end{align*}
+		\columnbreak
+		
+		\[
+			\vec{P} = \mathcal{T}^{-1} \mathcal{T}
+		\]
+		\[
+			\vec{A}_c = \vec{P}^{-1}\vec{A}\vec{P}\quad	\vec{B}_c = \vec{P}^{-1}\vec{B}
+		\]
+		\[
+			\vec{C}_c = \vec{C}\vec{P}\quad \vec{D}_c = \vec{D}
+		\]
+		\begin{align*}
+			W(s) &= \dfrac{\beta_m s^m + \beta_{m-1}s^{m-1} + \dots + \beta_1 s + \beta_0 }{\alpha_n s^n + \alpha_{n-1} s^{n-1} + \dots + \alpha_1 s + \alpha_0 } \\ 
+				&= \vec{C}(s\mathbb{I} - \vec{A})^{-1}\vec{B} + \vec{D} \\ \\
+			P(s) &= \det (s\mathbb{I} - \vec{A})\quad \rightarrow \ \alpha \\
+			P_c (s) &= (s-\overline{\lambda}_1)\cdots (s-\overline{\lambda}_n) \quad \rightarrow \ \overline{\alpha} \\ \\
+			\vec{K}_c &= 
+			\begin{bmatrix}
+				\overline{\alpha}_0 - \alpha_0 & \overline{\alpha}_1 - \alpha_1 & \cdots & \overline{\alpha}_{n-1} - \alpha_{n-1}
+			\end{bmatrix} \\
+			\vec{K} &= \vec{K}_c\vec{P}^{-1}
+		\end{align*}
+		
+	\end{multicols}
+	\vspace{-.5cm}
+	\noindent\hrulefill
+	\vspace{-.5cm}
+	\section*{Osservabilità}
+	\[
+		\text{\textbf{Gramiano di Osservabilità :} }\ \vec{O}(t) = \int_0^t e^{\vec{A}^T\tau}\vec{C}^T\vec{C}e^{\vec{A}\tau}d\tau\quad
+		\text{ non singolare } (\det \neq 0)
+	\]
+	\[
+	\text{\textbf{Matrice di Osservabilità :} }\
+		\mathcal{O} =
+		\begin{bmatrix}
+			\vec{C} &\vec{C}\vec{A} & \vec{C}\vec{A}^2 & \cdots & \vec{C}\vec{A}^{n-1} 
+		\end{bmatrix}^T
+		\rank (\mathcal{O}) = n
+	\]
+	\begin{multicols}{2}
+		\begin{align*}
+			\mathcal{O}^{-1} &= \mathcal{T}^{-1} \\
+			\vec{A}_o &=
+			\begin{bmatrix}
+				0 & 0 & \cdots & 0 & -\alpha_0/\alpha_n \\
+				1 & 0 & \cdots & 0 & -\alpha_1/\alpha_n \\
+				0 & 1 & \cdots & 0 & -\alpha_2/\alpha_n \\
+				\vdots & \vdots & \ddots & \vdots & \vdots \\
+				0 & 0 & \cdots & 1 & -\alpha_{n-1}/\alpha_n
+			\end{bmatrix}
+			\begin{bmatrix}
+				\beta_0 \\
+				\beta_1 \\
+				\beta_2 \\
+				\vdots \\
+				\beta_{n-1}
+			\end{bmatrix}
+			= \vec{B}_o \\
+			\vec{C}_o &=
+			\begin{bmatrix}
+				0 & 0 & 0 & 0 & 0 & \cdots & 0 & 1  
+			\end{bmatrix}
+			\begin{bmatrix}
+				\beta_n
+			\end{bmatrix}
+			= \vec{D}_o
+		\end{align*}
+		\columnbreak
+		
+		\textbf{Osservatore di Luenberger:}
+		\[
+			\vec{P}_o = \mathcal{O}^{-1} \mathcal{O} \qquad
+			\vec{L}_o =
+			\begin{bmatrix}
+				\overline{\alpha}_0 - \alpha_0 \\ 
+				\overline{\alpha}_1 - \alpha_1 \\
+				\vdots \\
+				\overline{\alpha}_{n-1} - \alpha_{n-1}
+			\end{bmatrix}
+		\]
+		\[
+			\vec{A}_o = \vec{A} - \vec{L}_o \quad
+			\vec{B}_o =
+			\begin{bmatrix}
+				\vec{B} & \vec{L}_o
+			\end{bmatrix}\quad
+			\vec{C}_o = \vec{C}\quad \vec{D}_o = \vec{D}
+		\]
+		\[
+			\vec{L} = \vec{P}_o^{-1}\vec{L}_o \quad
+			\overline{\vec{u}} (t) = 
+			\begin{bmatrix}
+				\vec{u}(t) \\
+				\vec{y}()
+			\end{bmatrix}
+		\]
+		
+	\end{multicols}
+	\vspace{-.5cm}
+	\noindent\hrulefill
+	\vspace{-.5cm}
+	\section*{Sylvester per Matrice di transizione di stato}
+	\[
+		e^{\vec{A}t} = \sum_{i = 0}^{n - 1} \beta_i (t)\vec{A}^i = 
+		\beta_0 (t)\vec{I} + \beta_1(t)\vec{A} + \cdots + \beta_{n-1}(t)\vec{A}^{n-1}
+	\]
+	\vspace{-1cm}
+	\begin{multicols}{2}
+		$ \mu_a = 1 $
+		\vspace{-.5cm}
+		\[
+			\begin{cases}
+				\beta_0 (t) + \lambda_1\beta_1 (t) + \lambda_1^2\beta_2 (t) + \cdots + \lambda_1^{n-1} \beta_{n-1}(t) = e^{\lambda_1 t} \\
+				\beta_0 (t) + \lambda_2\beta_1 (t) + \lambda_2^2\beta_2 (t) + \cdots + \lambda_2^{n-1} \beta_{n-1}(t) = e^{\lambda_2 t} \\
+				\qquad \vdots \qquad \vdots \\
+				\beta_0 (t) + \lambda_n\beta_1 (t) + \lambda_n^2\beta_2 (t) + \cdots + \lambda_n^{n-1} \beta_{n-1}(t) = e^{\lambda_n t} \\
+			\end{cases}
+		\]
+		\columnbreak
+		
+		$ \mu_a > 1 $
+		\vspace{-.2cm}
+		\begin{empheq}[left={\empheqlbrace}]{alignat*=2}
+			\beta_0 (t) + \lambda\beta_1 (t) + \cdots + \lambda^{n-1} \beta_{n-1} (t) &= e^{\lambda t} \\
+			\dfrac{d}{d\lambda}\left( \beta_0(t) + \lambda\beta_1 (t) + \cdots + \lambda^{n-1}\beta_{n-1}(t) \right) &= \dfrac{d}{d\lambda}e^{\lambda t} \\
+			\qquad \vdots \qquad \qquad \qquad \qquad & \qquad \vdots \\
+			\dfrac{d^{\nu -1}}{d\lambda^{\nu -1}}\left( \beta_0(t) + \lambda\beta_1 (t) + \cdots + \lambda^{n-1}\beta_{n-1}(t) \right) &= \dfrac{d^{\nu -1}}{d\lambda^{\nu -1}}e^{\lambda t}
+		\end{empheq}
+	\end{multicols}
+	\noindent
+	\textbf{Autovalori complessi } $ \lambda, \lambda' = \alpha \pm j \omega $:
+	\begin{empheq}[left={\empheqlbrace}]{alignat*=2}
+		\beta_0 (t) + Re(\lambda)\beta_1 (t) + Re(\lambda^2)\beta_2 (t) + \cdots & + Re(\lambda^{n-1}) \beta_{n-1}(t) &= e^{\lambda_1 t} cos(\omega t)\\
+		Im(\lambda)\beta_1 (t) + Im(\lambda )^2\beta_2 (t) + \cdots & + Im(\lambda^{n-1}) \beta_{n-1}(t) &= e^{\lambda t} sin(\omega t)
+	\end{empheq}
+	dove $ \ Re(\lambda) = \alpha\ $ e $ \ Im(\lambda) = \omega $.
+\end{document}
