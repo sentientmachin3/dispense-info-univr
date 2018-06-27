@@ -4,15 +4,11 @@
 image = 128 * ones(512, 512);
 
 % Disegniamo un triangolo isoscele al centro
-pixel_counter = 1;
+% Creiamo una variabile pad che ci farà da offset
+pad = 156; % (512/2)-(200/2)
 
-for i = 1:length(image)
-
-    if (i >= 200) && (i <= (length(image) - 100))
-        image(i, 256 - pixel_counter:256 + pixel_counter) = 200;
-        pixel_counter = pixel_counter + 1;
-    end 
-
+for i = 1:200
+    image(pad:pad+i,pad+i)=200;
 end 
 
 % Convertiamo l'immagine
