@@ -116,6 +116,8 @@ rounded corners, minimum width=1cm, minimum height=1cm,text centered, draw=black
   \newpage
 	
 	\tableofcontents
+	\listoffigures
+	\lstlistoflistings
 	
 	\newpage
 
@@ -367,6 +369,7 @@ output Eulerian
 					\end{tikzpicture}
 					\caption{Grafo con colorazione propria}
 				\end{subfigure}%
+				\caption{Esempi di grafi per Graph Colouring}
 			\end{figure}
 			
 			\paragraph{Problema 2-Graph-Colouring.}
@@ -2286,6 +2289,7 @@ SAT-Solver-ND($ \phi(x_1, \dots, x_n) $) "\hspace{.8cm}\tikzmark{zero}"
 					\end{tikzpicture}
 					\caption{Istanza $ no $}
 				\end{subfigure}%
+				\caption{Istanze del problema D-Ham-Path}
 			\end{figure}
 			
 			\paragraph{3-SAT $ \leq_K $ D-Ham-Path} Dimostriamo che esiste tale riduzione:
@@ -2617,9 +2621,9 @@ SAT($ \phi(x_1, \dots, x_n) $)
 			\end{itemize}
 			Scriviamo quindi l'algoritmo ricorsivo:
 			
-			\begin{lstlisting}[mathescape=true, frame=tb, caption={Algoritmo ricorsivo per risolvere Reachability}]
-MiddleSearch($ G, s, t,$ length)
-	if length $ \leq 1 $:
+			\begin{lstlisting}[mathescape=true, frame=tb, caption={Algoritmo ricorsivo per risolvere Reachability}, basicstyle=\footnotesize\ttfamily]
+MiddleSearch($\medmath{ G, s, t,}$ length)
+	if length $ \medmath{\leq 1} $:
 		if $ s = t $ or $ (s, t)\in E $:
 			return $ yes $
 		else:
@@ -2627,8 +2631,7 @@ MiddleSearch($ G, s, t,$ length)
 	else:
 		risposta $ \leftarrow no $
 		foreach $ u \in V $:
-			if (MiddleSearch($ G, s, u, \dfrac{length}{2} $) $ = yes $ and 
-				MiddleSearch($ G, u, t, \dfrac{length}{2} $) $ = yes $):
+			if (MiddleSearch($\medmath{ G, s, u, \dfrac{length}{2}} $) $ \medmath{= yes} $ and MiddleSearch($ \medmath{G, u, t, \dfrac{length}{2}} $) $ \medmath{= yes} $):
 				risposta $ \leftarrow yes $
 		return risposta
 			\end{lstlisting}
@@ -2774,7 +2777,7 @@ MiddleSearch($ G, s, t,$ length)
 		\subsection{Problema Max-k-xor-SAT}
 			\begin{itemize}
 				\item Input: formula k-xor-CNF, esempio: $ \phi = (x_1 \oplus x_2\oplus x_2) \wedge (\overline{x}_1 \oplus x_2 \oplus \overline{x}_3) $.
-				\item Output: il massimo numero dii clausole soddisfacibili.
+				\item Output: il massimo numero di clausole soddisfacibili.
 			\end{itemize}
 		
 		\subsection{Inapprossimabilità}
