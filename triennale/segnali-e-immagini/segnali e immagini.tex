@@ -8,12 +8,12 @@
 \usepackage{amssymb}
 \usepackage{mathtools}
 \usepackage{tikz}
-\usetikzlibrary{arrows}
+\usetikzlibrary{arrows,calc,patterns,angles,quotes}
 \usepackage{pgfplots}
 \usepgfplotslibrary{fillbetween}
 
 %opening
-\title{Elaborazione di Segnali e Immagini}
+\title{Appunti di Elaborazione di Segnali e Immagini}
 \author{Matteo Iervasi}
 \date{ }
 
@@ -463,6 +463,7 @@ Possono esistere segnali per i quali né l'energia né la potenza sono finiti. T
 	\int_{-\infty}^{+\infty}\delta(t)dt=1
 	\end{align*}
 \end{itemize}
+\subsection{Proprietà dell'impulso unitario}
 Di seguito elenchiamo alcune delle proprietà fondamentali della funzione \textit{impulso unitario}.
 \begin{itemize}
 	\item Moltiplicazione di una funzione per l'impulso
@@ -505,27 +506,17 @@ Come per i segnali, anche i sistemi possono essere classificati in varie categor
 	\item Analogici - Digitali
 	\item ...
 \end{itemize}
+I sistemi i cui parametri \textit{non} cambiano nel tempo vengono detti \textbf{tempo invarianti}.
+Per questi sistemi se l'input viene ritardato di $T$ secondi, l'output rimane identico a prima, ma ritardato di $T$.
 
-\subsection{Proprietà dei sistemi lineari}
-Elenchiamo di seguito alcune proprietà dei sistemi lineari:
-\begin{itemize}
-	\item \textbf{Additività}\\
-	$f_{1} \rightarrow y_{1}$ e $f_{2} \rightarrow y_{2}$ allora $f_{1} +f_{2} \rightarrow y_{1}+y_{2}$
-	\item \textbf{Omogeneità}\\
-	$f_{1} \rightarrow y_{1}$ allora $a_{1} \cdot f_{1}\rightarrow a_{1}\cdot y_{1}$
-	\item \textbf{Sovrapposizione}\\
-	$a_{1} \cdot f_{1} + a_{2}\cdot f_{2} \rightarrow a_{1}\cdot y_{1}+a_{2}\cdot y_{2}$
-\end{itemize}
-
-\subsection{Risposta libera e risposta forzata}
-La \textbf{risposta libera} di un sistema è la sua risposta quando l'ingresso è nullo.
-L'output di un sistema per $t\geq0$ è il risultato di due cause indipendenti: le \textbf{condizioni iniziali} del sistema al tempo $t=0$ e l'\textbf{input} $f(t)$ per $t\geq0$.
-Grazie alla \textit{linearità} la risposta totale del sistema è la \textbf{somma} della risposta libera e della risposta forzata.
-Nella realtà abbiamo sistemi che sono lineari solo \textit{localmente}, che in genere rispondo linearmente a piccoli segnali e non linearmente a grandi segnali.
+I sistemi \textbf{istantanei} (senza memoria) sono quelli in cui l'output al tempo $t$ dipende esclusivamente dall'input al tempo $t$.
+Se l'output dipende dagli eventi passati, il sistema viene definito \textbf{dinamico} (un sistema con memoria).
+Un sottogruppo dei sistemi dinamici sono i sistemi con \textbf{memoria finita}, per i quali l'output al tempo $t$ è completamente determinato
+dai segnali in input per gli ultimi $T$ istanti (il sistema ha quindi una memoria di capacità massima $T$).
 \begin{figure}[h]
 	\centering
 	\begin{tikzpicture}
-	\begin{axis}[xlabel=f,ylabel=y,axis lines=left,]
+	\begin{axis}[xlabel=f,ylabel=y,axis lines=left,scale=0.9]
 	\addplot[
 	color=red,
 	line width=1.25pt,
@@ -544,17 +535,32 @@ Nella realtà abbiamo sistemi che sono lineari solo \textit{localmente}, che in 
 	\addlegendentry{Causale, non lineare};
 	\end{axis}
 	\end{tikzpicture}
-	\caption{Differenza tra un lineare e un non lineare}
 	\label{fig:lineare_vs_nonlineare}
 \end{figure}
 
-I sistemi i cui parametri \textit{non} cambiano nel tempo vengono detti \textbf{tempo invarianti}.
-Per questi sistemi se l'input viene ritardato di $T$ secondi, l'output rimane identico a prima, ma ritardato di $T$.
+Di seguito ci occuperemo solamente dei sistemi lineari, anche se è bene ricordare che nella realtà abbiamo sistemi che sono lineari solo \textit{localmente}, i quali in genere rispondo \textit{linearmente} a piccoli segnali e \textit{non linearmente} a grandi segnali.
 
-I sistemi \textbf{istantanei} (senza memoria) sono quelli in cui l'output al tempo $t$ dipende esclusivamente dall'input al tempo $t$.
-Se l'output dipende dagli eventi passati, il sistema viene definito \textbf{dinamico} (un sistema con memoria).
-Un sottogruppo dei sistemi dinamici sono i sistemi con \textbf{memoria finita}, per i quali l'output al tempo $t$ è completamente determinato
-dai segnali in input per gli ultimi $T$ istanti (il sistema ha quindi una memoria di capacità massima $T$).
+\subsection{Proprietà dei sistemi lineari}
+Elenchiamo di seguito alcune proprietà dei sistemi lineari:
+\begin{itemize}
+	\item \textbf{Additività}\\
+	$f_{1} \rightarrow y_{1}$ e $f_{2} \rightarrow y_{2}$ allora $f_{1} +f_{2} \rightarrow y_{1}+y_{2}$\\
+	Se più fattori determinano l'output del sistema, allora l'effetto di questi fattori può essere trattato separatamente considerando gli altri uguali a zero
+	\item \textbf{Omogeneità}\\
+	$f_{1} \rightarrow y_{1}$ allora $a_{1} \cdot f_{1}\rightarrow a_{1}\cdot y_{1}$\\
+	Per un fattore arbitrario $a$ (reale o immaginario), qualora la causa fosse moltiplicata per $a$ allora anche l'effetto lo sarà
+	\item \textbf{Sovrapposizione}\\
+	$a_{1} \cdot f_{1} + a_{2}\cdot f_{2} \rightarrow a_{1}\cdot y_{1}+a_{2}\cdot y_{2}$\\
+	Combinazione delle proprietà precedenti
+\end{itemize}
+
+\subsection{Caratteristiche generali}
+L'output di un sistema per $t\geq0$ è il risultato di due cause indipendenti: le \textbf{condizioni iniziali} del sistema al tempo $t=0$ e l'\textbf{input} $f(t)$ per $t\geq0$.
+Grazie alla \textit{linearità} la \textbf{risposta totale} del sistema può essere scomposta nella \textbf{somma} della \textbf{risposta libera} (detta anche risposta \textbf{zero-input}) e della \textbf{risposta forzata} (detta anche risposta \textbf{zero-state}).
+La risposta zero-input è dovuta alle condizioni iniziali del sistema con input $f(t)=0$ e la risposta zero-state è dovuta al segnale in ingresso
+$f(t)$ per $t\geq 0$ e condizioni iniziali \textit{nulle} a $t=0$.
+Se l'input può essere espresso come la somma di componenti, anche l'output potrà essere calcolato come la somma delle risposte di ogni singola componente, grazie
+alla proprietà dell'additività.
 
 \chapter{Analisi dei sistemi a tempo continuo}
 Quando si studia un sistema, uno degli scopi più comuni è ricostruire le equazioni che lo regolano, permettendoci quindi di calcolare l'output del sistema dato un preciso input.
@@ -564,23 +570,25 @@ Per il calcolo della risposta impulsiva ci serve prima la \textbf{risposta liber
 Ricordiamo che trattandosi di sistemi lineari, valgono le proprietà di \textit{additività}, \textit{omogeneità} e \textit{sovrapposizione}.
 
 Un sistema lineare tempo invariante (LTI) può essere descritto da un'equazione differenziale:
-$$
-	a_n\frac{d^nv(t)}{dt^n} + \ldots + a_1\frac{dv(t)}{dt} + a_0v(t) = b_m\frac{d^mu(t)}{dt^m} + \ldots + b_1\frac{du(t)}{dt} + b_0u(t)
-$$
+\begin{equation*}
+	\frac{d^nv(t)}{dt^n} + \ldots + a_1\frac{dv(t)}{dt} + a_0v(t) = b_m\frac{d^mu(t)}{dt^m} + \ldots + b_1\frac{du(t)}{dt} + b_0u(t)
+\end{equation*}
 in forma compatta
 \begin{equation}
 	\sum_{i=0}^{n}a_i\frac{d^iv(t)}{dt^i} = \sum_{j=0}^{m}b_j\frac{d^ju(t)}{dt^j}
 	\label{eqn:sistema}
 \end{equation}
 (nella pratica, $m$ è sempre minore di $n$).
+
+\section{Risposta libera}
 Nei sistemi lineari il principio di sovrapposizione stabilisce in particolare che è possibile scomporre l'uscita come la somma della risposta libera più la risposta forzata, quindi possiamo dividere il segnale di uscita $v(t)$ come:
-$$
+\begin{equation*}
 	v(t)=
 		\begin{cases}
 		u(t) \ne 0, c.i. = 0\\
 		u(t) = 0, c.i. \ne 0
 		\end{cases}
-$$
+\end{equation*}
 La soluzione dell'equazione differenziale \ref{eqn:sistema} in corrispondenza ad uno specifico ingresso e ad una specifica scelta delle c.i. può essere sempre ottenuta come somma di una soluzione dell'omogenea ad essa associata
 \begin{equation}
 	\sum_{i=0}^{n}a_i\frac{d^iv(t)}{dt^i}=0
@@ -593,46 +601,303 @@ All'equazione differenziale omogenea associamo un’equazione algebrica detta \t
 \begin{equation*}
 	\sum_{i=0}^{n}a_is^i=0, \quad s \in C
 \end{equation*}
-Se $\lambda_1,...,\lambda_r$ sono le $r\leq n$ soluzioni distinte dell'equazione caratteristica, e $\mu_1,....,\mu_r \in \mathbb{N}$ rappresentano le rispettive molteplicità, ogni soluzione dell'omogenea, in particolare la risposta libera, può essere espressa nella forma:
-\begin{equation*}
+Se $\lambda_1,...,\lambda_r$ sono le $r\leq n$ soluzioni distinte dell'equazione caratteristica (chiamate \textbf{radici caratteristiche del sistema}),
+e $\mu_1,....,\mu_r \in \mathbb{N}$ rappresentano le rispettive molteplicità, ogni soluzione dell'omogenea, in particolare la risposta libera, può essere espressa nella forma:
+\begin{equation}
 	v_l(t)=\sum_{i=1}^{r}\sum_{l=0}^{\mu_i-1}c_{i,l}e^{\lambda_it}\frac{t^l}{l!}
-\end{equation*}
-per opportuni $c_{i,l} \in \mathbb{C}$. Le soluzioni dell'omogenea del tipo $e^{\lambda_it}\frac{t^l}{l!}, t \in \mathbb{R}$, vengono dette \textbf{modi naturali}.
+	\label{eqn:risposta_libera}
+\end{equation}
+per opportuni $c_{i,l} \in \mathbb{C}$. Le soluzioni dell'omogenea del tipo $e^{\lambda_it}\frac{t^l}{l!}, t \in \mathbb{R}$, vengono dette \textbf{modi naturali}
+(o \textbf{modi caratteristici}). Per ogni radice caratteristica c'è un modo caratteristico e la risposta libera altro non è che una combinazione lineare dei modi caratteristici del sistema.
 
+\section{Risposta impulsiva}
 La risposta impulsiva di un sistema è la sua uscita quando è soggetto ad un ingresso a \textbf{delta di Dirac};
 viene utilizzata per descrivere la \textbf{risposta in frequenza} di un sistema dinamico ad una perturbazione generica.
-La delta di Dirac vista come ‘‘funzione’’ contiene equamente tutte le frequenze, e si presta particolarmente bene allo studio teorico nel dominio della frequenza di un sistema lineare.
+La delta di Dirac vista come ‘‘funzione’’ contiene equamente tutte le frequenze, e si presta particolarmente bene allo studio teorico nel \textit{dominio della frequenza} di un sistema lineare.
 
-Il comportamento ingresso-uscita di un sistema dinamico lineare stazionario (LTI) è completamente caratterizzato dalla sua risposta impulsiva, la cui trasformata di Laplace viene detta funzione di trasferimento del sistema LTI.
+Il comportamento ingresso-uscita di un sistema dinamico lineare stazionario (LTI) è \textit{completamente} caratterizzato dalla sua risposta impulsiva, la cui trasformata di Laplace viene detta \textbf{funzione di trasferimento} del sistema LTI.
 
-La risposta impulsiva, che denoteremo con $h(t)$, si calcola come:
-$$ h(t)=d_0\delta(t)+\left(\sum_{i=1}^{r} \sum_{l=0}^{\mu_i-1} d_{i,l}e^{\lambda_it}\frac{t^l}{l!}\right)\delta_{-1}(t) $$
+La \textbf{risposta impulsiva}, che denoteremo con $h(t)$, si calcola come:
+\begin{equation}
+h(t)=d_0\delta(t)+\left(\sum_{i=1}^{r} \sum_{l=0}^{\mu_i-1} d_{i,l}e^{\lambda_it}\frac{t^l}{l!}\right)\delta_{-1}(t)
+\label{eqn:risposta_impulsiva}
+\end{equation}
 
 Notiamo che la risposta impulsiva contiene la risposta libera, ovvero tutti i modi naturali del sistema dopo l'impulso. Il termine $d_0\delta(t)$ è non nullo se $m=n$ e indica il termine impulsivo.
-La risposta libera viene moltiplicata per la funzione gradino in modo da "tagliare" tutto ciò che c'era prima di $t=0$ e garantire che le c.i. a $t=0^-$ siano nulle.
+La risposta libera viene moltiplicata per la funzione gradino in modo da ‘‘tagliare’’ tutto ciò che c'era prima di $t=0$ e garantire che le c.i. a $t=0^-$ siano nulle.
+In virtù della causalità del sistema, $h(t)$ è nulla per $t<0$. La risposta impulsiva (ristretta all'intervallo $[0,+\infty]$) rappresenta anche la \textbf{risposta forzata}
+del sistema in corrispondenza all'impulso unitario in ingresso, ovvero l'uscita del sistema osservato su $\mathbb{R}_+$ con condizioni iniziali nulle in $0^-$ e $u(t)=\delta(t)$.
+
+\section{Stabilità}
+Supponiamo $\lambda \in \mathbb{R}$. Per $t\rightarrow+\infty$ l'esponenziale $e^{\lambda t}$ (e quindi il modo elementare $m(t)=\frac{t^l}{l!},t\in \mathbb{R}$)
+\begin{equation*}
+	\begin{cases}
+		\text{se } \lambda > 0 \quad \text{diverge}\\
+		\text{se } \lambda = 0 \quad
+			\begin{cases}
+				\text{se } l = 0 \quad \text{limitato (o semplicemente stabile)}\\
+				\text{se } l > 0 \quad \text{divergente}
+			\end{cases}\\
+		\text{se } \lambda < 0 \quad \text{converge}\\
+	\end{cases}
+\end{equation*}
+Se $\lambda \in \mathbb{C}$, il modo elementare $m(t)=\frac{t^l}{l!},t\in \mathbb{R}$ è:
+\begin{itemize}
+	\item convergente a zero per $t \rightarrow \infty \iff \mathbb{R}(\lambda) < 0$
+	\item limitato (o semplicemente stabile) $\iff \mathbb{R}(\lambda)\leq0$ e $l=0$
+	\item divergente per $t\rightarrow \infty$ in tutti gli altri casi
+\end{itemize}
+Un sistema è \textbf{asintoticamente stabile} se, per ogni scelta delle condizioni iniziali, l'evoluzione libera del sistema converge a zero asintoticamente, ovvero
+$$ \lim_{t\rightarrow+\infty} v_l(t)=0 $$
+In altri termini un sistema è asintoticamente stabile \textit{se e solo se} tutti i modi naturali $e^{\lambda_it}\frac{t^l}{l!}$ sono convergenti, ovvero se e solo se
+$Re(\lambda_i)<0 \quad \forall i$.
+
+Inoltre un sistema è \textbf{BIBO stabile} (\textit{‘‘Bounded Input - Bounded Output’’}) se, a partire da condizioni iniziali nulle, risponde (in evoluzione forzata)
+con uscita limitata ad ogni segnale di ingresso limitato. In altri termini se $v(0^-)=0$, allora per ogni segnale $u(t), t\in \mathbb{R}$, nullo per $t<0$, per il quale
+$\exists M_u \text{ } t.c. \text{ } |u(t)| < M_u \text{ } \forall t \geq 0$, la corrispondente uscita $v(t)=v_f(t)$ soddisfa $|v(t)|<M_v \text{ } \forall t \geq 0$, per un opportuno $M_v$.
 
 \section{Integrale di convoluzione}
 Date le funzioni $v_1(t)$ e $v_2(t)$, con $t\in \mathbb{R}$, definiamo \textbf{integrale di convoluzione} di $v_1$ e $v_2$ la funzione definita come:
-\begin{equation*}
-	[v_1 * v_2](t) \triangleq \int_{-\infty}^{+\infty}v_1(\tau)v_2(t - \tau) d\tau = \int_{-\infty}^{+\infty}v_1(t - \tau)v_2(\tau) d\tau
-\end{equation*}
+\begin{equation}
+[v_1 * v_2](t) \triangleq \int_{-\infty}^{+\infty}v_1(\tau)v_2(t - \tau) d\tau = \int_{-\infty}^{+\infty}v_1(t - \tau)v_2(\tau) d\tau
+\label{eqn:integrale_convoluzione}
+\end{equation}
 L'integrale di convoluzione gode delle seguenti proprietà:
 \begin{itemize}
 	\item \textbf{Proprietà commutativa}:\\
-	$f_1(t)*f_2(t) = f_2(t) * f_1(t)$
+	$f_1(t)\cdot f_2(t) = f_2(t) \cdot  f_1(t)$
 	\item \textbf{Proprietà distributiva}:\\
-	$f_1(t)*[f_2(t)+f_3(t)]=f_1(t)*f_2(t)+f_1(t)*f_3(t)$
+	$f_1(t)\cdot [f_2(t)+f_3(t)]=f_1(t)\cdot f_2(t)+f_1(t)\cdot f_3(t)$
 	\item \textbf{Proprietà associativa}:\\
-	$f_1(t)*[f_2(t)*f_3(t)]=[f_1(t)*f_2(t)]*f_3(t)$
+	$f_1(t)\cdot [f_2(t)\cdot f_3(t)]=[f_1(t)\cdot f_2(t)]\cdot f_3(t)$
 	\item \textbf{Spostamento}:\\
-	se $f_1(t)*f_2(t)=c(t)$ allora\\
-	$f_1(t)*f_2(t-T)=c(t-T)$ e $f_1(t-T)*f_2(t)=c(t-T)$, quindi\\
-	$f_1(t-T_1)*f_2(t-T_2)=c(t-T_1-T_2)$
+	$f_1(t)\cdot f_2(t)=c(t) \Rightarrow$\\
+	$\Rightarrow f_1(t)\cdot f_2(t-T)=c(t-T) \wedge f_1(t-T)\cdot f_2(t)=c(t-T) \Rightarrow$\\
+	$\Rightarrow f_1(t-T_1)\cdot f_2(t-T_2)=c(t-T_1-T_2)$
 	\item \textbf{Moltiplicazione con l'impulso}:\\
-	$f(t)*\delta(t)=f(t)$
+	$f(t)\cdot \delta(t)=f(t)$
 	\item \textbf{Proprietà della durata}:\\
 	se le durate di $f_1(t)$ e $f_2(t)$ sono rispettivamente $T_1$ e $T_2$
-	allora la durata di $f_1(t)*f_2(t)=T_1+T_2$.
+	allora la durate di $f_1(t)\cdot f_2(t)=T_1+T_2$.
 \end{itemize}
+La risposta in uscita del sistema \ref{eqn:sistema} inizialmente a riposo, di risposta impulsiva $h(t)$, $t\in\mathbb{R}$ in corrispondenza ad un segnale di ingresso
+$u(t)$, $t\in\mathbb{R}$ se esiste è espressa nella forma:
+\begin{equation*}
+	v(t)=[h*u](t)=\int_{0^-}^{+\infty}h(\tau)u(t-\tau)d\tau=\int_{-\infty}^{t^+}h(t-\tau)u(\tau)d\tau.
+\end{equation*}
+
+\chapter{Analisi di Fourier}
+Possiamo considerare i segnali come dei \textbf{vettori}, per i quali quindi valgono le normali \textbf{operazioni vettoriali}.
+Richiamiamo alcune definizioni:
+\begin{itemize}
+	\item La \textbf{componente} di un vettore è la proiezione di un vettore su un altro.
+	\item Dati 2 vettori $f$ ed $x$, definiamo il \textbf{prodotto scalare} $f \cdot x = |f||x| \cos\theta$.
+	\item Dalla definizione di prodotto scalare definiamo la \textbf{norma} di $f$ come il prodotto scalare di $f$ con se stesso $f^2=f\cdot f$.
+	\item La \textbf{proiezione ortogonale} di un vettore su un altro corrisponde al prodotto scalare dei due vettori
+\end{itemize}
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}
+		% draw the axis
+		\draw [->] (0,0) -- (5,0) node[below](x){$x$};
+		\draw [->] (0,0) -- (0,4) node[left](y){$y$};
+		
+		\draw [thick, ->] (0,0) node(o){} -- (3,3) node[above](f){$f$};
+		\draw [thick, ->, green] (0,0) -- (3,0) node[below]{$cx$};
+		\draw [dashed] (3,3) -- (3,0);
+		\draw [thick, ->, red] (0,0) -- (0,3) node[left](e){$e$};
+		\draw [dashed] (0,3) -- (3,3);
+		\pic [draw, ->, "$\theta$", angle eccentricity=1.5] {angle = x--o--f};
+	\end{tikzpicture}
+\end{figure}
+La proiezione ortogonale di un vettore $f$ su un vettore $x$ approssima $f$ con la sua componente lungo $x$. Il concetto di componente vettoriale e ortogonalità può
+essere esteso ai segnali. Notiamo che
+\begin{equation*}
+	f(t) \simeq cx(t) \qquad \text{ con } t \in [t_1,t_2]
+\end{equation*}
+e l'errore $e$ di questa approssimazione è:
+\begin{align*}
+	e(t)=
+		\begin{cases}
+			f(t)-cx(t) \quad &t_1 \leq t \leq t_2\\
+			0 \quad &\text{altrimenti}
+		\end{cases}
+\end{align*}
+
+\section{Correlazione incrociata}
+La \textbf{correlazione incrociata} rappresenta la misura di similitudine di due segnali come funzione di uno spostamento o traslazione temporale applicata ad uno di essi.
+
+Considerando due segnali a valori reali $x$ e $y$ che differiscono solamente per uno spostamento sull'asse $t$, si può calcolare la correlazione incrociata per mostrare
+di quanto $y$ deve essere anticipato per renderlo identico ad $x$. La formula essenzialmente anticipa il segnale $y$ lungo l'asse $t$, calcolando l'integrale del prodotto
+per ogni possibile valore dello spostamento. Quando i due segnali coincidono, il valore di $(x*y)$ è massimizzato, poiché quando le forme d'onda sono allineate, esse
+contribuiscono solo positivamente al computo dell'area.
+
+Discorso simile per i segnali complessi, considerando due complessi $x$ e $y$, prendere il coniugato di $x$ assicura che le forme d'onda allineate con componenti
+immaginarie contribuiscano positivamente al computo dell'integrale.
+
+Per due segnali di \textit{energia finita} $x$ ed $y$ la correlazione incrociata è definita come:
+\begin{equation}
+	R_{xy}(t)=(x*y)(t) = \int_{-\infty}^{+\infty}x^*(\tau)y(t+\tau)d\tau
+	\label{eqn:correlazione_incrociata}
+\end{equation}
+dove $x^*$ indica il \textit{complesso coniugato} di $x$.
+La correlazione incrociata è simile alla convoluzione (\ref{eqn:integrale_convoluzione}) tra due segnali, ma a differenza di quest'ultima, che comporta l'inversione
+temporale di un segnale, il suo spostamento ed il prodotto per un altro segnale, la correlazione comporta solamente lo spostamento ed il prodotto.
+
+\subsection{Autocorrelazione}
+Un'\textbf{autocorrelazione} è la correlazione incrociata di un segnale con se stesso. Per un segnale di \textit{energia finita} $x$ l'autocorrelazione è definita come:
+\begin{equation}
+	R_x(t)=\int_{-\infty}^{\infty}x^*(\tau)x(t+\tau)d\tau
+	\label{eqn:autocorrelazione}
+\end{equation}
+
+\section{Serie di Fourier}
+La \textbf{serie di Fourier} è una rappresentazione di una \textit{funzione periodica} mediante una combinazione lineare di funzioni sinusoidali.
+In generale, un \textit{polinomio trigonometrico} è una funzione periodica di periodo $2\pi$ definita sul campo reale del tipo:
+\begin{equation}
+	f(t)=\frac{a_0}{2}+\sum_{n=1}^{N}[a_n \cos(nt)+b_n\sin(nt)]=\sum_{n=-N}^{N}c_ne^{int}
+	\label{eqn:serie_fourier}
+\end{equation}
+dove $a_n$ e $b_n$ sono numeri reali, $c_n$ complessi e $n$ è intero.
+
+Per capire bene questa serie, spieghiamo con un esempio. Prendiamo quindi una funzione periodica e proviamo a calcolare passo per passo la sua serie di Fourier.
+Come funzione scegliamo la funzione \textit{onda quadra}, che ha un periodo di $2\pi$. Come ampiezza scegliamo $3$.
+\begin{equation*}
+	f(t)=
+	\begin{cases}
+		3 \qquad 2\pi t<t<2\pi t+\pi\\
+		0 \qquad \text{altrimenti}
+	\end{cases}
+\end{equation*}
+\begin{figure*}[h]
+	\centering
+	\begin{tikzpicture}
+	\begin{axis}[
+	scale only axis,
+	height=5cm,
+	width=9cm,
+	axis lines=left,
+	xlabel=Tempo,
+	ylabel=Ampiezza,
+	trig format plots=rad,
+	xtick={
+		3.14159, 6.28318, 9.42477, 12.56636
+	},
+	xticklabels={
+		$\pi$, $2\pi$, $3\pi$, $4\pi$
+	}
+	]
+	\addplot+[
+	color=red,
+	mark=none,
+	const plot,
+	line width=1.25pt,
+	]
+	coordinates {
+		(0,0)
+		(0,3)
+		(pi,3)
+		(pi,0)
+		(2*pi,0)
+		(2*pi,3)
+		(3*pi,3)
+		(3*pi,0)
+		(4*pi,0)
+		(4*pi,3)
+	};
+	\end{axis}
+	\end{tikzpicture}
+\end{figure*}
+Vogliamo scrivere la funzione come somma di seni e coseni (più la costante iniziale), della forma:
+\begin{align*}
+	f(t)=a_0+&a_1\cos(t)+a_2\cos(2t)+a_3\cos(3t)+\dots\\
+			+&b_1\sin(t)+b_2\sin(2t)+b_3\sin(3t)+\dots
+\end{align*}
+Per trovare $a_0$, integriamo nel periodo della funzione (portando già fuori le costanti):
+\begin{align*}
+	\int_{0}^{2\pi}f(t)dt=&a_0\int_{0}^{2\pi}dt\\
+						 +&a_1\int_{0}^{2\pi}\cos(t)dt+\dots+a_n\int_{0}^{2\pi}\cos(nt)dt\\
+  						 +&b_1\int_{0}^{2\pi}\sin(t)dt+\dots+b_n\int_{0}^{2\pi}\sin(nt)dt\\
+\end{align*}
+Ma $\int_{0}^{2\pi}a_n\cos(nt)$ e $\int_{0}^{2\pi}b_n\sin(nt)$, per $\forall n \in \mathbb{N}$, valgono $0$. Quindi rimane solo il termine di $a_0$.
+Risolvendo l'integrale otteniamo:
+\begin{equation*}
+	a_0=\frac{1}{2\pi}\int_{0}^{2\pi}f(t)dt
+\end{equation*}
+Per trovare $a_n$, moltiplichiamo prima tutta l'espressione per $\cos(nt)$:
+\begin{align*}
+\int_{0}^{2\pi}f(t)\cos(nt)dt=&a_0\int_{0}^{2\pi}\cos(nt)dt\\
+							 +&a_1\int_{0}^{2\pi}\cos(t)\cos(nt)dt+\dots+a_n\int_{0}^{2\pi}\cos(nt)\cos(nt)dt\\
+							 +&b_1\int_{0}^{2\pi}\sin(t)\cos(nt)dt+\dots+b_n\int_{0}^{2\pi}\sin(nt)\cos(nt)dt\\
+\end{align*}
+Ora, integrando notiamo che tutti i termini si annullano, tranne il termine $a_n\int_{0}^{2\pi}\cos^2(nt)$, dal quale ricaviamo che:
+\begin{equation*}
+	a_n=\frac{1}{\pi}\int_{0}^{2\pi}f(t)\cos(nt)dt
+\end{equation*}
+Proseguiamo con un procedimento simile per trovare l'espressione che calcola $b_n$, moltiplicando per il $\sin(nt)$. Otteniamo:
+\begin{equation*}
+	b_n=\frac{1}{\pi}\int_{0}^{2\pi}f(t)\sin(nt)dt
+\end{equation*}
+Adesso che abbiamo tutto il necessario, possiamo procedere con il calcolo della serie di Fourier per la nostra funzione onda quadra:
+\begin{align*}
+	a_0=&\frac{1}{2\pi}\left(\int_{0}^{\pi}3dt+\int_{\pi}^{2\pi}0dt\right)=\frac{3}{2}\\
+	a_n=&\frac{3}{n\pi}\int_{0}^{\pi}n\cos(nt)dt=0\\
+	b_n=&-\frac{3}{n\pi}\int_{0}^{\pi}-n\sin(nt)dt=-\frac{3}{n\pi}(\cos(n\pi)-1)
+\end{align*}
+Proviamo a calcolare la nostra approssimazione fino al quinto termine $b_n$:
+\begin{equation*}
+	f(t)=\frac{3}{2}+\frac{6}{\pi}\sin(t)+\frac{6}{3\pi}\sin(3t)+\frac{6}{5\pi}\sin(5t)
+\end{equation*}
+Ed ecco una rappresentazione della nostra approssimazione, che è già buona per la nostra onda quadra.
+\begin{figure*}[h]
+	\centering
+	\begin{tikzpicture}
+		\begin{axis}[
+			scale only axis,
+			height=5cm,
+			width=9cm,
+			axis lines=left,
+			xlabel=Tempo,
+			ylabel=Ampiezza,
+			trig format plots=rad,
+		]
+		\addplot[
+			domain=0:8*pi,
+			samples=360,
+			color=blue,
+			line width=1.25pt,
+		]{(3/2)+
+			(6/pi)*(sin(x))+
+			(6/(3*pi))*(sin(3*x))+
+			(6/(5*pi))*(sin(5*x))};
+		\end{axis}
+	\end{tikzpicture}
+\end{figure*}
+
+
+\section{Trasformata di Fourier}
+La trasformata di Fourier permette di scrivere una funzione dipendente dal tempo nel dominio delle frequenze, decomponendo  la funzione nella base delle funzioni 
+esponenziali con un prodotto scalare. Questa rappresentazione viene chiamata spesso \textbf{spettro} della funzione. La trasformata di Fourier è invertibile, grazie
+al teorema di inversione di Fourier.
+
+Se il segnale in oggetto è un \textit{segnale periodico}, la sua trasformazione di Fourier è un insieme discreto di valori, che in tal caso prende il nome di
+\textit{spettro discreto}: la frequenza più bassa è detta \textit{armonica fondamentale} ed è quella che ha peso maggiore nella ricomposizione finale del segnale,
+mentre le altre frequenze sono multiple della fondamentale e prendono talvolta il nome di \textit{armoniche secondarie}. In quel caso la rispettiva formula inversa
+costituisce lo sviluppo in serie di Fourier della funzione. Se il segnale ha anche un \textit{valor medio} diverso da zero, la serie restituisce una componente costante
+che lo rappresenta.
+
+Nel caso in cui la funzione sia \textit{non periodica}, lo spettro è continuo, e tanto più è esteso lungo l'asse delle frequenze quanto più è limitato
+nel dominio originario della variabile indipendente, e viceversa. La teoria della trasformata e antitrasformata di Fourier generalizza dunque la teoria 
+della Serie di Fourier al caso di segnali non periodici, ricomprendendo i segnali periodici come caso particolare ed insieme confluiscono nell'analisi di 
+Fourier e nell'analisi armonica.
+
+\textbf{TODO}
+
+%TODO:
+% Trasformazione da dominio del tempo a dominio delle frequenze:
+% Ad esempio segnale costante diventa un impulso in zero
+% Oppure il coseno diventa due impulsi
+
+% Per andare poi da segnale aperiodico a segnale periodico uso la modulazione con treno di impulsi
 
 \end{document}

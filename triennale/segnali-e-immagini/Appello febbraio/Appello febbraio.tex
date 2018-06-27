@@ -1,0 +1,197 @@
+\documentclass[a4paper,oneside]{scrbook}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{tikz}
+\usetikzlibrary{arrows,calc,patterns,angles,quotes}
+\usepackage{pgfplots}
+
+
+\pagenumbering{gobble}
+\setcounter{chapter}{1}
+
+\begin{document}
+\section*{Domanda 1}
+\paragraph{Enunciare e descrivere le proprietà dei sistemi lineari tempo-invarianti (LTIS).}\
+\newline
+I sistemi LTIS (\textit{Linear Time Invariant Systems}) sono tutti i sistemi lineari, tempo-invarianti. Questi hanno le seguenti proprietà:
+\begin{itemize}
+	\item \textbf{Linearità}\\
+	Dato un sistema con input $f(t)$ e output $y(t)$, il sistema è lineare se gode delle seguenti caratteristiche:
+	\begin{itemize}
+		\item \textbf{Additività}\\
+		Se $f_1 \rightarrow y_1$ e $f_2 \rightarrow y_2$ allora $f_1+f_2 \rightarrow y_1+y_2$
+		\item \textbf{Omogeneità}\\
+		Se $f_1 \rightarrow y_1$ allora $a_1\cdot f_1 \rightarrow a_1 \cdot y_1$
+		\item \textbf{Sovrapposizione}\\
+		Se $a_1 \cdot f_1 + a_2 \cdot f_2$ allora $a_1 \cdot y_1 \rightarrow + a_2 \cdot y_2$
+	\end{itemize}
+	\item \textbf{Tempo-invarianza}\\
+	Ogni sistema può essere espresso sotto forma di equazione differenziale del tipo:
+	\begin{equation*}
+		a_n\frac{d^nv(t)}{dt^n} + \ldots + a_1\frac{dv(t)}{dt} + a_0v(t) = b_m\frac{d^mu(t)}{dt^m} + \ldots + b_1\frac{du(t)}{dt} + b_0u(t)
+	\end{equation*}
+	e i coefficienti $a_n, \ldots, a_1, a_0$ ne determinano la tempo-invarianza.
+	Nel caso di sistemi lineari, i coefficienti diventano delle costanti ed il sistema risponde \textit{linearmente} al segnale in input.
+\end{itemize}
+
+\paragraph{Illustrare la risposta ‘‘zero-input’’ e ‘‘zero-state’’ di un LTIS indicandone le condizioni di applicabilità e la relazione con la risposta totale.}\
+\newline
+I sistemi LTIS grazie alla linearità hanno una risposta esprimibile come la somma di due componenti separate: la risposta \textbf{zero-input} e la risposta \textbf{zero-state}.
+La prima indica l'output del sistema quando in input non è presente alcun segnale.
+La seconda invece è la risposta del sistema ignorando le condizioni iniziali (calcolate dalla risposta zero-input).
+Sempre grazie alla linearità del sistema, possiamo esprimere la \textbf{risposta totale} come la somma della zero-input con la zero-state:
+\begin{equation*}
+	\text{RISPOSTA TOTALE} = \text{RISPOSTA ZERO-INPUT} + \text{RISPOSTA ZERO-STATE}
+\end{equation*}
+
+\paragraph{Illustrare il procedimento per il calcolo delle radici caratteristiche di un sistema LTIS.}\
+\newline
+Possiamo raggruppare l'equazione differenziale che esprime un sistema LTIS in questo modo:
+\begin{align*}
+a_n\frac{d^nv(t)}{dt^n} + \ldots + a_1\frac{dv(t)}{dt} + a_0v(t) &= b_m\frac{d^mu(t)}{dt^m} + \ldots + b_1\frac{du(t)}{dt} + b_0u(t)\\
+(D^n+a_{n-1}D^{n-1}+\ldots+a_1D^1+a_0)v(t)&=(b_mD^m+b_{m-1}D^{m-1}+\ldots+b_1D^1+b_0)u(t)\\
+Q(D)v(t)&=P(D)u(t)
+\end{align*}
+Le \textit{radici caratteristiche} del sistema sono i coefficienti ricavati dalla soluzione della risposta zero-input del sistema, e non essendo dipendenti dall'input
+definiscono il sistema stesso. La risposta zero-input è data dalla soluzione dell'equazione:
+\begin{equation*}
+	Q(D)v(t)=0.
+\end{equation*}
+Affinché l'equazione risulti zero, tutte le soluzioni devono essere della stessa forma e ciò è possibile solo con soluzioni del tipo $e^{\lambda t}$.
+\begin{align*}
+	(\lambda^n+a_{n-1}\lambda^{n-1}+\ldots+a_1\lambda+a_0)e^{\lambda t}&=0\\
+	\lambda^n+a_{n-1}\lambda^{n-1}+\ldots+a_1\lambda+a_0&=0
+\end{align*}
+Tutte le $\lambda^n,\ldots,\lambda$ sono le radici caratteristiche del sistema.
+
+\paragraph{Descrivere gli stati di stabilità di un sistema LTIS e descrivere le relative condizioni in relazione alle radici caratteristiche giustificando la risposta.}\
+\newline
+In generale la stabilità di un sistema è data dal fatto che dopo una perturbazione di lunghezza e ampiezza finita esso ritorni e converga verso un valore al tendere
+di $t \rightarrow \infty$ invece di divergere.
+
+Supponiamo quindi di avere un sistema LTIS, con una certa risposta zero-input. A questo sistema diamo in input un segnale $f(t)$ per un certo tempo.
+Se dopo un po' il sistema ritorna nello stato iniziale, dando la stessa risposta zero-input precedente, allora il sistema è stabile.
+Più precisamente, se le radici caratteristiche tendono a zero per $t \rightarrow \infty$, allora possiamo dire
+che il sistema è \textbf{asintoticamente stabile}. Qualora invece non tendano a zero, ma tendano ad una costante, il sistema si definisce \textbf{marginalmente stabile}.
+\begin{align*}
+	y(t)=&\sum_{j=1}^{u}e^{\lambda jt}c_j\\
+	\lim_{t\rightarrow +\infty} e^{\lambda jt}=&\begin{cases}
+													0 \text{ se } RE{\lambda_j<0}\\
+													+\infty \text{ se } RE{\lambda_j>0}
+												\end{cases}
+\end{align*}
+
+\section*{Domanda 2}
+\paragraph{Dati due segnali $x(t)$ e $f(t)$ a tempo continuo, fornire la definizione del coefficiente di correlazione illustrandone il significato e specificandone gli estremi di variabilità.}\
+\newline
+\paragraph{Considerati i segnali:
+	$$x_1(t)=rect(T), x_2(t)=A*rect(T), x_3(t)=\sin(t)$$
+	Tra quali coppie di segnali il coefficiente di correlazione sarà più elevato? Giustificare la risposta}\
+\newline
+Dati due vettori $x$ e $y$ si definiscono \textit{simili} qualora $x$ avesse una ‘‘larga componente’’ su $y$. Si può quantificare la somiglianza tra i vettori con
+un \textbf{coefficiente di correlazione}, definito come:
+\begin{equation*}
+	c=\frac{x\cdot y}{|x|\cdot|y|}=\cos\theta
+\end{equation*}
+Più è stretto l'angolo dato da $\theta$ ($c=1$) più la somiglianza è grande.
+Lo stesso ragionamento è possibile farlo per due segnali $x(t)$ e $f(t)$ dato che possono essere espressi in termini di vettori. Il coefficiente di correlazione tra
+$x(t)$ e $f(t)$ è dato quindi da:
+\begin{equation*}
+	c_n=\frac{1}{\sqrt{E_fE_x}}\int_{-\infty}^{+\infty}f(t)x(t)dt
+\end{equation*}
+Se $c_n=1$ allora i segnali sono molto simili, se non identici. Se $c_n=0$ i segnali sono di forma differente, mentre se $c_n=-1$ i segnali sono opposti.
+La correlazione così definita non funziona su segnali uguali disgiunti nel tempo, dato che risulterebbe $0$. Per definire correttamente la correlazione tra due segnali
+disgiunti è necessario considerare il possibile ritardo, per questo definiamo la \textbf{correlazione incrociata}:
+\begin{equation*}
+	\Psi_{f_y}(t)=\int_{-\infty}^{+\infty}f(\tau)g(\tau-t)d\tau
+\end{equation*}
+
+Prendendo in considerazione i segnali $$x_1(t)=\text{word or phrase}rect(T), x_2(t)=A*rect(T), x_3(t)=\sin(t)$$ la correlazione tra $x_1$ e $x_2$ avrà un valore alto
+visto che sono lo stesso segnale, solamente che $x_2$ presenta una costante $A$.
+Entrambi $x_1$ e $x_2$ rispetto a $x_3$ hanno correlazione $0$, dato che sono completamente differenti.
+
+\paragraph{Data la base completa $\{x_n(t), n=1, \ldots, \infty\}$ e dato il segnale $f(t)$, fornire la rappresentazione di $f(t)$ nella base $\{x_n(t)\}$ illustrando il procedimento.}\
+\newline
+Data una base completa $\{x_n(t)\}$ il segnale $f(t)$ può essere espresso come una combinazione lineare:
+\begin{equation*}
+	f(t) \simeq c_1x_1(t)+c_2x_2(t)+\ldots+c_nx_n(t)=\sum_{i=1}^{n}c_ix_i(t)
+\end{equation*}
+dove l'errore è dato da
+\begin{equation*}
+	e(t)=f(t)-\sum_{i=1}^{n}c_ix_i(t)
+\end{equation*}
+
+\paragraph{Dato il segnale periodico $f(t)$, esprimere i coefficienti della corrispondente serie di Fourier e descrivere il significato.}\
+\newline
+Dato un segnale $f(t)$, possiamo rappresentarlo come somma di funzioni seni e coseni in questo modo:
+\begin{equation*}
+	f(t) \cong a_0 + \left( \sum_{n=0}^{+\infty} a_n \cos(n\omega_0t+\theta_n)+b_n\sin(n\omega_0t+\theta_n) \right)
+\end{equation*}
+dove $\omega_0=\frac{2\pi}{T}$, con $T$ periodo di $f(t)$. I valori assunti da $\theta_n$ nella serie definiscono quello che viene detto \textbf{spettro di fase},
+che informa sulla quantità di ogni frequenza che compone il segnale.
+I coefficienti $a_n$ e $b_n$ (insieme a $n\omega_0t$) compongono lo \textbf{spettro in ampiezza} del segnale.
+
+\paragraph{In quale caso la serie di Fourier di un segnale $f(t)$ è reale? Giustificare la risposta.}\
+\newline
+La parte reale della trasformata di Fourier di un segnale indica le sue componenti pari, quella immaginaria invece esprime le componenti dispari del segnale stesso.
+Inoltre segnali pari esprimibili come somme di coseni producono una trasformata solamente reale mentre al contrario segnali dispari possono essere espressi da sinusoidi
+e hanno solamente parte immaginaria.
+
+\section*{Domanda 3}
+\paragraph{Considerate le immagini in Figura 1(A) e 1(B). Indicare quale tipo di operazione sia stata effettuata per trasformare la prima nella seconda e descrivere tale
+operazione nel dettaglio.}\
+\newline
+In una figura è stata applicata un operazione chiamata \textit{histogram equalization}. Questo tipo di operazione prevede di calcolare per l'immagine il corrispondente
+istogramma che sull'asse delle ascisse inserisce tutte le possibili gradazioni di grigio mentre sull'ordinata si indicano il numero di pixel con quella gradazione.
+Il \textit{re-arrangement} dell'istogramma prevede il calcolo di una distribuzione dei valori dei pixel secondo un modello statistico. Una volta applicata applicata la
+distribuzione, l'istogramma risulta \textit{stretched} se i valori sono stati limitati ad gruppo ristretto di gradazioni, \textit{shrinked} nel caso contrario.
+Nel primo caso quindi l'immagine risultante avrà meno gradazioni di grigio e alcune più ‘‘ardenti’’, mentre nel secondo caso la distribuzione è più omogenea per cui
+l'immagine risulterà più uniforme nelle varie gradazioni.
+
+\paragraph{Porre in corrispondenza gli istogrammi (C) e (D) con le immagini (A) e (B) e giustificare la risposta.}\
+\newline
+Associazioni: $C \rightarrow B$, $D \rightarrow A$.\\
+Vedi risposta precedente per giustificazione.
+
+\section*{Domanda 4}
+\paragraph{Fornire la definizione di a) risposta impulsiva e b) funzione di trasferimento di un filtro e specificare quale sia la relazione tra le due.}\
+\newline
+La risposta impulsiva di un sistema è l'output del sistema quando in input viene passata la funzione \textbf{delta di Dirac} (detta anche impulso unitario):
+\begin{equation*}
+	\int_{-\infty}^{+\infty} \delta(t)dt=1
+\end{equation*}
+Ogni segnale in input può essere rappresentato come una somma di impulsi unitari:
+\begin{equation*}
+	f(t)=\int_{-\infty}^{+\infty} \delta(t-\tau)f(\tau)d\tau
+\end{equation*}
+Visto che $\delta(t)$ in input genera la risposta impulsiva $h(t)$ allora anche l'output di un generico segnale $f(t)$ può essere espresso come un segnale
+composto dal prodotto della risposta impulsiva con l'input stesso:
+\begin{equation*}
+	y(t)=\int_{-\infty}^{+\infty}f(\tau)h(t-\tau)d\tau
+\end{equation*}
+Questo integrale è detto integrale di \textit{convoluzione}.
+
+la funzione di trasferimento di un sistema è una funzione che mette in relazione l'input e l'output nel dominio delle frequenze. Essa non è altro che la
+\textit{trasformata di Fourier} della \textit{risposta impulsiva} di un sistema LTI.
+\begin{equation*}
+	H(s)=\frac{P(S)}{Q(S)}
+\end{equation*}
+
+\paragraph{Descrivere ed illustrare graficamente la risposta impulsiva e la funzione di trasferimento di un filtro passa basso ideale in due dimensioni.}\
+\newline
+Un filtro passa-basso in due dimensioni può essere espresso come un'eliminazione circolare applicata alla trasformata dell'immagine. Viene troncato un cerchio
+di raggio $r$ sull'immagine della trasformata e non vengono considerate le frequenze all'esterno del cerchio (che sono appunto le frequenze basse). A quel punto
+si ricostruisce l'immagine con l'inversa della trasformata e si ha l'immagine filtrata con un filtro-basso di dimensione $r$.
+La funzione di trasferimento è data da:
+\begin{equation*}
+	H(u,v)=
+	\begin{cases}
+		1 \quad \text{ se } D(u,v)\leq D_0\\
+		0 \quad \text{ se } D(u,v)>D_0
+	\end{cases}
+\end{equation*}
+
+\end{document}
