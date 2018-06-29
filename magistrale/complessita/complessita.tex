@@ -2840,6 +2840,22 @@ MiddleSearch($\medmath{ G, s, t,}$ length)
 		
 		
 	\section{Approssimazione}
+		Per ogni \textit{problema di ottimizzazione} è possibile definire il corrispondente problema di \textit{decisione}.\\
+		Diciamo che $\mathbb{A}^{opt}$ è $\np$\textit{-hard} se il corrispondente problema di decisione è $\npc$.
+		
+		\subsection{Algoritmo di Approssimazione per un problema A\textsuperscript{opt}}
+		\begin{definit}
+			Sia $\mathbb{A}$ un problema di \textbf{minimizzazione}, $\mathcal{A}$ è un algoritmo di \textit{k-approssimazione} per $\mathbb{A}$ se: $~~\forall x \in \mathcal{I}(\mathbb{A}) ~~\frac{VAL(\mathcal{A}(x))}{VAL(OPT(x))}\leq k$
+		\end{definit}
+	
+	\begin{definit}
+		Sia $\mathbb{A}$ un problema di \textbf{massimizzazione}, $\mathcal{A}$ è un algoritmo di \textit{k-approssimazione} per $\mathbb{A}$ se: $~~\forall x \in \mathcal{I}(\mathbb{A}) ~~\frac{VAL(OPT(x))}{VAL(\mathcal{A}(x))}\leq k$
+	\end{definit}
+
+\noindent
+\textit{OPT(x)}: è una soluzione di valore massimo/minimo per l'istanza $x$.\\
+$\mathcal{A(x)}$: è la soluzione ritornata dall'algoritmo $\mathcal{A}$ sull'istanza $x$.\\
+Un algoritmo di \textit{1-approssimazione} è un algoritmo ottimo.
 		
 		\subsection{Approssimazione per il problema Makespan}
 			\begin{itemize}
@@ -2849,8 +2865,34 @@ MiddleSearch($\medmath{ G, s, t,}$ length)
 					\max\limits{1\leq k\leq m} \sum\limits_{i\in M_k} j_i \text{ è \textit{minimo}}
 				\]
 			\end{itemize}
+		
+		\noindent
+		Il problema di minimizzazione \textit{Makespan} è $\np$\textbf{-hard} (il problema di decisione è $\npc$).
+		
+		\subsection{Il problema SubSetSum (decisione)}
+		\begin{itemize}
+			\item Input: $A = \{ a_1 \dots a_n \}, S$
+			\item Output: $yes \Leftrightarrow \exists A' \subseteq A t.c. \Sigma_{x\in A'} x = S$
+		\end{itemize}
+		
+		\noindent
+		Il problema di decisione \textit{SubSetSum} è $\npc$
+		
+		\subsection{Il problema Partition (decisione)}
+		\begin{itemize}
+			\item Input: $A = \{ a_1 \dots a_n \}$
+			\item Output: $yes \Leftrightarrow \exists A' \subseteq A t.c. \Sigma_{x\in A'} x = \Sigma_{x\notin A'} x$
+		\end{itemize}
+	
+	\noindent
+	Il problema di decisione \textit{Partition} è $\npc$ e sappiamo che \textit{Partition} $\leq$ \textit{Makespan} (con $m=2$).
 			
 		\subsection{PTAS e FPTAS}
+		\textit{\textbf{PTAS}} è un algoritmo che data $x\in \mathcal{I}(\mathbb{A})$ e $\epsilon$, fornisce una soluzione $s$ per $x$ t.c. $\frac{VAL(\mathcal{A}(x))}{VAL(OPT(x))}~\leq~(1+~\epsilon).$\\
+		Il running-time del \textit{PTAS} $\mathcal{A}$ è $\mathcal{O}(|x|^k)$ (polinomiale in $|x|$ ma può essere esponenziale in $(\frac{1}{\epsilon})$).\\
+		\\
+		\textit{\textbf{FPTAS}} è un algoritmo che data $x\in \mathcal{I}(\mathbb{A})$ e $\epsilon$, fornisce una soluzione $s$ per $x$ t.c. $\frac{VAL(\mathcal{A}(x))}{VAL(OPT(x))}~\leq~(1+~\epsilon).$\\
+		Il running-time del \textit{PTAS} $\mathcal{A}$ è $\mathcal{O}(|x|^k (\frac{1}{\epsilon})^k)$ (polinomiale in $|x|$ e in $(\frac{1}{\epsilon})$).
 		
 		
 		\subsection{Problema di Traveling Salesman}
@@ -2859,11 +2901,19 @@ MiddleSearch($\medmath{ G, s, t,}$ length)
 				\item Output: ciclo hamiltoniano di peso minimo.
 			\end{itemize}
 		
+		\noindent
+		Il problema \textit{TSP} è $\np$\textbf{-hard} (il problema di decisione è $\npc$, infatti \textit{HamCycle} $\leq$ \textit{TSP\textsubscript{Decision}}).\\
+		\textit{TSP} non è approssimabile (se P $\neq$ NP): non esiste un algoritmo polinomiale per TSP che garantisce $f(n)$ approssimazione, altrimenti risolverei \textit{HamCycle} in tempo polinomiale.
+		
 		\subsection{Problema Knapsack}
 			\begin{itemize}
 				\item Input: $ v_1, \dots, v_n $ (valori) $ \quad w_1, \dots, w_n $ (pesi)
 				\item Output: $ A \subseteq \{1\dots n \} \ t.c.\ \sum\limits_{i \in A} w_i \leq W,\quad \sum\limits_{i \in A} v_i \ $ è massima.
 			\end{itemize}
+		
+		\noindent
+		Il problema \textit{Knapsack} è $\np$\textbf{-hard} (il problema di decisione è $\npc$, infatti \textit{Partition} $\leq$ \textit{Knapsack}).\\
+		Si risolve con programmazione dinamica: soluzione non polinomiale per istanze grandi. 
 		
 		\subsection{Classe APX}
 			\begin{definit}[Classe APX]
@@ -2873,10 +2923,17 @@ MiddleSearch($\medmath{ G, s, t,}$ length)
 				\end{align*}
 			\end{definit}
 		
+		\noindent
+		TSP $\notin APX$, ~~IndependentSet $\notin APX$.\\
+		VertexCover $\in APX$, ~~Makespan $\in APX$, ~~Knapsack $\in APX$.
+		
 		\subsection{Tecnica del GAP}
 			\begin{thm}
-				Dato un problema di ottimizzazione $ \prob{A} $ definiamo il problema $ (a, b) - \prob{A} $ il problema \textbf{di decisione} che consiste nel dire se la soluzione ottima ad un'istanza di $ \prob{A} $ è $ \geq a \ $ o $ \ \leq b $.
+				Dato un problema di ottimizzazione $ \prob{A} $ definiamo il problema $ (a, b) - \prob{A} $ il problema \textbf{di decisione} che consiste nel dire se la soluzione ottima ad un'istanza di $ \prob{A} $ è $ \leq a \ $ o $ \ \geq b $.
 			\end{thm}
+		
+		\noindent
+		Se esiste un problema $\mathbb{B} \in \npc$ t.c. $\mathbb{B} \leq (a,b)-\mathbb{A}$, allora non esiste \textit{non esiste} un algoritmo di approssimazione polinomiale per $\mathbb{A}$ che garantisce approssimazione $k < \frac{b}{a}$ se P$\neq$ NP.
 		
 		\subsection{Problema Max-k-xor-SAT}
 			\begin{itemize}
@@ -2884,7 +2941,25 @@ MiddleSearch($\medmath{ G, s, t,}$ length)
 				\item Output: il massimo numero di clausole soddisfacibili.
 			\end{itemize}
 		
+		\noindent
+		Il problema è $\np$\textbf{-hard} $\forall k \geq 2$, altrimenti è inapprossimabile (problema di decisione $\npc$).\\
+		Il problema $(a,b)$\textit{-gap-k-max-xor-sat} è $\npc$ per ogni $(a, b)$ t.c. $a<1$ e $b > \frac{1}{2}$.
+		
+		
+		\subsection{Max-3-SAT}
+		\begin{itemize}
+			\item Input: formula $\psi$ 3 CNF
+			\item Output: seegnamento che soddisfa il massimo numero di clausole.
+		\end{itemize}
+	
+	\noindent
+	Il problema generale \textit{Max-k-SAT} è $\np$\textbf{-hard} $\forall k \geq 2$, altrimenti è inapprossimabile.\\
+	\textit{Max-3-SAT} non ammette approssimazione migliore di $\frac{8}{7}$.
+	
+		
 		\subsection{Inapprossimabilità}
+		VertexCover $\notin FPTAS$.\\
+		IndependetSet $\notin FPTAS$.
 		
 		
 \end{document}
