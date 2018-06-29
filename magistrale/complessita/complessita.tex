@@ -17,6 +17,7 @@
 \usepackage[margin=3cm]{geometry}
 \usepackage{booktabs,caption}
 \usepackage{subcaption}
+\usepackage{fixltx2e}
 \usepackage{float}
 \usepackage{wrapfig}
 \usepackage{epigraph}
@@ -105,7 +106,7 @@ rounded corners, minimum width=1cm, minimum height=1cm,text centered, draw=black
  	\vspace{0.5cm}
  	{\scshape\Large Riassunto dei principali argomenti\par}
  	\vspace{2cm}
- 	{\Large\itshape Matteo Danzi, Davide Bianchi\par}
+ 	{\Large\itshape Matteo Danzi, Marco Colognese, Davide Bianchi\par}
  	\vspace{1cm}
  	
  	\vspace{5cm}
@@ -852,8 +853,10 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 				\item $ \prob{A}\ $ è \textit{NP-hard}, cioè se $ \ \forall \prob{B} \in \np \quad \prob{B}\leq_K \prob{A} $
 			\end{itemize}
 		
-		\noindent
-		\textbf{\textit{NP-Completo}}$ = \{ \exists p(x) = x^k, \exists V(. , .) t.c. T_V(a, b) = \mathcal{O}(p(|a|+|b|)) e \forall x \in \mathcal{I}(\mathbb{A}), \mathbb{A}(x)=yes \Leftrightarrow \exists w \in \{0, 1 \}^{p(|x|)}, V(x, w)=yes \}$\\
+		\begin{align*}
+			\mathbf{NP}\text{\textbf{-completo}}\ = \big\lbrace & \exists p(x) = x^k,\ \exists V(\cdot, \cdot) \quad t.c.\quad T_V(a, b) = \mathcal{O}\big(p(|a|+|b|)\big) \\
+			&\text{ e } \ \forall x \in \mathcal{I}(\mathbb{A}),\ \mathbb{A}(x)=yes \Leftrightarrow \exists w \in \{0, 1 \}^{p(|x|)},\ V(x, w)=yes \big\rbrace
+		\end{align*}
 		Se $\mathbb{A}$ è \textit{NP-Completo} e $\mathbb{A}\in P$, allora \textit{P = NP}.
 		\end{definit}
 		
@@ -1353,14 +1356,19 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 				\node[draw, circle] (1) at (-1,-2) {$ x_3 $}; \node[draw, circle] (2) at (1,-2) {$ \overline{x}_2 $}; 
 				\node[draw, circle] (3) at (2,-2) {$ x_3 $}; \node[draw, circle] (4) at (4,-2) {$ \overline{x}_2 $}; 
 				\node[draw, circle] (5) at (5,-2) {$ \overline{x}_3 $}; \node[draw, circle] (6) at (7,-2) {$ x_2 $};
+
 				\foreach \i in {a,b,c}
 				{
 					\foreach \x in {1,2,...,6}
 					{
-						\draw (\i) -- (\x);
+						\ifthenelse{\(\equal{\i}{a} \AND \x = 2\) \OR 
+							\(\equal{\i}{b} \AND \x = 3\) \OR
+							\(\equal{\i}{b} \AND \x = 4\) \OR
+							\(\equal{\i}{c} \AND \x = 5\)}{}{\draw (\i) -- (\x);};
 					}
 				}
-				\draw (b) -- (c);\draw (1) -- (2) -- (3) -- (4) -- (5) -- (6);
+				\draw[color=white, ultra thick] (1) -- (a);\draw[color=white, ultra thick] (6) -- (c);
+				\draw (b) -- (c);\draw (2) -- (3);\draw (4) -- (5);
 				\draw[bend right] (1) to (3);\draw[bend right] (1) to (4);\draw[bend right] (1) to (6);
 				\draw[bend right] (2) to (4);\draw[bend right] (2) to (5);
 				\draw[bend right] (3) to (6);
@@ -2753,24 +2761,24 @@ MiddleSearch($\medmath{ G, s, t,}$ length)
 		$\nspace (f(n))$ = $\{ \mathbb{A} | \exists V(. ; .)$ deterministico tale che $\forall x \in \mathcal{I}(\mathbb{A}) \mathcal{A}(x)= yes$ sse $V(x, w)= yes$ e $V$ usa al più $\mathcal{O}(f(n))$ di memoria di lavoro (escludendo $x$ e $w$), $V$ accede a $x$ in maniera Read-Only, $V$ accede a $w$ in maniera Read-Only e Left-to-Right $\}$
 		
 	\begin{lstlisting}[mathescape=true, frame=tb, caption={SAT-Solver-ND $\in \npspace(n)$}, basicstyle=\footnotesize\ttfamily]
-			SAT-Solver-ND($\phi(x_1 \dots x_n)$)
-			    for i=1 to n:
-			    	$a_i \leftarrow T$
-					GotToBoth 4,5
-					$a_i \leftarrow F$
-				endfor
-				if $\phi(a_1 \dots a_n) = T$
-					return yes
-				return no
+SAT-Solver-ND($\phi(x_1 \dots x_n)$)
+	for i=1 to n:
+    	$a_i \leftarrow T$
+		GotToBoth 4,5
+		$a_i \leftarrow F$
+	endfor
+	if $\phi(a_1 \dots a_n) = T$
+		return yes
+	return no
 			\end{lstlisting}
 			
 		\begin{lstlisting}[mathescape=true, frame=tb, caption={SAT-Verifier}, basicstyle=\footnotesize\ttfamily]
-			SAT-Verifier($\phi(C_1 \dots C_n), \underline{a}$)
-				risposta $\leftarrow$ yes
-				for i=1 to n:
-					if $l_1^i = F$ in $a ~\land~ l_2^i = F$ in $a ~\land~ l_3^i = F$ in $a$
-						return no
-				return yes
+SAT-Verifier($\phi(C_1 \dots C_n), \underline{a}$)
+	risposta $\leftarrow$ yes
+	for i=1 to n:
+		if $l_1^i = F$ in $a ~\land~ l_2^i = F$ in $a ~\land~ l_3^i = F$ in $a$
+			return no
+	return yes
 		\end{lstlisting}
 		
 		\noindent
