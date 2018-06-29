@@ -8,6 +8,7 @@
 \usepackage{frontespizio}
 \usepackage{mathtools, nccmath}
 \usepackage{amsmath}
+\usepackage{multicol}
 \usepackage{amsfonts}
 \usepackage{amsthm}
 \usepackage{amssymb}
@@ -839,7 +840,8 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 	 	
 	 \section{Riduzione alla Turing tra problemi di decisione}
 		 \begin{definit}[Riduzione alla Turing]
-		 	$ \prob{A}\leq_T \prob{B} \ $ se esiste un algoritmo con complessità polinomiale $ \alg{A} $ che data un'istanza $ \ x \in \instance{A} \ $ utilizzando chiamate ad un \textit{oracolo} per $ \prob{B} $ che hanno costo $ O(1) $, $ \ \alg{A}(x) = \prob{A}(x) $.
+		 	$ \prob{A}\leq_T \prob{B} \ $ se esiste un algoritmo con complessità polinomiale $ \alg{A} $ che data un'istanza $ \ x \in \instance{A} \ $ utilizzando chiamate ad un \textit{oracolo} per $ \prob{B} $ che hanno costo $ O(1) $, $ \ \alg{A}(x) = \prob{A}(x) $.\\
+		 	\textit{2-SAT} $\leq_T$ \textit{Reachability}: non vale la riduzione alla \textit{Karp} perché faccio più chiamate a \textit{Reachability}.
 		 \end{definit}
 	 
 	\section{Classe di problemi NP-Completi}
@@ -849,6 +851,10 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 				\item $ \prob{A} \in \np $
 				\item $ \prob{A}\ $ è \textit{NP-hard}, cioè se $ \ \forall \prob{B} \in \np \quad \prob{B}\leq_K \prob{A} $
 			\end{itemize}
+		
+		\noindent
+		\textbf{\textit{NP-Completo}}$ = \{ \exists p(x) = x^k, \exists V(. , .) t.c. T_V(a, b) = \mathcal{O}(p(|a|+|b|)) e \forall x \in \mathcal{I}(\mathbb{A}), \mathbb{A}(x)=yes \Leftrightarrow \exists w \in \{0, 1 \}^{p(|x|)}, V(x, w)=yes \}$\\
+		Se $\mathbb{A}$ è \textit{NP-Completo} e $\mathbb{A}\in P$, allora \textit{P = NP}.
 		\end{definit}
 		
 	\subsection{Circuito Booleano}
@@ -1088,6 +1094,16 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
  				\item $ \forall\prob{B} \quad \prob{B}\leq_K \prob{A} $
  			\end{enumerate}
  		\end{enumerate}
+ 	
+ 	\noindent
+ 	\textit{\textbf{Tautologia} (TAU)} è \textbf{CO-NP-completo}
+ 	\begin{itemize}
+ 		\item \textit{Input}: una formula booleana $\psi$
+ 		\item \textit{Output}: yes $\Leftrightarrow \forall \underline{a} \in \{ T, F \}^n ~~ \psi(\underline{a} = T)$
+ 	\end{itemize}
+ 	
+ 	\noindent
+ 	Si dimostra che $\overline{TAU}$ è \textbf{NPC} ($\exists \underline{a}$ t.c. $\psi(\underline{a}) = F$)
  		
 	 \subsection{Problema Minimo circuito booleano}
 		 \begin{itemize}
@@ -1118,8 +1134,8 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 		Dalla definizione di queste classi di problemi deduciamo che:
 		\begin{align*}
 			&\Pi_0 \p = \Sigma_0 \p = \p \qquad \alg{A}(x) = \alg{B}(x) \text{ non ho quantificatori} \\
-			&\Pi_1 \p = \np \\
-			&\Sigma_1 \p = \conp \\
+			&\Pi_1 \p = \conp \\
+			&\Sigma_1 \p = \np \\
 			&\text{Minimo circuito booleano } \in \Pi_2 \p
 		\end{align*}
 		
@@ -1159,14 +1175,15 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 		
 		\begin{proof}
 			Assumiamo che $ \np \equiv \conp $: \\
-			$ \alg{A}(x) = \exists w_1 \quad B(x, w_1) \ \Leftrightarrow \ \alg{A}(x) = \forall w_1 \quad B'(x,w_1) $ \\
-			Sia $ \alg{A}'(x) \in \Sigma_1 \p \qquad \alg{A}'(x) = \exists w_1 \forall w_2 \quad C(x, w_1, w_2) = \alg{D}_{w_2}(x) $. \\
+			$ \alg{A}(x) = \exists w_1 \quad B(x, w_1) \ \Leftrightarrow \ \alg{A}(x) = \forall w_1' \quad B'(x,w_1) $ \\
+			Sia $ \alg{A}'(x) \in \Sigma_2 \p \qquad \alg{A}'(x) = \exists w_2 \forall w_1 \quad C(x, w_1, w_2) = \alg{D}_{w_2}(x) $. \\
 			$ \alg{D}_{w_2}(x) \in \conp \equiv \np \quad $ quindi $ \ \alg{D}_{w_2}(x) = \exists w_1'\quad C'(x, w_1', w_2) \ $ perciò diventa:
 			\begin{align*}
 				\prob{A}'(x) &= \exists w_2 \exists w_1'' \quad C'(x, w_1'', w_2) \\
 							 &= \exists w_{1 2} \quad C'(x, w_{1 2}) \quad \in \np
 			\end{align*}
-			Quindi deduciamo che se $ \np \equiv \conp \quad \Rightarrow \quad \Sigma_2 \p = \Sigma_1 \p $
+			Quindi deduciamo che se $ \np \equiv \conp \quad \Rightarrow \quad \Sigma_2 \p = \Sigma_1 \p $\\
+			Inoltre se $ \np \equiv \conp \quad \Rightarrow \quad \Pi_2 \p = \Pi_1 \p $
 		\end{proof}
 		
 		\begin{definit}[Gerarchia Polinomiale]
@@ -1297,7 +1314,7 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 			\begin{enumerate}
 				\item $ \prob{A} \in \np $
 				\item $ \prob{A} \notin \p $, cioè $ \ \forall \Pi \ $ polinomiale $ \ \exists x \ t.c. \ \Pi(x) \neq \prob{A}(x) $.
-				\item $ \prob{A} \notin \npc $, cioè $ \ \forall \Pi \ $ polinomiale $ \ \exists x \ t.c. \ SAT(x) \neq \prob{A}(\Pi(x)) $.\\ Se SAT è $ \npc $ sappiamo che $ SAT\leq_K \prob{A} $
+				\item $ \prob{A} \notin \npc $, cioè $ \ \forall \Pi \ $ polinomiale $ \ \exists x \ t.c. \ SAT(x) \neq \prob{A}(\Pi(x)) $.\\ Se $\mathbb{A}$ è $ \npc $ sappiamo che $ SAT\leq_K \prob{A} $
 			\end{enumerate}
 		\end{proof}
 		
@@ -1348,9 +1365,16 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 				\draw[bend right] (2) to (4);\draw[bend right] (2) to (5);
 				\draw[bend right] (3) to (6);
 			\end{tikzpicture}
-			\caption{Grafo in cui c'è un arco per ogni letterale diverso dal proprio negato}
+			\caption{Grafo in cui c'è un arco per ogni letterale diverso dal proprio negato e che non appartiene alla stessa clausola}
 		\end{figure}
-		
+	
+	\noindent
+	Sappiamo che se:
+	\begin{itemize}
+		\item se $\phi$ è soddisfacibile $\Rightarrow G$ ha una clique di taglia 3;
+		\item se $G$ ha una clique di taglia 3 $\Rightarrow \phi$ è soddisfacibile.
+	\end{itemize}		
+		\noindent
 		Il grafo mostra le seguenti caratteristiche:
 		\begin{itemize}
 			\item Numero di vertici: $\ \vert V \vert = 3m \ $ con $ \ \phi = C^{(1)}\wedge\dots\wedge C^{(m)} $.
@@ -1640,7 +1664,7 @@ SAT-Solver($ \phi $)
 		Vediamo ora un problema in $ \np $ che non crediamo sia in $ \npc $.
 		
 	\subsection{Problema Graph Isomorphism}
-		Versione Graph Isomorphism-Search:
+		Versione \textbf{Graph Isomorphism-Search}:
 		\begin{itemize}
 			\item Input: $ G_1 = (V_1, E_1),\ G_2 = (V_1, E_2) $ semplici e non diretti
 			\item Output: una funzione $ f: v_1\mapsto v_2\quad t.c.\quad \forall (v, u) \in V_1 $\\
@@ -1694,7 +1718,7 @@ GraphIsomorphismSearch($ G_1, G_2 $)
 		\end{lstlisting}
 		
 		\begin{thm}
-			Se $ \np\cup\conp \neq \p $ allora esiste un problema non self-reducible di ricerca il cui problema di decisione è in $ \np $.
+			Se $ \np\cap\conp \neq \p $ allora esiste un problema non self-reducible di ricerca il cui problema di decisione è in $ \np $.
 		\end{thm}
 		
 		\begin{proof}
@@ -2365,6 +2389,15 @@ SAT-Solver-ND($ \phi(x_1, \dots, x_n) $) "\hspace{.8cm}\tikzmark{zero}"
 				Se esiste un cammino Hamiltoniano in $ G $, esso inizia da $ s $ e termina in $ t $, e ogni cammino variabile $ x_i $ è fatto da destra verso sinistra o viceversa. Per toccare i vertici clausola il cammino Hamiltoniano deve aver attraversato almeno uno dei cammini dei letterali della clausola nella direzione corrispondente a rendere il letterale vero. L'assegnamento corrispondente alle direzioni scelte nei cammini variabile soddisfa ogni clausola ($ yes\ \Leftarrow\ yes $).
  				
 			\end{proof}
+		
+		\subsection*{Problema D-Ham-Cycle}
+		\begin{itemize}
+			\item Input: grafo diretto $ G = (V, E) $
+			\item Output: $ yes\ \Leftrightarrow\ $ esiste in $ G $ un ciclo Hamiltoniano (che percorre tutti i nodi).
+		\end{itemize}
+	
+	\noindent
+	Si tratta di un problema $\npc$ come il precedente (dimostrazione simile).
 			
 		\newpage
 	\section{Complessità di Spazio e la classe SPACE}
@@ -2539,8 +2572,8 @@ SAT($ \phi(x_1, \dots, x_n) $)
 					& \text{che risolve } x \in \instance{A} \text{ usando memoria di lavoro } O(f(\vert x\vert)) \quad \Pi(x) = \prob{A}(x) \ \big\rbrace
 				\end{align*}
 			\end{definit}
-			
-			\noindent
+		
+		\noindent
 			Nel caso del tempo con limitazione polinomiale in algoritmi non deterministici abbiamo la classe dei problemi $ \np $. Cosa succede nel caso dello spazio? Quali sono i problemi in $ \npspace $ ?
 			
 			\paragraph{$ \nspace \subseteq \mathbf{TIME}\big( 2^{O(f(n))} \big) $} Se ammettiamo non determinismo, dimostriamo che sappiamo risolvere lo stesso problema in tempo $ 2^{O(f(n))} $.
@@ -2708,9 +2741,46 @@ MiddleSearch($\medmath{ G, s, t,}$ length)
 					\]
 					
 				\end{itemize}
+			
+			\noindent
+			Abbiamo dunque dimostrato che $\pspace = \npspace$ poiché il non-determinismo non aggiunge potenzialità nello spazio. Abbiamo inoltre che \textbf{NL} $\subseteq$ \textbf{SPACE}$(log^2(n))$
+			
 			\end{proof}
 		
-		\subsection{Classe di problemi PSPACE-completi e problema Q-SAT}
+		\noindent
+		Abbiamo dato una definizione di non-determinismo in termini di spazio. Ne diamo una definizione in termini di verifica.
+		
+		$\nspace (f(n))$ = $\{ \mathbb{A} | \exists V(. ; .)$ deterministico tale che $\forall x \in \mathcal{I}(\mathbb{A}) \mathcal{A}(x)= yes$ sse $V(x, w)= yes$ e $V$ usa al più $\mathcal{O}(f(n))$ di memoria di lavoro (escludendo $x$ e $w$), $V$ accede a $x$ in maniera Read-Only, $V$ accede a $w$ in maniera Read-Only e Left-to-Right $\}$
+		
+	\begin{lstlisting}[mathescape=true, frame=tb, caption={SAT-Solver-ND $\in \npspace(n)$}, basicstyle=\footnotesize\ttfamily]
+			SAT-Solver-ND($\phi(x_1 \dots x_n)$)
+			    for i=1 to n:
+			    	$a_i \leftarrow T$
+					GotToBoth 4,5
+					$a_i \leftarrow F$
+				endfor
+				if $\phi(a_1 \dots a_n) = T$
+					return yes
+				return no
+			\end{lstlisting}
+			
+		\begin{lstlisting}[mathescape=true, frame=tb, caption={SAT-Verifier}, basicstyle=\footnotesize\ttfamily]
+			SAT-Verifier($\phi(C_1 \dots C_n), \underline{a}$)
+				risposta $\leftarrow$ yes
+				for i=1 to n:
+					if $l_1^i = F$ in $a ~\land~ l_2^i = F$ in $a ~\land~ l_3^i = F$ in $a$
+						return no
+				return yes
+		\end{lstlisting}
+		
+		\noindent
+		\newline
+		\noindent
+		$\pspace = \npspace = \{ \mathbb{A} | \exists V(. ; .)$ deterministico tale che $\forall x \in \mathcal{I}(\mathbb{A}) \mathcal{A}(x)= yes$ sse $V(x, w)= yes$ e $V$ usa al più $\mathcal{O}(|x|^k)$ di memoria di lavoro (escludendo $x$ e $w$), $V$ accede a $x$ in maniera Read-Only, $V$ accede a $w$ in maniera Read-Only e Left-to-Right $\}$
+		
+		\newpage
+		\subsection{Classe di problemi PSPACE-completi}
+		\begin{multicols}{2}
 			\begin{definit}
 				$ \prob{A} $ è $ \pspace$-completo se:
 				\begin{itemize}
@@ -2719,6 +2789,34 @@ MiddleSearch($\medmath{ G, s, t,}$ length)
 				\end{itemize}
 				$ \Rightarrow\ $ se $ \prob{A} $ è $ \pspace$-completo e $ \prob{A}\in \p $ allora $ \p \equiv\pspace $ (implica anche che $ \p \equiv\np $) 
 			\end{definit}
+			\columnbreak
+			\begin{figure}[H]
+				\centering
+				\begin{tikzpicture}[scale=0.7,every node/.style={scale=0.7}]
+				\draw (0,0) ellipse (3cm and 2cm) node[yshift=1cm] {$ \pspace $};
+				\draw (-1.3,0) circle (1cm) node[align=center] {$ \pspace $ \\\textbf{Completo}};
+				\draw (1.3,0) circle (1cm) node[align=center] {$ \np $};
+				\draw[fill=black] (0,-1) circle (.02cm) node[above] {};
+				\end{tikzpicture}
+			\end{figure}
+		\end{multicols}
+	
+	
+	 \subsection{Problemi Q-SAT e 2-Player-SAT}
+	 \textit{\textbf{Q-SAT} (Quantified SAT)} $\in \pspace$\textbf{-Completo}
+	 \begin{itemize}
+	 	\item Input: $ \phi (x_1 \dots x_n) = \exists x_1 \forall x_2 \dots \exists x_{n-1} \forall x_n \phi (x_1 \dots x_n)$
+	 	\item Output: $ yes \ \Leftrightarrow\ \phi $ è vera
+	 \end{itemize}
+ 
+ 	\noindent
+	\textit{\textbf{2-Player-SAT}}
+ 	\begin{itemize}
+ 		\item Input: $ \phi (x_1 \dots x_n)$ CNF
+ 		\item Output: $ yes \ \Leftrightarrow\ P_1 \ $ vince nel seguente gioco:\\
+ 		$ P_1 $ e $ P_2 $ si alternano scegliendo i valori delle varie $x_i$. $P_1$ vince se $\phi$ è soddisfatta dai valori scelti, altrimenti vince $P_2$ ($P_1$ deve fare scelte che valgono $\forall$ mossa di $P_2$).
+	\end{itemize}
+	 
 		
 		\subsection{Problema Geography}
 			\begin{itemize}
@@ -2727,6 +2825,9 @@ MiddleSearch($\medmath{ G, s, t,}$ length)
 				$ P_1 $ e $ P_2 $ si alternano scegliendo un vertice collegato da un arco nell'ultimo vertice scelto e non scelto ancora. Perde il primo che non ha più mosse.
 			\end{itemize}
 		
+		\noindent
+		Il problema \textbf{Geography} è $\pspace$\textbf{-Completo} (si dimostra con \textit{Q-SAT} $\leq$ \textit{Geography}).
+		
 		\subsection{Problema Alternating Hamiltonian Path}
 			\begin{itemize}
 				\item Input: grafo diretto orientato $ G = (V, E) $, $ \ s\in V $
@@ -2734,8 +2835,27 @@ MiddleSearch($\medmath{ G, s, t,}$ length)
 				$ P_1 $ e $ P_2 $ si alternano come in Geography. $ P_1 $ vuole completare un HamPath e $ P_2 $ vuole bloccare $ P_1 $.
 			\end{itemize}
 		
+		\noindent
+		Il problema \textbf{Geography} è $\pspace$\textbf{-Completo} (si dimostra con \textit{Q-SAT} $\leq$ \textit{A-HamPath}).
+		
 		
 	\section{Approssimazione}
+		Per ogni \textit{problema di ottimizzazione} è possibile definire il corrispondente problema di \textit{decisione}.\\
+		Diciamo che $\mathbb{A}^{opt}$ è $\np$\textit{-hard} se il corrispondente problema di decisione è $\npc$.
+		
+		\subsection{Algoritmo di Approssimazione per un problema A\textsuperscript{opt}}
+		\begin{definit}
+			Sia $\mathbb{A}$ un problema di \textbf{minimizzazione}, $\mathcal{A}$ è un algoritmo di \textit{k-approssimazione} per $\mathbb{A}$ se: $~~\forall x \in \mathcal{I}(\mathbb{A}) ~~\frac{VAL(\mathcal{A}(x))}{VAL(OPT(x))}\leq k$
+		\end{definit}
+	
+	\begin{definit}
+		Sia $\mathbb{A}$ un problema di \textbf{massimizzazione}, $\mathcal{A}$ è un algoritmo di \textit{k-approssimazione} per $\mathbb{A}$ se: $~~\forall x \in \mathcal{I}(\mathbb{A}) ~~\frac{VAL(OPT(x))}{VAL(\mathcal{A}(x))}\leq k$
+	\end{definit}
+
+\noindent
+\textit{OPT(x)}: è una soluzione di valore massimo/minimo per l'istanza $x$.\\
+$\mathcal{A(x)}$: è la soluzione ritornata dall'algoritmo $\mathcal{A}$ sull'istanza $x$.\\
+Un algoritmo di \textit{1-approssimazione} è un algoritmo ottimo.
 		
 		\subsection{Approssimazione per il problema Makespan}
 			\begin{itemize}
@@ -2745,8 +2865,34 @@ MiddleSearch($\medmath{ G, s, t,}$ length)
 					\max\limits{1\leq k\leq m} \sum\limits_{i\in M_k} j_i \text{ è \textit{minimo}}
 				\]
 			\end{itemize}
+		
+		\noindent
+		Il problema di minimizzazione \textit{Makespan} è $\np$\textbf{-hard} (il problema di decisione è $\npc$).
+		
+		\subsection{Il problema SubSetSum (decisione)}
+		\begin{itemize}
+			\item Input: $A = \{ a_1 \dots a_n \}, S$
+			\item Output: $yes \Leftrightarrow \exists A' \subseteq A t.c. \Sigma_{x\in A'} x = S$
+		\end{itemize}
+		
+		\noindent
+		Il problema di decisione \textit{SubSetSum} è $\npc$
+		
+		\subsection{Il problema Partition (decisione)}
+		\begin{itemize}
+			\item Input: $A = \{ a_1 \dots a_n \}$
+			\item Output: $yes \Leftrightarrow \exists A' \subseteq A t.c. \Sigma_{x\in A'} x = \Sigma_{x\notin A'} x$
+		\end{itemize}
+	
+	\noindent
+	Il problema di decisione \textit{Partition} è $\npc$ e sappiamo che \textit{Partition} $\leq$ \textit{Makespan} (con $m=2$).
 			
 		\subsection{PTAS e FPTAS}
+		\textit{\textbf{PTAS}} è un algoritmo che data $x\in \mathcal{I}(\mathbb{A})$ e $\epsilon$, fornisce una soluzione $s$ per $x$ t.c. $\frac{VAL(\mathcal{A}(x))}{VAL(OPT(x))}~\leq~(1+~\epsilon).$\\
+		Il running-time del \textit{PTAS} $\mathcal{A}$ è $\mathcal{O}(|x|^k)$ (polinomiale in $|x|$ ma può essere esponenziale in $(\frac{1}{\epsilon})$).\\
+		\\
+		\textit{\textbf{FPTAS}} è un algoritmo che data $x\in \mathcal{I}(\mathbb{A})$ e $\epsilon$, fornisce una soluzione $s$ per $x$ t.c. $\frac{VAL(\mathcal{A}(x))}{VAL(OPT(x))}~\leq~(1+~\epsilon).$\\
+		Il running-time del \textit{PTAS} $\mathcal{A}$ è $\mathcal{O}(|x|^k (\frac{1}{\epsilon})^k)$ (polinomiale in $|x|$ e in $(\frac{1}{\epsilon})$).
 		
 		
 		\subsection{Problema di Traveling Salesman}
@@ -2755,11 +2901,19 @@ MiddleSearch($\medmath{ G, s, t,}$ length)
 				\item Output: ciclo hamiltoniano di peso minimo.
 			\end{itemize}
 		
+		\noindent
+		Il problema \textit{TSP} è $\np$\textbf{-hard} (il problema di decisione è $\npc$, infatti \textit{HamCycle} $\leq$ \textit{TSP\textsubscript{Decision}}).\\
+		\textit{TSP} non è approssimabile (se P $\neq$ NP): non esiste un algoritmo polinomiale per TSP che garantisce $f(n)$ approssimazione, altrimenti risolverei \textit{HamCycle} in tempo polinomiale.
+		
 		\subsection{Problema Knapsack}
 			\begin{itemize}
 				\item Input: $ v_1, \dots, v_n $ (valori) $ \quad w_1, \dots, w_n $ (pesi)
 				\item Output: $ A \subseteq \{1\dots n \} \ t.c.\ \sum\limits_{i \in A} w_i \leq W,\quad \sum\limits_{i \in A} v_i \ $ è massima.
 			\end{itemize}
+		
+		\noindent
+		Il problema \textit{Knapsack} è $\np$\textbf{-hard} (il problema di decisione è $\npc$, infatti \textit{Partition} $\leq$ \textit{Knapsack}).\\
+		Si risolve con programmazione dinamica: soluzione non polinomiale per istanze grandi. 
 		
 		\subsection{Classe APX}
 			\begin{definit}[Classe APX]
@@ -2769,10 +2923,17 @@ MiddleSearch($\medmath{ G, s, t,}$ length)
 				\end{align*}
 			\end{definit}
 		
+		\noindent
+		TSP $\notin APX$, ~~IndependentSet $\notin APX$.\\
+		VertexCover $\in APX$, ~~Makespan $\in APX$, ~~Knapsack $\in APX$.
+		
 		\subsection{Tecnica del GAP}
 			\begin{thm}
-				Dato un problema di ottimizzazione $ \prob{A} $ definiamo il problema $ (a, b) - \prob{A} $ il problema \textbf{di decisione} che consiste nel dire se la soluzione ottima ad un'istanza di $ \prob{A} $ è $ \geq a \ $ o $ \ \leq b $.
+				Dato un problema di ottimizzazione $ \prob{A} $ definiamo il problema $ (a, b) - \prob{A} $ il problema \textbf{di decisione} che consiste nel dire se la soluzione ottima ad un'istanza di $ \prob{A} $ è $ \leq a \ $ o $ \ \geq b $.
 			\end{thm}
+		
+		\noindent
+		Se esiste un problema $\mathbb{B} \in \npc$ t.c. $\mathbb{B} \leq (a,b)-\mathbb{A}$, allora non esiste \textit{non esiste} un algoritmo di approssimazione polinomiale per $\mathbb{A}$ che garantisce approssimazione $k < \frac{b}{a}$ se P$\neq$ NP.
 		
 		\subsection{Problema Max-k-xor-SAT}
 			\begin{itemize}
@@ -2780,7 +2941,25 @@ MiddleSearch($\medmath{ G, s, t,}$ length)
 				\item Output: il massimo numero di clausole soddisfacibili.
 			\end{itemize}
 		
+		\noindent
+		Il problema è $\np$\textbf{-hard} $\forall k \geq 2$, altrimenti è inapprossimabile (problema di decisione $\npc$).\\
+		Il problema $(a,b)$\textit{-gap-k-max-xor-sat} è $\npc$ per ogni $(a, b)$ t.c. $a<1$ e $b > \frac{1}{2}$.
+		
+		
+		\subsection{Max-3-SAT}
+		\begin{itemize}
+			\item Input: formula $\psi$ 3 CNF
+			\item Output: seegnamento che soddisfa il massimo numero di clausole.
+		\end{itemize}
+	
+	\noindent
+	Il problema generale \textit{Max-k-SAT} è $\np$\textbf{-hard} $\forall k \geq 2$, altrimenti è inapprossimabile.\\
+	\textit{Max-3-SAT} non ammette approssimazione migliore di $\frac{8}{7}$.
+	
+		
 		\subsection{Inapprossimabilità}
+		VertexCover $\notin FPTAS$.\\
+		IndependetSet $\notin FPTAS$.
 		
 		
 \end{document}
