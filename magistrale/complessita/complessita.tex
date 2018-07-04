@@ -2425,7 +2425,7 @@ SAT-Solver-ND($ \phi(x_1, \dots, x_n) $) "\hspace{.8cm}\tikzmark{zero}"
 		\begin{lstlisting}[mathescape = true, frame = tb]
 Palindroma(s)
 	for i = 1 to n:
-		if s[i] $ \neq $ s[n - 1 + 1]
+		if s[i] $ \neq $ s[n - i + 1]
 			return $ no $
 	return $ yes $
 		\end{lstlisting}
@@ -2721,7 +2721,9 @@ MiddleSearch($\medmath{ G, s, t,}$ length)
 		
 		Nella successiva sezione vogliamo dimostrare che $ \pspace \equiv \npspace $. Lo facciamo vedere attraverso il teorema di Savitch.
 		
+			 
 		\subsection{Teorema di Savitch}
+
 			\begin{thm}[Teorema di Savitch]
 				Per ogni funzione $ f(n) \geq \log n \ $ si ha che
 				\[
@@ -2758,8 +2760,13 @@ MiddleSearch($\medmath{ G, s, t,}$ length)
 		\noindent
 		Abbiamo dato una definizione di non-determinismo in termini di spazio. Ne diamo una definizione in termini di verifica.
 		
-		$\nspace (f(n))$ = $\{ \mathbb{A} | \exists V(. ; .)$ deterministico tale che $\forall x \in \mathcal{I}(\mathbb{A}) \mathcal{A}(x)= yes$ sse $V(x, w)= yes$ e $V$ usa al più $\mathcal{O}(f(n))$ di memoria di lavoro (escludendo $x$ e $w$), $V$ accede a $x$ in maniera Read-Only, $V$ accede a $w$ in maniera Read-Only e Left-to-Right $\}$
-		
+		\begin{align*}
+			\nspace (f(n)) = \big\lbrace & \prob{A}\ |\ \exists V(\cdot, \cdot)\ \text{ deterministico tale che } \forall x \in\instance{A} \quad \prob{A}(x) = yes\ \Leftrightarrow\ V(x, w)= yes \\
+			&\text{e } V \text{ usa al più } O(f(n)) \text{ di memoria di lavoro (escludendo } x \text{ e } w\text{), }\\ 
+			&V \text{ accede a } x \text{ in maniera Read-Only,} \\
+			&V \text{ accede a } w \text{ in maniera Read-Only e Left-to-Right} \big\rbrace
+		\end{align*}
+
 	\begin{lstlisting}[mathescape=true, frame=tb, caption={SAT-Solver-ND $\in \npspace(n)$}, basicstyle=\footnotesize\ttfamily]
 SAT-Solver-ND($\phi(x_1 \dots x_n)$)
 	for i=1 to n:
@@ -2771,7 +2778,7 @@ SAT-Solver-ND($\phi(x_1 \dots x_n)$)
 		return yes
 	return no
 			\end{lstlisting}
-			
+
 		\begin{lstlisting}[mathescape=true, frame=tb, caption={SAT-Verifier}, basicstyle=\footnotesize\ttfamily]
 SAT-Verifier($\phi(C_1 \dots C_n), \underline{a}$)
 	risposta $\leftarrow$ yes
@@ -2781,12 +2788,13 @@ SAT-Verifier($\phi(C_1 \dots C_n), \underline{a}$)
 	return yes
 		\end{lstlisting}
 		
-		\noindent
-		\newline
-		\noindent
-		$\pspace = \npspace = \{ \mathbb{A} | \exists V(. ; .)$ deterministico tale che $\forall x \in \mathcal{I}(\mathbb{A}) \mathcal{A}(x)= yes$ sse $V(x, w)= yes$ e $V$ usa al più $\mathcal{O}(|x|^k)$ di memoria di lavoro (escludendo $x$ e $w$), $V$ accede a $x$ in maniera Read-Only, $V$ accede a $w$ in maniera Read-Only e Left-to-Right $\}$
+		\begin{align*}
+			&\pspace = \npspace = \\\big\lbrace & \prob{A}\ |\ \exists V(\cdot, \cdot)\ \text{ deterministico tale che } \forall x \in\instance{A} \quad \prob{A}(x) = yes\ \Leftrightarrow\ V(x, w)= yes \\
+			&\text{e } V \text{ usa al più } O(|x|^k) \text{ di memoria di lavoro (escludendo } x \text{ e } w\text{), }\\ 
+			&V \text{ accede a } x \text{ in maniera Read-Only,} \\
+			&V \text{ accede a } w \text{ in maniera Read-Only e Left-to-Right} \big\rbrace
+		\end{align*}
 		
-		\newpage
 		\subsection{Classe di problemi PSPACE-completi}
 		\begin{multicols}{2}
 			\begin{definit}
@@ -2853,16 +2861,28 @@ SAT-Verifier($\phi(C_1 \dots C_n), \underline{a}$)
 		
 		\subsection{Algoritmo di Approssimazione per un problema A\textsuperscript{opt}}
 		\begin{definit}
-			Sia $\mathbb{A}$ un problema di \textbf{minimizzazione}, $\mathcal{A}$ è un algoritmo di \textit{k-approssimazione} per $\mathbb{A}$ se: $~~\forall x \in \mathcal{I}(\mathbb{A}) ~~\frac{VAL(\mathcal{A}(x))}{VAL(OPT(x))}\leq k$
+			Sia $\mathbb{A}$ un problema di \textbf{minimizzazione}, $\mathcal{A}$ è un algoritmo di \textit{k-approssimazione} per $\mathbb{A}$ se: 
+			\[
+				\forall x \in \instance{A}\quad \dfrac{VAL(\alg{A}(x))}{VAL(OPT(x))}\leq k
+			\]
+			
 		\end{definit}
 	
 	\begin{definit}
-		Sia $\mathbb{A}$ un problema di \textbf{massimizzazione}, $\mathcal{A}$ è un algoritmo di \textit{k-approssimazione} per $\mathbb{A}$ se: $~~\forall x \in \mathcal{I}(\mathbb{A}) ~~\frac{VAL(OPT(x))}{VAL(\mathcal{A}(x))}\leq k$
+		Sia $\mathbb{A}$ un problema di \textbf{massimizzazione}, $\mathcal{A}$ è un algoritmo di \textit{k-approssimazione} per $\mathbb{A}$ se: 
+		\[
+			\forall x \in \instance{A}\quad \dfrac{VAL(OPT(x))}{VAL(\alg{A}(x))}\leq k
+		\]
+
 	\end{definit}
 
 \noindent
-\textit{OPT(x)}: è una soluzione di valore massimo/minimo per l'istanza $x$.\\
-$\mathcal{A(x)}$: è la soluzione ritornata dall'algoritmo $\mathcal{A}$ sull'istanza $x$.\\
+dove
+\begin{itemize}
+	\item \textit{OPT(x)}: è una soluzione di valore massimo/minimo per l'istanza $x$.
+	\item $\alg{A}(x)$: è la soluzione ritornata dall'algoritmo $\alg{A}$ sull'istanza $x$.
+\end{itemize}
+\noindent
 Un algoritmo di \textit{1-approssimazione} è un algoritmo ottimo.
 		
 		\subsection{Approssimazione per il problema Makespan}
@@ -2896,10 +2916,10 @@ Un algoritmo di \textit{1-approssimazione} è un algoritmo ottimo.
 	Il problema di decisione \textit{Partition} è $\npc$ e sappiamo che \textit{Partition} $\leq$ \textit{Makespan} (con $m=2$).
 			
 		\subsection{PTAS e FPTAS}
-		\textit{\textbf{PTAS}} è un algoritmo che data $x\in \mathcal{I}(\mathbb{A})$ e $\epsilon$, fornisce una soluzione $s$ per $x$ t.c. $\frac{VAL(\mathcal{A}(x))}{VAL(OPT(x))}~\leq~(1+~\epsilon).$\\
+		\textit{\textbf{PTAS}} è un algoritmo che data $x\in \mathcal{I}(\mathbb{A})$ e $\epsilon$, fornisce una soluzione $s$ per $x$ t.c. $\dfrac{VAL(\mathcal{A}(x))}{VAL(OPT(x))}~\leq~(1+~\epsilon).$\\
 		Il running-time del \textit{PTAS} $\mathcal{A}$ è $\mathcal{O}(|x|^k)$ (polinomiale in $|x|$ ma può essere esponenziale in $(\frac{1}{\epsilon})$).\\
 		\\
-		\textit{\textbf{FPTAS}} è un algoritmo che data $x\in \mathcal{I}(\mathbb{A})$ e $\epsilon$, fornisce una soluzione $s$ per $x$ t.c. $\frac{VAL(\mathcal{A}(x))}{VAL(OPT(x))}~\leq~(1+~\epsilon).$\\
+		\textit{\textbf{FPTAS}} è un algoritmo che data $x\in \mathcal{I}(\mathbb{A})$ e $\epsilon$, fornisce una soluzione $s$ per $x$ t.c. $\dfrac{VAL(\mathcal{A}(x))}{VAL(OPT(x))}~\leq~(1+~\epsilon).$\\
 		Il running-time del \textit{PTAS} $\mathcal{A}$ è $\mathcal{O}(|x|^k (\frac{1}{\epsilon})^k)$ (polinomiale in $|x|$ e in $(\frac{1}{\epsilon})$).
 		
 		
@@ -2941,7 +2961,7 @@ Un algoritmo di \textit{1-approssimazione} è un algoritmo ottimo.
 			\end{thm}
 		
 		\noindent
-		Se esiste un problema $\mathbb{B} \in \npc$ t.c. $\mathbb{B} \leq (a,b)-\mathbb{A}$, allora non esiste \textit{non esiste} un algoritmo di approssimazione polinomiale per $\mathbb{A}$ che garantisce approssimazione $k < \frac{b}{a}$ se P$\neq$ NP.
+		Se esiste un problema $\prob{B} \in \npc$ t.c. $\mathbb{B} \leq (a,b)-\prob{A}$, allora \textit{non esiste} un algoritmo di approssimazione polinomiale per $\prob{A}$ che garantisce approssimazione $k < \frac{b}{a}$ se P$\neq$ NP.
 		
 		\subsection{Problema Max-k-xor-SAT}
 			\begin{itemize}
@@ -2957,7 +2977,7 @@ Un algoritmo di \textit{1-approssimazione} è un algoritmo ottimo.
 		\subsection{Max-3-SAT}
 		\begin{itemize}
 			\item Input: formula $\psi$ 3 CNF
-			\item Output: seegnamento che soddisfa il massimo numero di clausole.
+			\item Output: assegnamento che soddisfa il massimo numero di clausole.
 		\end{itemize}
 	
 	\noindent
