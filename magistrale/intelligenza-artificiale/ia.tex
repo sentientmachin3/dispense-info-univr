@@ -595,6 +595,20 @@ Note:\begin{align*}
 \subsection{Reti Bayesiane}
 Una rete bayesiana è un grafo normalissimo, dove ogni arco $\langle u, v\rangle$ rappresenta il fatto che la variabile $u$ \emph{ha una qualche influenza} sulla variabile $v$.
 
+\begin{center}
+\begin{tikzpicture}[>=latex]
+	\node[draw, ellipse] (john) at (0, -4){JohnC};
+	\node[draw,ellipse](mary) at (3,-4){MaryC};
+	\node[draw, ellipse](alarm) at (1.2, -2){Allarme};
+	\node[draw, ellipse](bur) at (0,0){Furto};
+	\node[draw, ellipse](eq) at (3,0){Terremoto};
+	\draw[->] (bur)--(alarm); \draw[->](alarm)--(john);
+	\draw[->] (eq)--(alarm); \draw[->](alarm)--(mary);
+\end{tikzpicture}
+\end{center}
+
+Tra le variabili di una rete bayesiana esiste una relazione di indipendenza condizionale, ovvero che una variabile è condizionalmente indipendente da tutti i suoi non-discendenti, dati i suoi genitori. Nella rete qui sopra, si può dire che \textit{JohnC} è condizionalmente indipendente da \textit{Furto}, \textit{Terremoto} e \textit{MaryC} dato il valore di \textit{Allarme}.
+
 
 
 
