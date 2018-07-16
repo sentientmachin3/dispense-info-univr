@@ -1,0 +1,1535 @@
+% ATTENZIONE! Nel documento uso tikz, però sono ancora un nabbo e quindi potreste trovare porcherie
+\documentclass[a4paper,oneside]{scrbook}
+\usepackage[italian]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\hypersetup{
+	colorlinks,
+	citecolor=black,
+	filecolor=black,
+	linkcolor=black,
+	urlcolor=black
+}
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+\usetikzlibrary{calc}
+\usepackage{pgfplots}
+\usepackage{tikz-qtree,tikz-qtree-compat}
+
+
+\newcommand{\greenmark}{\quad \textcolor{green}{\checkmark}}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\newcommand*{\circled}[2][]{\tikz[baseline=(C.base)]{\node[inner sep=0pt] (C) {\vphantom{1g}#2};\node[draw, circle, inner sep=2pt, yshift=1pt] at (C.center) {\vphantom{1g}};}}
+
+%opening
+\title{Manuale di sopravvivenza per l'esame Fondamenti di Informatica}
+\subtitle{Una guida pratica per chi deve affrontare questo esame apparentemente insormontabile}
+\author{Matteo Iervasi}
+\date{Aprile 2018}
+
+\begin{document}
+	
+\maketitle
+\tableofcontents
+
+\chapter*{Prefazione}
+\addcontentsline{toc}{chapter}{Prefazione}
+Questo documento ha lo scopo di dare un'idea al povero studente che deve affrontare il temibile esame di \textit{Fondamenti di Informatica} di come si affrontano gli esercizi.\\
+\textbf{{\large NON}} tratterò l'aspetto teorico, per tanto assumo che si abbia già studiato (o almeno tentato di studiare) quella parte.
+Mi rendo conto che la materia in questione sia piuttosto ostica, ma vi posso assicurare che una volta compresi i concetti base il resto verrà da se.
+Ovviamente è \textbf{fondamentale} fare molti esercizi, in modo da verificare e consolidare l'apprendimento. Cercherò di essere il più chiaro possibile, ma non essendo mai stato bravo
+a spiegare potrebbero esserci dei punti non chiari, per i quali chiedo scusa in anticipo.
+
+Voglio ringraziare Jenny Bonato ed Elia Brentarolli per l'immensa pazienza che hanno avuto per insegnare a questo somaro le basi di questa materia.
+
+Qualora dovreste trovare degli errori, scrivetemi a \href{mailto:matteoiervasi@gmail.com}{matteoiervasi@gmail.com}, oppure fate direttamente una ‘‘\textit{pull request}’’ nel repository GitHub.
+
+\chapter{Linguaggi regolari}
+Anche se molto spesso il primo esercizio non tratta un linguaggio regolare, è sempre utile sapere come si deve procedere.
+
+Come dice il prof. Giacobazzi, la prima cosa da fare quando si osserva un linguaggio è capire \textit{intuitivamente} a che classe appartiene (regolare, CF, ecc.).
+L'intuizione può essere allenata con la pratica, tuttavia esiste un trucco molto utile: se nel linguaggio è necessario ‘‘contare’’ in qualche modo qualcosa, allora \textbf{sicuramente}
+questo linguaggio non sarà regolare. Dopo aver intuitivamente classificato il linguaggio bisogna procedere con la dimostrazione. Nel caso in cui il linguaggio sia \textbf{regolare}, bisogna costruire l'automa e dimostrarne la correttezza.
+
+Ricordiamo che un'automa è scrivibile come una quintupla $<Q,\Sigma,\delta,q_0,F>$, dove:
+\begin{itemize}
+	\item $Q$ è l'insieme degli stati
+	\item $\Sigma$ è l'alfabeto di input
+	\item $\delta:Q\times\Sigma\rightarrow Q$ è la funzione di transizione di uno stato
+	\item $q_0$ è lo stato iniziale
+	\item $F\subseteq Q$ è l'insieme degli stati finali
+\end{itemize}
+
+Prendiamo in esame il seguente linguaggio:
+$$ L=\{\{0,1\}^* \text{ t.c. ci sono almeno due 0 consecutivi e non ci sono mai due 1 consecutivi}\} $$
+
+Disegniamo l'automa corrispondente (non mi soffermo sul come farlo, questo è argomento del corso di Architettura degli Elaboratori):
+\begin{center}
+	\begin{tikzpicture}[scale=0.2]
+	\tikzstyle{every node}+=[inner sep=0pt]
+	\draw [black] (10.3,-30.4) circle (3);
+	\draw (10.3,-30.4) node {$q_0$};
+	\draw [black] (23.6,-21.3) circle (3);
+	\draw (23.6,-21.3) node {$q_1$};
+	\draw [black] (23.6,-41) circle (3);
+	\draw (23.6,-41) node {$q_4$};
+	\draw [black] (44.1,-21.3) circle (3);
+	\draw (44.1,-21.3) node {$q_2$};
+	\draw [black] (44.1,-21.3) circle (2.4);
+	\draw [black] (44.1,-41.9) circle (3);
+	\draw (44.1,-41.9) node {$q_3$};
+	\draw [black] (44.1,-41.9) circle (2.4);
+	\draw [black] (34.5,-51.6) circle (3);
+	\draw (34.5,-51.6) node {$q_\bot$};
+	\draw [black] (12.78,-28.71) -- (21.12,-22.99);
+	\fill [black] (21.12,-22.99) -- (20.18,-23.03) -- (20.75,-23.86);
+	\draw (18.1,-26.35) node [below] {$0$};
+	\draw [black] (12.65,-32.27) -- (21.25,-39.13);
+	\fill [black] (21.25,-39.13) -- (20.94,-38.24) -- (20.32,-39.02);
+	\draw (15.79,-36.19) node [below] {$1$};
+	\draw [black] (22.648,-38.157) arc (-164.71686:-195.28314:26.582);
+	\fill [black] (22.65,-38.16) -- (22.92,-37.25) -- (21.95,-37.52);
+	\draw (21.21,-31.15) node [left] {$1$};
+	\draw [black] (24.462,-24.172) arc (13.77659:-13.77659:29.302);
+	\fill [black] (24.46,-24.17) -- (24.17,-25.07) -- (25.14,-24.83);
+	\draw (25.81,-31.15) node [right] {$0$};
+	\draw [black] (25.75,-43.09) -- (32.35,-49.51);
+	\fill [black] (32.35,-49.51) -- (32.12,-48.59) -- (31.43,-49.31);
+	\draw (27.88,-46.78) node [below] {$1$};
+	\draw [black] (26.6,-21.3) -- (41.1,-21.3);
+	\fill [black] (41.1,-21.3) -- (40.3,-20.8) -- (40.3,-21.8);
+	\draw (33.85,-21.8) node [below] {$0$};
+	\draw [black] (44.91,-18.423) arc (192.01279:-95.98721:2.25);
+	\draw (49.78,-15.79) node [above] {$0$};
+	\fill [black] (46.88,-20.19) -- (47.76,-20.52) -- (47.55,-19.54);
+	\draw [black] (45.211,-24.085) arc (18.18012:-18.18012:24.087);
+	\fill [black] (45.21,-39.12) -- (45.94,-38.51) -- (44.99,-38.2);
+	\draw (46.91,-31.6) node [right] {$1$};
+	\draw [black] (41.99,-44.03) -- (36.61,-49.47);
+	\fill [black] (36.61,-49.47) -- (37.53,-49.25) -- (36.82,-48.55);
+	\draw (38.78,-45.27) node [left] {$1$};
+	\draw [black] (43.177,-39.047) arc (-165.0509:-194.9491:28.868);
+	\fill [black] (43.18,-24.15) -- (42.49,-24.8) -- (43.45,-25.05);
+	\draw (41.7,-31.6) node [left] {$0$};
+	\end{tikzpicture}
+\end{center}
+Ora è necessario dimostrare la correttezza dell'automa.
+Dobbiamo dimostrare che $x\in L \Leftrightarrow x\in L(n)$, tuttavia non dimostriamo in maniera diretta la doppia implicazione, ma dimostriamo separatamente le seguenti:
+\begin{enumerate}
+	\item $x\in L \Rightarrow x \in L(m)$
+	\item $x\notin L \Rightarrow x \notin L(m)$
+\end{enumerate}
+\begin{enumerate}
+	\item $x\in L \Rightarrow x \in L(m)$\\
+	Innanzitutto ci troviamo un \textbf{caso base} utile per il \textbf{passo induttivo}. Qual'è la stringa più piccola $\in L$? È ‘‘$00$’’\\
+	\textbf{Passo base}\\
+	$ \delta(q_0,00)=q_2 \in F \greenmark $\\
+	\textbf{Passo induttivo}\\
+	Supponiamo che $\forall x \text{ t.c. } |x|=n \quad x \in L \Rightarrow x\in L(n)$.\\
+	Prendiamo allora una stringa $y$ t.c. $|y|>n$ e $y=xa \text{ con }a\in\varepsilon$.\\
+	Visto che la funzione di transizione gode della proprietà della composizione, posso considerare $\delta(\delta(q_0,x),a)$.
+	Nel nostro caso però abbiamo due stati finali, $q_2$ e $q_3$, quindi dobbiamo guardare entrambi.
+	\begin{itemize}
+		\item $\delta(q_0,x)=q_2$\\
+		Se $a=0$ allora $\delta(q_2,0)=q_2 \in F \greenmark$\\
+		Se $a=1$ allora $\delta(q_2,1)=q_3 \in F \greenmark$
+		\item $\delta(q_0,x)=q_3$\\
+		Se $a=0$ allora $\delta(q_3,0)=q_2 \in F \greenmark$\\
+		Se $a=1$ allora $\delta(q_3,1)=q_\bot \notin F \greenmark$ (è giusto visto che in questo caso $y\notin L$, dato che ci sarebbero due 1 consecutivi)
+	\end{itemize}
+	
+	\item $x\notin L \Rightarrow x \notin L(m)$\\
+	In questa caso dobbiamo trovare i casi che \textbf{NON} finiscono in stati finali.\\
+	\textbf{Passo base}\\
+	$x=0 \rightarrow \delta(q_0,0)=q_1 \notin F \text{ (non ho almeno due 0 consecutivi)} \greenmark$\\
+	$x=11 \rightarrow \delta(q_0,11)=q_\bot \notin F \text{ (ho due 1 consecutivi)} \greenmark$\\
+	$x=\varepsilon \rightarrow \delta(q_0,\varepsilon)=q_0 \notin F \greenmark$\\
+	$x=1 \rightarrow \delta(q_0,1)=q_4 \notin F \greenmark$\\
+	\textbf{Passo induttivo}\\
+	Supponiamo che $\forall x \text{ t.c. } |x|=n \quad x \notin L \Rightarrow x\notin L(n)$.\\
+	Prendiamo allora una stringa $y$ t.c. $|y|>n$ e $y=xa \text{ con }a\in\varepsilon$. Ricordiamoci che possiamo usare $\delta(\delta(q_0,x),a)$.\\
+	In modo analogo alla precedente dimostrazione, dobbiamo considerare gli stati non finali.
+	\begin{itemize}
+		\item $\delta(q_0,x)=q_0$\\
+		Se $a=0$ allora $\delta(q_0,0)=q_1 \notin F \greenmark$\\
+		Se $a=1$ allora $\delta(q_0,1)=q_4 \notin F \greenmark$
+		\item $\delta(q_0,x)=q_1$\\
+		Se $a=0$ allora $\delta(q_1,0)=q_2 \in F \greenmark$ (è giusto visto che in questo caso $y\in L$, dato che ci sono \textbf{almeno} due 0 consecutivi)\\
+		Se $a=1$ allora $\delta(q_1,1)=q_4 \notin F \greenmark$
+		\item $\delta(q_0,x)=q_4$\\
+		Se $a=0$ allora $\delta(q_4,0)=q_1 \notin F \greenmark$\\
+		Se $a=1$ allora $\delta(q_4,1)=q_\bot \notin F \greenmark$
+		\item $\delta(q_0,x)=q_\bot$\\
+		Se $a=0$ allora $\delta(q_\bot,0)=q_\bot \notin F \greenmark$\\
+		Se $a=1$ allora $\delta(q_\bot,1)=q_\bot \notin F \greenmark$
+	\end{itemize}
+\end{enumerate}
+Abbiamo quindi dimostrato la doppia implicazione e con essa la \textit{correttezza} del nostro automa.
+
+Facciamo un altro esempio, prendiamo come linguaggio
+$$ L=\{\{0,1\}^* \text{ t.c. gli 0 sono sempre a coppie}\} $$
+Ecco l'automa:
+\begin{center}
+	\begin{tikzpicture}[scale=0.2]
+	\tikzstyle{every node}+=[inner sep=0pt]
+	\draw [black] (20.9,-26.9) circle (3);
+	\draw (20.9,-26.9) node {$q_0$};
+	\draw [black] (20.9,-26.9) circle (2.4);
+	\draw [black] (36.2,-26.9) circle (3);
+	\draw (36.2,-26.9) node {$q_1$};
+	\draw [black] (50.6,-26.9) circle (3);
+	\draw (50.6,-26.9) node {$qb$};
+	\draw [black] (23.732,-25.918) arc (104.62203:75.37797:19.088);
+	\fill [black] (33.37,-25.92) -- (32.72,-25.23) -- (32.47,-26.2);
+	\draw (28.55,-24.8) node [above] {$0$};
+	\draw [black] (33.33,-27.765) arc (-77.20264:-102.79736:21.58);
+	\fill [black] (23.77,-27.77) -- (24.44,-28.43) -- (24.66,-27.46);
+	\draw (28.55,-28.8) node [below] {$0$};
+	\draw [black] (39.2,-26.9) -- (47.6,-26.9);
+	\fill [black] (47.6,-26.9) -- (46.8,-26.4) -- (46.8,-27.4);
+	\draw (43.4,-27.4) node [below] {$1$};
+	\draw [black] (53.28,-25.577) arc (144:-144:2.25);
+	\draw (57.85,-26.9) node [right] {$0,1$};
+	\fill [black] (53.28,-28.22) -- (53.63,-29.1) -- (54.22,-28.29);
+	\draw [black] (18.22,-28.223) arc (-36:-324:2.25);
+	\draw (13.65,-26.9) node [left] {$1$};
+	\fill [black] (18.22,-25.58) -- (17.87,-24.7) -- (17.28,-25.51);
+	\end{tikzpicture}
+\end{center}
+Dobbiamo dimostrare che $x\in L \Leftrightarrow x\in L(n)$:
+\begin{enumerate}
+	\item $x\in L \Rightarrow x \in L(m)$
+	\item $x\notin L \Rightarrow x \notin L(m)$
+\end{enumerate}
+\begin{enumerate}
+	\item $x\in L \Rightarrow x \in L(m)$\\
+	\textbf{Passo base}\\
+	$ x=\varepsilon \rightarrow \delta(q_0,\varepsilon)=q_0 \in F \greenmark $\\
+	\textbf{Passo induttivo}\\
+	Supponiamo che $\forall x \text{ t.c. } |x|=n \quad x \in L \Rightarrow x\in L(n)$.\\
+	Prendiamo allora una stringa $y$ t.c. $|y|>n$ e $y=xa \text{ con }a\in\varepsilon$.\\
+	Visto che la funzione di transizione gode della proprietà della composizione, posso considerare $\delta(\delta(q_0,x),a)$.\\
+	$\delta(q_0,x)=q_0$\\
+	Se $a=0$ allora $\delta(q_0,0)=q_1 \notin F \greenmark$\\
+	Se $a=1$ allora $\delta(q_0,1)=q_0 \in F \greenmark$
+	
+	\item $x\notin L \Rightarrow x \notin L(m)$\\
+	\textbf{Passo base}\\
+	$x=0 \rightarrow \delta(q_0,0)=q_1 \notin F \greenmark$\\
+	\textbf{Passo induttivo}\\
+	Supponiamo che $\forall x \text{ t.c. } |x|=n \quad x \notin L \Rightarrow x\notin L(n)$.\\
+	Prendiamo allora una stringa $y$ t.c. $|y|>n$ e $y=xa \text{ con }a\in\varepsilon$. Ricordiamoci che possiamo usare $\delta(\delta(q_0,x),a)$.\\
+	In modo analogo alla precedente dimostrazione, dobbiamo considerare gli stati non finali.
+	\begin{itemize}
+		\item $\delta(q_0,x)=q_1$\\
+		Se $a=0$ allora $\delta(q_1,0)=q_0 \in F \greenmark$\\
+		Se $a=1$ allora $\delta(q_1,1)=q_\bot \notin F \greenmark$
+		\item $\delta(q_0,x)=q_\bot$\\
+		Se $a=0$ allora $\delta(q_\bot,0)=q_\bot \notin F \greenmark$\\
+		Se $a=1$ allora $\delta(q_\bot,1)=q_\bot \notin F \greenmark$
+	\end{itemize}
+\end{enumerate}
+Abbiamo quindi dimostrato la doppia implicazione e con essa la \textit{correttezza} del nostro automa.
+
+\chapter{Linguaggi liberi dal contesto e grammatiche}
+Questa categoria è più rognosa di quella dei regolari, ma fortunatamente se dovesse capitarci non dobbiamo costruire un'automa. Dobbiamo però costruire la grammatica,
+una procedura non sempre immediata purtroppo. Un utile trucco per riconoscere un linguaggio CF è immaginare un'automa con una pila: ad esempio se dobbiamo riconoscere il linguaggio
+$0^n1^n$ il nostro automa mano a mano che legge gli $0$ li mette in una pila, dopodiché leggendo gli $1$ la scarica, e se a fine stringa la pila è vuota allora il linguaggio è riconosciuto.\\
+\textit{Nota}: l'automa non è costretto a leggere linearmente la stringa, nell'esempio di prima possiamo anche leggere gli 1 a partire dal fondo, facendo valere la stessa regola dello
+svuotamento della pila.
+
+Prendiamo in esame il seguente linguaggio 
+$$L=\{x\in\{0,1\}^*\text{ t.c. ci siano tanti 0 quanti 1}\}$$
+Intuitivamente notiamo che è necessario ‘‘contare’’ il numero di $0$ e far si che sia uguale al numero di $1$. Esempi di possibili combinazioni:
+\begin{itemize}
+	\item $01$
+	\item $00001111$
+	\item $01010101$
+	\item $011010$
+\end{itemize}
+Notiamo che non è necessario che ci sia una determinata sequenza, basta solo che gli $0$ totali siano uguali agli $1$.
+Pensandoci un po', viene naturale classificare questo linguaggio nella classe dei \textit{context free}.
+Per dimostrarlo occorre prima applicare il cosiddetto \textbf{pumping lemma}, in modo da mostrare che non può essere regolare.
+Successivamente dobbiamo scrivere una \textbf{grammatica} che genera il linguaggio e \textbf{dimostrarne la correttezza}.\\
+\textbf{Fase 1: Pumping Lemma}\\
+In questa fase ci basta prendere una stringa appartenente al linguaggio e dimostrare che ‘‘pompandone’’ una parte noi usciamo dal linguaggio.
+Ricordiamoci che nell'applicare il pumping lemma dobbiamo sottostare a dei vincoli:
+\begin{itemize}
+	\item $z=uvw$
+	\item $|z|\geq k$
+	\item $|uv|\leq k$
+	\item $|v|>0$
+	\item $\forall i \in \mathbb{N}.uv^iw\in L \text{ con }i\geq0$
+\end{itemize}
+Ovviamente non siamo stupidi, quindi scegliamo una stringa facile, in questo caso $z=0^n1^n$.
+L'unica suddivisione possibile è:
+\begin{center}
+	\begin{tikzpicture}
+	% String rectangle
+	\draw (0,0.75) -- (0,1.25) node(0){};
+	\draw (0,0.75) -- (5,0.75) node[midway,above]{0};
+	\draw (5,0.75) -- (5,1.25) node(5){};
+	\draw (5,0.75) -- (10,0.75) node[midway,above]{1};
+	\draw (10,0.75) -- (10,1.25) node(10){};
+	
+	% Bracket rectangle
+	\draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] (0.north east) -- (5.north west) node [midway, above=0.2cm] {n};
+	\draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] (5.north east) -- (10.north west) node [midway, above=0.2cm] {n};
+	
+	% String division rectangle
+	\draw (0,0) -- (0,0.5);
+	\draw (0,0) -- (2.5,0) node[midway,above]{$u$};
+	\draw (2.5,0) -- (2.5,0.5);
+	\draw (2.5,0) -- (5,0) node[midway,above]{$v$};
+	\draw (5,0) -- (5,0.5);
+	\draw (5,0) -- (10,0) node[midway,above]{$w$};
+	\draw (10,0) -- (10,0.5);
+	\end{tikzpicture}
+\end{center}
+La stringa apparterrà al linguaggio solamente se $0^a1^b\in L \Leftrightarrow a=b$.\\
+La nostra stringa $z$ sarà quindi composta da $0^{k-|v|}0^{i|v|}1^k$. Per soddisfare la condizione appena scritta sopra $k-|v|+|v|i=k$, quindi:\\
+$-|v|+|v|i=0$\\
+$|v|(i-1)=0$\\
+Ma questo è un assurdo! Infatti $|v|$ non può essere uguale a $0$ per i vincoli del pumping lemma.
+Vediamo che per $i=0 \wedge i\geq2$ usciamo dal linguaggio, quindi possiamo dire che è sicuramente non regolare. $\greenmark$\\
+\textbf{Fase 2: Grammatica}\\
+Una possibile grammatica per questo linguaggio è:
+$$S \rightarrow 1S0|0S1|01|10|10S|01S|S10|01S$$
+Ed ecco una possibile derivazione:
+\begin{center}
+	\begin{tikzpicture}
+	\Tree
+	[.\blue{\blue{S}}
+		[.0\blue{S}1
+			[.00\blue{S}11	001011 ]
+			[.01\blue{S}01 011011 ]
+			[.0011  ]
+			[.0101  ]
+		]
+		[.1\blue{S}0
+			[.10\blue{S}10 101010 ]
+			[.11\blue{S}00 111000 ]
+			[.1010  ]
+			[.1100  ]
+		]
+		[.01  ]
+		[.10  ]
+		[.10\blue{S}  ]
+		[.01\blue{S}  ]
+		[.\blue{S}10  ]
+		[.01\blue{S}  ]
+	]
+	\end{tikzpicture}
+\end{center}
+\textbf{Fase 3: Dimostrazione della grammatica}\\
+Per dimostrare la correttezza della nostra grammatica, dobbiamo dimostrare la seguente condizione:
+$$x\in L \Leftrightarrow S \Rightarrow_* x$$
+Essendo una doppia implicazione, dimostreremo separatamente
+\begin{enumerate}
+	\item $x\in L \Rightarrow S \Rightarrow_* x $, che si dimostra per \textit{induzione} sulla lunghezza della stringa
+	\item $ S \Rightarrow_i k \Rightarrow x \in L$, che si dimostra per \textit{induzione} sul numero di passi di derivazione
+\end{enumerate}
+\begin{enumerate}
+	\item $x\in L \Rightarrow S \Rightarrow_* x $\\
+	\textbf{Passo base}\\
+	$y=01 \qquad y \in L$ ed $\exists S\Rightarrow 01 \greenmark $ (esiste una derivazione S che porta ad $01$).\\		$y=10 \qquad y \in L$ ed $\exists S\Rightarrow 10 \greenmark $ (esiste una derivazione S che porta ad $10$).\\
+	\textbf{Passo induttivo}\\
+	Consideriamo $y \in \varepsilon^*$ tale che $|y|<n$ e supponiamo che $\forall y \in L \Rightarrow S \Rightarrow_* y$.\\
+	Allora prendiamo $|x|\geq n$ e sapendo che $y$ è composto come $y=0^k1^k$, $x$ sarà $0^m1^m$ con $m>k$. Procediamo prendendo $m=k+1$:
+	$$ x=0^{k+1}1^{k+1}$$
+	Sappiamo per ipotesi che esiste una derivazione  $S\Rightarrow_i 0^k1^k$, quindi
+	$$\exists S \Rightarrow y \rightarrow \exists S \Rightarrow_i 0^k1^k$$
+	ma se esiste questa esiste anche la derivazione precedente, ovvero
+	$$\exists S \Rightarrow_{i-1} 0^{k-1}S1^{k-1} ...$$
+	essendo che la produzione $S\rightarrow 0S1$ appartiene all'insieme delle possibili produzioni, posso sostituire:
+	$$... \Rightarrow_i 0^{k-1}0S11^{k-1} \Rightarrow_{i+1} 0^k011^k = 0^{k+1}1^{k+1} = x \greenmark$$
+	In pratica siamo tornati indietro di un passo e abbiamo applicato una sostituzione che ci conducesse alla stringa $x$.\\
+	Ripetiamo lo stesso procedimento per $y=1^k0^k$ e $x=1^{k+1}0^{k+1}$:
+	$$\exists S \Rightarrow y \rightarrow \exists S \Rightarrow_i 1^k0^k \Rightarrow_{i-1} 1^{k-1}S0^{k-1}$$
+	$$\Rightarrow_i 1^{k-1}1S00^{k-1} \Rightarrow_{i+1} 1^k100^k = 1^{k+1}0^{k+1} = x \greenmark$$
+	
+	\item $ S \Rightarrow_i k \Rightarrow x \in L$\\
+	\textbf{Passo base}\\
+	$S\rightarrow 01 \qquad x=01 \quad x \in L$\\
+	$S\rightarrow 10 \qquad x=10 \quad x \in L$\\
+	\textbf{Passo induttivo}\\
+	$\forall i \leq n \quad S \Rightarrow_i y \Rightarrow y \in L $ (in $i$ passi otteniamo una stringa $\in L$, per ogni $i\leq n$).
+	Sappiamo che $y$ sarà nella forma $0^k1^k$ visto che $\in L$, quindi $S \Rightarrow_i 0^k1^k$. Ma se esiste quella produzione, allora
+	esisterà anche quella precedente. Con lo stesso gioco che abbiamo applicato nella dimostrazione precedente, andiamo indietro per poi
+	andare avanti con una produzione:
+	$$S \Rightarrow_i 0^k1^k \Rightarrow \exists S \Rightarrow_{i-1} 0^{k-1}S1^{k-1}$$
+	$$\Rightarrow_i 0^{k-1}0S11^{k-1} \Rightarrow_{i+1} 0^k011^k = 0^{k+1}1^{k+1} \in L \greenmark$$
+	Per $y=1^k0^k$:
+	$$S \Rightarrow_i 1^k0^k \Rightarrow \exists S \Rightarrow_{i-1} 1^{k-1}S0^{k-1}$$
+	$$\Rightarrow_i 1^{k-1}1S00^{k-1} \Rightarrow_{i+1} 1^k100^k = 1^{k+1}0^{k+1} \in L \greenmark$$
+	In pratica mostriamo che andando avanti otteniamo una stringa che appartiene ancora al linguaggio.
+\end{enumerate}
+
+Facciamo un altro esempio, prendiamo come linguaggio
+$$L={a^nb^n}$$
+Sappiamo che è CF perché è necessario ‘‘tener conto’’ di quante $a$ sono state riconosciute per verificare che siano pari al numero di $b$.\\
+\textbf{Fase 1: Pumping Lemma}\\
+Scegliamo una stringa facile che rispetti i vincoli, come $a^nb^n$.
+\begin{itemize}
+	\item $z=uvw$
+	\item $|z|\geq k$
+	\item $|uv|\leq k$
+	\item $|v|>0$
+	\item $\forall i \in \mathbb{N}.uv^iw\in L \text{ con }i\geq0$
+\end{itemize}
+L'unica suddivisione possibile è:
+\begin{center}
+	\begin{tikzpicture}
+	% String rectangle
+	\draw (0,0.75) -- (0,1.25) node(0){};
+	\draw (0,0.75) -- (5,0.75) node[midway,above]{a};
+	\draw (5,0.75) -- (5,1.25) node(5){};
+	\draw (5,0.75) -- (10,0.75) node[midway,above]{b};
+	\draw (10,0.75) -- (10,1.25) node(10){};
+	
+	% Bracket rectangle
+	\draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] (0.north east) -- (5.north west) node [midway, above=0.2cm] {n};
+	\draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] (5.north east) -- (10.north west) node [midway, above=0.2cm] {n};
+	
+	% String division rectangle
+	\draw (0,0) -- (0,0.5);
+	\draw (0,0) -- (2.5,0) node[midway,above]{$u$};
+	\draw (2.5,0) -- (2.5,0.5);
+	\draw (2.5,0) -- (5,0) node[midway,above]{$v$};
+	\draw (5,0) -- (5,0.5);
+	\draw (5,0) -- (10,0) node[midway,above]{$w$};
+	\draw (10,0) -- (10,0.5);
+	\end{tikzpicture}
+\end{center}
+La stringa apparterrà al linguaggio solamente se $a^xb^y\in L \Leftrightarrow x=y$.\\
+La nostra stringa $z$ sarà quindi composta da $a^{k-|v|}a^{i|v|}b^k$. Per soddisfare la condizione appena scritta sopra $k-|v|+|v|i=k$, quindi:\\
+$-|v|+|v|i=0$\\
+$|v|(i-1)=0$\\
+Ma questo è un assurdo! Infatti $|v|$ non può essere uguale a $0$ per i vincoli del pumping lemma.
+Vediamo che per $i=0 \wedge i\geq2$ usciamo dal linguaggio, quindi possiamo dire che è sicuramente non regolare.$\greenmark$\\
+\textbf{Fase 2: Grammatica}\\
+Una possibile grammatica per questo linguaggio è:
+$$S \rightarrow aSb|ab$$
+Mentre una possibile derivazione per questa grammatica è:
+\begin{center}
+	\begin{tikzpicture}
+	\Tree
+	[.\blue{S}
+		[.a\blue{S}b
+			[.aa\blue{S}bb aaabbb ]
+			[.aabb  ]
+		]
+		[.ab  ]
+	]
+	\end{tikzpicture}
+\end{center}
+\textbf{Fase 3: Dimostrazione della grammatica}\\
+Per dimostrare la correttezza della nostra grammatica, dobbiamo dimostrare la seguente condizione:
+$$x\in L \Leftrightarrow S \Rightarrow_* x$$
+Essendo una doppia implicazione, dimostreremo separatamente
+\begin{enumerate}
+	\item $x\in L \Rightarrow S \Rightarrow_* x $, che si dimostra per \textit{induzione} sulla lunghezza della stringa
+	\item $ S \Rightarrow_i k \Rightarrow x \in L$, che si dimostra per \textit{induzione} sul numero di passi di derivazione
+\end{enumerate}
+\begin{enumerate}
+	\item $x\in L \Rightarrow S \Rightarrow_* x $\\
+	\textbf{Passo base}\\
+	$y=ab \qquad y \in L$ ed $\exists S\Rightarrow ab \greenmark$ (esiste una derivazione S che porta ad $ab$).\\
+	\textbf{Passo induttivo}\\
+	Consideriamo $y \in \varepsilon^*$ tale che $|y|<n$ e supponiamo che $\forall y \in L \Rightarrow S \Rightarrow_* y$.\\
+	Allora prendiamo $|x|\geq n$ e sapendo che $y$ è composto come $y=a^kb^k$, $x$ sarà $x=a^mb^m$ con $m>k$. Procediamo prendendo $m=k+1$:
+	$$ x=a^{k+1}b^{k+1}$$
+	Sappiamo per ipotesi che esiste una derivazione  $S\Rightarrow_i a^kb^k$, quindi
+	$$\exists S \Rightarrow y \rightarrow \exists S \Rightarrow_i a^kb^k$$
+	ma se esiste questa esiste anche la derivazione precedente, ovvero
+	$$\exists S \Rightarrow_{i-1} a^{k-1}Sb^{k-1} ...$$
+	essendo che la produzione $S\rightarrow aSb$ appartiene all'insieme delle possibili produzioni, posso sostituire:
+	$$... \Rightarrow_i a^{k-1}aSbb^{k-1} \Rightarrow_{i+1} a^kabb^k = a^{k+1}b^{k+1} = x \greenmark$$
+	In pratica siamo tornati indietro di un passo e abbiamo applicato una sostituzione che ci conducesse alla stringa $x$.
+	
+	\item $ S \Rightarrow_i k \Rightarrow x \in L$\\
+	\textbf{Passo base}\\
+	$S\rightarrow ab \qquad x=ab \quad x \in L$\\
+	\textbf{Passo induttivo}\\
+	$\forall i \leq n \quad S \Rightarrow_i y \Rightarrow y \in L $ (in $i$ passi otteniamo una stringa $\in L$, per ogni $i\leq n$).
+	Sappiamo che $y$ sarà nella forma $a^kb^k$ visto che $\in L$, quindi $S \Rightarrow_i a^kb^k$. Ma se esiste quella produzione, allora
+	esisterà anche quella precedente. Con lo stesso gioco che abbiamo applicato nella dimostrazione precedente, andiamo indietro per poi
+	andare avanti con una produzione:
+	$$S \Rightarrow_i a^kb^k \Rightarrow \exists S \Rightarrow_{i-1} a^{k-1}Sb^{k-1}$$
+	$$\Rightarrow_i a^{k-1}aSbb^{k-1} \Rightarrow_{i+1} a^kabb^k = a^{k+1}b^{k+1} \in L \greenmark$$
+\end{enumerate}
+
+\chapter{Linguaggi non liberi dal contesto}
+Quando un linguaggio richiede più di un singolo conteggio per essere riconosciuto, allora è molto probabile che non sia libero dal contesto.
+In quel caso, si procede utilizzando il \textbf{pumping lemma} per i linguaggi CF, in modo da dimostrare la sua non appartenenza a questa classe.
+A differenza del pumping lemma per i linguaggi regolari, le suddivisioni possibili sono molte di più, e bisogna dimostrare la fuoriuscita per ognuna di esse, quindi la rottura di palle è decisamente più elevata.
+
+Prendiamo in esempio il linguaggio
+$$L=\{a^nb^nc^n\}$$
+Esso è chiaramente non-CF, infatti $|a|=|b|=|c|$ e quindi dobbiamo contare due volte, cosa non possibile in un'automa a pila.
+Posto che $\forall z$ tale che $|z|>n$, dobbiamo soddisfare i seguenti vincoli:
+\begin{itemize}
+    \item $\forall z = uvwxy$
+    \item $|z| \geq k$
+    \item $|vwx| \leq k$
+    \item $|vx|>0$
+    \item $uv^iwx^iy\in L$
+\end{itemize}
+elenchiamo le diverse possibili suddivisioni:
+\begin{center}
+    \begin{tikzpicture}
+    % Defining main coordinates
+    \coordinate (a0) at (0,0);
+	\coordinate (b0) at (4.5,0);
+	\coordinate (c0) at (9,0);
+	\coordinate (d0) at (13.5,0);
+    \coordinate (a1) at (0,0.5);
+    \coordinate (b1) at (4.5,0.5);
+    \coordinate (c1) at (9,0.5);
+    \coordinate (d1) at (13.5,0.5);
+    
+    % Bracket rectangle
+    \draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] ($(a1)+(0,0.5*8)$.north east) -- ($(b1)+(0,0.5*8)$.north west) node [midway, above=0.2cm] {n};
+    \draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] ($(b1)+(0,0.5*8)$.north east) -- ($(c1)+(0,0.5*8)$.north west) node [midway, above=0.2cm] {n};
+    \draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] ($(c1)+(0,0.5*8)$.north east) -- ($(d1)+(0,0.5*8)$.north west) node [midway, above=0.2cm] {n};
+    
+    % Original string rectangle
+    % |_a_
+    \def\y{0.5*8}
+    \draw ($(a1)+(0,-0.2)$) -- ($(a1)+(0,\y)$) [];
+    \draw ($(a0)+(0,\y)$) -- ($(b0)+(0,\y)$) [] node[midway,above]{a};
+    % |_b_
+    \draw ($(b1)+(0,-0.2)$) -- ($(b1)+(0,\y)$) [];
+    \draw ($(b0)+(0,\y)$) -- ($(c0)+(0,\y)$) [] node[midway,above]{b};
+    % |_c
+    \draw ($(c1)+(0,-0.2)$) -- ($(c1)+(0,\y)$) [];
+    \draw ($(c0)+(0,\y)$) -- ($(d0)+(0,\y)$) [] node[midway,above]{c};
+    % |
+    \draw ($(d1)+(0,-0.2)$) -- ($(d1)+(0,\y)$) [];
+    
+    % Possible divisions
+    \def\y{0.5*7}
+    \draw ($(b0)+(0,\y)$) node[]{$v$};
+    \draw ($(b0)+(2.5,\y)$) node[]{$x$};
+    \draw ($(a0)+(-0.2,\y)$) node[]{\circled{1}};
+    \draw ($(a0)+(0,\y-0.2)$) -- ($(d0)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*6}
+    \draw ($(c0)+(-2.5,\y)$) node[]{$v$};
+    \draw ($(c0)+(0,\y)$) node[]{$x$};
+    \draw ($(a0)+(-0.2,\y)$) node[]{\circled{2}};
+	\draw ($(a0)+(0,\y-0.2)$) -- ($(d0)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*5}
+    \draw ($(a0)+(2.5,\y)$) node[]{$vx$};
+    \draw ($(a0)+(-0.2,\y)$) node[]{\circled{3}};
+	\draw ($(a0)+(0,\y-0.2)$) -- ($(d0)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*4}
+    \draw ($(b0)+(2.5,\y)$) node[]{$vx$};
+    \draw ($(a0)+(-0.2,\y)$) node[]{\circled{4}};
+	\draw ($(a0)+(0,\y-0.2)$) -- ($(d0)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*3}
+    \draw ($(c0)+(2.5,\y)$) node[]{$vx$};
+    \draw ($(a0)+(-0.2,\y)$) node[]{\circled{5}};
+	\draw ($(a0)+(0,\y-0.2)$) -- ($(d0)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*2}
+    \draw ($(b0)+(-0.2,\y)$) node[]{$v$};
+    \draw ($(b0)+(0.2,\y)$) node[]{$x$};
+    \draw ($(a0)+(-0.2,\y)$) node[]{\circled{6}};
+	\draw ($(a0)+(0,\y-0.2)$) -- ($(d0)+(0,\y-0.2)$) [loosely dashed];
+        
+    \def\y{0.5}
+    \draw ($(c0)+(-0.2,\y)$) node[]{$v$};
+    \draw ($(c0)+(0.2,\y)$) node[]{$x$};
+    \draw ($(a0)+(-0.2,\y)$) node[]{\circled{7}};
+	\draw ($(a0)+(0,\y-0.2)$) -- ($(d0)+(0,\y-0.2)$) [loosely dashed];
+    \end{tikzpicture}
+\end{center}
+Ora dimostriamo caso per caso che, ‘‘pompando’’, si esce dal linguaggio. Con un po' di pratica si arriva a capire il meccanismo generale.
+\begin{enumerate}[label=\protect\circled{\arabic*}]
+	\item 
+	Notiamo che si ha un'accavallamento, ovvero un caso nel quale o $v$ o $x$
+	stanno in mezzo alle suddivisioni (ad esempio $v$ è composta da un po' di $a$ e di~$b$).
+	È facile dimostrare come in questi casi il linguaggio ‘‘pompato’’ esca dal linguaggio originale.
+	La stringa sarà composta come:
+	\begin{equation*}
+		z=a^{k-\frac{|v|}{2}}(ab)^{|v|i}b^{k-\frac{|v|}{2}-|x|+i|x|}c^k
+	\end{equation*}
+	\textbf{N.B.}: $\frac{|v|}{2}$ è solo indicativo, non è che dobbiamo prendere quel pezzo per forza.
+	Ora abbiamo due casi:
+	\begin{itemize}
+		\item $|v|=0$\\
+		$a^kb^{k-|x|+i|x|}c^k$\\
+		$k+|x|(i-1)=k$\\
+		con $i=2 \rightarrow |x|=0 \quad \Rightarrow$ impossibile, in quanto si violerebbe il vincolo $|vx|>0$. \greenmark
+		
+		\item $|v|>0$\\
+		$a^{k-\frac{|v|}{2}}(ab)^{|v|i}b^{k-\frac{|v|}{2}+|x|(i-1)}c^k$\\
+		con $i=2 \Rightarrow a^{k-\frac{|v|}{2}}ababb^{k-\frac{|v|}{2}+|x|}c^k \notin L$. \greenmark
+	\end{itemize}
+
+	\item 
+	La dimostrazione è analoga al punto precedente.
+	
+	\item
+	Ora $vx$ è tutto compreso in $a$. La stringa sarà quindi composta in questo modo:
+	\begin{equation*}
+		z=a^{k-|vx|+i|vx|}b^kc^k
+	\end{equation*}
+	Affinché sia valida, dobbiamo rispettare il seguente vincolo:
+	\begin{align*}
+		&k-|vx|+i|vx|=k\\
+		&|vx|(i-1)=0\\
+		&\text{con } i=2 \rightarrow |vx|=0 \quad \text{Impossibile} \greenmark
+	\end{align*}
+	
+	\item 
+	La dimostrazione è analoga al punto precedente.
+	
+	\item
+	La dimostrazione è analoga al punto precedente.
+	
+	\item 
+	$v$ e $x$ si trovano in sottoparti separate.
+	La stringa è così composta:
+	\begin{equation*}
+		z=a^{k+|v|(i-1)}b^{k+|x|(i-1)}c^k
+	\end{equation*}
+	Quindi:
+	\begin{align*}
+		&k+|v|(i-1)+k+|x|(i-1)=2k\\
+		&(i-1)(|v|+|x|)=0\\
+		&\text{con } i=2 \rightarrow |v|+|x|=0 \quad \text{Impossibile} \greenmark
+	\end{align*}
+\end{enumerate}
+Abbiamo verificato per ogni caso che il linguaggio ‘‘pompato’’ esce dal linguaggio stesso, dimostrando quindi che non è CF. \greenmark
+
+\chapter{Esercizi vari sui linguaggi}
+Classificare le seguenti famiglie di linguaggi al variare di $n,m \in \mathbb{N}$ (N.B. $0\in\mathbb{N}$), motivando formalmente la risposta:
+\begin{align*}
+	&A_{m,n}=\{ \sigma \in \{1,0\}^* | \text{ } \sigma = (1^{2n}001^m)^n \}\\
+	&B_m = \bigcup_{n\in\mathbb{N}} A_{m,n}\\
+	&C_n = \bigcup_{m\in\mathbb{N}} A_{m,n}
+\end{align*}
+Notiamo che il linguaggio, al variare di $m,n$, è finito, ad esempio:
+\begin{align*}
+	&A_{0,0}=\varnothing\\
+	&A_{1,1}=11001\\
+	&A_{0,1}=1100\\
+	&A_{1,0}=\varnothing\\
+	&A_{2,1}=110011\\
+	&A_{2,2}=1111001111110011\\
+	&\dots
+\end{align*}
+Essendo i linguaggi finiti sono anche regolari.
+\subsubsection{Unione in n}
+Adesso guardiamo l'unione in $n$ del linguaggio $A_{m,n}$:
+\begin{align*}
+    &A_{m,n}=\{ \sigma \in \{1,0\}^* | \text{ } \sigma = (1^{2n}001^m)^n \}\\
+    &B_m = \bigcup_{n\in\mathbb{N}} A_{m,n}
+\end{align*}
+\begin{itemize}
+	\item $B_0=(1^{2n}00)^n$
+	\item $B_1=(1^{2n}001)^n$
+	\item $B_2=(1^{2n}0011)^n$
+\end{itemize}
+Notiamo che, al variare di $m$, otteniamo sempre e comunque un linguaggio non CF.
+Procediamo quindi con il pumping lemma per i linguaggi non CF.\\
+\begin{itemize}
+	\item $\forall z = uvwxy$
+	\item $|z| \geq 2k$
+	\item $|vwx| \leq 2k$
+	\item $|vx|>0$
+	\item $uv^iwx^iy\in L$
+\end{itemize}
+Scegliamo una stringa, $z=(1^{2n}00)^n$, ed elenchiamo le possibili suddivisioni.
+\begin{center}
+	\begin{tikzpicture}
+	% Defining main coordinates
+	\coordinate (a) at (0,0);
+	\coordinate (b) at (5,0);
+	\coordinate (c) at (6,0);
+	\coordinate (d) at (11,0);
+	\coordinate (e) at (12,0);
+	\coordinate (f) at (14,0);
+	
+	% Bracket rectangle
+	\def\y{0.5*18}
+	\draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] ($(a)+(0,\y)$.north east) -- ($(b)+(0,\y)$.north west) node [midway, above=0.2cm] {$2k$};
+	\draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] ($(c)+(0,\y)$.north east) -- ($(d)+(0,\y)$.north west) node [midway, above=0.2cm] {$2k$};
+	\draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] ($(e)+(0,\y)$.north east) -- ($(f)+(0,\y)$.north west) node [midway, above=0.2cm] {$|z|-2(2k+2)$};
+	
+	% Original string rectangle
+	\def\y{0.5*17}
+	\draw ($(a)+(0,-0.2)$) -- ($(a)+(0,\y+0.5)$) [];
+	\draw ($(a)+(0,\y)$) -- ($(b)+(0,\y)$) [] node[midway,above]{$1\dots1$};
+	
+	\draw ($(b)+(0,-0.2)$) -- ($(b)+(0,\y+0.5)$) [];
+	\draw ($(b)+(0,\y)$) -- ($(c)+(0,\y)$) [] node[midway,above]{$00$};
+	
+	\draw ($(c)+(0,-0.2)$) -- ($(c)+(0,\y+0.5)$) [];
+	\draw ($(c)+(0,\y)$) -- ($(d)+(0,\y)$) [] node[midway,above]{$1\dots1$};
+	
+	\draw ($(d)+(0,-0.2)$) -- ($(d)+(0,\y+0.5)$) [];
+	\draw ($(d)+(0,\y)$) -- ($(e)+(0,\y)$) [] node[midway,above]{$00$};
+	
+	\draw ($(e)+(0,-0.2)$) -- ($(e)+(0,\y+0.5)$) [];
+	\draw ($(e)+(0,\y)$) -- ($(f)+(0,\y)$) [] node[midway,above]{$\dots$};
+	
+	% Possible divisions
+	\def\y{0.5*16}
+	\draw ($(a)+(2.5,\y)$) node[]{$vx$};
+	\draw ($(a)+(-0.2,\y)$) node[]{\circled{1}};
+	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	
+	\def\y{0.5*15}
+	\draw ($(b)+(-0.1,\y)$) node[]{$v|x|$};
+	\draw ($(a)+(-0.2,\y)$) node[]{\circled{2}};
+	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	
+	\def\y{0.5*14}
+	\draw ($(b)+(0,\y)$) node[]{$vx$};
+	\draw ($(a)+(-0.2,\y)$) node[]{\circled{3}};
+	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	
+	\def\y{0.5*13}
+	\draw ($(b)+(0.1,\y)$) node[]{$|v|x$};
+	\draw ($(a)+(-0.2,\y)$) node[]{\circled{4}};
+	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	
+	\def\y{0.5*12}
+	\draw ($(b)+(0.5,\y)$) node[]{$vx$};
+	\draw ($(a)+(-0.2,\y)$) node[]{\circled{5}};
+	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	
+	\def\y{0.5*11}
+	\draw ($(c)+(-0.1,\y)$) node[]{$v|x|$};
+	\draw ($(a)+(-0.2,\y)$) node[]{\circled{6}};
+	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	
+	\def\y{0.5*10}
+	\draw ($(c)+(0,\y)$) node[]{$vx$};
+	\draw ($(a)+(-0.2,\y)$) node[]{\circled{7}};
+	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	
+	\def\y{0.5*9}
+	\draw ($(c)+(0.1,\y)$) node[]{$|v|x$};
+	\draw ($(a)+(-0.2,\y)$) node[]{\circled{8}};
+	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	
+	\def\y{0.5*8}
+	\draw ($(c)+(2.5,\y)$) node[]{$vx$};
+	\draw ($(a)+(-0.2,\y)$) node[]{\circled{9}};
+	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	
+	\def\y{0.5*7}
+	\draw ($(d)+(-0.1,\y)$) node[]{$v|x|$};
+	\draw ($(a)+(-0.2,\y)$) node[]{\circled{10}};
+	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	
+	\def\y{0.5*6}
+	\draw ($(d)+(0,\y)$) node[]{$vx$};
+	\draw ($(a)+(-0.2,\y)$) node[]{\circled{11}};
+	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	
+	\def\y{0.5*5}
+	\draw ($(d)+(0.1,\y)$) node[]{$|v|x$};
+	\draw ($(a)+(-0.2,\y)$) node[]{\circled{12}};
+	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	
+	\def\y{0.5*4}
+	\draw ($(d)+(0.5,\y)$) node[]{$vx$};
+	\draw ($(a)+(-0.2,\y)$) node[]{\circled{13}};
+	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	
+	\def\y{0.5*3}
+	\draw ($(b)+(-0.2,\y)$) node[]{$v$};
+	\draw ($(c)+(0.2,\y)$) node[]{$x$};
+	\draw ($(a)+(-0.2,\y)$) node[]{\circled{14}};
+	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	
+	\def\y{0.5*2}
+	\draw ($(b)+(0,\y)$) node[]{$|v|$};
+	\draw ($(c)+(0.2,\y)$) node[]{$x$};
+	\draw ($(a)+(-0.2,\y)$) node[]{\circled{15}};
+	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	
+	\def\y{0.5}
+	\draw ($(b)+(-0.2,\y)$) node[]{$v$};
+	\draw ($(c)+(0,\y)$) node[]{$|x|$};
+	\draw ($(a)+(-0.2,\y)$) node[]{\circled{16}};
+	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	
+	\draw ($(b)$) node[]{$|v|$};
+	\draw ($(c)$) node[]{$|x|$};
+	\draw ($(a)+(-0.2,0)$) node[]{\circled{17}};
+	\draw ($(a)+(0,-0.2)$) -- ($(e)+(0,-0.2)$) [loosely dashed];
+	\end{tikzpicture}
+\end{center}
+Verifichiamo per ogni caso di violare le regole del pumping lemma, in modo da dimostrare che questo linguaggio non è CF.
+\begin{enumerate}[label=\protect\circled{\arabic*}]
+	\item $z=1^{2k-|vx|+|vx|i}0^21^{2k}0^2$\\
+	Affinché sia valida, deve valere $2k+|vx|(i-1)=2k$, quindi $|vx|(i-1)=0$, che però per $i=2$ viola la condizione $|vx|>0$. \greenmark
+	
+	\item $z=1^{2k-|v|+i|v|-\frac{|x|}{2}}(10)^{|x|i}0^{2-\frac{|x|}{2}}1^{2k}0^2$\\
+	Distinguiamo due casi:
+	\begin{itemize}
+		\item $|x|=0$\\
+		$1^{2k+|v|(i-1)}0^21^{2k}0^2 \Rightarrow 2k+|v|(i-1)=2k$\\
+        per $i \rightarrow 2 \Rightarrow |v|=0$ Impossibile \greenmark
+		\item $|x|>0$\\
+		$1^{2k+|v|(i-1)-\frac{|x|}{2}}(10)^{|x|i}0^{2-\frac{|x|}{2}}1^{2k}$\\
+		per $i \rightarrow 2 \Rightarrow 1^{2k+|v|-\frac{|x|}{2}}10100^{2-\frac{|x|}{2}}1^{2k} \notin L$ \greenmark
+	\end{itemize}
+
+	\item $z=1^{2k+|v|(i-1)}0^{2+|x|(i-1)}1^{2k}0^2$\\
+	Affinché sia valida, deve valere $2k+|v|(i-1)+2+|x|(i-1)=2k+2$, quindi $|v|(i-1)+|x|(i-1)=0$,
+    che per $i \rightarrow 2 \Rightarrow |v|+|x|=0$ viola $|vx|>0$. \greenmark
+    
+    \item La dimostrazione è analoga al punto 2.
+    
+    \item $z=1^{2k}0^{2+|vx|(i-1)}1^{2k}0^2$\\
+    Affinché sia valida, deve valere $2+|vx|(i-1)=2$, che implicherebbe $|vx|=0$ per $i=2$, quindi non va bene. \greenmark
+    
+    \item La dimostrazione è analoga al punto 2.
+    
+    \item La dimostrazione è analoga al punto 3.
+    
+    \item La dimostrazione è analoga al punto 2.
+    
+    \item La dimostrazione è analoga al punto 1.
+    
+    \item La dimostrazione è analoga al punto 2.
+    
+    \item La dimostrazione è analoga al punto 3.
+    
+    \item La dimostrazione è analoga al punto 2.
+    
+    \item La dimostrazione è analoga al punto 5.
+
+	\item $z=1^{2k+|v|(i-1)}0^21^{2k+|x|(i-1)}0^2$\\
+	Affinché sia valida, deve valere $2k+|v|(i-1)+2k+|x|(i-1)=4k$, quindi per $i\rightarrow 2 \Rightarrow |v|+|x|=0$. Il problema è che andiamo a violare il vincolo $|vx|>0$, quindi non va bene. \greenmark
+    
+    \item $z=1^{2k-\frac{|v|}{2}}(10)^{|v|i}0^{2-\frac{|v|}{2}}1^{2k+|x|(i-1)}0^2$\\
+    Distinguiamo due casi:
+    \begin{itemize}
+        \item $|v|=0$\\
+        $1^{2k}0^{2}1^{2k+|x|(i-1)}0^2$\\
+        per $i \rightarrow 2 \Rightarrow |v|=0$ Impossibile \greenmark
+        \item $|v|>0$\\
+        $1^{2k-\frac{|v|}{2}}(10)^{|v|i}0^{2-\frac{|v|}{2}}1^{2k+|x|(i-1)}0^2$\\
+        per $i \rightarrow 2 \Rightarrow 1^{2k-\frac{|v|}{2}}10100^{2-\frac{|v|}{2}}1^{2k+|x|}0^2 \notin L$ \greenmark
+    \end{itemize}
+    
+    \item La dimostrazione è analoga al punto 15.
+    
+    \item $z=1^{2k-\frac{|v|}{2}}(10)^{|v|i}0^{2-\frac{|v|}{2}-\frac{|x|}{2}}(01)^{|x|i}1^{2k-\frac{|x|}{2}}0^2$\\
+    Distinguiamo i seguenti casi:
+    \begin{itemize}
+        \item $|v|=0$\\
+        $1^{2k}0^{2-\frac{|x|}{2}}(01)^{|x|i}1^{2k-\frac{|x|}{2}}0^2$
+        \begin{itemize}
+            \item $|x|=0$\\
+            Non possiamo, in quanto violeremmo $|vx|>0$.\greenmark
+            \item $|x|>0$\\
+            $1^{2k}0^{2-\frac{|x|}{2}}(01)^{|x|i}1^{2k-\frac{|x|}{2}}0^2$\\
+            per $i\rightarrow 2 \Rightarrow 1^{2k}0^{2-\frac{|x|}{2}}01011^{2k-\frac{|x|}{2}}0^2 \notin L$. \greenmark
+        \end{itemize}
+        \item $|v|>0$\\
+        $1^{2k-\frac{|v|}{2}}(10)^{|v|i}0^{2-\frac{|v|}{2}-\frac{|x|}{2}}(01)^{|x|i}1^{2k-\frac{|x|}{2}}0^2$
+        \begin{itemize}
+            \item $|x|=0$\\
+            $1^{2k-\frac{|v|}{2}}(10)^{|v|i}0^{2-\frac{|v|}{2}}1^{2k}0^2$\\
+            per $i \rightarrow 2 \Rightarrow 1^{2k-\frac{|v|}{2}}10100^{2-\frac{|v|}{2}}1^{2k}0^2 \notin L$. \greenmark
+            \item $|x|>0$\\
+            $1^{2k-\frac{|v|}{2}}(10)^{|v|i}0^{2-\frac{|v|}{2}-\frac{|x|}{2}}(01)^{|x|i}1^{2k-\frac{|x|}{2}}0^2$\\
+            per $i \rightarrow 2 \Rightarrow 1^{2k-\frac{|v|}{2}}10100^{2-\frac{|v|}{2}-\frac{|x|}{2}}01011^{2k-\frac{|x|}{2}}0^2 \notin L$. \greenmark
+        \end{itemize}
+    \end{itemize}
+\end{enumerate}
+Abbiamo dimostrato ogni caso, quindi il nostro linguaggio non è CF.
+\subsubsection{Unione in m}
+Per quanto riguarda l'unione in $m$ del linguaggio $A_{m,n}$:
+\begin{align*}
+    &A_{m,n}=\{ \sigma \in \{1,0\}^* | \text{ } \sigma = (1^{2n}001^m)^n \}\\
+    &C_n = \bigcup_{m\in\mathbb{N}} A_{m,n}
+\end{align*}
+\begin{itemize}
+	\item $C_0=\varnothing$
+	\item $C_1=11001^m$
+	\item $C_2=(1111001^m)^2$
+	\item $C_{n>2}=(1^{2n}001^m)^n$
+\end{itemize}
+Notiamo che $C_0$ e $C_1$ sono linguaggi regolari, il primo è banale, il secondo ha questo automa:
+\begin{center}
+	\begin{tikzpicture}[scale=0.2]
+	\tikzstyle{every node}+=[inner sep=0pt]
+	\draw [black] (10.1,-24.6) circle (3);
+	\draw (10.1,-24.6) node {$q_0$};
+	\draw [black] (20.6,-24.6) circle (3);
+	\draw (20.6,-24.6) node {$q_1$};
+	\draw [black] (31.1,-24.6) circle (3);
+	\draw (31.1,-24.6) node {$q_2$};
+	\draw [black] (42.2,-24.6) circle (3);
+	\draw (42.2,-24.6) node {$q_3$};
+	\draw [black] (53.5,-24.6) circle (3);
+	\draw (53.5,-24.6) node {$q_4$};
+	\draw [black] (53.5,-24.6) circle (2.4);
+	\draw [black] (34.8,-38.7) circle (3);
+	\draw (34.8,-38.7) node {$q\bot$};
+	\draw [black] (13.1,-24.6) -- (17.6,-24.6);
+	\fill [black] (17.6,-24.6) -- (16.8,-24.1) -- (16.8,-25.1);
+	\draw (15.35,-25.1) node [below] {$1$};
+	\draw [black] (23.6,-24.6) -- (28.1,-24.6);
+	\fill [black] (28.1,-24.6) -- (27.3,-24.1) -- (27.3,-25.1);
+	\draw (25.85,-25.1) node [below] {$1$};
+	\draw [black] (34.1,-24.6) -- (39.2,-24.6);
+	\fill [black] (39.2,-24.6) -- (38.4,-24.1) -- (38.4,-25.1);
+	\draw (36.65,-25.1) node [below] {$0$};
+	\draw [black] (45.2,-24.6) -- (50.5,-24.6);
+	\fill [black] (50.5,-24.6) -- (49.7,-24.1) -- (49.7,-25.1);
+	\draw (47.85,-25.1) node [below] {$0$};
+	\draw [black] (56.18,-23.277) arc (144:-144:2.25);
+	\draw (60.75,-24.6) node [right] {$1$};
+	\fill [black] (56.18,-25.92) -- (56.53,-26.8) -- (57.12,-25.99);
+	\draw [black] (51.1,-26.41) -- (37.2,-36.89);
+	\fill [black] (37.2,-36.89) -- (38.14,-36.81) -- (37.53,-36.01);
+	\draw (43,-31.15) node [above] {$0$};
+	\draw [black] (40.81,-27.26) -- (36.19,-36.04);
+	\fill [black] (36.19,-36.04) -- (37.01,-35.57) -- (36.12,-35.1);
+	\draw (37.82,-30.5) node [left] {$1$};
+	\draw [black] (31.86,-27.5) -- (34.04,-35.8);
+	\fill [black] (34.04,-35.8) -- (34.32,-34.9) -- (33.35,-35.15);
+	\draw (32.19,-32.14) node [left] {$1$};
+	\draw [black] (22.73,-26.71) -- (32.67,-36.59);
+	\fill [black] (32.67,-36.59) -- (32.46,-35.67) -- (31.75,-36.38);
+	\draw (26.53,-32.13) node [below] {$0$};
+	\draw [black] (12.71,-26.09) -- (32.19,-37.21);
+	\fill [black] (32.19,-37.21) -- (31.75,-36.38) -- (31.25,-37.25);
+	\draw (21.3,-32.15) node [below] {$0$};
+	\end{tikzpicture}
+\end{center}
+\begin{enumerate}
+	\item $x\in L \Rightarrow x \in L(m)$\\
+	\textbf{Passo base}\\
+	$ \delta(q_0,1100)=q_4 \in F \greenmark $\\
+	\textbf{Passo induttivo}\\
+	Supponiamo che $\forall x \text{ t.c. } |x|=n \quad x \in L \Rightarrow x\in L(n)$.\\
+	Prendiamo allora una stringa $y$ t.c. $|y|>n$ e $y=xa \text{ con }a\in\varepsilon$.\\
+	Posto che $\delta(q_0,x)=q_4$:
+	\begin{itemize}
+		\item se $a=0$ allora $\delta(q_4,0)=q_\bot \notin F \greenmark$
+		\item se $a=1$ allora $\delta(q_4,1)=q_3 \in F \greenmark$
+	\end{itemize}
+	
+	\item $x\notin L \Rightarrow x \notin L(m)$\\
+	\textbf{Passo base}\\
+	$x=0 \rightarrow \delta(q_0,0)=q_\bot \notin F \greenmark$\\
+	$x=1 \rightarrow \delta(q_0,1)=q_1 \notin F \greenmark$\\
+	$x=11 \rightarrow \delta(q_0,11)=q_2 \notin F \greenmark$\\
+	$x=10 \rightarrow \delta(q_0,10)=q_\bot \notin F \greenmark$\\
+	$x=111 \rightarrow \delta(q_0,111)=q_\bot \notin F \greenmark$\\
+	$x=110 \rightarrow \delta(q_0,110)=q_3 \notin F \greenmark$\\
+	$x=1101 \rightarrow \delta(q_0,1101)=q_\bot \notin F \greenmark$\\
+	\textbf{Passo induttivo}\\
+	Supponiamo che $\forall x \text{ t.c. } |x|=n \quad x \notin L \Rightarrow x\notin L(n)$.\\
+	Prendiamo allora una stringa $y$ t.c. $|y|>n$ e $y=xa \text{ con }a\in\varepsilon$. Ricordiamoci che possiamo usare $\delta(\delta(q_0,x),a)$.
+	\begin{itemize}
+		\item $\delta(q_0,x)=q_0$\\
+		Se $a=0$ allora $\delta(q_0,0)=q_\bot \notin F \greenmark$\\
+		Se $a=1$ allora $\delta(q_0,1)=q_1 \notin F \greenmark$
+		\item $\delta(q_0,x)=q_1$\\
+		Se $a=0$ allora $\delta(q_1,0)=q_\bot \notin F \greenmark$\\
+		Se $a=1$ allora $\delta(q_1,1)=q_2 \notin F \greenmark$
+		\item $\delta(q_0,x)=q_2$\\
+		Se $a=0$ allora $\delta(q_2,0)=q_3 \notin F \greenmark$\\
+		Se $a=1$ allora $\delta(q_2,1)=q_\bot \notin F \greenmark$
+		\item $\delta(q_0,x)=q_3$\\
+		Se $a=0$ allora $\delta(q_3,0)=q_4 \in F \greenmark$\\
+		Se $a=1$ allora $\delta(q_3,1)=q_\bot \notin F \greenmark$
+	\end{itemize}
+\end{enumerate}
+Se consideriamo invece $C_2=(1111001^m)^2$, notiamo che potrebbe facilmente trattarsi di un linguaggio CF. Procediamo quindi con il pumping lemma.
+\begin{itemize}
+	\item $z=uvw$
+	\item $|z|\geq k$
+	\item $|uv|\leq k$
+	\item $|v|>0$
+	\item $\forall i \in \mathbb{N}.uv^iw\in L \text{ con }i\geq0$
+\end{itemize}
+La stringa sarà formata così: $1^40^21^{k+|v|(i-1)}1^40^21^k$.
+Affinché appartenga al linguaggio, è necessario che $k+|v|(i-1)=k$, che per $i \rightarrow 2 \Rightarrow |v|=0$, che è impossibile. \greenmark\\
+Una grammatica che genera questo linguaggio è fatta in questo modo:
+\begin{align*}
+	&S \rightarrow 111100B\\
+	&B \rightarrow 1B1|111100
+\end{align*}
+Mentre una possibile derivazione per questa grammatica è:
+\begin{center}
+	\begin{tikzpicture}
+	\Tree
+	[.\blue{S}
+		[.1^40^2\blue{B}
+			[.1^40^21\blue{B}1
+				[.1^40^211\blue{B}11
+					[.1^40^2111\blue{B}111
+						1^40^2\blue{1^3}1^40^2\blue{1^3}
+					]
+				]
+			]
+		]
+	]
+	\end{tikzpicture}
+\end{center}
+Dimostriamo la correttezza della grammatica.
+Per dimostrare la correttezza della nostra grammatica, dobbiamo dimostrare la seguente condizione:
+$$x\in L \Leftrightarrow S \Rightarrow_* x$$
+Essendo una doppia implicazione, dimostreremo separatamente
+\begin{enumerate}
+	\item $x\in L \Rightarrow S \Rightarrow_* x $, che si dimostra per \textit{induzione} sulla lunghezza della stringa
+	\item $ S \Rightarrow_i k \Rightarrow x \in L$, che si dimostra per \textit{induzione} sul numero di passi di derivazione
+\end{enumerate}
+\begin{enumerate}
+	\item $x\in L \Rightarrow S \Rightarrow_* x $\\
+	\textbf{Passo base}\\
+	$y=1^40^21^40^2 \qquad x \in L$ ed $\exists S\Rightarrow 1^40^21^40^2 \greenmark $\\
+	\textbf{Passo induttivo}\\
+	Consideriamo $y \in \varepsilon^*$ tale che $|y|<n$ e supponiamo che $\forall y \in L \Rightarrow S \Rightarrow_* y$.\\
+	Allora prendiamo $|x|\geq n$ e sapendo che $y$ è composto come $y=1^40^21^k1^40^21^k$, $x$ sarà $1^40^21^m1^40^21^m$ con $m>k$. Procediamo prendendo $m=k+1$:
+	$$ x=1^40^21^{k+1}1^40^21^{k+1}$$
+	Sappiamo per ipotesi che esiste una derivazione  $S\Rightarrow_i 1^40^21^k1^40^21^k$, quindi
+	$$\exists S \Rightarrow y \rightarrow \exists S \Rightarrow_i 1^40^21^k1^40^21^k$$
+	ma se esiste questa esiste anche la derivazione precedente, ovvero
+	$$\exists S \Rightarrow_{i-1} 1^40^21^{k}B1^{k} \Rightarrow ...$$
+	essendo che la produzione $S\rightarrow 1B1$ appartiene all'insieme delle possibili produzioni, posso sostituire:
+	$$... \Rightarrow_i  1^40^21^{k+1}B1^{k+1} \Rightarrow_{i+1}  1^40^21^{k+1}1^40^21^{k+1} = x \greenmark$$
+	
+	\item $ S \Rightarrow_i k \Rightarrow x \in L$\\
+	\textbf{Passo base}\\
+	$S\rightarrow 1^40^21^40^2 \qquad x=1^40^21^40^2 \quad x \in L \greenmark $\\
+	\textbf{Passo induttivo}\\
+	$\forall i \leq n \quad S \Rightarrow_i y \Rightarrow y \in L $ (in $i$ passi otteniamo una stringa $\in L$, per ogni $i\leq n$).
+	Sappiamo che $y$ sarà nella forma $1^40^21^k1^40^21^k$ visto che $\in L$, quindi $S \Rightarrow_i 1^40^21^k1^40^21^k$.
+	Ma se esiste quella produzione, allora esisterà anche quella precedente:
+	$$S \Rightarrow_i 1^40^21^k1^40^21^k \Rightarrow \exists S \Rightarrow_{i-1} 1^40^21^kB1^k$$
+	$$\Rightarrow_i 1^40^21^k1B11^k \Rightarrow_{i+1} 1^40^21^{k+1}1^40^21^{k+1} \in L \greenmark$$
+\end{enumerate}
+Se consideriamo $C_n=(1^{2n}001^m)^n$ con $n>2$, il linguaggio diventa non-CF, per cui dobbiamo dimostrarlo usando il pumping lemma. Facciamo la dimostrazione per $$n=3 \rightarrow C_3=(1^60^21^m)^3$$
+\begin{center}
+    \begin{tikzpicture}
+    % Defining main coordinates
+    \coordinate (a) at (0,0);
+    \coordinate (b) at (2,0);
+    \coordinate (c) at (3,0);
+    \coordinate (d) at (7,0);
+    \coordinate (e) at (9,0);
+    \coordinate (f) at (10,0);
+    \coordinate (g) at (14,0);
+    \coordinate (h) at (15,0);
+    
+    % Bracket rectangle
+    \def\y{0.5*28}
+    \draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] ($(c)+(0,\y)$.north east) -- ($(d)+(0,\y)$.north west) node [midway, above=0.2cm] {$k$};
+    \draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] ($(f)+(0,\y)$.north east) -- ($(g)+(0,\y)$.north west) node [midway, above=0.2cm] {$k$};
+    \draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] ($(g)+(0,\y)$.north east) -- ($(h)+(0,\y)$.north west) node [midway, above=0.2cm] {$|z|-(2k+16)$};
+    
+    % Original string rectangle
+    \def\y{0.5*27}
+    \draw ($(a)+(0,-0.2)$) -- ($(a)+(0,\y+0.5)$) [];
+    \draw ($(a)+(0,\y)$) -- ($(b)+(0,\y)$) [] node[midway,above]{$1^6$};
+    
+    \draw ($(b)+(0,-0.2)$) -- ($(b)+(0,\y+0.5)$) [];
+    \draw ($(b)+(0,\y)$) -- ($(c)+(0,\y)$) [] node[midway,above]{$0^2$};
+    
+    \draw ($(c)+(0,-0.2)$) -- ($(c)+(0,\y+0.5)$) [];
+    \draw ($(c)+(0,\y)$) -- ($(d)+(0,\y)$) [] node[midway,above]{$1\dots1$};
+    
+    \draw ($(d)+(0,-0.2)$) -- ($(d)+(0,\y+0.5)$) [];
+    \draw ($(d)+(0,\y)$) -- ($(e)+(0,\y)$) [] node[midway,above]{$1^6$};
+    
+    \draw ($(e)+(0,-0.2)$) -- ($(e)+(0,\y+0.5)$) [];
+    \draw ($(e)+(0,\y)$) -- ($(f)+(0,\y)$) [] node[midway,above]{$0^2$};
+    
+    \draw ($(f)+(0,-0.2)$) -- ($(f)+(0,\y+0.5)$) [];
+    \draw ($(f)+(0,\y)$) -- ($(g)+(0,\y)$) [] node[midway,above]{$1\dots1$};
+    
+    \draw ($(g)+(0,-0.2)$) -- ($(g)+(0,\y+0.5)$) [];
+    \draw ($(g)+(0,\y)$) -- ($(h)+(0,\y)$) [] node[midway,above]{$\dots$};
+    
+    % Possible divisions
+    \def\y{0.5*26}
+    \draw ($(a)+(1.0,\y)$) node[]{$vx$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{1}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*25}
+    \draw ($(b)+(-0.1,\y)$) node[]{$v|x|$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{2}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*24}
+    \draw ($(b)+(0,\y)$) node[]{$vx$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{3}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*23}
+    \draw ($(b)+(0.1,\y)$) node[]{$|v|x$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{4}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*22}
+    \draw ($(b)+(0.5,\y)$) node[]{$vx$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{5}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*21}
+    \draw ($(c)+(-0.1,\y)$) node[]{$v|x|$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{6}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*20}
+    \draw ($(c)+(0,\y)$) node[]{$vx$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{7}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*19}
+    \draw ($(c)+(0.1,\y)$) node[]{$|v|x$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{8}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*18}
+    \draw ($(c)+(2.0,\y)$) node[]{$vx$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{9}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*17}
+    \draw ($(d)+(-0.1,\y)$) node[]{$v|x|$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{10}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*16}
+    \draw ($(d)+(0,\y)$) node[]{$vx$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{11}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*15}
+    \draw ($(d)+(0.1,\y)$) node[]{$|v|x$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{12}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*14}
+    \draw ($(d)+(1.0,\y)$) node[]{$vx$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{13}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*13}
+    \draw ($(e)+(-0.1,\y)$) node[]{$v|x|$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{14}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*12}
+    \draw ($(e)+(0,\y)$) node[]{$vx$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{15}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*11}
+    \draw ($(e)+(0.1,\y)$) node[]{$|v|x$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{16}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*10}
+    \draw ($(e)+(0.5,\y)$) node[]{$vx$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{17}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*9}
+    \draw ($(f)+(-0.1,\y)$) node[]{$v|x|$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{18}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*8}
+    \draw ($(f)+(0,\y)$) node[]{$vx$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{19}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*7}
+    \draw ($(f)+(0.1,\y)$) node[]{$|v|x$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{20}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*6}
+    \draw ($(b)+(-0.2,\y)$) node[]{$v$};
+    \draw ($(c)+(0.2,\y)$) node[]{$x$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{21}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*5}
+    \draw ($(b)+(0,\y)$) node[]{$|v|$};
+    \draw ($(c)+(0.2,\y)$) node[]{$x$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{22}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*4}
+    \draw ($(b)+(-0.2,\y)$) node[]{$v$};
+    \draw ($(c)+(0,\y)$) node[]{$|x|$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{23}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*3}
+    \draw ($(b)+(0,\y)$) node[]{$|v|$};
+    \draw ($(c)+(0,\y)$) node[]{$|x|$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{24}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5*2}
+    \draw ($(c)+(-0.2,\y)$) node[]{$v$};
+    \draw ($(d)+(0.2,\y)$) node[]{$x$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{25}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \def\y{0.5}
+    \draw ($(d)+(-0.2,\y)$) node[]{$v$};
+    \draw ($(e)+(0.2,\y)$) node[]{$x$};
+    \draw ($(a)+(-0.2,\y)$) node[]{\circled{26}};
+    \draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
+    
+    \draw ($(a)+(-0.2,0)$) node[]{\circled{\dots}};
+    \draw ($(a)+(0,-0.2)$) -- ($(g)+(0,-0.2)$) [loosely dashed];
+    \end{tikzpicture}
+\end{center}
+Verifichiamo per ogni caso di violare le regole del pumping lemma, in modo da dimostrare che questo linguaggio non è CF.
+\begin{enumerate}[label=\protect\circled{\arabic*}]
+	\item $z=1^{6+|vx|(i-1)}0^21^k1^60^21^k1^60^21^k$\\
+	Affinché sia valida, deve valere $6+|vx|(i-1)=6$, quindi $|vx|(i-1)=0$, che però per $i\rightarrow 2$ viola la condizione $|vx|>0$. \greenmark
+	
+	\item $z=1^{6+|v|(i-1)-\frac{|x|}{2}}(10)^{|x|i}0^{2-\frac{|x|}{2}}1^k1^60^21^k1^60^21^k$\\
+	Distinguiamo due casi:
+	\begin{itemize}
+		\item $|x|=0$\\
+		$1^{6+|v|(i-1)}0^21^k1^60^21^k1^60^21^k \Rightarrow 6+|v|(i-1)=6$\\
+        per $i\rightarrow 2 \Rightarrow |v|=0$ Impossibile \greenmark
+		\item $|x|>0$\\
+        $1^{6+|v|(i-1)-\frac{|x|}{2}}(10)^{|x|i}0^{2-\frac{|x|}{2}}1^k1^60^21^k1^60^21^k$\\
+		per $i\rightarrow 2 \Rightarrow 1^{6+|v|-\frac{|x|}{2}}10100^{2-\frac{|x|}{2}}1^k1^60^21^k1^60^21^k \notin L$ \greenmark
+	\end{itemize}
+	
+	\item $z=1^{6+|v|(i-1)}0^{2+|x|(i-1)}1^k1^60^21^k1^60^21^k$\\
+	Affinché sia valida, deve valere $6+|v|(i-1)+2+|x|(i-1)=8$, quindi $|v|(i-1)+|x|(i-1)=0$, che per
+    $i \rightarrow 2 \Rightarrow |v|+|x|=0$, che non è possibile. \greenmark
+    
+    \item La dimostrazione è analoga al punto 2.
+    
+    \item $z=1^60^{2+|vx|(i-1)}1^k1^60^21^k1^60^21^k$\\
+    Affinché sia valida, deve valere $2+|vx|(i-1)=2$, che per $i \rightarrow 2 \Rightarrow |vx|=0$, quindi no. \greenmark
+    
+    \item La dimostrazione è analoga al punto 2.
+    
+    \item La dimostrazione è analoga al punto 3.
+    
+    \item La dimostrazione è analoga al punto 2.
+    
+    \item $z=1^60^21^{k-|vx|(i-1)}1^60^21^k1^60^21^k$\\
+    Affinché sia valida, deve valere $k-|vx|(i-1)=k$, che per $i \rightarrow 2 \Rightarrow |vx|=0$, quindi no. \greenmark
+    
+    \item La dimostrazione è analoga al punto 2.
+    
+    \item La dimostrazione è analoga al punto 3.
+    
+    \item La dimostrazione è analoga al punto 2.
+    
+    \item La dimostrazione è analoga al punto 1.
+    
+    \item La dimostrazione è analoga al punto 2.
+    
+    \item La dimostrazione è analoga al punto 3.
+    
+    \item La dimostrazione è analoga al punto 2.
+    
+    \item La dimostrazione è analoga al punto 5.
+    
+    \item La dimostrazione è analoga al punto 2.
+    
+    \item La dimostrazione è analoga al punto 3.
+    
+    \item La dimostrazione è analoga al punto 2.
+	
+	\item $z=1^{6+|v|(i-1)}0^21^{k+|x|(i-1)}1^60^21^k1^60^21^k$\\
+	Affinché sia valida, deve valere $6+|v|(i-1)+k+|x|(i-1)=6+k \Rightarrow |v|(i-1)+|x|(i-1)=0$.
+    Considerando $i\rightarrow 2 \Rightarrow |v|+|x|=0$, che non è possibile. \greenmark
+	
+	\item La dimostrazione è simile al punto 2.
+    
+    \item La dimostrazione è simile al punto 2.
+    
+    \item La dimostrazione è simile al punto 2.
+    
+    \item $z=1^60^{2+|v|(i-1)}1^k1^{6+|x|(i-1)}0^21^k1^60^21^k$\\
+    Questa suddivisione non si può fare, perché viola $|vwx|<k$. \greenmark
+    
+    \item $<=1^60^21^{k+|v|(i-1)}1^60^{2+|x|(i-1)}1^k1^60^21^k$\\
+    Affinché sia valida, deve valere $k+|v|(i-1)+2+|x|(i-1)=k+2\Rightarrow |v|(i-1)+|x|(i-1)=0$.
+    Considerando $i\rightarrow 2 \Rightarrow |v|+|x|=0$, che non è possibile. \greenmark
+\end{enumerate}
+
+Riporto un altro interessante esempio. Consideriamo il linguaggio:
+\begin{equation*}
+    L=\{0^n|n \text{ è primo}\}
+\end{equation*}
+Se $n$ fosse fissato, sarebbe un banalissimo linguaggio regolare, perché sarebbe finito. In questo caso però non solo $n$ non è fissato, ma avendo
+quella particolare condizione di essere primo, fa uscire il nostro linguaggio anche dai CF, relegandolo ai non-CF. Non esiste infatti automa in grado
+di stabilire se un numero è primo. Procediamo quindi con la dimostrazione tramite il pumping lemma CF.
+Non ci sono molte suddivisioni possibili, abbiamo solamente che $vx$ è sicuramente dentro $0^n$, per cui la nostra stringa sarà formata così:
+$$0^{n+|vx|(i-1)}$$
+Notiamo che il solito trucco di ridurre $|vx|$ a $0$ non funziona, per cui dobbiamo inventarci qualcosa.
+La soluzione è considerare la somma degli esponenti come un numero $n'$ t.c. è primo, prendere una certa $i$ ad-hoc per poi arrivare ad un assurdo, nella maniera seguente:
+\begin{align*}
+    &n+(i-1)|vx|=n', \qquad \text{prendo } i=n+1\\
+    &n+(n+1-1)|vx|=n'\\
+    &n+n|vx|=n'\\
+    &n(|vx|+1)=n'
+\end{align*}
+Ma $n(|vx|+1)$ è divisibile sia per $n$ che per $(|vx|+1)$, il che contraddice il fatto che $n'$ sia primo, quindi abbiamo trovato un assurdo, che ci costringe
+a riconoscere che il linguaggio è non-CF.
+
+\chapter{Teoria della ricorsione}
+\textbf{Attenzione}! Avete presente il dolore di quando sbattete il mignolo del piede contro un angolo del muro?
+Ecco, questa parte vi farà capire che esistono dolori peggiori. Se come me siete piuttosto pratici, farete una fatica
+immensa per capire questa roba astrusa (io non l'ho capita nemmeno ora\dots).
+Fatta questa doverosa avvertenza, iniziamo subito facendo un ripasso della teoria dietro a questa roba.
+
+\paragraph{Notazione}
+Facciamo una breve panoramica della notazione che andremo ad utilizzare.
+$$\varphi_{\textcolor{blue}{x}}(\textcolor{red}{y})=\textcolor{green}{z}$$
+\begin{itemize}
+    \item $\blue{x}$ Indice del programma, ma viene usato anche per indicare un programma $x$
+    \item $\varphi_{\blue{x}}$ Programma di indice $x$
+    \item $\textcolor{red}{y}$ Input $y$
+    \item $\textcolor{green}{z}$ Output $z$
+    \item $W_x$ Insieme degli input per i quali il programma termina (dominio del programma)
+    \item $range(x)$ Insieme degli output del programma (codominio del programma)
+\end{itemize}
+
+\paragraph{Funzioni parziali ricorsive}
+La prima cosa da capire è la definizione di \textbf{funzione ricorsiva}. Le funzioni ricorsive sono una classe di funzioni dai 
+numeri naturali ai numeri naturali ($\mathbb{N}\rightarrow\mathbb{N}$) che sono ‘‘calcolabili’’ in un qualche senso intuitivo.
+Possiamo anche dire che le funzioni ricorsive possono essere calcolate da una macchina di Turing.
+Diciamo che una funzione ricorsiva è \textbf{parziale} quando non è definita per tutti gli input.
+
+\paragraph{Insiemi ricorsivi e ricorsivamente enumerabili}
+Dopo aver visto cos'è una funzione parziale ricorsiva, vediamo cos'è un insieme ricorsivo.
+Dato $x$ un programma e $\varphi_x$ la funzione parziale ricorsiva calcolata dal programma, definiamo il \textbf{dominio} di $\varphi_x$ come:
+\begin{equation*}
+	W_x=\{y|\varphi_x(y)\downarrow \} \quad W_x \subseteq \mathbb{N}
+\end{equation*}
+Che vuol dire? Significa che il dominio della funziona \textit{calcolata} dal programma è l'insieme degli input per i quali termina (definizione da Capitan Ovvio).
+Ok, ora invece diciamo che un insieme $A$ è detto \textbf{ricorsivamente enumerabile} (r.e.) \textit{se esiste} una funzione parziale ricorsiva $\psi$ tale che
+\begin{equation*}
+	W_\psi=A \quad A \subseteq \mathbb{N}
+\end{equation*}
+In pratica se un certo insieme è l'insieme di input per i quali un programma (che calcola la funzione parziale) termina, allora si dice ricorsivamente enumerabile.
+Definiamo inoltre \textbf{funzione semicaratteristica} di un insieme $A$ r.e. la seguente funzione parziale ricorsiva:
+\begin{equation*}
+	\psi_A(x)=
+	\begin{cases}
+		1 \text{ se } x\in A\\
+		\uparrow \text{ se } x\notin A
+	\end{cases}
+\end{equation*}
+Questa funzione ci dice se un certo input $x\in\mathbb{N}$ appartiene all'insieme $A$, quindi se appartiene all'insieme dei possibili input
+che fanno terminare il programma. Vediamo che in questo caso è possibile dire di si, ma non di no. Quando è possibile dire anche di no, si ha
+a che fare con una \textbf{funzione caratteristica} di un \textbf{insieme ricorsivo}:
+\begin{equation*}
+	\psi_A(x)=
+	\begin{cases}
+		1 \text{ se } x\in A\\
+		0 \text{ se } x\notin A
+	\end{cases}
+\end{equation*}
+Notiamo che la ricorsività è più potente della ricorsiva enumerabilità, infatti se un insieme è ricorsivo allora è anche ricorsivamente enumerabile.
+Esempi di insiemi noti che sono ricorsivi sono $\mathbb{N}$, $2\mathbb{N}$, $2\mathbb{N}+1$, tutti gli insiemi finiti, infatti per ciascuno di essi
+io riesco a costruire una funzione caratteristica che mi sa dire di si se un numero gli appartiene o no in caso contrario.
+
+\paragraph{Teorema di Post}
+Il teorema di Post dice che, dato un insieme $A$ ricorsivo, $A$ e $\bar{A}$ sono entrambi ricorsivamente enumerabili.
+
+\paragraph{Teorema di Kleene}
+Questo teorema afferma che le seguenti affermazioni sono equivalenti:
+\begin{itemize}
+	\item $A$ è r.e.
+	\item $A=range(\varphi)$ con $\varphi$ parziale ricorsiva
+	\item $A=\varnothing$ oppure $A=range(f)$ con $f$ totale ricorsiva
+\end{itemize}
+
+\paragraph{Altri teoremi}
+\begin{itemize}
+	\item $A$ è ricorsivo $\Rightarrow A=\varnothing$ oppure $A=range(f)$ con $f$ non decrescente.
+	\item Ogni insieme r.e. infinito ha un sottoinsieme ricorsivo infinito.
+	\item Se $t$ è una funzione totale ricorsiva allora $\exists e$ t.c. $\varphi_e=\varphi_{t(e)}$.
+\end{itemize}
+
+\paragraph{Proprietà estensionale}
+Consideriamo $\Pi$ come proprietà sulle MdT, $\Pi \subseteq \mathbb{N}$. Si dice che $\Pi$ è \textbf{estensionale} se
+\begin{equation*}
+	\forall(x,y)\in\mathbb{N}: x\in\Pi \wedge \varphi_x=\varphi_y \Rightarrow y\in\Pi
+\end{equation*}
+Ok sicuramente starete pensando ‘‘ma che c'è scritto?’’. Si capisce meglio con un esempio!
+Supponiamo che $\Pi$ sia la proprietà ‘‘$\{p|p\text{ = 174 righe}\}$’’, ovvero che un certo programma $p$ ha esattamente 174 righe di codice.
+Una proprietà è estensionale quando, preso un altro programma che calcola la stessa funzione, la proprietà si mantiene anche per quel programma.
+Visto che abbiamo detto che la proprietà è di avere 174 righe, è chiaro che non è estensionale, infatti posso avere un programma più lungo per esempio.
+
+\paragraph{Teorema di Rice}
+Sia $\Pi$ una proprietà estensionale. Essa è ricorsiva sse $\Pi=\varnothing$ oppure $\Pi=\mathbb{N}$.
+Detto in soldoni per ogni proprietà \textbf{non banale} delle funzioni ricorsive è \textbf{indecidibile} il problema di decidere (scusate il gioco di parole)
+quali funzioni soddisfino tale proprietà e quali no. Per proprietà banale in questo caso si intende una proprietà che non effettua alcuna discriminazione
+tra le funzioni calcolabili, cioè che vale o per tutte o per nessuna (tipo appunto l'essere vuoto o l'essere tutto $\mathbb{N}$).
+
+\paragraph{L'insieme $K$ e il suo complementare}
+Esistono insiemi che sono ricorsivamente enumerabili ma non sono ricorsivi? Si, e l'insieme che stiamo per scoprire ci accompagnerà sempre
+nei nostri incubi: sto parlando del famigerato insieme $K$. Questo insieme è definito come ‘‘l'insieme dei programmi che terminano con input
+sé stessi’’:
+\begin{equation*}
+K=\{x|\varphi_x(x)\downarrow\} = \{x|x\in W_x\}
+\end{equation*}
+Non riusciamo infatti a dire che un programma ‘‘non termina’’, per farlo dovremmo essere immortali e aspettare un tempo infinito.
+Oltre a lui c'è anche suo fratello, e fra i due non saprei dire chi è il peggiore. In ogni caso il suo complementare è $\bar{K}$,
+che ovviamente è l'insieme di tutti i programmi che \textbf{non} terminano con input se stessi.
+Se vi state chiedendo: ‘‘Ma cosa vuol dire dare in input sé stesso’’, beh sappiate che non l'ho capito nemmeno ora. Forse vuol dire
+fare l'hash del codice e darlo in pasto a se stesso (e se il programma non prende input?). Boh, robe da informatica teorica\dots
+
+\paragraph{Riduzione funzionale}
+Questa è una cosa che useremo negli esercizi. Si dice che un insieme si \textit{riduce funzionalmente} ad un altro se:
+\begin{equation*}
+A \preceq_f B \Leftrightarrow \exists f \text{ totale ricorsiva t.c. } x \in A \Rightarrow f(x)\in B
+\end{equation*}
+Ad esempio, consideriamo l'insieme $K_1=\{<x,y>|y\in W_x\}$ (l'insieme dei programmi che terminano con input $x$ termina anche con $y$) e dimostriamo che si riduce
+funzionalmente a $K$.
+\begin{itemize}
+	\item $x\in K \Rightarrow \varphi_x(x)\downarrow$; $<x,x> \in W_x$
+	\item $x\notin K \Rightarrow \varphi_x(x)\uparrow$; $<x,x> \notin K_1$
+\end{itemize}
+Un'importante osservazione è che se $A\preceq_f B \iff \bar{A} \preceq_f \bar{B}$.
+
+\paragraph{Teorema fondamentale della riducibilità}
+Il teorema afferma che:
+\begin{itemize}
+	\item Se $A \preceq_f B$ e $B$ è r.e. $\Rightarrow A$ è r.e.
+	\item Se $A \preceq_f B$ e $B$ è ricorsivo $\Rightarrow A$ è ricorsivo
+\end{itemize}
+Anche questo teorema viene usato negli esercizi.
+
+Facciamo un esempio: consideriamo l'insieme $A=\{x\mid|W_x|<\omega\}$, ovvero tutti i programmi con dominio finito.
+La condizione di appartenenza ad $A$ è dunque 
+\begin{align*}
+	x\in A \quad \iff& \quad g(x)\in\{x\mid|W_x|<\omega\}\\
+	\varphi_x(x)\downarrow \quad \iff& \quad |W_{g(x)}|<\omega
+\end{align*}
+Definiamo la funzione semicaratteristica $\psi$:
+\begin{equation*}
+	\psi_A(x,z)=
+	\begin{cases}
+		1 \text{ se } \varphi_x(x) \text{ \textbf{non} converge in meno di } z \text{ passi}\\
+		\uparrow \text{ altrimenti}
+	\end{cases}
+\end{equation*}
+\begin{itemize}
+	\item Se $x \in A \Leftrightarrow \exists n . \varphi_x(x) \downarrow^n$ (esiste un $n$ tale per cui $\varphi_x(x)$ termina in $n$ passi).
+	Quindi $\forall z \in [0 \dots n-1] \mbox{ } \varphi_x(x)\uparrow$.
+	\item Se $x \notin A \Leftrightarrow \varphi_x(x)$ risponde sempre 1 poiché $\forall z \in [n, +\infty) \mbox{ } \varphi_{g(x)}(z)\uparrow$, che implica
+	$|W_{g(x)}|=\omega$.
+\end{itemize}
+
+\paragraph{Insiemi creativi e produttivi}
+\begin{itemize}
+	\item Si definisce \textbf{insieme produttivo} un insieme $A$ se esiste una funzione totale ricorsiva $f$ t.c.:
+	\begin{equation*}
+		\forall x\in\mathbb{N}. (W_x \subseteq A \Rightarrow f(x)\in A \setminus W_x)
+	\end{equation*}
+	\item Si definisce \textbf{insieme creativo} un insieme $A$ se è r.e. ed il suo complemento è produttivo:
+	\begin{equation*}
+		A \in RE \text{ e } \forall x \in \mathbb{N}. (W_x \subseteq \bar{A} \Rightarrow f(x)\in\bar{A}\setminus W_x)
+	\end{equation*}
+\end{itemize}
+Un insieme quindi è produttivo se per ogni tentativo di enumerarlo in modo effettivo mediante un algoritmo di indice $x$ (ovvero per ogni $W_x \subseteq A$),
+esiste una trasformazione effettiva di di $x$ in un punto di $A$ che sfugge all'enumerazione. Cosa vuol dire nella pratica? Non ne ho idea.
+Essendo un ‘‘praticone’’ preferisco pensarla in questo modo: dato un insieme $A$, riesco a pensare ad un algoritmo che converge se $x\in A$?
+Ad esempio, consideriamo
+$$A=\{x|\varphi_x(1)=n\} \quad \text{ con } \in\mathbb{N},$$
+che è l'insieme dei programmi che, ricevendo in input $1$, danno in output il numero $n$. Riesco a pensare ad un algoritmo che verifica questo?
+Si, quindi è creativo.\\
+Importante conseguenza di ciò è che:
+\begin{itemize}
+	\item $A$ creativo $\Rightarrow \bar{A}$ produttivo
+	\item $A$ produttivo $\Rightarrow A$ non r.e.
+	\item $A$ creativo $\Rightarrow A$ non ricorsivo
+\end{itemize}
+
+\paragraph{Alcune scorciatoie utili}
+Riportiamo di seguito una serie di relazioni utili che si possono utilizzare negli esercizi.
+\begin{equation*}
+    f_w=\{f(x)|\varphi_x(f(x))\downarrow\}, f(x) \text{ totale ricorsiva}
+\end{equation*}
+Può essere riscritta come
+\begin{equation*}
+    f_w=\{f(x)|f(x)\in W_x\} \rightarrow RE
+\end{equation*}
+\linebreak
+Mostriamo ora una famiglia di insiemi, le cui composizioni sono ricorsivamente enumerabili:
+\begin{equation*}
+    f_w=\{f(x)|\varphi_{g(x)}(h(x))=C\} \rightarrow RE
+\end{equation*}
+dove $f(x),g(x),h(x)$ sono funzioni e $C$ è una costante (oppure una variabile $\in\mathbb{N}$).
+\linebreak
+
+\noindent
+Un'altra famiglia di insiemi è:
+\begin{equation*}
+    z=\{x|W_x=A\} \quad \text{e} \quad z=\{x|W_x\ne A\}, \text{ dove $A$ è un insieme}
+\end{equation*}
+Per $z=\{x|W_x=A\}$ valgono le seguenti affermazioni:
+\begin{itemize}
+    \item Se $A$ è produttivo $\rightarrow z=\varnothing$, quindi ricorsivo
+    \item Se $A$ è r.e. $\rightarrow z$ è produttivo
+\end{itemize}
+Mentre per $z=\{x|W_x\ne A\}$:
+\begin{itemize}
+    \item Se $A=\varnothing \rightarrow RE$, mediante la tecnica del \textit{dove tail}
+    \item Se $A=RE \rightarrow Z$ è produttivo
+    \item Se $A$ è produttivo $\rightarrow Z$ è ricorsivo
+\end{itemize}
+
+\chapter{Esercizi vari sulla teoria della ricorsione}
+Classificare nella teoria della ricorsione matematica il seguente insieme:
+\begin{equation*}
+	A=\{x|\varphi_x(ack(x,x,x))=7\} \text{, dove $ack()$ è la funzione di Ackermann.}
+\end{equation*}
+
+La prima cosa da fare è assicurarsi di capire bene il testo dell'esercizio.
+Qui stiamo considerando l'insieme dei programmi che, ricevendo in input l'\textit{output} della funzione di Ackermann, danno in output $7$.
+Per aiutarsi a identificare la tipologia dell'insieme, è buona pratica considerare anche l'insieme complementare. In questo caso, il complementare di $A$ è
+$$\bar{A}=\{x|\varphi_x(ack(x,x,x))\ne 7\}$$
+Che è quindi l'insieme dei programmi che ricevendo in input l'output della funzione di Ackermann \textbf{non} danno $7$.
+Riesco a pensare ad un algoritmo che prende il nostro programma $x$, gli passa in input la funzione di Ackermann (che termina sempre) e verifica che il risultato sia 7?
+Certamente! Quindi è creativo! Di conseguenza il suo complementare è produttivo, per cui possiamo ridurre $A$ a $K$ (e di conseguenza $\bar{A}$ a $\bar{K}$).
+Definiamo la funzione semicaratteristica $\psi_A$:
+\begin{equation*}
+	\psi_A(x,y)=
+	\psi_{g(x)}(y)=
+	\begin{cases}
+		7 \text{ se } x \in K\\
+		\uparrow \text{ altrimenti}
+	\end{cases}\\
+\end{equation*}
+\begin{itemize}
+	\item $x\in K.\varphi_{g(x)}(y)=7 \Rightarrow \varphi_{g(x)}(ack(g(x),g(x),g(x)))=7 \Rightarrow g(x) \in A$
+	\item $x\notin K.\varphi_{g(x)}(y)\uparrow \Rightarrow \varphi_{g(x)}(ack(g(x),g(x),g(x)))\uparrow \Rightarrow g(x) \notin A$ 
+\end{itemize}
+
+\end{document}
