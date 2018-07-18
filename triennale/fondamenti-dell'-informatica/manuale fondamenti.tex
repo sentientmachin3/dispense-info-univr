@@ -7,7 +7,9 @@
 \usepackage{amssymb}
 \usepackage{mathtools}
 \usepackage{xcolor}
+\usepackage{cancel}
 \usepackage{enumitem}
+\usepackage{listings}
 \hypersetup{
 	colorlinks,
 	citecolor=black,
@@ -645,8 +647,8 @@ Notiamo che, al variare di $m$, otteniamo sempre e comunque un linguaggio non CF
 Procediamo quindi con il pumping lemma per i linguaggi non CF.\\
 \begin{itemize}
 	\item $\forall z = uvwxy$
-	\item $|z| \geq 2k$
-	\item $|vwx| \leq 2k$
+	\item $|z| \geq k$
+	\item $|vwx| \leq k$
 	\item $|vx|>0$
 	\item $uv^iwx^iy\in L$
 \end{itemize}
@@ -655,17 +657,21 @@ Scegliamo una stringa, $z=(1^{2n}00)^n$, ed elenchiamo le possibili suddivisioni
 	\begin{tikzpicture}
 	% Defining main coordinates
 	\coordinate (a) at (0,0);
-	\coordinate (b) at (5,0);
-	\coordinate (c) at (6,0);
-	\coordinate (d) at (11,0);
-	\coordinate (e) at (12,0);
-	\coordinate (f) at (14,0);
+	\coordinate (b) at (2,0);
+	\coordinate (c) at (4,0);
+	\coordinate (d) at (5,0);
+	\coordinate (e) at (7,0);
+	\coordinate (f) at (9,0);
+	\coordinate (g) at (10,0);
+	\coordinate (h) at (13,0);
 	
 	% Bracket rectangle
 	\def\y{0.5*18}
-	\draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] ($(a)+(0,\y)$.north east) -- ($(b)+(0,\y)$.north west) node [midway, above=0.2cm] {$2k$};
-	\draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] ($(c)+(0,\y)$.north east) -- ($(d)+(0,\y)$.north west) node [midway, above=0.2cm] {$2k$};
-	\draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] ($(e)+(0,\y)$.north east) -- ($(f)+(0,\y)$.north west) node [midway, above=0.2cm] {$|z|-2(2k+2)$};
+	\draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] ($(a)+(0,\y)$.north east) -- ($(b)+(0,\y)$.north west) node [midway, above=0.2cm] {$k$};
+	\draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] ($(b)+(0,\y)$.north east) -- ($(c)+(0,\y)$.north west) node [midway, above=0.2cm] {$k$};
+	\draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] ($(d)+(0,\y)$.north east) -- ($(e)+(0,\y)$.north west) node [midway, above=0.2cm] {$k$};
+	\draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] ($(e)+(0,\y)$.north east) -- ($(f)+(0,\y)$.north west) node [midway, above=0.2cm] {$k$};
+	\draw [decorate, decoration={brace, amplitude=5pt, raise=2.5pt}] ($(g)+(0,\y)$.north east) -- ($(h)+(0,\y)$.north west) node [midway, above=0.2cm] {$z-2(2k+2)$};
 	
 	% Original string rectangle
 	\def\y{0.5*17}
@@ -673,135 +679,133 @@ Scegliamo una stringa, $z=(1^{2n}00)^n$, ed elenchiamo le possibili suddivisioni
 	\draw ($(a)+(0,\y)$) -- ($(b)+(0,\y)$) [] node[midway,above]{$1\dots1$};
 	
 	\draw ($(b)+(0,-0.2)$) -- ($(b)+(0,\y+0.5)$) [];
-	\draw ($(b)+(0,\y)$) -- ($(c)+(0,\y)$) [] node[midway,above]{$00$};
+	\draw ($(b)+(0,\y)$) -- ($(c)+(0,\y)$) [] node[midway,above]{$1\dots1$};
 	
 	\draw ($(c)+(0,-0.2)$) -- ($(c)+(0,\y+0.5)$) [];
-	\draw ($(c)+(0,\y)$) -- ($(d)+(0,\y)$) [] node[midway,above]{$1\dots1$};
+	\draw ($(c)+(0,\y)$) -- ($(d)+(0,\y)$) [] node[midway,above]{$00$};
 	
 	\draw ($(d)+(0,-0.2)$) -- ($(d)+(0,\y+0.5)$) [];
-	\draw ($(d)+(0,\y)$) -- ($(e)+(0,\y)$) [] node[midway,above]{$00$};
+	\draw ($(d)+(0,\y)$) -- ($(e)+(0,\y)$) [] node[midway,above]{$1\dots1$};
 	
 	\draw ($(e)+(0,-0.2)$) -- ($(e)+(0,\y+0.5)$) [];
-	\draw ($(e)+(0,\y)$) -- ($(f)+(0,\y)$) [] node[midway,above]{$\dots$};
+	\draw ($(e)+(0,\y)$) -- ($(f)+(0,\y)$) [] node[midway,above]{$1\dots1$};
+	
+	\draw ($(f)+(0,-0.2)$) -- ($(f)+(0,\y+0.5)$) [];
+	\draw ($(f)+(0,\y)$) -- ($(g)+(0,\y)$) [] node[midway,above]{$00$};
+	
+	\draw ($(g)+(0,-0.2)$) -- ($(g)+(0,\y+0.5)$) [];
+	\draw ($(g)+(0,\y)$) -- ($(h)+(0,\y)$) [] node[midway,above]{$1\dots1$};
 	
 	% Possible divisions
 	\def\y{0.5*16}
-	\draw ($(a)+(2.5,\y)$) node[]{$vx$};
+	\draw ($(a)+(1,\y)$) node[]{$vx$};
 	\draw ($(a)+(-0.2,\y)$) node[]{\circled{1}};
-	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	\draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
 	
 	\def\y{0.5*15}
 	\draw ($(b)+(-0.1,\y)$) node[]{$v|x|$};
 	\draw ($(a)+(-0.2,\y)$) node[]{\circled{2}};
-	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	\draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
 	
 	\def\y{0.5*14}
 	\draw ($(b)+(0,\y)$) node[]{$vx$};
 	\draw ($(a)+(-0.2,\y)$) node[]{\circled{3}};
-	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	\draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
 	
 	\def\y{0.5*13}
 	\draw ($(b)+(0.1,\y)$) node[]{$|v|x$};
 	\draw ($(a)+(-0.2,\y)$) node[]{\circled{4}};
-	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	\draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
 	
 	\def\y{0.5*12}
-	\draw ($(b)+(0.5,\y)$) node[]{$vx$};
+	\draw ($(b)+(1,\y)$) node[]{$vx$};
 	\draw ($(a)+(-0.2,\y)$) node[]{\circled{5}};
-	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	\draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
 	
 	\def\y{0.5*11}
 	\draw ($(c)+(-0.1,\y)$) node[]{$v|x|$};
 	\draw ($(a)+(-0.2,\y)$) node[]{\circled{6}};
-	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	\draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
 	
 	\def\y{0.5*10}
 	\draw ($(c)+(0,\y)$) node[]{$vx$};
 	\draw ($(a)+(-0.2,\y)$) node[]{\circled{7}};
-	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	\draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
 	
 	\def\y{0.5*9}
 	\draw ($(c)+(0.1,\y)$) node[]{$|v|x$};
 	\draw ($(a)+(-0.2,\y)$) node[]{\circled{8}};
-	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	\draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
 	
 	\def\y{0.5*8}
-	\draw ($(c)+(2.5,\y)$) node[]{$vx$};
+	\draw ($(c)+(0.5,\y)$) node[]{$vx$};
 	\draw ($(a)+(-0.2,\y)$) node[]{\circled{9}};
-	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	\draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
 	
 	\def\y{0.5*7}
 	\draw ($(d)+(-0.1,\y)$) node[]{$v|x|$};
 	\draw ($(a)+(-0.2,\y)$) node[]{\circled{10}};
-	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	\draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
 	
 	\def\y{0.5*6}
 	\draw ($(d)+(0,\y)$) node[]{$vx$};
 	\draw ($(a)+(-0.2,\y)$) node[]{\circled{11}};
-	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	\draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
 	
 	\def\y{0.5*5}
 	\draw ($(d)+(0.1,\y)$) node[]{$|v|x$};
 	\draw ($(a)+(-0.2,\y)$) node[]{\circled{12}};
-	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	\draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
 	
 	\def\y{0.5*4}
-	\draw ($(d)+(0.5,\y)$) node[]{$vx$};
+	\draw ($(c)+(-0.2,\y)$) node[]{$v$};
+	\draw ($(d)+(0.2,\y)$) node[]{$x$};
 	\draw ($(a)+(-0.2,\y)$) node[]{\circled{13}};
-	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	\draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
 	
 	\def\y{0.5*3}
 	\draw ($(b)+(-0.2,\y)$) node[]{$v$};
 	\draw ($(c)+(0.2,\y)$) node[]{$x$};
 	\draw ($(a)+(-0.2,\y)$) node[]{\circled{14}};
-	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	\draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
 	
 	\def\y{0.5*2}
 	\draw ($(b)+(0,\y)$) node[]{$|v|$};
 	\draw ($(c)+(0.2,\y)$) node[]{$x$};
 	\draw ($(a)+(-0.2,\y)$) node[]{\circled{15}};
-	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	\draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
 	
 	\def\y{0.5}
 	\draw ($(b)+(-0.2,\y)$) node[]{$v$};
 	\draw ($(c)+(0,\y)$) node[]{$|x|$};
 	\draw ($(a)+(-0.2,\y)$) node[]{\circled{16}};
-	\draw ($(a)+(0,\y-0.2)$) -- ($(e)+(0,\y-0.2)$) [loosely dashed];
+	\draw ($(a)+(0,\y-0.2)$) -- ($(g)+(0,\y-0.2)$) [loosely dashed];
 	
 	\draw ($(b)$) node[]{$|v|$};
 	\draw ($(c)$) node[]{$|x|$};
 	\draw ($(a)+(-0.2,0)$) node[]{\circled{17}};
-	\draw ($(a)+(0,-0.2)$) -- ($(e)+(0,-0.2)$) [loosely dashed];
+	\draw ($(a)+(0,-0.2)$) -- ($(g)+(0,-0.2)$) [loosely dashed];
 	\end{tikzpicture}
 \end{center}
 Verifichiamo per ogni caso di violare le regole del pumping lemma, in modo da dimostrare che questo linguaggio non è CF.
 \begin{enumerate}[label=\protect\circled{\arabic*}]
-	\item $z=1^{2k-|vx|+|vx|i}0^21^{2k}0^2$\\
-	Affinché sia valida, deve valere $2k+|vx|(i-1)=2k$, quindi $|vx|(i-1)=0$, che però per $i=2$ viola la condizione $|vx|>0$. \greenmark
+	\item $z=1^{k-|vx|+|vx|i}1^k0^21^k1^k0^2$\\
+	Affinché sia valida, deve valere $k+|vx|(i-1)=k$, quindi $|vx|(i-1)=0$, che però per $i=2$ viola la condizione $|vx|>0$. \greenmark
 	
-	\item $z=1^{2k-|v|+i|v|-\frac{|x|}{2}}(10)^{|x|i}0^{2-\frac{|x|}{2}}1^{2k}0^2$\\
+	\item $z=1^{k-|v|+i|v|-\frac{|x|}{2}}1^{|x|i}1^{k-\frac{|x|}{2}}0^21^k1^k0^2$\\
 	Distinguiamo due casi:
 	\begin{itemize}
 		\item $|x|=0$\\
-		$1^{2k+|v|(i-1)}0^21^{2k}0^2 \Rightarrow 2k+|v|(i-1)=2k$\\
+		$1^{k-|v|+i|v|}1^{k}0^21^k1^k0^2 \Rightarrow k+|v|(i-1)=k$\\
         per $i \rightarrow 2 \Rightarrow |v|=0$ Impossibile \greenmark
 		\item $|x|>0$\\
-		$1^{2k+|v|(i-1)-\frac{|x|}{2}}(10)^{|x|i}0^{2-\frac{|x|}{2}}1^{2k}$\\
-		per $i \rightarrow 2 \Rightarrow 1^{2k+|v|-\frac{|x|}{2}}10100^{2-\frac{|x|}{2}}1^{2k} \notin L$ \greenmark
+		$1^{k-|v|+i|v|-\frac{|x|}{2}}1^{|x|i}1^{k-\frac{|x|}{2}}0^21^k1^k0^2$\\
+		per $i \rightarrow 2 \Rightarrow 1^{k+|v|-\frac{|x|}{2}}111^{k-\frac{|x|}{2}}0^21^k1^k0^2 \notin L$ \greenmark
 	\end{itemize}
 
-	\item $z=1^{2k+|v|(i-1)}0^{2+|x|(i-1)}1^{2k}0^2$\\
-	Affinché sia valida, deve valere $2k+|v|(i-1)+2+|x|(i-1)=2k+2$, quindi $|v|(i-1)+|x|(i-1)=0$,
-    che per $i \rightarrow 2 \Rightarrow |v|+|x|=0$ viola $|vx|>0$. \greenmark
-    
-    \item La dimostrazione è analoga al punto 2.
-    
-    \item $z=1^{2k}0^{2+|vx|(i-1)}1^{2k}0^2$\\
-    Affinché sia valida, deve valere $2+|vx|(i-1)=2$, che implicherebbe $|vx|=0$ per $i=2$, quindi non va bene. \greenmark
-    
-    \item La dimostrazione è analoga al punto 2.
-    
-    \item La dimostrazione è analoga al punto 3.
+	\item $z=1^{k+|v|(i-1)}1^{k+|x|(i-1)}0^21^k1^k0^2$\\
+	Affinché sia valida, deve valere $k+|v|(i-1)+k+|x|(i-1)=2k$,\\
+    quindi $|v|(i-1)+|x|(i-1)=0$, che per $i \rightarrow 2 \Rightarrow |v|+|x|=0$ viola $|vx|>0$. \greenmark
     
     \item La dimostrazione è analoga al punto 2.
     
@@ -813,47 +817,34 @@ Verifichiamo per ogni caso di violare le regole del pumping lemma, in modo da di
     
     \item La dimostrazione è analoga al punto 2.
     
-    \item La dimostrazione è analoga al punto 5.
-
-	\item $z=1^{2k+|v|(i-1)}0^21^{2k+|x|(i-1)}0^2$\\
-	Affinché sia valida, deve valere $2k+|v|(i-1)+2k+|x|(i-1)=4k$, quindi per $i\rightarrow 2 \Rightarrow |v|+|x|=0$. Il problema è che andiamo a violare il vincolo $|vx|>0$, quindi non va bene. \greenmark
+    \item $z=1^k1^k0^{2+|vx|(i-1)}1^k1^k0^2$\\
+    Affinché sia valida, deve valere $2+|vx|(i-1)=2$, che implicherebbe $|vx|=0$ per $i=2$, quindi non va bene. \greenmark
     
-    \item $z=1^{2k-\frac{|v|}{2}}(10)^{|v|i}0^{2-\frac{|v|}{2}}1^{2k+|x|(i-1)}0^2$\\
+    \item La dimostrazione è analoga al punto 2.
+    
+    \item La dimostrazione è analoga al punto 3.
+    
+    \item La dimostrazione è analoga al punto 2.
+
+	\item $z=1^k1^{k+|v|(i-1)}0^21^{k+|x|(i-1)}1^k0^2$\\
+	Affinché sia valida, deve valere $k+|v|(i-1)+k+|x|(i-1)=2k$, quindi per $i\rightarrow 2 \Rightarrow |v|+|x|=0$. Il problema è che andiamo a violare il vincolo $|vx|>0$, quindi non va bene. \greenmark
+    
+    \item Questa suddivisone viola il vincolo $|vwx|\leq k$.
+    
+    \item $z=1^{k-\frac{|v|}{2}}1^{|v|i}1^{k-\frac{|v|}{2}}0^{2+|x|(i-1)}1^k1^k0^2$\\
     Distinguiamo due casi:
     \begin{itemize}
         \item $|v|=0$\\
-        $1^{2k}0^{2}1^{2k+|x|(i-1)}0^2$\\
+        $1^{k}1^{k}0^{2+|x|(i-1)}1^k1^k0^2 \Rightarrow 2+|x|(i-1)=2$\\
         per $i \rightarrow 2 \Rightarrow |v|=0$ Impossibile \greenmark
         \item $|v|>0$\\
-        $1^{2k-\frac{|v|}{2}}(10)^{|v|i}0^{2-\frac{|v|}{2}}1^{2k+|x|(i-1)}0^2$\\
-        per $i \rightarrow 2 \Rightarrow 1^{2k-\frac{|v|}{2}}10100^{2-\frac{|v|}{2}}1^{2k+|x|}0^2 \notin L$ \greenmark
+        $1^{k-\frac{|v|}{2}}1^{|v|i}1^{k-\frac{|v|}{2}}0^{2+|x|(i-1)}1^k1^k0^2$\\
+        per $i \rightarrow 2 \Rightarrow 1^{k-\frac{|v|}{2}}111^{k-\frac{|v|}{2}}0^{2+|x|(i-1)}1^k1^k0^2 \notin L$ \greenmark
     \end{itemize}
     
     \item La dimostrazione è analoga al punto 15.
     
-    \item $z=1^{2k-\frac{|v|}{2}}(10)^{|v|i}0^{2-\frac{|v|}{2}-\frac{|x|}{2}}(01)^{|x|i}1^{2k-\frac{|x|}{2}}0^2$\\
-    Distinguiamo i seguenti casi:
-    \begin{itemize}
-        \item $|v|=0$\\
-        $1^{2k}0^{2-\frac{|x|}{2}}(01)^{|x|i}1^{2k-\frac{|x|}{2}}0^2$
-        \begin{itemize}
-            \item $|x|=0$\\
-            Non possiamo, in quanto violeremmo $|vx|>0$.\greenmark
-            \item $|x|>0$\\
-            $1^{2k}0^{2-\frac{|x|}{2}}(01)^{|x|i}1^{2k-\frac{|x|}{2}}0^2$\\
-            per $i\rightarrow 2 \Rightarrow 1^{2k}0^{2-\frac{|x|}{2}}01011^{2k-\frac{|x|}{2}}0^2 \notin L$. \greenmark
-        \end{itemize}
-        \item $|v|>0$\\
-        $1^{2k-\frac{|v|}{2}}(10)^{|v|i}0^{2-\frac{|v|}{2}-\frac{|x|}{2}}(01)^{|x|i}1^{2k-\frac{|x|}{2}}0^2$
-        \begin{itemize}
-            \item $|x|=0$\\
-            $1^{2k-\frac{|v|}{2}}(10)^{|v|i}0^{2-\frac{|v|}{2}}1^{2k}0^2$\\
-            per $i \rightarrow 2 \Rightarrow 1^{2k-\frac{|v|}{2}}10100^{2-\frac{|v|}{2}}1^{2k}0^2 \notin L$. \greenmark
-            \item $|x|>0$\\
-            $1^{2k-\frac{|v|}{2}}(10)^{|v|i}0^{2-\frac{|v|}{2}-\frac{|x|}{2}}(01)^{|x|i}1^{2k-\frac{|x|}{2}}0^2$\\
-            per $i \rightarrow 2 \Rightarrow 1^{2k-\frac{|v|}{2}}10100^{2-\frac{|v|}{2}-\frac{|x|}{2}}01011^{2k-\frac{|x|}{2}}0^2 \notin L$. \greenmark
-        \end{itemize}
-    \end{itemize}
+    \item La dimostrazione è simile al punto 15.
 \end{enumerate}
 Abbiamo dimostrato ogni caso, quindi il nostro linguaggio non è CF.
 \subsubsection{Unione in m}
@@ -1502,15 +1493,14 @@ Mentre per $z=\{x|W_x\ne A\}$:
 \begin{itemize}
     \item Se $A=\varnothing \rightarrow RE$, mediante la tecnica del \textit{dove tail}
     \item Se $A=RE \rightarrow Z$ è produttivo
-    \item Se $A$ è produttivo $\rightarrow Z$ è ricorsivo
+    \item Se $A$ è produttivo $\rightarrow Z=\mathbb{N}$ è ricorsivo
 \end{itemize}
 
 \chapter{Esercizi vari sulla teoria della ricorsione}
-Classificare nella teoria della ricorsione matematica il seguente insieme:
+\paragraph{1} Classificare nella teoria della ricorsione matematica il seguente insieme:
 \begin{equation*}
 	A=\{x|\varphi_x(ack(x,x,x))=7\} \text{, dove $ack()$ è la funzione di Ackermann.}
 \end{equation*}
-
 La prima cosa da fare è assicurarsi di capire bene il testo dell'esercizio.
 Qui stiamo considerando l'insieme dei programmi che, ricevendo in input l'\textit{output} della funzione di Ackermann, danno in output $7$.
 Per aiutarsi a identificare la tipologia dell'insieme, è buona pratica considerare anche l'insieme complementare. In questo caso, il complementare di $A$ è
@@ -1521,15 +1511,118 @@ Certamente! Quindi è creativo! Di conseguenza il suo complementare è produttiv
 Definiamo la funzione semicaratteristica $\psi_A$:
 \begin{equation*}
 	\psi_A(x,y)=
-	\psi_{g(x)}(y)=
+	\varphi_{g(x)}(y)=
 	\begin{cases}
 		7 \text{ se } x \in K\\
 		\uparrow \text{ altrimenti}
-	\end{cases}\\
+	\end{cases}
 \end{equation*}
 \begin{itemize}
 	\item $x\in K.\varphi_{g(x)}(y)=7 \Rightarrow \varphi_{g(x)}(ack(g(x),g(x),g(x)))=7 \Rightarrow g(x) \in A$
 	\item $x\notin K.\varphi_{g(x)}(y)\uparrow \Rightarrow \varphi_{g(x)}(ack(g(x),g(x),g(x)))\uparrow \Rightarrow g(x) \notin A$ 
+\end{itemize}
+
+\paragraph{2} Classificare nella teoria della ricorsione matematica il seguente insieme:
+\begin{equation*}
+    A=\{x|W_x=\mathbb{N}\}=\{x|\varphi_x \text{ è totale}\}
+\end{equation*}
+Notiamo subito che $W_x$ è un insieme infinito ($\mathbb{N}$), quindi sentiamo puzza di insieme produttivo. Dobbiamo quindi cercare di ridurre $A$ a $\bar{K}$, ma visto
+che non si può dire o fare nulla su $\bar{K}$, riduciamo $\bar{A}$ a $K$.
+$$\bar{A}=\{x|W_x\ne \mathbb{N}\}$$
+Definiamo la funzione semicaratteristica $\psi_A$:
+\begin{equation*}
+    \psi_A(x,y)=
+    \varphi_{g(x)}(y)=
+    \begin{cases}
+        y \text{ se } \varphi_x(x) \text{ non converge in meno di $y$ passi}\\
+        \uparrow \text{ altrimenti}
+    \end{cases}
+\end{equation*}
+\begin{itemize}
+    \item $x\in K.\exists \varphi_{g(x)}(x)\downarrow^n \Rightarrow \forall y \in [0,n-1] \varphi_{g(x)}(y)=y \Rightarrow W_{g(x)}=[0,n-1]\ne \mathbb{N} \Rightarrow g(x) \in \bar{A}$
+    \item $x\notin K.\forall n \varphi_{g(x)}(x)\cancel{\downarrow}^n \Rightarrow \forall y \varphi_{g(x)}(y)=y \Rightarrow W_{g(x)}=\mathbb{N} \Rightarrow g(x) \notin \bar{A}$ 
+\end{itemize}
+
+\paragraph{3} Classificare nella teoria della ricorsione matematica il seguente insieme:
+\begin{equation*}
+	A=\{x|x_{MOD7} \in [0,3] \rightarrow \varphi_{xDIV7}(x^3+1)=x^7\}
+\end{equation*}
+Visto che l'implicazione fa schifo, la trasformo in un OR, in questo modo:
+\begin{equation*}
+	A=\{x|x_{MOD7} \notin [0,3] \vee \varphi_{xDIV7}(x^3+1)=x^7\}
+\end{equation*}
+Ok. Ora classifichiamo i due pezzi. $x|x_{MOD7} \notin [0,3]$ è sicuramente ricorsivo, infatti riesco con un programma a dire se $x\in[0,3]$ o no.
+L'altro invece, $\varphi_{xDIV7}(x^3+1)=x^7$, è creativo, per le regole scritte sopra.
+Per dimostrare la creatività, scriviamo una bozza dell'algoritmo e dimostro la produttività del negato.
+\begin{align*}
+	&\text{if(}x_{MOD7} \notin [0,3] \mbox{ }||\mbox{ } \varphi_{xDIV7}(x^3+1)==x^7)\\
+	&\quad \text{return }1\\
+	&\text{else}\\
+	&\quad \uparrow
+\end{align*}                   
+Quindi cerchiamo di ridurre $A$ a $K$. Ricordiamo che dobbiamo fare in modo che la nostra funzione dia in output $x^7$.
+Quindi scriviamo
+\begin{equation*}
+	\psi_A(x,y)=
+	\varphi_{g(x)}(y)=
+	\begin{cases}
+		(\sqrt[3]{y-1})^7 \text{ se } x \in K\\
+		\uparrow \text{ altrimenti}
+	\end{cases}
+\end{equation*}
+\begin{itemize}
+	\item $x\in K \rightarrow \varphi_{g(x)}(y)=(\sqrt[3]{y-1})^7 \rightarrow \forall y \varphi_{g(x)}((7g(x))^3+1)=(\sqrt[3]{(7g(x))^3+1-1})^7=(7g(x))^7 \rightarrow g(x) \in A$
+	\item $x\notin K \rightarrow \varphi_{g(x)}(y)\uparrow \rightarrow \varphi_{g(x)}((7g(x))^3+1)\uparrow \ne (7g(x))^7 \rightarrow g(x) \notin K$
+\end{itemize}
+
+\paragraph{4} Classificare nella teoria della ricorsione matematica il seguente insieme:
+\begin{equation*}
+	M=\{x|W_x=(2\mathbb{N}+1)\cap(3\mathbb{N}+2)\}
+\end{equation*}
+Questo è produttivo, dato che è composto da due ricorsivi. Anche il suo negato è produttivo:
+\begin{equation*}
+	\bar{M}=\{x|W_x\ne(2\mathbb{N}+1)\cap(3\mathbb{N}+2)\}
+\end{equation*}
+Quindi serve dimostrare la produttività per entrambi gli insiemi. Per comodità chiamiamo $D$ l'insieme $(2\mathbb{N}+1)\cap(3\mathbb{N}+2)$.
+Dimostriamo la produttività per $M$. Dobbiamo ridurre $M$ a $\bar{K}$, quindi $\bar{M}$ a $K$.
+Scriviamo una funzione parziale associata:
+\begin{equation*}
+	\psi_A(x,y)=
+	\varphi_{g(x)}(y)=
+	\begin{cases}
+		1 \text{ se } x \in K\\
+		\uparrow \text{ altrimenti}
+	\end{cases}
+\end{equation*}
+\begin{itemize}
+	\item $x\in K \rightarrow \varphi_{g(x)}(y)\downarrow \rightarrow W_x=\mathbb{N} \ne D \rightarrow g(x)\in\bar{M}$
+	\item $x\notin K \rightarrow \varphi_{g(x)}(y)\uparrow \rightarrow W_x=\varnothing \ne D$ $\rightarrow$ ma non va bene, $W_x$ deve essere uguale a $D$
+\end{itemize}
+Dobbiamo aggiungere una seconda condizione alla funzione parziale, e la mettiamo in OR con l'altra in modo da mantenere valido il primo punto.
+\begin{equation*}
+	\psi_A(x,y)=
+	\varphi_{g(x)}(y)=
+	\begin{cases}
+		1 \text{ se } x \in K \vee y \in D\\
+		\uparrow \text{ altrimenti}
+	\end{cases}
+\end{equation*}
+\begin{itemize}
+	\item $x\in K \rightarrow \varphi_{g(x)}(y)\downarrow \rightarrow W_x=\mathbb{N} \ne D \rightarrow g(x)\in\bar{M}$
+	\item $x\notin K \rightarrow \varphi_{g(x)}(y)\downarrow \iff y\in D \rightarrow W_x=D \rightarrow g(x)\notin \bar{M}$
+\end{itemize}
+Fuck yeah! Ce l'abbiamo fatta! Ora tocca dimostrare anche la produttività di $\bar{M}$.
+\begin{equation*}
+	\psi_A(x,y)=
+	\varphi_{g(x)}(y)=
+	\begin{cases}
+		1 \text{ se } x \in K \wedge y \in D\\
+		\uparrow \text{ altrimenti}
+	\end{cases}
+\end{equation*}
+\begin{itemize}
+	\item $x\in K \rightarrow \varphi_{g(x)}(y)\downarrow \iff y\in D \rightarrow W_x=D \rightarrow g(x)\in M$
+	\item $x\notin K \rightarrow \varphi_{g(x)}(y)\uparrow \rightarrow W_x=\varnothing \ne D \rightarrow g(x)\notin M$
 \end{itemize}
 
 \end{document}
