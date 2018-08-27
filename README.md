@@ -1,6 +1,6 @@
 # Dispense Informatica Univr
 Collezione di codice LaTex di dispense scritte per alcuni corsi della Laurea in Informatica dell'Università di Verona.
-Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman@hotmail.it`.
+Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman@hotmail.it`. Make TeX, not Word.
 
 ## Corsi inclusi nelle dispense
 #### TRIENNALE:
@@ -12,7 +12,7 @@ Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman
 - Programmazione di Rete (Laboratorio)
 - Sistemi Operativi (Laboratorio)
 - Sicurezza di Rete (In progress, teoria)
-- Fondamenti dell'informatica
+- Fondamenti dell'informatica (Teoria + Guida pratica)
 - Elaborazione segnali e immagini (In progress)
 
 #### MAGISTRALE
