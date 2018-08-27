@@ -2990,5 +2990,25 @@ Un algoritmo di \textit{1-approssimazione} è un algoritmo ottimo.
 		VertexCover $\notin FPTAS$.\\
 		IndependetSet $\notin FPTAS$.
 		
+	\section{Riassunto delle classi di complessità}
+	
+	\begin{figure}[h!]
+		\centering
+			\begin{tikzpicture}[scale=1.1]
+				\draw (0,0) ellipse (7cm and 5cm) node[yshift=5cm] {$ \Exp $};
+				\draw (0,0) ellipse (6.5cm and 4cm) node[yshift=4cm] {$ \pspace = \npspace $};
+				\draw (3,1) ellipse (2cm and 2cm) node {$ \pspace-$completo};
+				\draw (-2.5,-.5) ellipse (3.5cm and 2.5cm) node[yshift=2.5cm] {$ \ph $};
+				\draw[color=gray] (-2.5,-.5) ellipse (3.4cm and 2.4cm);
+				\draw[color=gray] (-2.5,-.5) ellipse (3.3cm and 2.3cm);
+				\draw[color=gray] (-2.5,-.5) ellipse (3.2cm and 2.2cm);
+				\draw[color=gray] (-2.5,-.5) ellipse (3.1cm and 2.1cm);
+				\draw (-2.5,-.5) ellipse (3cm and 2cm) node[yshift=2cm] {$ \np $};
+				\draw (-4,-.5) ellipse (1.4cm and 1.4cm) node[yshift=1.3cm] {$ \p $};
+				\draw (-4,-.6) ellipse (.7cm and 1cm) node[yshift=.6cm] {$ \mathbf{NL} $};
+				\draw (-4,-.7) ellipse (.4cm and .4cm) node {$ \mathbf{L} $};
+				\draw (-1,-.5) ellipse (1cm and 1cm) node {$ \npc^{*} $};
+			\end{tikzpicture}
+	\end{figure}
 		
 \end{document}
