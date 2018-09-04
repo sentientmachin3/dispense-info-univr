@@ -28,6 +28,7 @@
 \usepackage{subcaption}
 \usepackage{tikz}
 \usepackage{textcomp}
+\usetikzlibrary{patterns}
 \usetikzlibrary{shapes,arrows,positioning,calc}
 \usetikzlibrary{decorations.pathreplacing}
 \usepackage{lipsum}
@@ -248,11 +249,10 @@ output Eulerian
 			\begin{figure}[h]
 				\centering
 				\begin{tikzpicture}
-					\draw (0,0) -- (0,-3);
-					\node[right, xshift=.1cm] at (0,-.5) {$ O(n^2) $};
-					\node[right, xshift=.1cm] at (0,-2.5) {$ \Omega (n) $};
-					\draw[ultra thick] (0,-.5) -- (0,-2.5);
-					\draw (-.15,-.5) -- (.15,-.5); \draw (-.15,-2.5) -- (.15,-2.5);
+					\draw (0,0) rectangle (3,-3);
+					\draw[ultra thick, pattern=north east lines, pattern color=gray] (0,-.5) rectangle (3,-2.5);
+					\draw[ultra thick] (-.15,-.5) -- (3.15,-.5) node[right, xshift=.1cm] {$ O(n^2) $}; 
+					\draw[ultra thick] (-.15,-2.5) -- (3.15,-2.5) node[right, xshift=.1cm] {$ \Omega (n) $};
 				\end{tikzpicture}
 			\end{figure}
 			
