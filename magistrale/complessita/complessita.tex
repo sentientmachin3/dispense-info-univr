@@ -1834,6 +1834,9 @@ GraphIsomorphismSearch($ G_1, G_2 $)
 		Dimostriamo che il problema è $ \np-hard $: troviamo $ \prob{A}\in \npc\quad t.c.\quad \prob{A}\leq_K VC $.\\
 		
 		Utilizziamo $ \prob{A} = $ IndSet:
+		
+		Vogliamo dimostrare che\\ 
+		dato $ G = (V, E)\,\ I\ $ è un IndSet di $ G\ \Leftrightarrow \ V\setminus I\ $ è un VC per $ \ G $. 
 		\begin{itemize}
 			\item[($ \Leftarrow $)] $ U $ è VC per $ G $, $ \ u, v \in U \ $ se $ \ (u,v)\in E\ \Rightarrow\ U $ non è VC
 			$ \ \Rightarrow\ V\setminus U $ è un IndSet.
@@ -3029,52 +3032,52 @@ Un algoritmo di \textit{1-approssimazione} è un algoritmo ottimo.
 	
 	\subsection{Lista dei problemi visti e complessità}
 		\begin{figure}[h!]
-			\begin{tabular}{lcccccc}
+			\begin{tabular}{lccccccc}
 				\toprule
-				\textbf{Problema} & $ \p $ & $ \np $ & $ \npc $ & $ \conp\mathbf{C} $ & $ \pspace $ & $ \pspace$-completo \\
+				\textbf{Problema} & {\small $ \p $} & {\small $ \np $} & {\small $ \npc $} & {\small $ \conp\mathbf{C} $} & {\small $ \pspace $} & {\small $ \pspace$-compl} & {\small \textbf{Riduzione da}}\\
 				\midrule
-				Eulerian Cycle & \checkmark & & & & \checkmark & \\
-				K-Colouring (K=2) & \checkmark & & & & \checkmark & \\
-				K-Colouring (K>2) & & \checkmark & \checkmark & & \checkmark & \\
-				K-SAT (K=2) & \checkmark & & & & \checkmark & \\
-				K-SAT (K>2) & & \checkmark & \checkmark & & \checkmark & \\
-				Circuit-SAT & & \checkmark & \checkmark & & \checkmark &  \\
-				Tautology & & & & \checkmark & \checkmark & \\
-				Min-Circuit Bool & & & & & \checkmark & \\
-				Graph Isomorphism & & \checkmark & & & \checkmark & \\
-				Clique & & \checkmark & \checkmark & & \checkmark & \\
-				Clique-no-Clique & & \checkmark & \checkmark & & \checkmark & \\
-				Independent Set & & \checkmark & \checkmark & & \checkmark & \\
-				Only Small IndSet & & \checkmark & \checkmark & & \checkmark & \\
-				Vertex Cover & & \checkmark & \checkmark & & \checkmark & \\
-				Hitting Set & & \checkmark & \checkmark & & \checkmark & \\
-				Max Cut & & \checkmark & \checkmark & & \checkmark & \\
-				Set Splitting & & \checkmark & \checkmark & & \checkmark & \\
-				Set Cover & & \checkmark & \checkmark & & \checkmark & \\
-				Hamiltonian Path & & \checkmark & \checkmark & & \checkmark & \\
+				Eulerian Cycle & \checkmark & & & & \checkmark & & \\
+				K-Colouring (K=2) & \checkmark & & & & \checkmark & & \\
+				K-Colouring (K>2) & & \checkmark & \checkmark & & \checkmark & & ($ \leq_K $) (K+1)-Col  \\
+				K-SAT (K=2) & \checkmark & & & & \checkmark & & \\
+				K-SAT (K>2) & & \checkmark & \checkmark & & \checkmark & & K-Colouring\\
+				Circuit-SAT & & \checkmark & \checkmark & & \checkmark &  & ($ \leq_K $) SAT\\
+				Tautology & & & & \checkmark & \checkmark & & \\
+				Min-Circuit Bool & & & & & \checkmark & & \\
+				Graph Isomorphism & & \checkmark & & & \checkmark & & \\
+				Clique & & \checkmark & \checkmark & & \checkmark & & 3-SAT \\
+				Clique-no-Clique & & \checkmark & \checkmark & & \checkmark & & $ \prob{A}\in\mathbf{DP} $\\
+				Independent Set & & \checkmark & \checkmark & & \checkmark & & Clique \\
+				Only Small IndSet & & & & \checkmark & \checkmark & & \\
+				Vertex Cover & & \checkmark & \checkmark & & \checkmark & & Independent Set\\
+				Hitting Set & & \checkmark & \checkmark & & \checkmark & & Vertex Cover \\
+				Max Cut & & \checkmark & \checkmark & & \checkmark & & NAE-3-SAT\\
+				Set Splitting & & \checkmark & \checkmark & & \checkmark & & NAE-3-SAT\\
+				Set Cover & & \checkmark & \checkmark & & \checkmark & & Vertex Cover\\
+				Hamiltonian Path & & \checkmark & \checkmark & & \checkmark & &  \\
 			\end{tabular}
 		\end{figure}
 		\begin{figure}[t]		
-			\begin{tabular}{lcccccc}
+			\begin{tabular}{lccccccc}
 				\toprule
-				\textbf{Problema} & $ \p $ & $ \np $ & $ \npc $ & $ \conp\mathbf{C} $ & $ \pspace $ & $ \pspace$-completo \\
-				\midrule	
-				Q-SAT (= 2p-SAT) & & & & & & \checkmark \\
-				Geography & & & & & & \checkmark \\
-				Alternating Hampath & & & & & & \checkmark \\
-				Reachability* & \checkmark & & & & \checkmark & \\
-				Makespan-m & & \checkmark & \checkmark & & \checkmark & \\
-				SubsetSum & & \checkmark & \checkmark & & \checkmark & \\
-				Partition & & \checkmark & \checkmark & & \checkmark & \\
-				Traveling Salesman & & \checkmark & \checkmark & & \checkmark & \\
-				Knapsack & & \checkmark & \checkmark & & \checkmark & \\
-				Max-k-xor-SAT & & \checkmark & \checkmark & & \checkmark & \\
-				Max-k-SAT & & \checkmark & \checkmark & & \checkmark & \\
-				Set Cover & & \checkmark & \checkmark & & \checkmark & \\
+				\textbf{Problema} & {\small $ \p $} & {\small $ \np $} & {\small $ \npc $} & {\small $ \conp\mathbf{C} $} & {\small $ \pspace $} & {\small $ \pspace$-compl} & {\small \textbf{Riduzione da}}\\
+				\midrule
+				Q-SAT (= 2p-SAT) & & & & & & \checkmark &  \\
+				Geography & & & & & & \checkmark & Q-SAT\\
+				Alternating Hampath & & & & & & \checkmark & Q-SAT \\
+				Reachability* & \checkmark & & & & \checkmark & & \\
+				Makespan-m & & \checkmark & \checkmark & & \checkmark & &  Partition\\
+				SubsetSum & & \checkmark & \checkmark & & \checkmark & & \\
+				Partition & & \checkmark & \checkmark & & \checkmark & & \\
+				Traveling Salesman & & \checkmark & \checkmark & & \checkmark & & HamCycle\\
+				Knapsack & & \checkmark & \checkmark & & \checkmark & & Partition\\
+				Max-k-xor-SAT & & \checkmark & \checkmark & & \checkmark & & \\
+				Max-k-SAT & & \checkmark & \checkmark & & \checkmark & & Max Cut\\
+				Set Cover & & \checkmark & \checkmark & & \checkmark & & Vertex Cover\\
 				\bottomrule
 			\end{tabular}
 			\caption{Problemi e classi di complessità relative}
 		\end{figure}
 		\noindent
-		* per Reachability abbiamo una complessità di $ O(\space(\log^2 n)) $
+		* per Reachability abbiamo una complessità di $ O(\Space(\log^2 n)) $
 \end{document}
