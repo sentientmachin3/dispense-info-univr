@@ -56,6 +56,7 @@
 \newtheorem{prop}{Proposizione}[subsection]
 \newtheorem{obs}{Osservazione}[subsection]
 
+
 \usepackage{hyperref}
 \usepackage{xcolor}
 \hypersetup{
@@ -63,6 +64,8 @@
 	colorlinks = true,
 	linkcolor = black,
 }
+\usepackage[bottom]{footmisc}
+
 \usepackage[OT1]{eulervm}
 
 \newcommand{\N}{\mathbb{N}}
@@ -3043,7 +3046,7 @@ Un algoritmo di \textit{1-approssimazione} è un algoritmo ottimo.
 				K-SAT (K>2) & & \checkmark & \checkmark & & \checkmark & & K-Colouring\\
 				Circuit-SAT & & \checkmark & \checkmark & & \checkmark &  & ($ \leq_K $) SAT\\
 				Tautology & & & & \checkmark & \checkmark & & \\
-				Min-Circuit Bool & & & & & \checkmark & & \\
+				Min-Circuit Bool\footnotemark[1] & & & & & \checkmark & & \\
 				Graph Isomorphism & & \checkmark & & & \checkmark & & \\
 				Clique & & \checkmark & \checkmark & & \checkmark & & 3-SAT \\
 				Clique-no-Clique & & \checkmark & \checkmark & & \checkmark & & $ \prob{A}\in\mathbf{DP} $\\
@@ -3065,7 +3068,7 @@ Un algoritmo di \textit{1-approssimazione} è un algoritmo ottimo.
 				Q-SAT (= 2p-SAT) & & & & & & \checkmark &  \\
 				Geography & & & & & & \checkmark & Q-SAT\\
 				Alternating Hampath & & & & & & \checkmark & Q-SAT \\
-				Reachability* & \checkmark & & & & \checkmark & & \\
+				Reachability\footnotemark[2] & \checkmark & & & & \checkmark & & \\
 				Makespan-m & & \checkmark & \checkmark & & \checkmark & &  Partition\\
 				SubsetSum & & \checkmark & \checkmark & & \checkmark & & \\
 				Partition & & \checkmark & \checkmark & & \checkmark & & \\
@@ -3078,6 +3081,7 @@ Un algoritmo di \textit{1-approssimazione} è un algoritmo ottimo.
 			\end{tabular}
 			\caption{Problemi e classi di complessità relative}
 		\end{figure}
-		\noindent
-		* per Reachability abbiamo una complessità di $ O(\Space(\log^2 n)) $
+	
+		\footnotetext[1]{Min-Circuit Bool appartiene alla gerarchia polinomiale $ \Sigma_2 P $}
+		\footnotetext[2]{per Reachability abbiamo una complessità di $ O(\Space(\log^2 n)) $}
 \end{document}
