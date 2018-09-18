@@ -647,9 +647,10 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 				\wedge (\underset{F}{\bar{z}_1}\vee \underset{F}{l_3} \vee \underset{V}{z_2}) 
 				\wedge (\underset{F}{\bar{z}_2}\vee \underset{F}{l_4} \vee \underset{V}{z_3}) 
 				\wedge (\underset{F}{\bar{z}_3}\vee \underset{F}{l_5} \vee \underset{V}{z_4})  \wedge 
-				\dots \wedge (\underset{F}{\bar{z}_{k-1}}\vee \underset{F}{l_{k+1}} \vee \underset{F}{z_{k}}) 
+				\dots 
+				\wedge (\underset{F}{\bar{z}_{k-3}}\vee \underset{F}{l_{k-1}} \vee \underset{F}{l_{k}}) 
 			\]
-			risulta che l'ultimo letterale $ z_k $ è falso, e quindi $ \phi' $ non è soddisfacibile.
+			risulta che l'ultimo letterale $ z_{k-3} $ è falso, e quindi $ \phi' $ non è soddisfacibile.
  			\end{itemize}
  			
  			\paragraph{K-COL $ \leq_K $ K-SAT} Vogliamo dimostrare che il problema di colorare un grafo con k colori è riducibile al problema di soddisfacibilità di una formula booleana k-CNF.
@@ -1797,7 +1798,7 @@ GraphIsomorphismSearch($ G_1, G_2 $)
 	\subsection{Problema Vertex Cover}
 		\begin{itemize}
 			\item Input: grafo $ G $ non diretto, $ k \in \N $
-			\item Output: $ yes\ \Leftrightarrow\ \exists U\subseteq v\quad \vert U\vert \leq k,\quad \forall(u,v)\in E\quad \{u, v\}\cap U \neq \emptyset $
+			\item Output: $ yes\ \Leftrightarrow\ \exists U\subseteq V\quad \vert U\vert \leq k,\quad \forall(u,v)\in E\quad \{u, v\}\cap U \neq \emptyset $
 		\end{itemize}
 		\begin{figure}[h!]
 			\begin{subfigure}{.5\textwidth}
@@ -2903,7 +2904,102 @@ Un algoritmo di \textit{1-approssimazione} è un algoritmo ottimo.
 			\end{itemize}
 		
 		\noindent
-		Il problema di minimizzazione \textit{Makespan} è $\np$\textbf{-hard} (il problema di decisione è $\npc$).
+		Il problema di minimizzazione \textit{Makespan} è $\np$\textbf{-hard} (il problema di decisione è $\npc$).\\
+		
+		Dobbiamo avere un lower bound $ B $ tale che $ \ OPT(x) \geq B $.		
+		Un lower bound per $ OPT\ $ è $\ \sum\limits_{i} \dfrac{j_i}{m} $. Perciò abbiamo che:
+		\[
+			OPT(x) \geq \dfrac{T}{m}
+		\]
+		dove $\ T =\ $ tempo totale dei job $ \ = \sum\limits_{i} j_i $.\\
+		Scegliamo un parametro $ \ s\in \left[ 0, 1 \right]\ $, sia $\ L = \{i\ |\ j_i \geq T_s \} $.\\
+		
+		\noindent
+		Algoritmo:
+		\begin{itemize}
+			\item Risolvi ottimamente il problema per i soli job in $ L $.$ ^* $
+			\item Per ogni job $ \notin L\ $ assegna il job alla macchina con il carico minimo fino ad ora (in maniera greedy). $ ^{\star} $
+		\end{itemize}
+		Vogliamo far vedere che \textit{l'algoritmo è polinomiale} e \textit{c'è garanzia di Approssimazione}.
+		
+		\begin{obs} 
+			sia $\ s\ $ costante $\ |L| \leq \dfrac{1}{s} $. Sia $ r > \dfrac{1}{s} $, il carico di job in $ L $ è:
+			\[
+				sT \geq sT\cdot r > sT \cdot \dfrac{1}{s} = T
+			\]
+		\end{obs}
+		Quante partizioni di $\ \dfrac{1}{s}\ $ in $ m $ parti? $ m^{1/s} $\\
+		Quindi: 
+		\begin{itemize}
+			\item $ ^* $ costa $ O(m^{1/s}) $ tempo
+			\item $ ^{\star} $ costa $ O(n\cdot m\log m) $ tempo
+		\end{itemize}
+		Perciò l'algoritmo è polinomiale!
+
+		\newpage
+		
+		\begin{figure}[h!]
+			\centering
+			\begin{tikzpicture}
+				\draw (0,0) -- (0,-1) -- (1,-1) -- (1,0);\draw[pattern=north east lines] (0,-.5) rectangle (1,-1);
+				\draw (2,0) -- (2,-1) -- (3,-1) -- (3,0);\draw[pattern=north east lines] (2,-.75) rectangle (3,-1);
+				\draw (4,0) -- (4,-1) -- (5,-1) -- (5,0);\draw[pattern=north east lines] (4,-.25) rectangle (5,-1);
+				\draw (6,0) -- (6,-1) -- (7,-1) -- (7,0);\draw (6,-.1) rectangle (7,-.8) node[midway] {$ x $};
+				\draw (8,0) -- (8,-1) -- (9,-1) -- (9,0);\draw[pattern=north east lines] (8,-.2) rectangle (9,-1);
+				\draw (10,0) -- (10,-1) -- (11,-1) -- (11,0);\draw[pattern=north east lines] (10,-.65) rectangle (11,-1);
+				\node at (6.5, -1.5) {$ M_x $};\node at (8.5, -1.5) {$ M_t $};\node at (10.5, -1.5) {$ m $};
+			\end{tikzpicture}
+			\caption{Prendiamo la macchina che ottiene il Makespan (carico maggiore)}
+		\end{figure}
+		Quando l'ultimo job $ x $ messo su $ M_x $ è stato posto lì, il carico di $ M_x = (M_x - x) $ era non maggiore del carico delle altre macchine.\\
+		$ M_t \geq M_x - x \ $ per ogni $ \ M_t \neq M_x $\\
+		Il carico totale delle macchine è 
+		\[
+			T = \sum\limits_{M_t \neq M_x} M_t + M_x \geq (m - 1)\left[ M_t - x\right] + M_x 
+		\]
+		\[
+			m M_x \leq T + (m - 1) x
+		\]
+		\[
+			M_x \leq \dfrac{T}{m} + \dfrac{(m - 1)x}{m} \leq \dfrac{T}{m} + x
+		\]
+		
+		\begin{itemize}
+			\item Se $ \ x \in L\ $ allora $ M_x $ ha una suddivisione ottima
+			\item Se $ \ x \notin L\ $ allora $ \ x < T\cdot s $.
+		\end{itemize}
+		
+		\[
+			M_x \leq \dfrac{T}{m} + \dfrac{(m - 1)x}{m} < \dfrac{T}{m} + \dfrac{(m - 1)x}{m} T\cdot s =
+			\dfrac{T}{m} \big( 1 + (m - 1) s \big)
+		\]
+		Quindi ho ottenuto l'approssimazione: $ \ \big( 1 + (m - 1) s \big)\ $, dove $ s $ viene scelta:
+		\[
+			\dfrac{M_x}{OPT} \leq \big( 1 + (m - 1) s \big)
+		\]
+		Se prendiamo l'approssimazione di $ 1.001 $ scegliamo $ s $ come:
+		\[
+			s < \dfrac{0.001}{m - 1}
+		\]
+		Concludiamo che l'algoritmo è un PTAS,\\ cioè $ \ \forall \epsilon \in \left[0, 1\right] $ posso garantire l'approssimazione $ (1 + \epsilon) $
+		
+		\subsection{PTAS e FPTAS}
+		
+		\begin{definit}[PTAS]
+			\textit{\textbf{PTAS} (Polinomial Time Approximation Scheme)} è un algoritmo che data $\ x\in \mathcal{I}(\mathbb{A}) \ $ e $\ \epsilon$, fornisce una soluzione $\ s\ $ per $\ x\ $ t.c.
+			\[
+			\dfrac{VAL(\mathcal{A}(x))}{VAL(OPT(x))}~\leq~(1+~\epsilon)
+			\]
+			
+			Il running-time del \textit{PTAS} $\mathcal{A}$ è $\mathcal{O}(|x|^k)$ (polinomiale in $|x|$ ma può essere esponenziale in $(\frac{1}{\epsilon})$).
+		\end{definit}
+		\begin{definit}[FPTAS]
+			\textit{\textbf{FPTAS} (Fully Polinomial Time Approximation Scheme)} è un algoritmo che data $\ x\in \mathcal{I}(\mathbb{A})\ $ e $\ \epsilon$, fornisce una soluzione $\ s\ $ per $\ x\ $ t.c.
+			\[
+			\dfrac{VAL(\mathcal{A}(x))}{VAL(OPT(x))}~\leq~(1+~\epsilon)
+			\]
+			Il running-time del \textit{PTAS} $\mathcal{A}$ è $\mathcal{O}(|x|^k (\frac{1}{\epsilon})^k)$ (polinomiale in $|x|$ e in $(\frac{1}{\epsilon})$).
+		\end{definit}
 		
 		\subsection{Il problema SubSetSum (decisione)}
 		\begin{itemize}
@@ -2922,25 +3018,6 @@ Un algoritmo di \textit{1-approssimazione} è un algoritmo ottimo.
 	
 	\noindent
 	Il problema di decisione \textit{Partition} è $\npc$ e sappiamo che \textit{Partition} $\leq$ \textit{Makespan} (con $m=2$).
-			
-		\subsection{PTAS e FPTAS}
-		
-		\begin{definit}[PTAS]
-			\textit{\textbf{PTAS} (Polinomial Time Approximation Scheme)} è un algoritmo che data $\ x\in \mathcal{I}(\mathbb{A}) \ $ e $\ \epsilon$, fornisce una soluzione $\ s\ $ per $\ x\ $ t.c.
-			\[
-				\dfrac{VAL(\mathcal{A}(x))}{VAL(OPT(x))}~\leq~(1+~\epsilon)
-			\]
-			
-			Il running-time del \textit{PTAS} $\mathcal{A}$ è $\mathcal{O}(|x|^k)$ (polinomiale in $|x|$ ma può essere esponenziale in $(\frac{1}{\epsilon})$).
-		\end{definit}
-		\begin{definit}[FPTAS]
-			\textit{\textbf{FPTAS} (Fully Polinomial Time Approximation Scheme)} è un algoritmo che data $\ x\in \mathcal{I}(\mathbb{A})\ $ e $\ \epsilon$, fornisce una soluzione $\ s\ $ per $\ x\ $ t.c.
-			\[
-				\dfrac{VAL(\mathcal{A}(x))}{VAL(OPT(x))}~\leq~(1+~\epsilon)
-			\]
-			Il running-time del \textit{PTAS} $\mathcal{A}$ è $\mathcal{O}(|x|^k (\frac{1}{\epsilon})^k)$ (polinomiale in $|x|$ e in $(\frac{1}{\epsilon})$).
-		\end{definit}
-		
 		
 		\subsection{Problema di Traveling Salesman}
 			\begin{itemize}
