@@ -27,6 +27,7 @@
 \usepackage[dvipsnames]{xcolor}
 \usepackage{subcaption}
 \usepackage{tikz}
+\usepackage[makeroom]{cancel}
 \usepackage{textcomp}
 \usetikzlibrary{patterns}
 \usetikzlibrary{shapes,arrows,positioning,calc}
@@ -3078,12 +3079,67 @@ Un algoritmo di \textit{1-approssimazione} è un algoritmo ottimo.
 	
 	\noindent
 	Il problema generale \textit{Max-k-SAT} è $\np$\textbf{-hard} $\forall k \geq 2$, altrimenti è inapprossimabile.\\
-	\textit{Max-3-SAT} non ammette approssimazione migliore di $\frac{8}{7}$.
-	
+	\begin{thm}
+		\textit{Max-3-SAT} non ammette approssimazione migliore di $\frac{8}{7}$.
+	\end{thm}
+	\begin{proof}
+		Trasferimento del gap da \textit{Max-3-XOR-SAT} a \textit{Max-k-SAT}, ovvero una riduzione:
+		\[
+			\text{(a,b)-Gap-Max-3-XOR-SAT}\ \mapsto\ \text{(a', b')-Gap-Max-3-SAT}
+		\]
+		cioè
+		\[
+			\phi(x_1, \dots, x_n) = (x_1\oplus x_2\oplus x_3)\wedge(\overline{x}_1\oplus x_2\oplus \overline{x}_3)\ \mapsto\
+			\psi(x_1\vee x_2'\vee x_3')\wedge(\overline{x}_1'\vee x_2'\vee \overline{x}_3')
+		\]
 		
-		\subsection{Inapprossimabilità}
-		VertexCover $\notin FPTAS$.\\
-		IndependetSet $\notin FPTAS$.
+		\begin{figure}[h!]
+			\centering
+			\begin{tikzpicture}
+				\draw[|<->|] (0,0) -- (2,0) node[yshift=-.45cm] {$ bm $}; 
+				\draw[|<->|] (3,0) node[yshift=-.5cm] {$ am $} -- (5,0) node[yshift=-.5cm] {$ m $}; 
+				\draw[|<->|] (6,0) -- (8,0) node[yshift=-.45cm] {$ b'm $}; 
+				\draw[|<->|] (9,0) node[yshift=-.45cm] {$ a'm $} -- (11,0) node[yshift=-.45cm] {$ m' $}; 
+			\end{tikzpicture}
+		\end{figure}
+		
+		\noindent
+		Supponiamo che $ \ (l_1\oplus l_2\oplus l_3)\ $ sia una clausola di $ \phi $. Quand'è che la clausola è vera? Quando \textit{non} è vero che:
+		\[
+			(\overline{l}_1\wedge \overline{l}_2\wedge\overline{l}_3)\vee(\overline{l}_1\wedge l_2\wedge l_3)\vee(l_1\wedge \overline{l}_2\wedge l_3)\vee(l_1\wedge l_2\wedge\overline{l}_3)
+		\]
+		Quindi usando de Morgan abbiamo che dev'essere vera:
+		\[
+			(l_1\vee l_2\vee l_3)\wedge(l_1\vee \overline{l}_2\vee \overline{l}_3)\wedge(\overline{l}_1\vee l_2\vee \overline{l}_3)\wedge(\overline{l}_1\vee \overline{l}_2\vee l_3)
+		\]
+		
+		Da $ m $ clausole in $ phi $ passo a $ 4m $ clausole in $ \psi $.
+		
+		\begin{obs}
+			Almeno tre delle clausole mostrate sopra sono soddisfatte per ogni assegnamento che posso scegliere.\\
+			Se $ \underline{a} $ per $ \phi $ soddisfa $ \alpha $ clausole allora per $ \psi $ soddisfa $\ 3m + \alpha\ $ clausole.\\
+			Se dico che in $ \phi $ riesco a soddisfare $ 1/2 m $ clausole, allora in $ \psi $ riesco a soddisfare $ 3m + 1/2m $ clausole.
+		\end{obs}
+		\begin{figure}[h!]
+			\centering
+			\begin{tabular}{c|ccccc|c}
+			             & & $ \phi $ &                         & $ \psi $      & & \\
+			$ b = 1/2m $ & & $ 1/2m $ & $ \longleftrightarrow $ & $ 3m + 1/2m $ & & $ b'= 3m + 1/2m $\\
+			$ a = m $    & & $ m $ & $ \longleftrightarrow $ & $ 4m $ & & $ a'= 4m $
+			\end{tabular}
+		\end{figure}
+		
+		Quindi $ \Big(\dfrac{4m}{4m}, \dfrac{3m + 1/2m}{4m} \Big)$-Gap-Max-3-SAT è $ \np$-completo. Perciò
+		\[
+			\dfrac{4\cancel{m}}{\cancel{4m}}\cdot\dfrac{\cancel{4m}}{3\cancel{m} + 1/2\cancel{m}} = \dfrac{8}{7}
+		\]
+		è la migliore approssimazione che posso ottenere per Max-3-SAT
+	\end{proof}
+		
+		
+	\subsection{Inapprossimabilità}
+	VertexCover $\notin FPTAS$.\\
+	IndependetSet $\notin FPTAS$.
 		
 	\section{Riassunto delle classi di complessità}
 	
