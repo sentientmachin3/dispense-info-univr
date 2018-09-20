@@ -1495,6 +1495,38 @@ TreeIndSetSolver($ G =(V, E),\ k $)
 	else return no
 		\end{lstlisting}
 		
+		\begin{figure}[h!]
+			\centering
+			\begin{tikzpicture}
+				\node[draw, circle] (a) at (6, 3.75) {}; 
+				\node[draw, circle, fill=gray] (b) at (3.25, 2.75) {}; \node[draw, circle, fill=gray] (c) at (8.75, 2.75) {}; 
+				\node[draw, circle] (d) at (1.75, 1.75) {}; \node[draw, circle] (e) at (4.75, 1.75) {}; 
+				\node[draw, circle] (f) at (7.25, 1.75) {}; \node[draw, circle] (g) at (10.25, 1.75) {}; 
+				\node[draw, circle, fill=gray] (h) at (.75, .75) {}; \node[draw, circle, fill=gray] (i) at (1.75, .75) {}; 
+				\node[draw, circle, fill=gray] (l) at (2.75, .75) {}; \node[draw, circle, fill=gray] (m) at (4.25, .75) {}; 
+				\node[draw, circle, fill=gray] (n) at (5.25, .75) {}; \node[draw, circle, fill=gray] (o) at (6.75, .75) {}; 
+				\node[draw, circle, fill=gray] (p) at (7.75, .75) {}; \node[draw, circle, fill=gray] (q) at (10.25, .75) {};
+				\draw (a) -- (b) -- (d) -- (h); \draw (d) -- (i); \draw (d) -- (l);
+				\draw (b) -- (e) -- (m); \draw (e) -- (n);
+				\draw (a) -- (c) -- (g) -- (q); \draw (c) -- (f) -- (o); \draw (f) -- (p);
+				\foreach \x in {a,d,e,f,g}{
+					\draw (\x.south west) -- (\x.north east);\draw (\x.south east) -- (\x.north west);
+				}
+				\foreach \x in {h,m,o}{
+					\node[below,yshift=-.1cm] at (\x.south) {$ 1 $};
+				}
+				\foreach \x in {i,l,n,p,q}{
+					\node[below, align=center, yshift=-.1cm] at (\x.south) {$ \cancel{1} $\\$ 0 $};
+				}
+				\node[right] at (d.east) {4}; \node[right] at (e.east) {3}; \node[right] at (f.east) {3};
+				\node[right] at (g.east) {2};\node[above] at (a.north) {2};
+				\node[right] at (b.east) {$ \cancel{3}\ \cancel{2}\ 1 $};
+				\node[right] at (c.east) {$ \cancel{3}\ \cancel{2}\ 1 $};
+			\end{tikzpicture}
+			\caption{Esempio di esecuzione dell'algoritmo che risolve Tree independent Set\\
+				Di lato ad ogni nodo è scritto il suo grado.}
+		\end{figure}
+		
 		\paragraph{Problema Only Small Independent Set} Vediamo ora il problema OSIS:
 		\begin{itemize}
 			\item Input: $ G = (V, E), k $
@@ -3135,6 +3167,11 @@ Un algoritmo di \textit{1-approssimazione} è un algoritmo ottimo.
 		\]
 		è la migliore approssimazione che posso ottenere per Max-3-SAT
 	\end{proof}
+	
+	\noindent
+	Per Max-3-SAT non esiste un algoritmo di k-approssimazione tale che $ k < \dfrac{8}{7} $\\
+	$ \Leftrightarrow $\\
+	Per ogni algoritmo $ \alg{A} $ per Max-3-SAT esiste un insieme di formule $ \phi $ tali che esiste un assegnamento che soddisfa $ t $ clausole ma $ \alg{A} $ ritorna un assegnamento che soddisfa $ \leq\dfrac{7}{8}t $ clausole.
 		
 		
 	\subsection{Inapprossimabilità}
