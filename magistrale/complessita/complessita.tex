@@ -2875,6 +2875,62 @@ SAT-Verifier($\phi(C_1 \dots C_n), \underline{a}$)
  		$ P_1 $ e $ P_2 $ si alternano scegliendo i valori delle varie $x_i$. $P_1$ vince se $\phi$ è soddisfatta dai valori scelti, altrimenti vince $P_2$ ($P_1$ deve fare scelte che valgono $\forall$ mossa di $P_2$).
 	\end{itemize}
 	 
+	 \noindent
+	 Questi due problemi sono equivalenti tra loro.\\
+	 Facciamo vedere che \textit{Q-SAT} $ \in \pspace$\textbf{-completo}:
+	 
+	 \begin{proof}[\textit{Q-SAT} $ \in \pspace$]
+	 	Costruisco l'albero di decisione:
+	 	\begin{figure}[h!]
+	 		\centering
+	 		\begin{tikzpicture}
+		 		\node[draw] (a) at (6, 3.75) {OR}; 
+		 		\node[draw] (b) at (3.25, 2.75) {AND}; \node[draw] (c) at (8.75, 2.75) {AND}; 
+		 		\node[draw] (d) at (1.75, 1.75) {OR}; \node[draw] (e) at (4.75, 1.75) {OR}; 
+		 		\node[draw] (f) at (7.25, 1.75) {OR}; \node[draw] (g) at (10.25, 1.75) {OR}; 
+		 		\node (h) at (1.25, .75) {$ \phi $}; \node (l) at (2.25, .75) {$ \phi $}; 
+		 		\node (m) at (4.25, .75) {$ \phi $}; \node (i) at (10.75, .75) {$ \phi $};
+		 		\node (n) at (5.25, .75) {$ \phi $}; \node (o) at (6.75, .75) {$ \phi $}; 
+		 		\node (p) at (7.75, .75) {$ \phi $}; \node (q) at (9.75, .75) {$ \phi $};
+		 		\draw (a) -- node[left, above] {T} (b) -- (d) -- (h); \draw (d) -- (l);
+		 		\draw (b) -- (e) -- (m); \draw (e) -- (n);
+		 		\draw (a) -- node[right, above] {F} (c) -- (g) -- (q); \draw (c) -- (f) -- (o); \draw (f) -- (p);\draw (g) -- (i);
+		 		\node at (12,3.75) {$ x_1 $}; \node at (12,2.75) {$ x_2 $};\node at (12,1.75) {$ x_3 $};
+	 		\end{tikzpicture}
+	 	\end{figure}
+	 	
+	 	Quindi dalla prima ramificazione partendo da $ x_1 $ abbiamo:
+	 	\begin{align*}
+		 	&\forall x_2\exists x_3\ \phi (T, x_2, x_3) \\
+		 	&\forall x_2\exists x_3\ \phi (F, x_2, x_3)
+	 	\end{align*}
+		 Perciò data una formula quantificata totalmente possiamo vedere se è T o F. Costruiamo quindi il programma che valuta la formula:
+		 \begin{lstlisting}[mathescape=true, frame=tb, basicstyle=\small\ttfamily, caption={Algoritmo che valuta la formula quantificata $ \phi $}]
+eval($ \phi = Q_1 x_1\ Q_2 x_2\ \dots\ Q_n x_n\ \phi $)
+	if $ \ Q_1 = $ null: ($ \phi $ non quantificata)
+		return 0
+	if $ \ Q_1 = \exists $:
+		return eval($ Q_2 x_2\ Q_3 x_3\ \dots\ Q_n x_n\ \phi(x_1\ \leftarrow\ T ) $) OR
+			   eval($ Q_2 x_2\ Q_3 x_3\ \dots\ Q_n x_n\ \phi(x_1\ \leftarrow\ F ) $)
+	else:
+		return eval($ Q_2 x_2\ Q_3 x_3\ \dots\ Q_n x_n\ \phi(x_1\ \leftarrow\ T ) $) AND
+			   eval($ Q_2 x_2\ Q_3 x_3\ \dots\ Q_n x_n\ \phi(x_1\ \leftarrow\ F ) $)
+		 \end{lstlisting}
+		 
+		 Sappiamo che impiega $ O(2^n) $ tempo.\\
+		 Quanto spazio occupa questo algoritmo?\\
+		 Ho $ n $ chiamate ricorsive, una per ogni variabile. Ogni chiamata ha un bit per sapere la validità del sotto-albero. Quindi è $ O(n) $. Perciò \textit{Q-SAT}$ \in\pspace $.
+	 \end{proof}
+	 
+	 Facciamo ora vedere che \textit{Q-SAT} è $ \pspace$\textbf{-hard}, cioè che:
+	 \[
+		 \forall \prob{A}\in \pspace\quad \prob{A}\leq_K \text{\textit{Q-SAT}}
+	 \]
+	 
+	 \begin{proof}
+	 	Dimostriamo che ogni problema in $ \pspace $ si riduce ad un problema di gioco tra due giocatori:
+	 	
+	 \end{proof}
 		
 		\subsection{Problema Geography}
 			\begin{itemize}
