@@ -21,7 +21,7 @@ Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman
 - Progettazione di sistemi embedded
 - Sistemi Dinamici (In progress)
 - Sistemi ad Eventi Discreti (In progress)
-- Complessità (In progress)
+- Complessità
 - Intelligenza Artificiale (In progress)
 - Sistemi informativi (In progress)
 
