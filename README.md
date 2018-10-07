@@ -19,7 +19,7 @@ Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman
 - Linguaggi (In progress, con schema delle regole di inferenza)
 - Analisi di Sistemi Informatici
 - Progettazione di sistemi embedded
-- Sistemi Dinamici (In progress)
+- Sistemi Dinamici (Obsoleta)
 - Sistemi ad Eventi Discreti (In progress)
 - Complessità
 - Intelligenza Artificiale (In progress)
