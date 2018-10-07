@@ -24,5 +24,6 @@ Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman
 - Complessità
 - Intelligenza Artificiale (In progress)
 - Sistemi informativi (In progress)
+- Crittografia (In progress)
 
 Make TeX, not Word.
