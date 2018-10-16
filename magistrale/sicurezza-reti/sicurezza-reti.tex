@@ -1,0 +1,64 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{fixltx2e}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{latexsym}
+\usepackage{lstautogobble}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[margin=3cm]{geometry}
+\usepackage{hyperref}
+\usepackage{libertine}
+\usepackage{tikz}
+\hypersetup{
+	hidelinks, 
+	colorlinks = true,
+	linkcolor = black,
+}
+
+\usetikzlibrary{shapes, arrows}
+
+\newtheorem{definit}{Definizione}[subsection]
+
+\begin{document}
+	\clearpage
+	\begin{titlepage}
+		\centering
+		\vspace*{\fill}
+		{\scshape\LARGE Università degli Studi di Verona \par}
+		\vspace{1.5cm}
+		\line(1,0){230} \\
+		{\huge\bfseries Sicurezza delle reti\par}
+		\line(1,0){230} \\
+		\vspace{0.5cm}
+		{\scshape\Large Riassunto dei principali argomenti\par}
+		\vspace{2cm}
+		{\Large\itshape Davide Bianchi\par}
+		\vspace{1cm}
+		\vspace{5cm}
+		\vspace*{\fill}
+		% Bottom of the page
+		{\large \today\par}
+	\end{titlepage}
+	\thispagestyle{empty}
+	\newpage
+	\tableofcontents
+	\newpage
+	
+	\section{Introduzione}
+	\subsection{Spam di definizioni}
+	
+	\begin{definit}[Information Security]
+		Protezione delle informazioni e dei sistemi per impedirne l'accesso non autorizzato, uso, divulgazione, modifica o distruzione.
+	\end{definit}
+	
+	\begin{definit}[Network Security]
+		Protezione dell'accesso a risorse situate all'interno di una rete.
+	\end{definit}
+	
+
+\end{document}
