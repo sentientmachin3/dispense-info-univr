@@ -23,6 +23,8 @@
 \usetikzlibrary{shapes, arrows}
 
 \newtheorem{definit}{Definizione}[subsection]
+\newcommand{\encr}{E_e}
+\newcommand{\decr}{D_d}
 
 \begin{document}
 	\clearpage
@@ -136,8 +138,53 @@
 		
 		\item \textit{adaptive choosen plaintext:} può liberamente scegliere il plaintext da far codificare e comportarsi di conseguenza, sulla base del risultato appena ottenuto.
 		
-		\item \textit{chosen ciphertext:}l'attaccante può scegliere differenti ciphertext e avere accesso al plaintext decriptato, per infine ricavare la chiave.
+		\item \textit{chosen ciphertext:} l'attaccante può scegliere differenti ciphertext e avere accesso al plaintext decriptato, per infine ricavare la chiave.
 		\end{itemize}
+	
+	\subsection{Notazione}
+	La notazione usata è la seguente: \begin{itemize}
+		\item $\mathcal{A}$ è l'alfabeto, ovvero un insieme finito di simboli;
+		\item $\mathcal{M} \subseteq \mathcal{A}^*\star$ è il messaggio, dove $M \in \mathcal{M}$ è il \textit{plaintext};
+		\item $\mathcal{C}$ è il messaggio cifrato, il cui alfabeto può anche differire da quello usato per $M$;
+		\item $\mathcal{K}$ indica lo spazio delle chiavi;
+		\item ogni $e \in \mathcal{K}$ denota una funzione biiettiva da $\mathcal{M}$ a $\mathcal{C}$, viene indicata con $\encr$ ed è la funzione di cifratura;
+		\item ogni $d \in \mathcal{K}$ è una funzione biiettiva da $\mathcal{C}$ a $\mathcal{M}$, indicata con $\decr$ ed è la funzione di decodifica.
+	\end{itemize}
+
+	Data la notazione soprastante, indichiamo con cifrario un insieme $\lbrace \encr\ |\ e \in \mathcal{K} \rbrace$ e il suo corrispondente $\lbrace \decr\ |\ d \in \mathcal{K} \rbrace$ tale che per ogni $e \in \mathcal{K}$ esiste un solo $d \in \mathcal{K}$, in modo tale che $\decr = \encr^{-1}$. La coppia $\langle e, d \rangle$ forma una coppia di chiavi, dove $e$ e $d$ possono anche essere identiche (come nel caso della crittografia simmetrica).
+	
+	\subsection{Crittografia a chiave simmetrica}
+	È il caso più classico. In questo sistema $e = d$, e i due interlocutori condividono una chiave. I cifrari possibili nel caso della crittografia simmetrica sono di 3 categorie: \begin{itemize}
+		\item \textit{cifrari a blocchi:} dividono il testo in blocchi di lunghezza fissa e cifrano un blocco alla volta;
+		\item \textit{cifrari a flusso:} cifrari a blocchi in cui la dimensione di ogni blocco è fissata a 1;
+		\item \textit{codes:} cifrari che lavorano su parole a lunghezza variabile.
+	\end{itemize}
+
+	\subsubsection{Tecniche di sostituzione}
+	Sono tutti quei cifrari che sostituiscono una lettera con un'altra lettere, basandosi su una qualche regola di sostituzione, come il cifrario di Cesare e la permutazione casuale.
+	
+	\paragraph{Cifrario di Cesare.}
+	Il messaggio viene cifrato sostituendo ogni lettera $l$ del messaggio con la $l+k$ esima lettera dell'alfabeto; la chiave quindi è data dalla coppia $(l, l+k)$. 
+	
+	Il cifrario di Cesare è facile da attaccare in quanto basta un attacco \textit{bruteforce}, quindi è sufficiente provare tutte le combinazioni (che sono in totale 26).
+	
+	\paragraph{Permutazione casuale.}
+	Supponiamo di usare come cifrario una permutazione casuale dell'alfabeto, ovvero sostituendo ad ogni lettera dell'alfabeto un'altra lettera, in modo totalmente casuale. In tal caso l'attacco bruteforce richiederebbe tempo eccessivo (ci sono $26!$ pssibili combinazioni da provare, che sono decisamente troppe). 
+	
+	La tecnica usata per attaccare questo tipo di crittografia è l'\textit{analisi delle frequenze}, ovvero l'analisi delle lettere che capitano di più in una data lingua, e associare la lettera del messaggio cifrato con una data frequenza con quella nella lingua del messaggio con una frequenza simile.
+	
+	\paragraph{Cifrario di Vigenère.}
+	Il cifrario di Vigenère riprende l'idea del cifrario di Cesare. L'idea è la seguente: presa una chiave (es. \textit{key}), si ripete la chiave tante volte quanto è lungo il testo (eventualmente troncando l'ultima ripetizione), e si codifica la lettera con il corrispondete cifrario di Cesare. \\
+	
+	\noindent
+	K E Y K E Y K E Y K E Y \\
+	P R O V A D I T E S T O \\
+	
+	
+	La prima lettera del cipher text sarà la lettera ottenuta dal cifrario di Cesare di chiave $(K,P)$, la seconda con la chiave $(E, R)$ e così via.
+	
+	Anche questo cifrario è semplice da attaccare, si parte dalla divisione del ciphertext in gruppi di lunghezza pari a quella della chiave, e si esegue l'analisi delle frequenze su ogni gruppo.
+	
 	
 	
 	
