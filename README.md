@@ -16,14 +16,15 @@ Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman
 - Elaborazione segnali e immagini (In progress)
 
 #### MAGISTRALE
-- Linguaggi (In progress, con schema delle regole di inferenza)
+- Linguaggi (Con schema delle regole di inferenza)
 - Analisi di Sistemi Informatici
 - Progettazione di sistemi embedded
 - Sistemi Dinamici (Obsoleta)
-- Sistemi ad Eventi Discreti (In progress)
+- Sistemi ad Eventi Discreti (Incompleta)
 - Complessità
-- Intelligenza Artificiale (In progress)
+- Intelligenza Artificiale (Incompleta)
 - Sistemi informativi (In progress)
 - Crittografia (In progress)
+- Sicurezza delle Reti (In progress)
 
 Make TeX, not Word.
