@@ -185,7 +185,52 @@
 	
 	Anche questo cifrario è semplice da attaccare, si parte dalla divisione del ciphertext in gruppi di lunghezza pari a quella della chiave, e si esegue l'analisi delle frequenze su ogni gruppo.
 	
+	\subsection{Cifrari a trasposizione}
+	Funzionano in maniera leggermente diversa. Dato un blocco di lunghezza $l$ e $\mathcal{K}$ un insieme di permutazioni su $\lbrace 1 \dots t \rbrace$, si ha che \[ \encr(m) = m_{e(1)}, \dots, m_{e(2)} \] Per decodificare si applica la permutazione inversa ad ogni carattere del ciphertext.
 	
+	\subsection{Cifrario di Feistel}
+	
+	\subsection{Data Encryption Standard (DES)}
+	È un cifrario a blocchi che lavora su blocchi di 64 bit. Fu in effetti il primo standard di crittografia, e ne furono rilasciate versioni aggiornate che lavorassero su chiavi di lunghezza maggiore (3-DES). Non è ancora stato violato, ma è possibile ridurre in tempo lineare lo spazio delle chiavi da $2^{56}$ a $2^{43}$.
+	
+	\begin{center}
+		\begin{tikzpicture}
+		\node at (4,0) [rectangle,draw, minimum width=2cm, minimum height=1cm] (E) {$DES$};
+		\draw (E);
+		\draw[->] (1,0) -- (E) node[above, midway] {\textit{plain} $\left[ 64 \right]$};
+		\draw[->] (4,-1.5) -- (E) node[right, midway] {\textit{key} $\left[ 56 \right]$};
+		\draw[->] (E) -- (7,0) node[above, midway] {\textit{cipher}};
+		\end{tikzpicture}
+	\end{center}
+	
+	\subsubsection{Double DES e 3-DES}
+	La variante DD, che usa DES due volte consecutive, è soggetta ad un attacco del tipo \textit{Meet-in-the-Middle}.
+	\begin{center}
+		\begin{tikzpicture}
+		\node at (4,0) [rectangle,draw, minimum width=2cm, minimum height=1cm] (E) {$DES$};
+		\draw (E);
+		\draw[->] (1,0) -- (E) node[above, midway] { $P_1$};
+		\draw[->] (4,-1.5) -- (E) node[right, midway] {$K_1$};
+		\draw[->] (E) -- (7,0) node[above, midway] {$M$};
+		\node at (8,0) [rectangle,draw, minimum width=2cm, minimum height=1cm] (2E) {$DES$};
+		\draw[->] (8,-1.5) -- (2E) node[right, midway] {$K_2$};
+		\draw[->] (2E) -- (11,0) node[above, midway] { $P_2$};
+		\end{tikzpicture}
+	\end{center}
+
+	L'attacco funziona nel seguente modo: \begin{enumerate}
+		\item Dato un $C = E_{K_2}(E_{K_1}(P))$, sia $X = E_{K_1}(P) = D_{K_2}(C)$;
+		\item Dati $P$ e $C$, cifrare $P$ per ogni possibile chiave (sono $2^{56}$);
+		\item Generare una tabella con tutti i risultati, ordinati secondo $X$;
+		\item Decifrare $C$ con tutte le possibili $K_2$, cercando un matching con quelle i risultati ottenuti prima. Ogni coppia è una possibile coppia valida, basta confrontare i risultati con $P$ e $C$ iniziali.
+	\end{enumerate}
+
+	In effetti, guardando lo schema sopra, si nota che al massimo occorrono $2^{56}$ operazioni per violare questo protocollo.
+	
+	Con 3-DES invece, un tentativo con la soluzione bruteforce necessita di almeno $2^{112}$ operazioni, un numero notevolmente più alto. Al momento infatti non esistono soluzioni per violare 3-DES.
+	
+	\subsection{Advanced Encryption Standard (AES)}
+	Proposto come rimpiazzo di DES nel 1991, fu selezionato nel 2001. Infatti il DES iniziava a non andare più bene, in larga parte perchè era disegnato per i software degli anni 70 ed era abbastanza lento. AES funziona in maniera più snella e lavora su chiavi molto più lunghe (128, 192 e 256 bit).
 	
 	
 	
