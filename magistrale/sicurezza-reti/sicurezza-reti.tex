@@ -232,8 +232,26 @@
 	\subsection{Advanced Encryption Standard (AES)}
 	Proposto come rimpiazzo di DES nel 1991, fu selezionato nel 2001. Infatti il DES iniziava a non andare più bene, in larga parte perchè era disegnato per i software degli anni 70 ed era abbastanza lento. AES funziona in maniera più snella e lavora su chiavi molto più lunghe (128, 192 e 256 bit).
 	
+	\subsection{Cipher block chaining}
+	Come ci si comporta quando la lunghezza del messaggio eccede la dimensione del blocco? In tal caso, ci sono molteplici possibilità:\begin{enumerate}
+		\item Splittare il messaggio in $m$ blocchi, e cifrarli individualmente. Questa opzione è soggetta a pesanti limtazioni, la prima data dal fatto che identici plaintext vengono mappati su identici ciphertext (\textit{information leak}); la seconda invece limita di parecchio le possibilità di individuare eventuali manomissioni del messaggio da parte di terzi (\textit{integrity});
+		
+		\item Si può pensare in alternativa di far dipendere un carattere del ciphertext da quello precedente: dato un valore iniziale, il successivo carattere sarà cifrato con uno XOR tra il carattere precedentemente cifrato e il carattere da cifrare. In sostanza, dato un certo $C_0$, \begin{align*}
+			C_i &= E_K(P_i \oplus C_{i-1}) \\
+			P_i &= C_{i-1} \oplus D_K(C_i) \quad \text{(per la decodifica)}
+		\end{align*}
+	\end{enumerate}
+
+	Con la seconda soluzione, i caratteri cifrati dipendono strettamente da quelli precedenti, quindi è impossibile che due plaintext uguali vengano mappati su ciphertext uguali.
 	
+	\subsection{Posizionamento dei sistemi crittografici}
+	Distinguiamo i casi di \textit{link encryption} e \textit{end-to-end encryption}.
+	Nella link encryption ci sono sistemi di cifratura ad ogni collegamento, quindi i dati vengono decifrati e cifrati ad ognuno dei singoli collegamenti. Nella crittografia end-to-end invece, ciò che accade è che i sistemi di cifratura sono posizionati all'origine e alla destinazione dei dati, però in tal caso è necessario l'utilizzo di chiavi condivise tra i due interlocutori.
 	
+	Guardando la questione da un punto di vista alternativo, ossia quello dello stack OSI, possiamo osservare come la link encryption sia applicata ai livelli più bassi dello stack, mentre man mano si sale viene applicata una crittografia di tipo end-to-end. Idealmente, serve che la crittografia end-to-end protegga i dati contenuti nei pacchetti, ma che lasci inalterati gli header, per permettere l'inoltro dei pacchetti. La link encryption protegge invece i dati di inoltro da monitoraggio e analisi da parte di terzi.
+	
+	\subsection{Distribuzione delle chiavi}
+
 	
 	
 	
