@@ -1,4 +1,4 @@
-\documentclass[a4paper, 11pt]{article}
+\documentclass[a4paper, 10pt]{article}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
@@ -12,7 +12,7 @@
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage[margin=3cm]{geometry}
 \usepackage{hyperref}
-\usepackage{libertine}
+\usepackage{bera}
 \usepackage{tikz}
 \hypersetup{
 	hidelinks, 
@@ -141,7 +141,7 @@
 		\item \textit{chosen ciphertext:} l'attaccante può scegliere differenti ciphertext e avere accesso al plaintext decriptato, per infine ricavare la chiave.
 		\end{itemize}
 	
-	\subsection{Notazione}
+	\subsection{Notazione} \label{notation}
 	La notazione usata è la seguente: \begin{itemize}
 		\item $\mathcal{A}$ è l'alfabeto, ovvero un insieme finito di simboli;
 		\item $\mathcal{M} \subseteq \mathcal{A}^*\star$ è il messaggio, dove $M \in \mathcal{M}$ è il \textit{plaintext};
@@ -153,14 +153,14 @@
 
 	Data la notazione soprastante, indichiamo con cifrario un insieme $\lbrace \encr\ |\ e \in \mathcal{K} \rbrace$ e il suo corrispondente $\lbrace \decr\ |\ d \in \mathcal{K} \rbrace$ tale che per ogni $e \in \mathcal{K}$ esiste un solo $d \in \mathcal{K}$, in modo tale che $\decr = \encr^{-1}$. La coppia $\langle e, d \rangle$ forma una coppia di chiavi, dove $e$ e $d$ possono anche essere identiche (come nel caso della crittografia simmetrica).
 	
-	\subsection{Crittografia a chiave simmetrica}
-	È il caso più classico. In questo sistema $e = d$, e i due interlocutori condividono una chiave. I cifrari possibili nel caso della crittografia simmetrica sono di 3 categorie: \begin{itemize}
+	\section{Crittografia a chiave simmetrica}
+	Nella crittografia a chiave simmetrica le chiavi sono le stesse ($e = d$), e i due interlocutori condividono una chiave. I cifrari possibili nel caso della crittografia simmetrica sono di 3 categorie: \begin{itemize}
 		\item \textit{cifrari a blocchi:} dividono il testo in blocchi di lunghezza fissa e cifrano un blocco alla volta;
 		\item \textit{cifrari a flusso:} cifrari a blocchi in cui la dimensione di ogni blocco è fissata a 1;
 		\item \textit{codes:} cifrari che lavorano su parole a lunghezza variabile.
 	\end{itemize}
 
-	\subsubsection{Tecniche di sostituzione}
+	\subsection{Tecniche di sostituzione}
 	Sono tutti quei cifrari che sostituiscono una lettera con un'altra lettere, basandosi su una qualche regola di sostituzione, come il cifrario di Cesare e la permutazione casuale.
 	
 	\paragraph{Cifrario di Cesare.}
@@ -251,7 +251,46 @@
 	Guardando la questione da un punto di vista alternativo, ossia quello dello stack OSI, possiamo osservare come la link encryption sia applicata ai livelli più bassi dello stack, mentre man mano si sale viene applicata una crittografia di tipo end-to-end. Idealmente, serve che la crittografia end-to-end protegga i dati contenuti nei pacchetti, ma che lasci inalterati gli header, per permettere l'inoltro dei pacchetti. La link encryption protegge invece i dati di inoltro da monitoraggio e analisi da parte di terzi.
 	
 	\subsection{Distribuzione delle chiavi}
+	Come già detto in precedenza, la crittografia a chiave simmetrica richiede che le parti condividano una chiave. Ciò può costituire un problema, dal momento che terzi malintenzionati possono sempre tentare di rubare la chiave sfruttando qualche falla nel sistema di condivisione della stessa.
+	
+	Tipicamente non viene usata una sola chiave, ma una gerarchia di chiavi. Si ha quindi:\begin{itemize}
+		\item \textit{session key:} usata per crittografare dati per una sola sessione logica;
+		\item \textit{master key:} usata per cifrare le sessioni.
+	\end{itemize}
 
+	I problemi principali che si possono incontrare quindi sono i seguenti: \begin{itemize}
+		\item la gerarchia delle chiavi è necessaria per reti molto vaste, ma è necessaria una sorta di garanzia sulle chiavi;
+		
+		\item il tempo di vita della chiave di sessione deve essere il minore possibile;
+		
+		\item l'uso di un sistema automatico di ditribuzione delle chiavi necessita la fiducia da parte degli utenti;
+		
+		\item il sistema di distribuzione è decentralizzato;
+		
+		\item è necessario stabilire una politica di controllo sull'uso delle chiavi.
+	\end{itemize}
+
+	\section{Crittografia a chiave pubblica}
+	\paragraph{Notazione.} Oltre alla notazione specificata nella sezione \ref{notation}, specifichiamo con $PU_b$ e $PR_b$ rispettivamente la chiave pubblica di B e la chiave privata di B.
+	
+	\subsection{Struttura del sistema}
+	Questo tipo di crittografia elimina il problema della distribuzione delle chiavi, in quanto ogni utente ha due chiavi, una pubblica (che tutti possono vedere), e una privata (che \textit{dovrebbe} rimanere incognita).
+	
+	Ogni utente genera una coppia di chiavi, una pubblica e una privata. Quella pubblica viene inserita in un registro.
+	Supponiamo che B voglia inviare un messaggio ad A. La procedura è la seguente:\begin{enumerate}
+		\item B cifra il messaggio con la chiave pubblica di A;
+		\item A riceve il messaggio cifrato trasmesso da B;
+		\item A decifra il messaggio ricevuto usando la sua chiave privata.
+	\end{enumerate}
+
+	Il vantaggio è evidente: senza doversi scambiare le chiavi, A è certa che il messaggio non sia stato letto in precedenza, in quanto è decifrabile solo con la chiave privata che solo lei possiede. Le applicazioni sono molteplici: si va dalla firma digitale, alla cifratura/decifratura di contentuti, fino allo scambio di chiavi.
+	
+	\subsection{Requisiti necessari per il funzionamento}
+	Come per la crittografia a chiave simmetrica, ci sono dei requisiti fondamentali al sistema per garantire un processo di crittografia che sia ottimale: \begin{itemize}
+		\item deve essere facile generare la coppia di chiavi;
+		\item deve essere facile, per il mittente A, generare $C=E(PU_b, M)$;
+		\item deve essere facile, per il destinatario B, calcolare $M=D(PR_b, C)$;
+	\end{itemize}
 	
 	
 	
