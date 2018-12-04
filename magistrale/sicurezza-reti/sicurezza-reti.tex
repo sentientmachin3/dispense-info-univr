@@ -12,7 +12,6 @@
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage[margin=3cm]{geometry}
 \usepackage{hyperref}
-\usepackage{bera}
 \usepackage{tikz}
 \hypersetup{
 	hidelinks, 
@@ -25,6 +24,10 @@
 \newtheorem{definit}{Definizione}[subsection]
 \newcommand{\encr}{E_e}
 \newcommand{\decr}{D_d}
+\newcommand{\pua}{PU_a}
+\newcommand{\pub}{PU_b}
+\newcommand{\pra}{PR_a}
+\newcommand{\prb}{PR_b}
 
 \begin{document}
 	\clearpage
@@ -283,6 +286,15 @@
 		\item A decifra il messaggio ricevuto usando la sua chiave privata.
 	\end{enumerate}
 
+	\subsection{Crittoanalisi della crittografia a chiave pubblica}
+	Gli attacchi possibili sono i seguenti: \begin{itemize}
+		\item \textit{Bruteforce:} l'unica soluzione è aumentare la lunghezza della chiave, cosa che potrebbe non scalare bene con l'aumentare della dimensione, data la complessità dell'algoritmo; in pratica la crittografia a chiave pubblica viene usata solamente per la gestione delle chiavi e la firma digitale;
+		
+		\item \textit{Calcolo di} $PR_b$ \textit{data} $PU_b$: di questo attacco non esiste prova nè controprova;
+		
+		\item \textit{Probable-message attack:} supponiamo di avere un messaggio $M$ abbastanza corto, tale che sia $C = E(\pua, M) $, l'attaccante potrebbe calcolare tutti i $Y_i = E(\pua, M)$ per tutti i possibili plaintext, e fermarsi quando $Y_i = C$. La  soluzione a questo tipo di attacco è banale, basta appendere alcuni bit random alla fine di $M$, in modo tale da impedire di trovare un $Y_i$ valido.
+	\end{itemize}
+
 	Il vantaggio è evidente: senza doversi scambiare le chiavi, A è certa che il messaggio non sia stato letto in precedenza, in quanto è decifrabile solo con la chiave privata che solo lei possiede. Le applicazioni sono molteplici: si va dalla firma digitale, alla cifratura/decifratura di contentuti, fino allo scambio di chiavi.
 	
 	\subsection{Requisiti necessari per il funzionamento}
@@ -290,7 +302,32 @@
 		\item deve essere facile generare la coppia di chiavi;
 		\item deve essere facile, per il mittente A, generare $C=E(PU_b, M)$;
 		\item deve essere facile, per il destinatario B, calcolare $M=D(PR_b, C)$;
+		\item deve essere difficile, per un attaccante, ottenere la chiave privata da quella pubblica;
+		\item deve essere difficile, per un attaccante, data la chiave pubblica e il ciphertext, ottenere il messaggio in chiaro.
 	\end{itemize}
+
+	\subsection{Algoritmo RSA}
+	\begin{definit}[One-way function]
+		Definiamo one-way function una funzione $f:X \to Y$ dove $f$ è facile da calcolare $\forall x \in X$, ma è molto difficile da calcolare la sua inversa $f^{-1}$.
+	\end{definit}
+
+	\begin{definit}[Trapdoor one-way function]
+		Una trapdoor one-way function è una funzione $f_k:X \to Y$ dove, data un'informazione extra $k$ (trapdoor) è calcolabile, $\forall y \in Im(f)$, una $x\in X \text{ t.c. } f_k(x)=y$.
+	\end{definit}
+
+	L'algoritmo RSA è usato in molti degli standard odierni, ma il vantaggio di essere circa 1000 volte più lento di DES, oltre ad avere bisogno di chiavi abbastanza lunghe (1024 bit è relativamente sicura) ed essere vulnerabile ad alcuni tipi di attacco.
+	
+	La cifratura e la decifratura iniziano da un numero noto sia ad A che a B. Il plaintext viene quindi splittato in blocchi di lunghezza pari a $\lceil log_2(n) \rceil$, in modo tale che ogni blocco rappresenti un numero $M$ per cui $M < n$. Il ciphertext è definito come \[ C=M^e \mod n \] mentre il plaintext è ricavabile tramite \[ M = C^d \mod n = M^{ed} \mod n \]
+	
+	Le chiavi privata e pubblica sono date rispettivamente da $\lbrace d,n \rbrace$ e $\lbrace e,n \rbrace$. Perchè l'algoritmo funzioni, devono essere soddisfatti i seguenti vincoli:\begin{itemize}
+		\item $\exists e,d,n. M^{ed} \mod n = M, \forall M<n$;
+		\item è facile calcolare $M^e \mod n$ e $C^d \mod n$;
+		\item è impossibile determinare $d$ conoscendo $e$ ed $n$.
+	\end{itemize}
+
+	
+
+	
 	
 	
 	
