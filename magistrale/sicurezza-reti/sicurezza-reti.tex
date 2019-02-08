@@ -315,7 +315,7 @@
 		Una trapdoor one-way function è una funzione $f_k:X \to Y$ dove, data un'informazione extra $k$ (trapdoor) è calcolabile, $\forall y \in Im(f)$, una $x\in X \text{ t.c. } f_k(x)=y$.
 	\end{definit}
 
-	L'algoritmo RSA è usato in molti degli standard odierni, ma il vantaggio di essere circa 1000 volte più lento di DES, oltre ad avere bisogno di chiavi abbastanza lunghe (1024 bit è relativamente sicura) ed essere vulnerabile ad alcuni tipi di attacco.
+	L'algoritmo RSA è usato in molti degli standard odierni, ma ha lo svantaggio di essere circa 1000 volte più lento di DES, oltre ad avere bisogno di chiavi abbastanza lunghe (1024 bit è relativamente sicura) ed essere vulnerabile ad alcuni tipi di attacco.
 	
 	La cifratura e la decifratura iniziano da un numero noto sia ad A che a B. Il plaintext viene quindi splittato in blocchi di lunghezza pari a $\lceil log_2(n) \rceil$, in modo tale che ogni blocco rappresenti un numero $M$ per cui $M < n$. Il ciphertext è definito come \[ C=M^e \mod n \] mentre il plaintext è ricavabile tramite \[ M = C^d \mod n = M^{ed} \mod n \]
 	
@@ -324,6 +324,51 @@
 		\item è facile calcolare $M^e \mod n$ e $C^d \mod n$;
 		\item è impossibile determinare $d$ conoscendo $e$ ed $n$.
 	\end{itemize}
+	
+	Per generare una coppia di chiavi si usano i seguenti passi: \begin{enumerate}
+		\item Si generano due numeri primi $p$ e $q$ (possibilmente grandi);
+		\item Si calcolano $n=p*q$ e $\phi = (p-1)(q-1)$;
+		\item Si seleziona un $e$, $1 < e < \phi$;
+		\item Si determina $d = e^{-1} \mod \phi$;
+		\item Si pubblica la chiave $(e,n)$ e si mantiene privata $(d,n)$. 
+	\end{enumerate}
+
+	La sicurezza di RSA risiede nel fatto che ricavare $d$ data la chiave pubblica è estremamente complesso, dal momento che sarebbe necessario trovare $d = e^{-1} \mod \phi$; non si conoscono algoritmi polinomiali per fare ciò.
+	
+	\subsection{Distribuzione delle chiavi}
+	Il problema risiede nella fiducia da riporre in un sistema di distribuzione delle chiavi dove le chiavi stesse non possano venire compromesse. Si usano in tal senso gli algoritmi crittografici a chiave asimmetrica. 
+	
+	\subsubsection{Distribuzione con RSA}
+	Lo scambio delle chiavi con RSA è abbastanza semplice: dato un $m$ e scelta una chiave $k$ casuale, si cifra un \[ c=(k^e \mod n, E_k(m)) \]
+	
+	La decifratura delle chiavi, con la chiave privata $(d,n)$, avviene splittando il ciphertext in due blocchi separati, con \begin{align*}
+		k &= c^d_1 \mod n \\
+		m &= D_k(c_2)
+	\end{align*}
+	
+	L'unico problema è che se la chiave privata è compromessa, allora $k$ può essere recuperata da un intruso dal traffico precedentemente intercettato.
+	
+	\subsubsection{Diffie-Hellman}
+	\begin{definit}[Primitive root]
+		Una primitive root $s$ di un numero primo $p$ è il numero le cui potenze generano $1,\dots,p-1$.
+	\end{definit}
+
+	\begin{definit}[Logaritmo discreto]
+		Definiamo il logaritmo discreto di $b$ come un valore $i$ tale che $b=s^i \mod p$.
+	\end{definit}
+	
+	Il calcolo del logaritmo discreto sembra essere infattibile, quindi è possibile strutturare un sistema crittgrafico che sfrutti questa caratteristica.
+	
+	\paragraph{Generazione delle chiavi.} La generazione delle chiavi segue le seguenti fasi: \begin{enumerate}
+		\item I due enti si scambiano un numero primo $q$ e una primitive root $\alpha$, entrambe pubbliche;
+		\item A e B generano due numeri $X_A$ e $X_B$, entrambi minori di $q$;
+		\item A calcola $Y_A = \alpha^{X_A} \mod q$ (analogamente B calcola $Y_B$);
+		\item A e B si scambiano i risultati;
+		\item A calcola $K_A = Y_B^{X_A} \mod q$, B fa l'analogo con $X_B$. Le due chiavi risultano essere uguali ora.
+	\end{enumerate}
+
+	\paragraph{Punti di forza.} Notare quali sono i punti di forza di Diffie-Hellman: la chiave è creata senza avere alcuna informazione iniziale e non è mai trasmessa (viene trasmesso solo $Y$)
+	
 
 	
 

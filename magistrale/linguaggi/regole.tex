@@ -81,13 +81,13 @@
 		&\infer{(B-Await)}{\brule{B, s}{true, s_1}\quad \ssrule{C, s_1}{\skipp, s'}}{\srule{\awaitprotectend{B}{C}, s}{\skipp, s'}}{}
 	\end{align*}
 	\begin{align*}
-		&\infer{(B-Let-CBV)}{\bbrule{P}{m}\quad \bbrule{\subs{E}{m}{x}}{n}}{\bbrule{\letin{x = P}{E}}{n}}{}
-		&\infer{(B-Let-CBN)}{\bbrule{\subs{E}{P}{x}}{n}}{\bbrule{\letin{x = P}{E}}{n}}{} \qquad
+		&\infer{(B-Let-CBN)}{\bbrule{\subs{E}{P}{x}}{n}}{\bbrule{\letin{x = P}{E}}{n}}{} 
+		&\infer{(B-Let-CBV)}{\bbrule{P}{m}\quad \bbrule{\subs{E}{m}{x}}{n}}{\bbrule{\letin{x = P}{E}}{n}}{}\qquad
 		&\infer{(B-Fn)}{-}{\srule{\text{fn } x\colon T\ \Rightarrow\ e, s}{\text{fn } x\colon T\ \Rightarrow\ e, s}}{}
 	\end{align*}
 	\begin{align*}
-		&\infer{(B-App-CBV)}{\bbrule{E_1}{\text{fn } x\colon T \Rightarrow E}\qquad \bbrule{\subs{E}{E_2}{x}}{n}}{\bbrule{E_1 E_2}{n}}{}
-		&\infer{(B-App-CBN)}{\bbrule{E_1}{\text{fn } x\colon T \Rightarrow E}\qquad \bbrule{E_2}{v}\qquad \bbrule{\subs{E}{v}{x}}{n}}{\bbrule{E_1 E_2}{n}}{}
+		&\infer{(B-App-CBN)}{\bbrule{E_1}{\text{fn } x\colon T \Rightarrow E}\qquad \bbrule{\subs{E}{E_2}{x}}{n}}{\bbrule{E_1 E_2}{n}}{}
+		&\infer{(B-App-CBV)}{\bbrule{E_1}{\text{fn } x\colon T \Rightarrow E}\qquad \bbrule{E_2}{v}\qquad \bbrule{\subs{E}{v}{x}}{n}}{\bbrule{E_1 E_2}{n}}{}
 	\end{align*}
 
 	\newpage
@@ -191,9 +191,10 @@
 	\vspace{-1cm}
 \subsection*{Tipi primitivi e operatori}
 	\begin{align*}
-		&\infer{(int)}{-}{\Gamma \vdash n\colon \integer}{\ \textup{for}\ n \in \Z} \qquad\qquad
-		\infer{(bool)}{-}{\Gamma \vdash b\colon \bool}{\ \textup{for}\ b \in \{true, false\}} \qquad\qquad
-		\infer{(op +)}{\Gamma \vdash e_1\colon \integer\qquad \Gamma \vdash e_2\colon \integer}{\Gamma\vdash e_1 + e_2 \colon \integer}{}\qquad\qquad
+		&\infer{(int)}{-}{\Gamma \vdash n\colon \integer}{\ \textup{for}\ n \in \Z} \qquad
+		\infer{(bool)}{-}{\Gamma \vdash b\colon \bool}{\ \textup{for}\ b \in \{true, false\}} \qquad
+		\infer{(not)}{\Gamma \vdash E\colon \bool}{\Gamma \vdash \neg E\colon \bool} \qquad
+		\infer{(op +)}{\Gamma \vdash e_1\colon \integer\qquad \Gamma \vdash e_2\colon \integer}{\Gamma\vdash e_1 + e_2 \colon \integer}{}\qquad
 		\infer{(op *)}{\Gamma \vdash e_1\colon \integer\qquad \Gamma \vdash e_2\colon \integer}{\Gamma\vdash e_1 * e_2 \colon \integer}{} \\ \\
 		&\infer{(op or)}{\Gamma\vdash e_1\colon \bool\qquad \Gamma\vdash e_2\colon\bool}{\Gamma\vdash e_1\ or\ e_2 \colon\bool}{}\qquad\qquad
 		\infer{(op and)}{\Gamma\vdash e_1\colon \bool\qquad \Gamma\vdash e_2\colon\bool}{\Gamma\vdash e_1\ and\ e_2 \colon\bool}{} \qquad\qquad
@@ -211,8 +212,13 @@
 	\begin{align*}
 		&\infer{(ref)}{\Gamma\vdash e \colon T}{\Gamma\vdash \text{ref } e\colon \text{ref } T}{}  \qquad  \qquad
 		\infer{(deref)}{\Gamma\vdash e \colon\text{ref } T}{\Gamma\vdash !e \colon T}{} \qquad
-		\infer{(assign)}{\Gamma\vdash e_1\colon \text{ref } T\quad \Gamma\vdash e_2\colon T }{\Gamma\vdash (e_1 \colon = e_2)\colon \text{unit}}{}\qquad  \qquad
-		\infer{(loc)}{-}{\Gamma\vdash l\colon \text{ref } T}{\ \Gamma (l) = \text{ref } T}
+		\infer{(assign)}{\Gamma\vdash e_1\colon \text{ref } T\quad \Gamma\vdash e_2\colon T }{\Gamma\vdash (e_1 \colon = e_2)\colon \text{unit}}{}\qquad
+		\infer{(loc)}{-}{\Gamma\vdash l\colon \text{ref } T}{\ \Gamma (l) = \text{ref } T} \qquad
+	\end{align*}
+	\begin{align*}
+	\infer{(derefInt)}{-}{\Gamma\vdash !l \colon \integer}{\Gamma (l) = \text intref} \qquad
+	\infer{(assignInt)}{\Gamma\vdash e\colon \integer }{\Gamma\vdash (l \colon = e)\colon \text{unit}}{\Gamma (l) = \text intref}\qquad
+	\infer{(locInt)}{-}{\Gamma\vdash l\colon \text intref}{\ \Gamma (l) = \text intref} \qquad
 	\end{align*}
 \subsection*{Funzioni}
 	\begin{align*}
@@ -225,20 +231,26 @@
 		&\infer{(record)}{\Gamma \vdash e_1 \colon T_1\ \dots\ \Gamma \vdash e_k \colon T_k}{\Gamma \vdash \{\text{lab}_1 = e_1, \dots, \text{lab}_k = e_k \}\ \colon \{\text{lab}_1 \colon T_1,\dots, \text{lab}_k\colon T_k  \} }{}
 		&\infer{(recordproj)}{\Gamma\vdash e\colon \{\text{lab}_1\colon T_1,\dots, \text{lab}_k\colon T_k \} }{\Gamma\vdash \# \text{lab}_i\ e \colon T_i}{}
 	\end{align*}
-\subsection*{Concorrenza}
+
+		
+	\end{flushleft}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+	\begin{flushleft} 
+    \subsection*{Concorrenza}
 	\begin{align*}
-		&\infer{(T-sq1)}{\Gamma\vdash e_1\colon\textup{unit}\qquad \Gamma\vdash e_2\colon\textup{unit}}{\Gamma\vdash e_1;e_2\colon \textup{unit}}{}
+		&\infer{(T-sq1)}{\Gamma\vdash e_1\colon\textup{unit}\qquad \Gamma\vdash e_2\colon\textup{unit}}{\Gamma\vdash e_1;e_2\colon \textup{unit}}{} 
 		&\infer{(T-sq2)}{\Gamma\vdash e_1\colon\textup{proc}\qquad \Gamma\vdash e_2\colon\textup{proc}}{\Gamma\vdash e_1;e_2\colon \textup{proc}}{} \qquad\qquad
 		&\infer{(T-par)}{\Gamma\vdash e_1\colon T_1\qquad \Gamma\vdash e_2\colon T_2}{\Gamma\vdash e_1 \| e_2\colon \textup{proc}}{\ T_1, T_2 \in \{\textup{unit}, \textup{proc}\}} \\ \\
 		&\infer{(T-await)}{\Gamma\vdash e_1 \colon \bool\qquad \Gamma\vdash e_2\colon \textup{unit}}{
-			\Gamma\vdash \textup{await}\ e_1\ \textup{protect}\ e_2\ \textup{end}\colon \textup{unit} }{} 
-		&\infer{(T-choice)}{\Gamma\vdash e_1 \colon \textup{unit}\qquad \Gamma\vdash e_2\colon \textup{unit}}{\Gamma\vdash e_1 \oplus e_2\colon \textup{unit}}{}
-	\end{align*}
-	\end{flushleft}
-\end{minipage}
-\section*{Sottotipaggio}
-\begin{minipage}{.45\linewidth}
-	\begin{flushleft} 
+		\Gamma\vdash \textup{await}\ e_1\ \textup{protect}\ e_2\ \textup{end}\colon \textup{unit} }{} 
+		&\infer{(T-choice)}{\Gamma\vdash e_1 \colon \textup{unit}\qquad \Gamma\vdash e_2\colon \textup{unit}}{\Gamma\vdash e_1 \oplus e_2\colon \textup{unit}}{}\qquad
+		%\end{align*}
+		%\begin{align*}
+		&\infer{(T-lock)}{-}{\Gamma\vdash lock\ m\colon \textup{unit}}\qquad
+		\infer{(T-unlock)}{-}{\Gamma\vdash unlock\ m\colon \textup{unit}}\qquad
+		\end{align*}
+		\section*{Sottotipaggio}
 	\begin{align*}
 		&\infer{(sub)}{\Gamma\vdash e \colon T\qquad T<\colon T'}{\Gamma\vdash e\colon T'}{}
 		&\infer{(s-refl)}{-}{T<\colon T}{} \qquad\qquad
