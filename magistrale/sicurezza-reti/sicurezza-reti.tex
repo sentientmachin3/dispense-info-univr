@@ -369,6 +369,32 @@
 
 	\paragraph{Punti di forza.} Notare quali sono i punti di forza di Diffie-Hellman: la chiave è creata senza avere alcuna informazione iniziale e non è mai trasmessa (viene trasmesso solo $Y$)
 	
+	Diffie-Hellman gode inoltre della proprietà di \textit{perfect forward secrecy}, ossia la garanzia che le chiavi di sessione non potranno mai essere compromesse se una delle chiavi a lungo termine viene compromessa.
+	
+	\paragraph{Debolezze.} Le chiavi generate non sono autenticate, quindi sono vulnerabili ad un attacco del tipo MITM.
+	Supponiamo infatti che nella trasmissione vengano intercettate $Y_A$ e $Y_B$: in tal caso $Z$ può calcolare le due chiavi che sarebbero calcolate da $A$ e $B$, mentre $A$ e $B$ calcolano le relative chiavi ma utilizzando $Y_Z$ al posto dei rispettivi $Y$.
+	
+	Una possibile soluzione a tale problema potrebbe essere la firma digitale, ma ciò richiede l'utilizzo di una chiave condivisa.
+	
+	\subsection{Integrità dei messaggi}
+	L'integrità è la proprietà che garantisce che i messaggi non sono in alcun modo stati alterati da una fonte non autorizzata. Questa proprietà viene garantita tramite funzioni di hash, ovvero funzioni che soddisfano le seguenti proprietà: \begin{itemize}
+		\item \textit{Compressione:} dato $x$ come input, $h(x) $ ritorna sempre un output di lunghezza fissa;
+		\item Sono calcolabili in tempo polinomiale.
+	\end{itemize}
+	
+	La funzione $h(x)$ è una \textit{funzione hash crittografica} se:\begin{itemize}
+		\item è \textit{one-way}, ossia dato $y$ è difficile calcolare $x \text{ t.c. } h(x) = y$;
+		\item è difficile trovare un secondo input $x'$ tale che $h(x) = h(x')$ (\textit{collision resistance, 2nd preimage resistance})
+	\end{itemize}
+	
+	\paragraph{Birthday attack.} Un \textit{birthday attack} sfrutta il paradosso del complanno. Supponiamo che A e B vogliano siglare un contratto, ma B vuole ingannare A facendogliene firmare uno fraudolento. B genera tanti contratti $x$ corretti, modificandoli in modo da non cambiarne il significato, e fa altrettanto con i contratti fraudolenti $y$. A questo punto basta trovare due contratti $x_i$ e $y_i$ tali che $h(x_i) = h(y_i)$. B a questo punto fa firmare ad A $x_i$, ma, dato che gli hash sono uguali, può usare la firma per rendere vero anche il contratto fraudolento $y_i$.
+	
+	\subsubsection{Costruzione di una funzione hash crittografica}
+	Uno dei metodi più semplici consiste nell'usare una tecnica di block-chaining.
+	Si divide il messaggio in $m$ blocchi, e si usa un algoritmo simmetrico per cifrarli uno per volta, cifrando il blocco $m_i$ usando $E(m_{i-1})$. Tuttavia gli algoritmi moderni usano tecniche più complesse, alcuni dei quali sono:\begin{itemize}
+		\item MD5 (hash di 128 bit, con debolezze note);
+		\item SHA (hash di 160 bit, considerato sicuro).
+	\end{itemize}
 
 	
 
