@@ -1,0 +1,495 @@
+\documentclass[a4paper, 10pt]{article}
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{frontespizio}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\begin{document}
+	\begin{frontespizio}
+		\Preambolo{\usepackage{datetime}}
+		\Istituzione{Università degli Studi di Verona}
+		\Divisione{Dipartimento di Informatica}
+		\Facolta{Scienze e Ingegneria}
+		\Scuola{Laurea in Informatica}
+		\Titolo{Analisi II}
+		\Sottotitolo{Come risolvere gli esercizi}
+		\Candidato{Mattia Zorzan}
+		\NCandidati{Autore}
+		\Annoaccademico{2018/2019}
+	\end{frontespizio}
+	
+	\tableofcontents
+	
+	\newpage
+
+	\section{Parte I}
+		\subsection{Problema di Cauchy (Non Lineare)}
+				\[
+					y' = f(x) \cdot g(y(x))  
+					\;\;con\;\; 
+					y' = {dy \over dx}
+				\]
+			Risolvo nella forma
+				\[
+					\int {1 \over g(y(x))}\:dy = \int f(x)\:dx + C
+				\]
+			Per trovare C, con C $ \in \mathbb{R} $, impongo la condizione iniziale.\\
+			Questa nella forma: $ y(valore\;da\;sostituire\;con\;x) = valore\;da\;sostituire\;con\;y $.\\
+			Infine cerco $ I_{max} $ imponendo la C.E. della funzione.
+			
+		\subsection{Problema di Cauchy (Lineare)}
+			\subsubsection{Primo Ordine}
+					\[
+						y'(x) + a(x) \cdot y(x) = f(x)
+					\]
+				Risolvo nella forma
+					\[
+						\mathit{e}^{A(x)} \cdot y'(x) + \mathit{e}^{A(x)} \cdot a(x) \cdot y(x) = \mathit{e}^{A(x)} \cdot f(x)
+					\]
+				Con $ A(x) $ antiderivata di $ a(x) $.\\
+				Con le dovute semplificazioni si arriva alla forma:
+					\[
+						y = \mathit{e}^{-A(x)} \cdot \int \mathit{e}^{A(x)} \cdot f(x)\:dx + C
+					\]	
+				Per trovare C, con $ C \in R $, impongo la condizione iniziale.\\
+				\textbf{N.B.} Condizione iniziale nella forma: $ y(valore\;da\;sostituire\;con\;x) = valore\;da\;sostituire\;con\;y $.
+				
+			\subsubsection{Secondo Ordine}
+					\[
+						f_1(x) \cdot y'' + f_2(x) \cdot y' + f_3(x) \cdot y = f_4(x)
+					\]
+				La vedo come
+					\[
+						a \cdot y'' + b \cdot y' + c \cdot y = 0
+					\]
+				E risolvo
+					\[
+						a \cdot \lambda ^2 + b \cdot \lambda + c = 0
+					\]
+				Se le radici sono:
+					\begin{center}
+						\begin{tabular}{cc}
+							\textbf{Distinte} & $ y = C_1 \cdot \mathit{e}^{r_1 \cdot x} + C_2 \cdot \mathit{e}^{r_2 \cdot x} $ \\
+							 \textbf{Uguali} & $ y = C_1 \cdot \mathit{e}^{r_1 \cdot x} + C_2 \cdot x \cdot \mathit{e}^{r_2 \cdot x} $ \\
+							 \textbf{Complesse}& $ y = \mathit{e}^{\alpha \cdot x} \cdot (C_1 \cdot \cos(\beta \cdot x) + C_2 \cdot \sin(\beta \cdot x)) $
+						\end{tabular}
+					\end{center}
+				con $ r_1, r_2 $ radicali.
+				
+				Questa forma è detta Integrale Generale Parziale.\newline\newline
+				Cerco ora la soluzione particolare, se:  
+					\begin{center}
+						\begin{tabular}{cc}
+							 $ f(x) = polinomio $ & $ y_p(x) $ = polinomio di grado $ grado\;f(x) + 1 $ \\
+							 $ f(x) = Ae^{rx} $ & $ y_p(x) $ = $ A \cdot x \cdot \mathit{e}^{r \cdot x} $ \\
+							 $ f(x) = Acos(wx)+Bsin(wx) $ & $ y_p(x) $ = $ C \cdot \cos(\omega \cdot x) + D \cdot \sin(\omega \cdot x) $  
+						\end{tabular}
+					\end{center}
+				Sommo quindi la soluzione particolare all'Integrale Generale, mi trovo nella forma:
+					\[
+						y(x) = Integrale\; Generale\; Parziale + y_p(x)
+					\]
+				sostituendo in $ y_p(x) $ i vari A, B, C o D trovati risolvendo la soluzione particolare.\\
+				Derivo quindi $ y(x) $ trovando $ y'(x) $.\\
+				Metto a sistema $ y(x) $ e $ y'(x) $ imponendo le condizioni iniziali per trovare $ C_1 $ e $ C_2 $.\\
+				\textbf{N.B.} Condizioni iniziali nella forma: $ y(valore\;da\;sostituire\;con\;x\;di\;y(x)) = valore\;da\;sostituire\;con\;y\;di\;y(x) $ e $ y'(valore\;da\;sostituire\;con\;x\;di\;y'(x)) = valore\;da\;sostituire\;con\;y\;di\;y'(x) $.\\
+			
+			\subsection{Punti interni, esterni e di frontiera}
+					\[
+						A = \{ (x, y) \in \mathbb{R} : f(x) \} \;\;e\;\; P = (x_p, y_p)
+					\]
+				Mi ricavo il grafico di $ f(x) $.
+					\subsubsection{Circonferenza}
+							\[
+								x^2 + y^2 + a\cdot x + b\cdot y + c
+	 						\]
+ 						\quad\quad\quad\quad\quad\quad\quad\quad\quad$ x_c = {-a\over 2} $\quad\quad\quad$ y_c = {-b\over 2} $\quad\quad\quad$ r = \sqrt{{x_c}^2 + {y_c}^2 - c} $
+ 					\subsubsection{Ellisse}
+ 							\[
+ 								{{(x - x_c)^2} \over a^2} + {{(y - y_c)^2} \over b^2} = 1
+ 							\]
+ 						\quad\quad\quad\quad$ V_1(x_c + a;\; y_c) $\quad$ V_2(x_c - a;\; y_c) $\quad$ V_3(x_c;\; y_c + b) $\quad$ V_4(x_c;\; y_c - b) $
+ 					\subsubsection{Iperbole}
+ 							\[
+ 							{{(x - x_c)^2} \over a^2} - {{(y - y_c)^2} \over b^2} = 1
+ 							\]
+ 						\quad\quad\quad\quad\quad$ A_1\;\; y = {b \over a} \cdot (x - x_c) + y_c $\quad\quad\quad$ A_2\;\; y = {-b \over a} \cdot (x - x_c) + y_c $\newpage
+ 						
+ 						\quad\quad\quad\quad\quad\quad\quad$ V_1(x_c + a;\; y_c) $\quad\quad\quad$ V_2(x_c - a;\; y_c) $\newline\newline
+ 				Controllo nel grafico se $ P \in $ Int, Est, Fr.
+ 				
+ 			\subsection{Limiti in due variabili}
+ 				\subsubsection{Esistenza (Teorema del Confronto)}
+ 						\[
+ 							0\; \leq \; \lim_{(x,\; y) \to (0,\; 0)} f(x)\; \leq \; g(x)
+ 						\]
+ 					Poniamo, per esempio, $ f(x) = {{x\cdot y} \over {x + y}} $\\
+ 					La si può vedere come $ {1 \over {x + y}}\cdot x\cdot y\; \Rightarrow\; f(x)\cdot g(x) $\\	
+ 					Se
+ 						\[
+ 							\lim_{(x,\; y) \to (0,\; 0)} g(x) = 0
+ 						\]  
+ 					allora anche 
+ 						\[ 
+ 							\lim_{(x,\; y) \to (0,\; 0)} f(x) = 0
+ 						\]
+ 						
+ 				\subsubsection{Non Esistenza}
+ 					Sostituisco $ (x,\; y) $ con valori arbitrari per dimostrare
+ 						\[
+	 						\lim_{x \to n} f(x,\; y) \neq \lim_{y \to n} f(x,\; y)
+ 						\]
+ 						
+			\subsection{Lunghezza di una curva}
+					\[
+						\begin{array}{l}
+							\gamma : [x,\; y] \rightarrow \mathbb{R}^2 \\
+							\\
+							\quad\quad\; t \mapsto (x_t,\; y_t)
+						\end{array}
+					\]
+				Soluzione
+					\[
+						\mathit{Lunghezza}(\gamma)\; = \int_{x}^{y} \Vert \gamma'(t) \Vert\; dt\; =\; \int_{x}^{y} \sqrt{(x'_t)^2 + (y'_t)^2}\; dt
+					\]
+				dove
+					\[
+						\gamma'(t)\; =\; (x'_t,\; y'_t)
+					\]
+				\newpage
+			
+		\section{Parte II}
+			\subsection{Max e Min in $\Omega$}
+				Date
+					\[
+						f(x,\; y)\quad\quad\quad\quad \Omega = Prodotto Vettoriale\; \subseteq\; \mathbb{R}^2
+					\] 
+				Cerco eventuali punti stazionari
+					\[
+						\left\{ 
+							\begin{array}{cc} 
+								f'_x(x,\; y) = 0 \\
+								\\ 
+								f'_y(x,\; y) = 0 
+							\end{array} 
+						\right\}
+					\]
+				Tramite il prodotto vettoriale (\textit{Esempio}: $ [a,\; b] \times [c,\; d] $) trovo i vertici dell'intervallo per conoscere la frontiera.\\
+				Per ogni lato:
+					\begin{itemize}
+						\item Se orizzontale cerco $ g(x) = f(x,\; [valore\; comune\; ai\; vertici]) $, lo derivo e pongo $ =0 $\\ Se il risultato è verosimile, oltre ai vertici di $\Omega$, avrò $ P(f',\; [valore\; comune\; ai\; vertici]) $
+						\item Se orizzontale cerco $ g(y) = f([valore\; comune\; ai\; vertici],\; y) $, lo derivo e pongo $ =0 $\\ 
+						Se il risultato è verosimile, oltre ai vertici di $\Omega$, avrò $ P([valore\; comune\; ai\; vertici],\; f') $
+					\end{itemize}
+				Sostituisco i valori dei vertici a degli eventuali $ P $ in $ f(x,\; y) $, il risultato più alto è MAX, quello più basso è min.
+			\subsection{Moltiplicatori di Lagrange}
+				Dati
+					\[
+						\begin{array}{l}
+							\quad\quad f(x,\; y)\quad\quad\quad\quad g(x,\; y) \\
+							\\
+							M\; =\; \{ (x,\; y) \in \mathbb{R}^2\; :\; condizione \}
+						\end{array}
+					\]
+				Scrivo funzione Lagrangiana $ \mathcal{L}(x,\; y,\; \lambda) $
+					\[
+						\mathcal{L}(x,\; y,\; \lambda) = f(x,\; y) - \lambda(g(x,\; y))
+					\]
+				Risolvo
+					\[
+						\left\{ 
+							\begin{array}{l} 
+								\mathcal{L}'_x(x,\; y,\; \lambda) = 0 \\
+								\\ 
+								\mathcal{L}'_y(x,\; y,\; \lambda) = 0 \\
+								\\
+								\mathcal{L}'_\lambda(x,\; y,\; \lambda) = -g(x,\; y) = 0
+							\end{array} 
+						\right\}
+					\]
+				per trovare i punti stazionari.\\
+				Matrice Hessiana Orlata
+					\[
+						B_\mathcal{L}(x,\; y,\; \lambda)\; =\; \Biggl[
+							\begin{array}{l}
+								0\;\;\;\; g'_x\;\;\;\; g'_y \\
+								g'_x\;\; \mathcal{L}'_{xx}\;\; \mathcal{L}'_{xy} \\
+								g'_y\;\; \mathcal{L}'_{yx}\;\; \mathcal{L}'_{yy}
+							\end{array}
+						\Biggl]
+					\]
+				Cerco l'Hessiana Orlata di ogni $ P $ sostituendo gli $ (x,\; y,\; \lambda) $ dei punti con i valori nella corrispondente matrice.\\
+				Per ogni $ P $, calcolo $ det(B_\mathcal{L}(x_P,\; y_P,\; \lambda_P)) $, se
+					\begin{itemize}
+						\item $ det > 0 $, MAX locale
+						\item $ det < 0 $, min locale
+					\end{itemize}
+				
+			\subsection{Integrali doppi con cambio di coordinate}
+				Sia $\Omega$ parallelogramma.\\
+				Consideriamo una trasformazione
+					\[
+						\begin{array}{l}
+							\quad\quad T : \Omega \rightarrow D \subseteq \mathbb{R}^2 \\
+							\\
+							(u,\; v) \mapsto (g(u,\; v),\; h(u,\; v))
+						\end{array}
+					\]
+				Per ottenere $ (g(u,\; v),\; h(u,\; v) $ 
+					\begin{itemize}
+						\item Prendo il punto $ A $ del parallelogramma
+						\item Sommo $ u((x_B\; -\; x_A),\; (y_B\; -\; y_A)) $
+						\item Sommo $ v((x_D\; -\; x_A),\; (y_D\; -\; y_A)) $
+					\end{itemize}
+				Ottengo un risultato nella forma
+					\[
+						(x_A,\; y_A)\; +\; u((x_B\; -\; x_A),\; (y_B\; -\; y_A))\; +\; v((x_D\; -\; x_A),\; (y_D\; -\; y_A))
+					\]	
+ 				Li divido successivamente in $ x $ e $ y $ ottenendo
+ 					\[
+	 					\underbrace{x_A\; +\; (x_B\; -\; x_A)u\; +\; (x_D\; -\; x_A)v}_{g(u,\; v)},\; \underbrace{y_A\; +\; (y_B\; -\; y_A)u\; +\; (y_D\; -\; y_A)v}_{h(u,\; v)}
+ 					\]
+ 				Creo la matrice di trasformazione DT
+ 					\[
+ 					DT\; =\; \Biggl[
+	 					\begin{array}{l}
+		 					(x_B\; -\; x_A)\;\; (x_D\; -\; x_A)\\
+		 					(y_B\; -\; y_A)\;\; (y_D\; -\; y_A)
+	 					\end{array}
+ 					\Biggl]
+ 					\]
+ 				Posso a questo punto risolvere l'integrale
+ 					\[
+	 					\int{\int_{\Omega}^{ }{f(x,\; y)}}\; dx\; dy
+ 					\]
+ 				Portandolo nella forma
+ 					\[
+ 						\vert det(DT) \vert \cdot \int_{0}^{1}{\int_{0}^{1}{f(g(u,\; v),\; h(u,\; v))}}\;du\;dv
+ 					\]
+ 				\textbf{N.B.} Integro per $ [0,\; 1] $ in quanto rappresentano il vettore spostamento in $ x $ e $ y $
+ 			
+ 			\subsection{Integrali tripli per strati}
+ 				Dato un insieme $ \Omega $	definito
+ 					\[
+	 					\Omega\; =\; \{ (x,\; y,\; z) \in \mathbb{R}^3\; :\; intervallo,\; piano \}
+ 					\]
+ 				in cui
+ 					\begin{itemize}
+ 						\item Intervallo è un qualsiasi intervallo nella forma $ z \in [a,\; b] $ o $ a \leq z \leq b $
+ 						\item Piano è un qualsiasi piano nella forma $ x^2\; +\; y^2\; =\; c $ 
+ 					\end{itemize}
+ 				In caso manchi una funzione su cui calcolare l'integrale lo si calcolerà per 1\\
+ 				L'integrale triplo
+ 					\[
+	 					\int{\int{\int_{\Omega(z)}{f}}}\; dx\;dy\;dz
+ 					\]
+ 				va risolto nella forma
+ 					\[
+ 						\int_{a}^{b}{\left( \int{\int_{\Omega(z)}{f}}\; dx\; dy \right)}\; dz
+ 					\]
+ 				dove
+ 					\[
+ 						\Omega(z)\; =\; \{ (x,\; y) \in \mathbb{R}^2\; :\; piano \}
+ 					\]
+ 				va convertito in coordinate polari, quindi
+ 					\[
+	 					\left\{ 
+		 					\begin{array}{l} 
+			 					x\; =\; \rho \cdot \cos{\vartheta}\quad \rightarrow \vartheta \in [0,\; 2\pi] \\
+			 					\\ 
+			 					y\; =\; \rho \cdot \sin{\vartheta}\quad \rightarrow \rho \in [0,\; \sqrt{c}]
+		 					\end{array} 
+	 					\right\}
+ 					\]
+ 				Per semplificare, ogni $ x \pm y $ di $ f $ va sostituito con $ \rho $ e tutto va moltiplicato per $ \rho $.\\
+ 				Se $ f\; =\; 1 $ si dovrà risolvere l'integrale per $ \rho $ nella forma
+ 					\[
+	 					\int_{a}^{b}{\int_{0}^{2\pi}{\int_{0}^{\sqrt{c}}{f(con\; sostituzione\; coordinate)\cdot \rho}}}\; d\rho\; d\vartheta\; dz
+ 					\]
+ 			
+ 			\subsection{Integrali tripli per fili}
+ 				Dato un insieme $ \Omega $ definito
+ 					\[
+ 						\Omega\; =\; \{ (x,\; y,\; z) \in \mathbb{R}^3\; :\; g_1(x,\; y) \leq z \leq g_2(x,\; y),\; piano \}
+ 					\]
+ 				in cui
+ 					\begin{itemize}
+ 						\item $ g_1(x,\; y),\; g_2(x,\; y) $ sono funzioni
+ 						\item Piano è un qualsiasi piano nella forma $ x^2\; +\; y^2\; \leq\; c $
+  					\end{itemize}
+  				In caso manchi una funzione su cui calcolare l'integrale lo si calcolerà per 1\\
+  				L'integrale triplo
+  					\[
+  					\int{\int{\int_{\Omega}{f}}}\; dx\;dy\;dz
+  					\]
+  				va risolto nella forma
+  					\[
+	  					\int{\int_{\Omega(x,\; y)}^{ }{\left( \int_{g_1(x,\; y)}^{g_2(x,\; y)}{f}\; dz \right)}}\; dx\; dy
+  					\]
+  				dove
+  					\[
+  						\Omega(x,\; y)\; =\; \{ (x,\; y) \in \mathbb{R}^2\; :\; piano \}
+  					\]
+  				va convertito in coordinate polari, quindi
+  					\[
+	  					\left\{ 
+		  					\begin{array}{l} 
+			  					x\; =\; \rho \cdot \cos{\vartheta}\quad \rightarrow \vartheta \in [0,\; 2\pi] \\
+			  					\\ 
+			  					y\; =\; \rho \cdot \sin{\vartheta}\quad \rightarrow \rho \in [0,\; \sqrt{c}]
+		  					\end{array} 
+	  					\right\}
+  					\]
+  				Per semplificare, ogni $ x \pm y $ di $ f $ va sostituito con $ \rho $ e tutto va moltiplicato per $ \rho $.\\
+  				Se $ f\; =\; 1 $ si dovrà risolvere l'integrale per $ \rho $ nella forma
+  					\[
+  						\int_{0}^{\sqrt{c}}{\int_{0}^{2\pi}{\left( \int_{g_1(x,\; y)}^{g_2(x,\; y)}{f}\; dz \right)}}\; d\vartheta\; d\rho
+  					\]
+  					
+  			\subsection{Integrali tripli con cambio di variabili}
+  				Data una trasformazione
+  					\[
+  						\begin{array}{c}
+	  						T:\; \Omega\; \rightarrow\; D\; \subseteq\; \mathbb{R}^3 \\
+	  						(u, v, w)\; \mapsto\; (x(u,\; v,\; w),\; y(u,\; v,\; w),\; z(u,\; v,\; w))
+  						\end{array}	  					
+  					\]
+  				devo applicare cambio di coordinate alle mie variabili.\\
+  				Più nello specifico
+  				
+  				\subsubsection{Coordinate Sferiche}
+  					 \[
+	  					 \left\{ 
+		  					 \begin{array}{l} 
+			  					 x\; =\; u\; \cdot\; sin(v)\; \cdot\; cos(w)\quad \rightarrow u\; \in\; [0,\; +\infty] \\
+			  					 y\; =\; u\; \cdot\; sin(v)\; \cdot\; sin(w)\quad \rightarrow v\; \in\; [0,\; \pi] \\ 
+			  					 z\; =\; u\; \cdot\; cos(v)\quad\quad\quad\quad\quad\; \rightarrow w\; \in\; [0,\; 2\pi]
+		  					 \end{array} 
+	  					 \right\}
+  					 \]			 
+  					 risolvo l'integrale
+	  					 \[
+	  					 	\int{\int{\int_{D}^{}{f(x,\; y,\; z)\; dx\; dy\; dz}}}
+	  					 \]come
+	  					 \[
+	  					 	\int{\int{\int_{\Omega}^{}{f(u,\; v,\; w)\; \cdot\; u^2\; \cdot\; sin(v)\; du\; dv\; dw}}}	
+	  					 \]
+  					 
+  				\subsubsection{Coordinate Cilindriche}  		
+  					\[
+	  					\left\{ 
+		  					\begin{array}{l} 
+			  					x\; =\; u\; \cdot\; cos(v)\quad \rightarrow u\; \in\; [0,\; +\infty] \\
+			  					y\; =\; u\; \cdot\; sin(v)\;\quad \rightarrow v\; \in\; [0,\; 2\pi] \\ 
+			  					z\; =\; z\;\quad\quad\quad\quad\quad\; \rightarrow z\; \in\; \mathbb{R}
+		  					\end{array} 
+	  					\right\}
+  					\]
+  					risolvo l'integrale
+	  					\[
+	  						\int{\int{\int_{D}^{}{f(x,\; y,\; z)\; dx\; dy\; dz}}}
+	  					\]come
+	  					\[
+	  						\int{\int{\int_{\Omega}^{}{f(u,\; v,\; w)\; \cdot\; u\; du\; dv\; dw}}}	
+	  					\] 					
+ 					
+ 			\subsection{Area di una superficie}
+ 				Data una superficie $ \Sigma $
+ 					\[
+ 						\begin{array}{c}
+		 					\sigma\; :\; \overbrace{[a,\; b]\times[c,\; d]}^{\Omega\; \subseteq\; \mathbb{R}^2} \rightarrow \mathbb{R}^3 \\
+		 					\\
+		 					(u,\; v) \mapsto (t_1,\; t_2,\; t_3)
+		 				\end{array}
+ 					\]
+ 				l'area della superficie si calcola
+ 					\[
+ 						\int{\int_{\Omega}^{ }{\Vert \sigma'_u\times \sigma'_v \Vert}}\; du\; dv
+ 					\]
+ 				dove
+ 					\[
+ 						\sigma'_u\times \sigma'_v\; =\; det(DT)
+ 					\]
+ 				dove $ DT $ matrice quadrata 3x3
+ 					\[
+	 					DT\; =\; \Biggl[
+		 					\begin{array}{c}
+			 					\hat{i}\;\;\;\;\;\;\;\; \hat{j}\;\;\;\;\;\;\; \hat{k} \\
+			 					(t_1)'_u\;\; (t_2)'_u\;\; (t_3)'_u \\
+			 					(t_1)'_v\;\; (t_2)'_v\;\; (t_3)'_v
+		 					\end{array}
+	 					\Biggl]
+ 					\]
+ 				quindi espresso nella forma
+ 					\[
+ 						\begin{array}{c}
+	 						\sigma'_u\times \sigma'_v\; =\; (\hat{i}\cdot (t_2)'_u\cdot (t_3)'_v\; +\; \hat{j}\cdot (t_3)'_u\cdot (t_1)'_v\; +\; \hat{k}\cdot (t_1)'_u\cdot (t_2)'_v)\; -\\ 
+	 						\quad\quad\quad\quad(\hat{i}\cdot (t_3)'_u\cdot (t_2)'_v\; +\; \hat{j}\cdot (t_1)'_u\cdot (t_3)'_v\; +\; \hat{k}\cdot (t_2)'_u\cdot (t_1)'_v)
+ 						\end{array}
+ 					\]
+ 				ossia
+ 					\[
+ 						\begin{array}{l}					
+	 						\sigma'_u\times \sigma'_v\; =\; ( \\
+	 							\quad\quad\quad\quad((t_2)'_u\cdot (t_3)'_v)\; -\; ((t_3)'_u\cdot (t_2)'_v), \\ 
+	 							\quad\quad\quad\quad((t_3)'_u\cdot (t_1)'_v)\; -\; ((t_1)'_u\cdot (t_3)'_v), \\
+	 							\quad\quad\quad\quad((t_1)'_u\cdot (t_2)'_v)\; -\; ((t_2)'_u\cdot (t_1)'_v) \\
+	 						\quad\quad\quad)
+ 						\end{array}
+ 					\]
+ 				
+ 				\subsection{Campo Vettoriale}
+	 				Sia $ \overrightarrow{F}\; :\; \Omega \rightarrow \mathbb{R}^2 $ campo vettoriale t.c.
+		 				\[
+		 					\overrightarrow{F}(x,\; y) = (F_1(x,\; y),\; F_2(x,\; y))
+		 				\]
+	 				\begin{itemize}
+	 					\item Per dire se è conservativo:
+		 					\begin{itemize}
+		 						\item $ (F_1)'_y\; =\; (F_2)'_x $ (sufficiente)
+		 						\item Se il campo $ \overrightarrow{F} $ è $ \mathbb{R}^2 \rightarrow \mathbb{R}^2 $
+		 					\end{itemize}
+	 					
+	 					\item Cerco $ U(x,\; y) $ potenziale di $ \overrightarrow{F} $
+		 					\[
+		 						\int{F_1(x,\; y)}\; dx
+		 					\]
+		 					\[
+		 						\int{F_2(x,\; y)}\; dy
+		 					\]
+		 					Sommo $ C(y) $ al risultato del primo integrale.\\
+		 					Sommo $ D(x) $ al risultato del secondo integrale.\\
+		 					Cerco dei valori per $ C(y) $ e $ D(x) $ che rendano i risultati uguali.
+		 					
+	 					\item Data una curva
+		 					\[
+		 						\gamma\; :\; [a,\; b]\; \rightarrow \Omega
+		 					\]
+		 					L'integrale di linea di seconda specie è
+		 					\[
+		 						\int_{\gamma}^{ }{\overrightarrow{F}}\; d\overrightarrow{\gamma}\; =\; U(\gamma(b))\; -\; U(\gamma(a))
+		 					\]
+		 					se il campo è conservativo.\\
+		 					
+		 					Per calcolare $ \gamma(b) $ e $ \gamma(a) $:
+			 					\begin{itemize}
+			 						\item Data una curva $ \gamma\; :\; [a,\; b] \rightarrow \Omega $
+			 						\[
+			 							t \mapsto (t_1,\; t_2)
+			 						\]
+			 						ottengo $ \gamma(b) $ sostituendo $ b $ in $ t $ e ottengo $ \gamma(a) $ sostituendo $ a $ in $ t $.
+		 						\end{itemize}
+	 					Se il campo non è conservativo la formula è la seguente
+		 					\[
+		 						\int_{\gamma}^{ }{\overrightarrow{F}}\; d\overrightarrow{\gamma}\; =\; \int_{a}^{b}{F_1(a(t),\; b(t))\cdot a'(t)\; +\; F_2(a(t),\; b(t))\cdot b'(t)}\; dt
+		 					\]
+		 				oppure, scritto come un prodotto vettoriale
+		 					\[
+		 						\int_{\gamma}^{ }{\overrightarrow{F}}\; d\overrightarrow{\gamma}\; =\; \int_{a}^{b}{\langle \overrightarrow{F}(\gamma(t)),\; \gamma'(t) \rangle}\; dt
+		 					\]					 						
+ 					\end{itemize}	
+ 						
+\end{document}
