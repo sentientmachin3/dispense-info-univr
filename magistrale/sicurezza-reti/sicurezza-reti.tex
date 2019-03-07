@@ -396,6 +396,35 @@
 		\item SHA (hash di 160 bit, considerato sicuro).
 	\end{itemize}
 
+	\subsection{Autenticazione dei messaggi}
+	L'autenticazione dei messaggi (che implica l'integrità) garantisce la fonte del messaggio. I metodi usati per garantirla sono i MAC e le firme digitali.
+	
+	\subsubsection{Message Authentication Code}
+	Un algoritmo MAC è dato da una famiglia di funzioni hash $h_k$ (parametrizzate dalla chiave $k$), che devono essere \textit{computation-resistant}, ossia, data una o più coppie $(x_i, h(x_i))$, deve essere difficile calcolare $(x, h(x))$ dato un qualsiasi $x \neq x_i$.
+	
+	L'autenticità con il MAC è verificata controllando dal lato del destinatario che, se $MAC = h_k(M)$, valga $MAC' = h_k(M')$
+	
+	La costruzione di un MAC avviene usando il cipher-block chaining. Dati $n$ blocchi, si calcola \begin{align*}
+		c_1 &= E_K(m_1 \oplus 0) \\
+		c_i &= E_K(c_{i-1} \oplus m_i)
+	\end{align*}
+	
+	Alla fine, il blocco $c_n$ sarà il MAC totale.
+	
+	\subsubsection{Firme digitali}
+	Lo scopo della firma digitale è dimostrare che un messaggio è stato mandato da una specifica persona, ed è fondamentale per i concetti di autenticazione e non-ripudio. Dati: \begin{itemize}
+		\item $\mathcal{M}$ l'insieme dei messaggi firmabili;
+		\item $\mathcal{S}$ l'insieme delle firme (stringhe di $n$ bit);
+		\item $S_A:\mathcal{M} \to \mathcal{S}$ è la trasformazione di firma per A (deve rimanere segreta);
+		\item $V_A:\mathcal{M} \times \mathcal{S} \to \left\{true, false \right\}$ è la trasformazione di verifica per A, ed è pubblica.
+	\end{itemize}
+
+	Lo schema di firma è quindi dato da $S_A$ e $V_A$.
+	\paragraph{Procedura di firma e verifica.} La procedura di firma è semplice: dato $m \in \mathcal{M}$, A calcola $s=S_A(m)$ e trasmette $(m,s)$. La procedura di verifica per A consiste nel calcolare $u=V(m,s)$. Se $u=true$ allora la firma è verificata.
+	
+	\paragraph{Implementazione del meccanismo di firma.}
+	
+
 	
 
 	
