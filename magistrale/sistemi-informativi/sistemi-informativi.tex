@@ -23,6 +23,7 @@
 \usetikzlibrary{shapes, arrows}
 
 \newtheorem{definit}{Definizione}[subsection]
+\newcommand{\chainto}{$ \to $}
 
 \begin{document}
 	\clearpage
@@ -149,6 +150,46 @@
 		
 		\item Portafoglio operativo: applicazioni informatiche per i processi primari dell’azienda.
 	\end{itemize}
+
+	Il portafoglio istituzionale è un'area con elevate potenzialità di informatizzazione, a causa dei grandi volumi di dati che li coinvolgono e la forte proceduralità. Come conseguenza si hanno riduzioni nei tempi e nei costi di elaborazione, inoltre la pianificazione risulta più efficace.
+	
+	Il portafoglio operativo contiene le applicazioni informatiche necessarie ai procedimenti coinvolti nella catena del valore di Porter, ossia: \\
+	
+	Gestione materie prime \chainto Trasformazione \chainto Vendita \chainto Distribuzione \chainto Postvendita \\
+	
+	ovvero la catena di azioni finalizzate a produrre valore per il cliente. Il portafoglio applicativo ovviamente è specifico di ogni settore industriale, e comporta un aumento della complessità gestibile nei processi aziendali, permettendo inoltre la sincronizzazione dei dati in un'azienda (basi di dati condivise).
+	
+	Il portafoglio applicativo è andato informatizzandosi col passare degli anni, a cominciare dalle procedure per automatizzare attività singole, ai pacchetti MRP (Manufacturing Resource Planning), che contenevano i primi database e pacchetti integrati, ai CIM (Computer Integrated Manifacturing), che automatizzano interi segmenti produttivi, ai sistemi ERP (Enterprise Resource Planning) che consentono di gestire ogni fase produttiva e sfruttano architetture client-server e pacchetti integrati con un unico modello dati.
+	
+	Negli ultimi anni sono andati sviluppandosi i sistemi CRM (Customer Relationship Management), che forniscono interi cicli di assistenza al cliente, gestioni avanzate di distribuzione, vendita e postvendita. Negli anni 2000 si è sviluppato l'E-Procurement, ovvero l'informatizzazione del buy-side delle imprese, e utilizza pacchetti per l'intero ciclo di acquisto e architetture basate su tecnologie web.
+	
+	\section{Ingegneria Sociale}
+	Definizione di Ingegneria Sociale a caldo:\begin{definit}[Ingegneria Sociale]
+		Manipolazione della naturale tendenza alla fiducia dell’essere umano, architettata e realizzata dall’ingegnere sociale con l’obiettivo ottenere informazioni che permettano libero accesso e informazioni di valore del sistema.
+	\end{definit}
+
+	La figura dell'ingegnere sociale mira a stabilire confidenza con la vittima, sviluppando ogni possibile scenario di difficoltà e preparandosi ad evaderlo. Prima di tutto ciò viene la fase di \textit{footprinting}, ovvero di raccolta delle informazioni, l'analisi dell'azienda, dei suoi sistemi di comunicazione, della posta, ecc. I primi ingegneri sociali furono i \textit{phreaker}, che utilizzavano la rete telefonica sfruttando i sistemi e i dipendenti dell'azienda per arrivare a dati sensibili.
+	
+	La falla da sfruttare è quindi data da operatori umani, che spesso gestiscono le informazioni sensibili ma ignorano le procedure di sicurezza, magari non sono nemmeno consapevoli delle informazioni che stanno gestendo e che dovrebbero custodire. 
+	Ovviamente le vittime perfette per un attacco di ingegneria soociale sono le persone che non hanno nulla da perdere nel fornire informazioni sensibili, che sottostimano il valore delle informazioni, sottostimano le procedure di sicurezza oppure che non valutano le conseguenze delle proprie azioni.
+	
+	\subsection{Attacco tipico di Ingegneria Sociale}
+	\paragraph{Fasi di un attacco di SE.} Un generico attacco di SE si svolge nel seguente modo: \begin{itemize}
+		\item una fase fisica di raccolta di informazioni attraverso persone, documenti e luoghi;
+		\item una fase psicologica di impersonificazione e persuasione del personale adatto ad essere una tipica vittima
+	\end{itemize}
+
+	\paragraph{Fase fisica.} Gli strumenti essenziali alla fase fisica sono gli strumenti di comunicazione più disparati. L'obiettivo di questa fase sono password, server e router, e si possono raggiungere tramite una giusta combo di uso della tecnologia (phishing, lancio di malware, ...) e interazione col personale (truffe telefoniche, dumpster diving, rovistare negli hdd dismessi...).
+	
+	\paragraph{Fase psicologica.} È necessario fare leva sulla fiducia che una persona è per inclinazione disposta a concedere, facendo leva sui bisogni primari dell'uomo (fisiologici, di sicurezza, ecc.), secondo la gerarchia di Maslow. 
+	
+	Gli attacchi di social engeneering sfruttano quindi le debolezze della persona singola, ossia la disponibilità e la fede che una persona è disposta ad affidare ad un possibile attaccante.
+	
+	\paragraph{Phishing.} \begin{definit}[Phishing]
+		Tecnica di ingegneria sociale basata sul principio della supposta autorità che utilizza un messaggio di posta elettronica per acquisire informazioni personali riservate (password, dati finanziari, numero di carta di credito) con la finalità del furto di identità.
+	\end{definit}
+
+	Il phishing è basato sul concetto di \textit{mail spoofing}, ossia sull'inviare mail a nomi di terzi, per il semplice motivo che la persona che manda la mail non è autenticata dal server di posta elettronica.
 	
 	
 	
