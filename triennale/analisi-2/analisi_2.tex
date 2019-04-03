@@ -2,24 +2,32 @@
 \usepackage[italian]{babel}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage{frontespizio}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 
 \begin{document}
-	\begin{frontespizio}
-		\Preambolo{\usepackage{datetime}}
-		\Istituzione{Università degli Studi di Verona}
-		\Divisione{Dipartimento di Informatica}
-		\Facolta{Scienze e Ingegneria}
-		\Scuola{Laurea in Informatica}
-		\Titolo{Analisi II}
-		\Sottotitolo{Come risolvere gli esercizi}
-		\Candidato{Mattia Zorzan}
-		\NCandidati{Autore}
-		\Annoaccademico{2018/2019}
-	\end{frontespizio}
+	 \clearpage
+	\begin{titlepage}
+		\centering
+		\vspace*{\fill}
+		{\scshape\LARGE Università degli Studi di Verona \par}
+		\vspace{1.5cm}
+		\line(1,0){145} \\
+		{\huge\bfseries Analisi II\par}
+		\line(1,0){145} \\
+		\vspace{0.5cm}
+		{\scshape\Large Come risolvere gli esercizi\par}
+		\vspace{2cm}
+		{\Large\itshape Mattia Zorzan\par}
+		\vspace{1cm}
+		
+		\vspace{5cm}
+		\vspace*{\fill}
+		% Bottom of the page
+		{\large \today\par}
+	\end{titlepage}
+	\thispagestyle{empty}
 	
 	\tableofcontents
 	
@@ -169,13 +177,10 @@
 					\] 
 				Cerco eventuali punti stazionari
 					\[
-						\left\{ 
-							\begin{array}{cc} 
-								f'_x(x,\; y) = 0 \\
-								\\ 
-								f'_y(x,\; y) = 0 
-							\end{array} 
-						\right\}
+						\begin{cases}
+							f'_x(x,\; y) = 0 \\
+							f'_y(x,\; y) = 0 
+ 						\end{cases}
 					\]
 				Tramite il prodotto vettoriale (\textit{Esempio}: $ [a,\; b] \times [c,\; d] $) trovo i vertici dell'intervallo per conoscere la frontiera.\\
 				Per ogni lato:
@@ -199,16 +204,12 @@
 						\mathcal{L}(x,\; y,\; \lambda) = f(x,\; y) - \lambda(g(x,\; y))
 					\]
 				Risolvo
-					\[
-						\left\{ 
-							\begin{array}{l} 
-								\mathcal{L}'_x(x,\; y,\; \lambda) = 0 \\
-								\\ 
-								\mathcal{L}'_y(x,\; y,\; \lambda) = 0 \\
-								\\
-								\mathcal{L}'_\lambda(x,\; y,\; \lambda) = -g(x,\; y) = 0
-							\end{array} 
-						\right\}
+					\[ 
+						\begin{cases} 
+							\mathcal{L}'_x(x,\; y,\; \lambda) = 0 \\
+							\mathcal{L}'_y(x,\; y,\; \lambda) = 0 \\
+							\mathcal{L}'_\lambda(x,\; y,\; \lambda) = -g(x,\; y) = 0
+						\end{cases} 
 					\]
 				per trovare i punti stazionari.\\
 				Matrice Hessiana Orlata
@@ -296,13 +297,10 @@
  					\]
  				va convertito in coordinate polari, quindi
  					\[
-	 					\left\{ 
-		 					\begin{array}{l} 
-			 					x\; =\; \rho \cdot \cos{\vartheta}\quad \rightarrow \vartheta \in [0,\; 2\pi] \\
-			 					\\ 
-			 					y\; =\; \rho \cdot \sin{\vartheta}\quad \rightarrow \rho \in [0,\; \sqrt{c}]
-		 					\end{array} 
-	 					\right\}
+	 					\begin{cases}
+		 					x\; =\; \rho \cdot \cos{\vartheta}\quad \rightarrow \vartheta \in [0,\; 2\pi] \\
+		 					y\; =\; \rho \cdot \sin{\vartheta}\quad \rightarrow \rho \in [0,\; \sqrt{c}]
+	 					\end{cases} 
  					\]
  				Per semplificare, ogni $ x \pm y $ di $ f $ va sostituito con $ \rho $ e tutto va moltiplicato per $ \rho $.\\
  				Se $ f\; =\; 1 $ si dovrà risolvere l'integrale per $ \rho $ nella forma
@@ -320,7 +318,7 @@
  						\item $ g_1(x,\; y),\; g_2(x,\; y) $ sono funzioni
  						\item Piano è un qualsiasi piano nella forma $ x^2\; +\; y^2\; \leq\; c $
   					\end{itemize}
-  				In caso manchi una funzione su cui calcolare l'integrale lo si calcolerà per 1\\
+  				In caso manchi una funzione su cui calcolare l'integrale lo si calcolerà per 1.\\
   				L'integrale triplo
   					\[
   					\int{\int{\int_{\Omega}{f}}}\; dx\;dy\;dz
@@ -335,13 +333,10 @@
   					\]
   				va convertito in coordinate polari, quindi
   					\[
-	  					\left\{ 
-		  					\begin{array}{l} 
-			  					x\; =\; \rho \cdot \cos{\vartheta}\quad \rightarrow \vartheta \in [0,\; 2\pi] \\
-			  					\\ 
-			  					y\; =\; \rho \cdot \sin{\vartheta}\quad \rightarrow \rho \in [0,\; \sqrt{c}]
-		  					\end{array} 
-	  					\right\}
+	  					\begin{cases} 
+		  					x\; =\; \rho \cdot \cos{\vartheta}\quad \rightarrow \vartheta \in [0,\; 2\pi] \\ 
+		  					y\; =\; \rho \cdot \sin{\vartheta}\quad \rightarrow \rho \in [0,\; \sqrt{c}]
+	  					\end{cases} 
   					\]
   				Per semplificare, ogni $ x \pm y $ di $ f $ va sostituito con $ \rho $ e tutto va moltiplicato per $ \rho $.\\
   				Se $ f\; =\; 1 $ si dovrà risolvere l'integrale per $ \rho $ nella forma
@@ -362,13 +357,11 @@
   				
   				\subsubsection{Coordinate Sferiche}
   					 \[
-	  					 \left\{ 
-		  					 \begin{array}{l} 
-			  					 x\; =\; u\; \cdot\; sin(v)\; \cdot\; cos(w)\quad \rightarrow u\; \in\; [0,\; +\infty] \\
-			  					 y\; =\; u\; \cdot\; sin(v)\; \cdot\; sin(w)\quad \rightarrow v\; \in\; [0,\; \pi] \\ 
-			  					 z\; =\; u\; \cdot\; cos(v)\quad\quad\quad\quad\quad\; \rightarrow w\; \in\; [0,\; 2\pi]
-		  					 \end{array} 
-	  					 \right\}
+	  					 \begin{cases}
+		  					 x\; =\; u\; \cdot\; sin(v)\; \cdot\; cos(w)\quad \rightarrow u\; \in\; [0,\; +\infty] \\
+		  					 y\; =\; u\; \cdot\; sin(v)\; \cdot\; sin(w)\quad \rightarrow v\; \in\; [0,\; \pi] \\ 
+		  					 z\; =\; u\; \cdot\; cos(v)\quad\quad\quad\quad\quad\; \rightarrow w\; \in\; [0,\; 2\pi]
+	  					 \end{cases} 
   					 \]			 
   					 risolvo l'integrale
 	  					 \[
@@ -379,14 +372,12 @@
 	  					 \]
   					 
   				\subsubsection{Coordinate Cilindriche}  		
-  					\[
-	  					\left\{ 
-		  					\begin{array}{l} 
+  					\[ 
+		  					\begin{cases}
 			  					x\; =\; u\; \cdot\; cos(v)\quad \rightarrow u\; \in\; [0,\; +\infty] \\
 			  					y\; =\; u\; \cdot\; sin(v)\;\quad \rightarrow v\; \in\; [0,\; 2\pi] \\ 
 			  					z\; =\; z\;\quad\quad\quad\quad\quad\; \rightarrow z\; \in\; \mathbb{R}
-		  					\end{array} 
-	  					\right\}
+		  					\end{cases} 
   					\]
   					risolvo l'integrale
 	  					\[
