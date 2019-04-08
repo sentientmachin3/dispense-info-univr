@@ -281,6 +281,49 @@
 	
 	La trasformazione dei processi, dovuta in larga parte all'applicazione di tecnologie informatiche, ha come effetto primario l’integrazione inter-funzionale o inter-organizzativa dei processi, in quanto aumenta al disponibilità di informazioni e supporta l'esecuzione di compiti individuali di natura decisionale.
 	
+	\newpage
+	\section{Data warehouse}
+	\subsection{Introduzione}
+	Iniziamo dando la definizione di \textit{business intelligence}.
+	
+	\begin{definit}[Business Intelligence]
+		Disciplina che consente a chi deve decidere in azienda di capire, attraverso soluzioni software, i fattori chiave del business e conseguentemente di prendere le migliori decisioni in quel momento.
+	\end{definit}
+
+	Sostanzialmente il ruolo chiave della business intelligence è quello di trasformare i dati aziendali in informazioni fruibili in maniera semplice, con un livello di dettaglio variabile.
+	
+	Il passaggio da grandi moli di dati ad informazioni importanti e di un certo rilievo è operato dall'informatica, dal momento che negli ultimi anni le moli di dati sono diventate davvero enormi. A partire dagli anni 80 infatti iniziano a nascere i \textit{decision support systems} (DSS), ovvero un insieme di tecniche e strumenti che consentono di estrapolare informazioni a partire da dati grezzi.
+	
+	Qui nasce il data warehouse, ovvero un raccoglitore di informazioni che riorganizza i dati provenienti dalle sorgenti più disparate e li rende disponibili per analisi e valutazioni finalizzate alla pianificazione del processo decisionale.
+	
+	\begin{definit}[Data Warehouse]
+		Una collezione di metodi, tecnologie e strumenti di ausilio al knowledge worker per condurre analisi dei dati finalizzate all’attuazione di processi decisionali e al miglioramento del patrimonio informativo.
+	\end{definit}
+	
+	Le interrogazione al data warehouse sono di due tipologie:
+	\begin{itemize}
+		\item \textit{OLAP (OnLine Analitycal Processing)}: interrogazioni di tipo analitico, leggono grandi quantità di record e calcolano dati di sintesi;
+		\item \textit{OLTP (OnLine Transactional Processing)}: interrogazioni di tipo transazionale, dove vengono letti e modificati piccoli gruppi di record.
+	\end{itemize}
+
+	Il processo di data warehousing presenta alcune caratteristiche fondamentali, quali: \begin{itemize}
+		\item accessibilità ad utenti sprovvisti di particolari conoscenze informatiche;
+		\item integrazione dei dati sulla base di un modello standard dell'impresa;
+		\item flessibilità di interrogazione;
+		\item sintesi per permettere analisi quanto più possibili efficaci;
+		\item rappresentazione quanto più intuitiva possibile;
+		\item completezza e correttezza dei dati manipolati.
+	\end{itemize}
+
+	\subsection{Architetture di supporto}
+	Le architetture di supporto al DW devono soddisfare alcuni requisiti fondamentali: \begin{itemize}
+		\item \textit{separazione}: tra elaborazione analitica e transazionale;
+		\item \textit{scalabilità}: le dimensioni e le performance dell'architettura devono poter scalare bene con l'aumento della dimensione della mole di dati;
+		\item \textit{estendibilità}: deve essere possibile estendere il sistema con nuove tecnologie senza doverlo riprogettare del tutto;
+		\item \textit{sicurezza}: relativamente al controllo degli accessi;
+		\item \textit{amministrabilità}: la complessità dell'attività di amministrazione non deve risultare eccessiva.
+	\end{itemize}
+	
 	
 	
 	
