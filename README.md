@@ -10,6 +10,7 @@ Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman
 - Ingegneria del Software (Teoria)
 - Linguaggi di programmazione
 - Programmazione di Rete (Laboratorio)
+- Sistemi Operativi (Solo sincronizzazione)
 - Sistemi Operativi (Laboratorio)
 - Sicurezza di Rete (In progress, teoria)
 - Fondamenti dell'informatica (Teoria + Guida pratica)

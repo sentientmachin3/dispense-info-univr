@@ -1,0 +1,3 @@
+[submodule "triennale/sistemi-operativi/LittleBookOfSemaphores"]
+	path = triennale/sistemi-operativi/LittleBookOfSemaphores
+	url = https://github.com/platipo/LittleBookOfSemaphores
