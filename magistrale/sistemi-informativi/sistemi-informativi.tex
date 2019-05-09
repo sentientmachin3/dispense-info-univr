@@ -1,4 +1,4 @@
-\documentclass[a4paper, 12pt]{article}
+\documentclass[a4paper, 10pt]{article}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}
@@ -14,6 +14,7 @@
 \usepackage{hyperref}
 \usepackage{libertine}
 \usepackage{tikz}
+\usepackage{wrapfig}
 \hypersetup{
 	hidelinks, 
 	colorlinks = true,
@@ -323,6 +324,115 @@
 		\item \textit{sicurezza}: relativamente al controllo degli accessi;
 		\item \textit{amministrabilità}: la complessità dell'attività di amministrazione non deve risultare eccessiva.
 	\end{itemize}
+
+	\paragraph{Architetture a un livello.} L'unico intermezzo tra gli strumenti di utility (reportistica, OLAP) è il middleware.
+
+	\paragraph{Architetture a 2 livelli.} Le architetture a 2 livelli sono strutturate in maniera differente, in quanto ci sono anche i livelli di alimentazione e di warehouse. La particolarità di questa architettura è data dai \textit{data mart}, ovvero un sottoinsieme del data warehouse principale, relativi a sezioni particolari dell'azienda. I data mart sono utili come blocchi costruttivi del DW principale, inoltre, essendo di dimensioni minori, consentono migliori prestazioni.
+	
+	In alcuni casi si preferisce un'architettura con i data mart indipendenti dal DW primario, il che semplifica la progettazione ma rende lo schema più complesso a livello di accesso ai dati, e può determinare inconsistenze tra data mart.
+	
+	Le architetture a 2 livelli presentano sostanziali vantaggi, quali: \begin{itemize}
+		\item a livello del DW sono sempre disponibili informazioni, anche se alle sorgenti non lo sono;
+		\item l'interrogazione analitica sul DW non interferisce con quelle transazionali sul database operazionale;
+		\item l'organizzazione logica del DW è multidimensionale, non relazionale o semistrutturata;
+		\item a livello del DW sono ottimizzabili le interrogazioni ed in generale le prestazioni.
+	\end{itemize}
+
+	\paragraph{Architetture a 3 livelli.} Hanno in più i dati \textit{riconciliati}, che sono ottenuti dopo una serie di controlli di consistenza e pulizia. Il vantaggio dei dati riconciliati è che forniscono un modello unico, eliminando le problematiche per l'azienda di estrazione dei dati dalle sorgenti. D'altro canto, si introduce un elemento di ridondanza con i dati della sorgente.
+	
+	\subsection{ETL (Extraction, Transformation, Loading)}
+	Il ruolo degli strumenti ETL è quello di alimentare una sorgente dati di buona qualità che possa a sua volta alimentare il DW (\textit{riconciliazione}). La riconciliazione avviene in due momenti distinti, ovvero quando il DW viene popolato per la prima volta e quando viene aggiornato periodicamente.
+	
+	Gli strumenti ETL operano attraverso 4 fasi: \begin{enumerate}
+		\item \textbf{estrazione}: l'estrazione \textit{statica} viene fatta quando il DW viene popolato per la prima volta, quella \textit{incrementale} viene fatta dopo ogni aggiornamento, basandosi su cosa è cambiato nel frattempo;
+		\item \textbf{pulitura}: si migliora la qualità dei dati da elaborare, rimuovendo dati mancanti, duplicati e incosistenze;
+		\item \textbf{trasformazione}: conversione dei dati dal formato operazionale a quello del DW, i dati vengono normalizzati, convertiti nei formati supportati dal DW, e vengono sintetizzati;
+		\item \textbf{caricamento}: i dati vengono importati nel DW con il \textit{refresh} (riscrittura totale dei dati) o con l' \textit{update}, quando si devono fare aggiornamenti controllati e di dimensioni ridotte.
+	\end{enumerate}
+	
+	\subsection{Il modello multidimensionale}
+	È il modello fondamentale per la rappresentazione e l'interrogazione ai dati. È strutturato su un cubo i cui lati sono una dimensione dei dati da analizzare, ogni cella contiene la misura numerica da analizzare.
+	
+	\subsection{Tecniche di analisi dei dati}
+	Una volta che i dati sono stati trasformati e ripuliti, occorre scoprire come trarne il massimo vantaggio informativo. Esistono 3 differenti approcci: \begin{itemize}
+		\item data mining;
+		\item reportistica;
+		\item OLAP.
+	\end{itemize}
+
+	\paragraph{OLAP.} È il principale metodo di analisi dei dati in un modello multidimensionale. È estremamente dettagliato grazie alla specifica di un percorso di navigazione, ossia un path di operatori che prendono in input il risultato dell'interrogazione precedente. Ogni risultato di interrogazione è ancora un modello multidimensionale. Gli operatori sono: \begin{itemize}
+		\item roll up;
+		\item drill down;
+		\item slice and dice;
+		\item pivoting;
+		\item drill across.
+	\end{itemize}
+
+	\paragraph{Data Mining.} È un'attività orientata alla scoperta di dati nascosti, in particolare quando la mole di dati è molto grande. Il data mining raccoglie tecniche di machine learning e AI al fine di ricercare caratteri particolari a partire dalla mole di dati, quali:\begin{itemize}
+		\item ricerche di mercato;
+		\item efficacia del marketing;
+		\item pianificazione aziendale e di investimenti;
+		\item riconoscimento di attività fraudolente.
+	\end{itemize}
+
+	Un elemento fondamentale del data mining è dato dalle \textbf{regole associative}, ossia un insieme di regole che consentono di stabilire delle relazioni di implicazione all'interno della base di dati (gruppi di affinità). In tal modo è possibile costruire pubblicità mirate, ad esempio.
+	Altri caratteri fondamentali del data mining sono:\begin{itemize}
+		\item \textit{clustering:} raggruppamento di oggetti per carattere comune in un ridotto numero di insiemi;
+		\item \textit{alberi decisionali:} alberi di decisione per la classificazione dei rapporti di causa effetto di un dato evento;
+		\item \textit{serie temporali:} individuazione di pattern ricorrenti in sequenze di dati complesse (rilevazione di anomalie, analisi di percorsi web, ecc...).
+	\end{itemize}
+
+	\section{Ciclo di vita del Data Warehouse}
+	
+	\paragraph{Generazione del DW.} Nella generazione del DW si distinguono 2 approcci: \begin{itemize}
+		\item \textit{top-down}: basato sull'analisi dei bisogni dell'azienda, per poi realizzare il DW nella sua interezza, ha costi onerosi e lunghi tempi di realizzazione, ma garantisce ottimi risultati;
+		\item \textit{bottom-up}: la costruzione avviene in maniera incrementale, ha costi ridotti e tempi di realizzazione brevi, ma determina una visione parziale del dominio di interesse.
+	\end{itemize}
+
+	Qualunque sia l'approccio scelto, si segue sempre il path del tipo: \begin{enumerate}
+		\item Pianificazione;
+		\item Progettazione dell'infrastruttura;
+		\item Progettazione e sviluppo del data mart.
+	\end{enumerate}
+
+	\paragraph{Analisi e riconciliazione delle sorgenti.} L'analisi e la riconciliazione delle sorgenti attraversa 2 fasi, la \textit{ricognizione} e la \textit{normalizzazione}.
+	
+	Vi è prima la fase di \textit{integrazione}, ovvero l'analisi delle sorgenti e il mapping, ovvero la correlazione di concetti delle sorgenti a schemi del nostro DW. La fase di integrazione è divisa in 4 step, ossia: \begin{enumerate}
+		\item \textit{Preintegrazione: } definizione della strategia di integrazione;
+		\item \textit{Comparazione degli schemi}: analisi degli schemi iniziali per identificare conflitti e correlazioni tra concetti;
+		\item \textit{Allineamento degli schemi:} risoluzione dei conflitti rilevati precedentemente;
+		\item \textit{Fusione degli schemi:} si fondono gli schemi ottenuti con lo scopo di formare un unico schema riconciliato.
+	\end{enumerate}
+
+	\paragraph{Analisi dei requisiti.} Lo scopo di tale analisi è quello di raccogliere le esigenze di utilizzo del data mart.
+	L'analisi dei requisiti è un processo fondamentale in quanto influenze le decisioni riguardanti la progettazione del database, l'architettura del sistema, i piani di avviamento e manutenzione.
+	
+	\subsection{Progettazione concettuale}
+	Al contrario dei database relazionali, per modellare il DW non è applicabile il modello ER standard, ma viene usato il DFM (\textit{Dimensional Fact Model}). La rappresentazione con il DFM prevede i seguenti costrutti di base: \begin{itemize}
+		\item \textit{fatto}: è un concetto di interesse per il processo decisionale, modella un insieme di eventi che accadono nell'azienda (costituisce inoltre una relazione molti-a-molti tra le dimensioni);
+		\item \textit{misura}: è un valore numerico relativo ad un fatto e ne esprime un aspetto quantitativo per l'analisi;
+		\item \textit{dimensione:} è una proprietà con un dominio finito di un fatto; ne descrive una coordinata di analisi;
+		\item \textit{attributi dimensionali:} si intendono le caratteristiche che descrivono una data dimensione;
+		\item \textit{gerarchia:} è un albero orientato i cui nodi sono attributi dimensionali; modellano associazioni tra coppie di attributi.
+	\end{itemize}
+
+	Il DFM prevede inoltre una serie di attributi avanzati, relativamente poco usati, quali convergenze, additività, dimensioni/attributi opzionali, gerarchie condivise, ecc.
+	
+	La progettazione concettuale avviene partendo dalla documentazione relativa ai dati riconciliati, quali modelli ER, schemi XML, ecc. La progettazione avviene seguendo i seguenti passi: \begin{enumerate}
+		\item Definizione dei fatti;
+		\item Per ogni fatto: \begin{enumerate}
+			\item Costruzione dell'albero degli attributi ed editing;
+			\item Definizioni di dimensioni e misure;
+			\item Creazione dello schema di fatto.
+		\end{enumerate}
+	\end{enumerate}
+	
+	L’albero degli attributi corrispondente a F può essere costruito in modo automatico applicando una procedura che naviga ricorsivamente le dipendenze funzionali espresse, nello schema sorgente, dagli identificatori e dalle associazioni a-uno.
+	
+	\paragraph{Editing dell'albero.} Dal momento che non tutti gli attributi sono di interesse per il data-mart, l'albero è manipolabile eliminando alcuni nodi secondo alcune regole di consistenza. La \textbf{potatura} di un ramo avviene eliminando il nodo radice e tutti i relativi figli, l'\textbf{innesto} avviene quando un nodo non è necessario ma serve mantenere i suoi nodi figlio.
+
+
+	
 	
 	
 	
