@@ -430,6 +430,18 @@
 	L’albero degli attributi corrispondente a F può essere costruito in modo automatico applicando una procedura che naviga ricorsivamente le dipendenze funzionali espresse, nello schema sorgente, dagli identificatori e dalle associazioni a-uno.
 	
 	\paragraph{Editing dell'albero.} Dal momento che non tutti gli attributi sono di interesse per il data-mart, l'albero è manipolabile eliminando alcuni nodi secondo alcune regole di consistenza. La \textbf{potatura} di un ramo avviene eliminando il nodo radice e tutti i relativi figli, l'\textbf{innesto} avviene quando un nodo non è necessario ma serve mantenere i suoi nodi figlio.
+	
+	\paragraph{Definizione delle dimensioni.} Vanno scelte nell'albero degli attributi tra i vertici figli della radice. La loro scelta è rilevante in quanto definiscono la granularità degli eventi primari. Nota: il tempo dovrebbe sempre essere una dimensione.
+	
+	\subsection{Carico di lavoro e volume dati}
+	Il carico di lavoro di un sistema OLAP è estemporaneo, e va identificato in fase di progettazione, sulla base della reportistica standard e dei colloqui con gli utenti.
+	
+	Una volta desunto il carico di lavoro del DW attraverso un qualche log di sistema, è possibile attuare una fase di \textit{tuning} del sistema, ossia una specie di ottimizzazione
+	
+	\paragraph{Problema della sparsità.} Il problema della sparsità dei dati è un difetto del modello multidimensionale che consiste nell'avere coordinate su un evento che potrebbe anche non verificarsi. Tutto ciò comporta uno spreco di risorse, ovviamente. Le alternative per ovviare/attenuare il problema sono 2: \begin{itemize}
+		\item ROLAP: tiene traccia solo degli eventi realmente accaduti;
+		\item MOLAP: riduzione al minimo dello spazio necessario a tenere traccia degli eventi non accaduti.
+	\end{itemize}
 
 
 	
