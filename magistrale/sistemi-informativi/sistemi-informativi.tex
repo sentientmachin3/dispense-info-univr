@@ -433,16 +433,78 @@
 	
 	\paragraph{Definizione delle dimensioni.} Vanno scelte nell'albero degli attributi tra i vertici figli della radice. La loro scelta è rilevante in quanto definiscono la granularità degli eventi primari. Nota: il tempo dovrebbe sempre essere una dimensione.
 	
-	\subsection{Carico di lavoro e volume dati}
+	\subsubsection{Carico di lavoro e volume dati}
 	Il carico di lavoro di un sistema OLAP è estemporaneo, e va identificato in fase di progettazione, sulla base della reportistica standard e dei colloqui con gli utenti.
 	
-	Una volta desunto il carico di lavoro del DW attraverso un qualche log di sistema, è possibile attuare una fase di \textit{tuning} del sistema, ossia una specie di ottimizzazione
+	Una volta desunto il carico di lavoro del DW attraverso un qualche log di sistema, è possibile attuare una fase di \textit{tuning} del sistema, ossia una specie di ottimizzazione.
 	
 	\paragraph{Problema della sparsità.} Il problema della sparsità dei dati è un difetto del modello multidimensionale che consiste nell'avere coordinate su un evento che potrebbe anche non verificarsi. Tutto ciò comporta uno spreco di risorse, ovviamente. Le alternative per ovviare/attenuare il problema sono 2: \begin{itemize}
 		\item ROLAP: tiene traccia solo degli eventi realmente accaduti;
 		\item MOLAP: riduzione al minimo dello spazio necessario a tenere traccia degli eventi non accaduti.
 	\end{itemize}
 
+	\subsection{Progettazione logica}
+	I modelli logici generali per la progettazione logica sono 2:\begin{itemize}
+		\item MOLAP (Multidimensional Online Analytical Processing) utilizzano strutture multidimensionali (array multidimensionali), rappresentano soluzioni che non necessitano di istruzioni complesse in SQL, ma non hanno strutture dati standard. Gestisce la sparsità usando tecniche di compressione dei chunk in modo tale da non sprecare spazio per rappresentare dati sparsi;
+		
+		\item ROLAP (Relational Online Analytical Processing) usano semplicemente il modello relazionale. Il modello ROLAP usa uno schema a stella.
+	\end{itemize}
+
+	\paragraph{Schema a stella.} Uno schema a stella è uno schema caratterizzato da: \begin{itemize}
+		\item Un insieme di relazioni $DT_1, DT_2, \dots, DT_n$ ognuna delle quali contiene una chiave primaria e il relativo insieme di attributi;
+		
+		\item Una \textit{fact table} $FT$, che importa le chiavi di tutte le dimension table.
+	\end{itemize}
+
+	Lo schema a stella è vantaggioso in quanto è necessario un solo join per recuperare le informazioni in tutte le dimensin table, inoltre non ha problemi di sparsità in quanto vengono memorizzate solo le tuple corrispondenti a punti dello spazio per il quale si sono verificati eventi.
+	
+	\paragraph{Schema snowflake.} Lo snowflake schema è una variante dello schema a stella in cui le DT hanno una chiave e un sottoinsieme di attributi che ne dipendono. Inoltre hanno 0 o più chiavi importate da altre DT necessarie alla ricostruzione del contenuto della DT iniziale. La FT contiene solo le chiavi di alcune DT (\textit{DT primarie}), mentre non contiene quelle delle DT secondarie.
+	
+	I principali vantaggi dello snowflake schema sono la semplificazione delle interrogazioni e la comodità in presenza di dati aggregati, tuttavia è necessario inserire le chiavi surrogate, e il tempo di interrogazione aumenta data la necessità di dover fare join multipli.
+	
+	\subsubsection{Viste}
+	Le viste sono in sostanza le fact table contenenti dati aggregati di sintesi. Si distinguono in 2 categorie: \begin{itemize}
+		\item \textit{primarie:} corrispondono al pattern di aggregazione primario (non aggregato);
+		\item \textit{secondarie:} corrispondono a pattern di aggregazione secondari (aggregati).
+	\end{itemize}
+
+	La presenza di fact table multipli pone il problema di costruire la vista che risolve l'interrogazione da fare con il minor costo possibile. A tale scopo sono usati gli \textit{aggregate navigator}, ossia dei software specifici che si occupano di formulare interrogazioni OLAP sulla miglior vista a disposizione.
+	
+	Il passaggio dal progetto concettuale a quello logico funziona attraverso 4 fasi:\begin{enumerate}
+		\item Scelta dello schema da utilizzare;
+		\item Traduzione degli schemi concettuali;
+		\item Scelta delle viste;
+		\item Applicazione di altre forme di ottimizzazione (frammentazione).
+	\end{enumerate}
+
+	La traduzione da schema di fatto a schema a stella avviene semplicemente creando una FT contenente tutte le misure e gli attributi descrittivi collegati direttamente con il fatto e per ogni gerarchia creare una DT che ne contenga tutti gli attributi.
+	
+	\paragraph{Scelta delle viste.} La scelta delle viste è un task complesso, che deve tenere conto di numerosi fattori, quali:\begin{itemize}
+		\item Minimizzazione delle funzioni di costo;
+		\item Vincoli di sistema;
+		\item Vincoli dell'utente.
+	\end{itemize}
+
+	In generale conviene materializzare una vista quando risolve un'interrogazione molto frequente, oppure riduce il costo di esecuzione di molte interrograzioni. Viceversa, non conviene quando il suo pattern di aggregazione è molto simile a quello di altre viste già materializzate, oppure non riduce di almeno un ordine di grandezza il costo dell'interrogazione.
+	
+	\subsection{Progettazione dell'alimentazione.} È la fase in cui vengono progettate le procedure necessarie al caricamento dei dati nel data mart. 
+	
+	\paragraph{Estrazione dei dati.} In particolare, l'estrazione dei dati può essere effettuata: \begin{itemize}
+		\item In maniera assistita dall'applicazione;
+		\item Tramite log;
+		\item Tramite trigger;
+		\item Tramite marche temporali.
+	\end{itemize}
+	
+	In ogni caso, i dati estratti consistono di tutti i record che non sono stati estratti nell'ultima operazione di estrazione, e vengono messi nella staging area.
+	
+	\paragraph{Caricamento dei dati.} La modalità di caricamento dei dati nella staging area dipende dal tipo di estrazione e dalla storicizzazione del database. Se l'estrazione è completa, allora la riscrittura del data mart sarà totale; se l'estrazione è incrementale si salva anche il tipo di operazione che ha determinato la variazione del dato. In presenza di storicizzazione si salva anche una coppia di marche temporali indicanti l'intervallo di validità della tupla.
+	
+	\paragraph{Pulizia dei dati.} È l'insieme delle operazioni atto a fixare le incompatibilità tra i vari dati, quali errori di battitura, incompatibiltà di formati, inconsistenza di valori, ecc. Le tecniche utilizzate spaziano dai dizionari (tabelle di look-up) , join approssimati o regole di dominio specifiche.
+	
+	\paragraph{Alimentazione delle table.} L'alimentazione delle dimension table viene svolta semplicemente trasformando gli identificatori in chiavi surrogate. 
+	
+	
 
 	
 	

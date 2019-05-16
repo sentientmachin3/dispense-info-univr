@@ -24,7 +24,7 @@ Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman
 - Sistemi ad Eventi Discreti (Incompleta)
 - Complessità
 - Intelligenza Artificiale (Incompleta)
-- Sistemi informativi (In progress)
+- Sistemi informativi
 - Crittografia (In progress)
 - Sicurezza delle Reti (In progress)
 
