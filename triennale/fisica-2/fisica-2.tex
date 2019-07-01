@@ -1,0 +1,1267 @@
+\documentclass[a4paper, 10pt]{article}
+%librerie / userpackage
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{palatino}
+\usepackage[margin=3cm]{geometry}
+
+\hypersetup{
+	hidelinks, 
+	colorlinks = true,
+	linkcolor = black,
+}
+
+\begin{document}
+		\clearpage
+	\begin{titlepage}
+		\centering
+		\vspace*{\fill}
+		{\scshape\LARGE Università degli Studi di Verona \par}
+		\vspace{1.5cm}
+		\line(1,0){150} \\
+		{\huge\bfseries Fisica 2\par}
+		\line(1,0){150} \\
+		\vspace{0.5cm}
+		{\scshape\Large Riassunto dei principali argomenti\par}
+		\vspace{2cm}
+		{\Large\itshape Matteo Marzio\par}
+		\vspace{1cm}
+		\vspace{5cm}
+		\vspace*{\fill}
+		% Bottom of the page
+		{\large \today\par}
+	\end{titlepage}
+	\pagenumbering{arabic}
+	\thispagestyle{empty}
+	\newpage
+	\tableofcontents
+	
+	\pagenumbering{roman}
+	\newpage
+	\section{Elettrostatica nel Vuoto}
+		\subsection{Carica Elettrica}
+			La carica elettrica e' una grandezza fisica scalare dotata di segno, ed e' una proprietà fondamentale della
+			materia. \\
+			La carica elettrica e' un tipo di carica ed e' responsabile dell'interazione elettromagnetica, essendo
+			sorgente del campo elettromagnetico. \\
+			E' una grandezza quantizzata, ossia esiste solo in forma di multipli di una quantità fondamentale: la carica
+			dell'elettrone.\\ 
+			Essa viene misurata in \textbf{Coulomb} e vale 
+				\[ -e = -1,602176634 \cdot 10^{-19} C = - \frac{1C}{6,241509074 \cdot 10^{18}} \]
+			La carica di un protone, uno dei costituenti fondamentali del nucleo insieme al neutrone, viene considerata
+			positiva ed e' indicata con $+e$.
+		\subsection{Struttura della Materia}
+		\paragraph*{Atomo} Gli atomi sono le particelle che compongono la materia:essi sono costituiti a loro volta da
+						   tre tipi di particelle più piccole: i protoni, i neutroni e gli elettroni. 
+						   L'atomo consiste in un nucleo formato da protoni e neutroni, circondato da un involucro di
+						   elettroni.
+		\paragraph*{Carica delle Particelle} I protoni e gli elettroni possiedono una proprietà elettrica chiamata
+										    \textbf{carica}. Essa e' una grandezza fisica che può avere segno positivo o
+										    negativo: le cariche dello stesso segno si respingono, mentre le cariche 
+										    di segno diverso si attraggono.
+		\subsection{Forza di Coulomb}
+		\paragraph*{Descrizione} La forza di Coulomb, descritta dalla Legge di Coulomb, e' la forza esercitata da un 
+								campo elettrico su una carica elettrica. Si tratta della forza che agisce tra oggetti
+								elettricamente carichi, ed e' operativamente definita dal valore dell'interazione tra 
+								due cariche elettriche puntiformi e ferme nel vuoto.
+		\paragraph{Definizione} Si considerino due cariche puntiformi interagenti, il cui valore e' indicato con $q_1$ e 
+							   $q_2$, nelle posizioni $r_1$ e $r_2$. La forza di Coulomb e' la forza esercitata da $q_2$ 
+							   su $q_1$ e ha l'espressione
+							   \[ F = k \cdot q_1 \cdot q_2 \cdot \frac{r_1 - r_2 }{\vert \vert r_1 - r_2 \vert \vert ^3}
+							   \hspace{0.7cm} [N] \]
+							   dove $k$ e' la \textbf{costante di Coulomb}, che e' pari a 
+							   \[k = \frac{1}{4\pi \epsilon_0} \hspace{0.7cm} [N m^2 C^{-2}]\] 
+							   con $\epsilon_0$ la costante dielettrica nel vuoto, equivalente a 
+							   \[ \epsilon_0 = 8,854 \hspace{0.7cm} N^{-1} m^{-2} C^2 \]
+							   La forza tra due cariche e' proporzionale al prodotto dei loro valori $q_1$ e $q_2$,
+							   inversamente proporzionale al quadrato della loro distanza ed e' diretta come la congiungente
+							   $r_1 - r_2$.
+		\subsection{Campo Elettrico}
+			Il campo elettrico e' un campo di forze generato nello spazio dalla presenza di una o più cariche elettriche o 
+			di un campo magnetico variabile nel tempo. \\
+			Insieme al campo magnetico esso costituisce il campo elettromagnetico, 
+			responsabile dell'interazione elettromagnetica. Introdotto da Michael Faraday, il campo elettrico si propaga 
+			alla velocità della luce ed esercita una forza su ogni oggetto elettricamente carico. \\
+			Esso si misura in newton su coulomb $(N C^{-1})$ o volt su metro $(V m^{-1})$.
+		\subsection{Campo Elettrostatico}
+			Se un campo elettrico e' generato dalla sola distribuzione stazionaria di carica spaziale, il campo elettrico 
+			e' detto elettrostatico ed e' conservativo. \\
+			Nel vuoto, il campo elettrico $\textbf{E}$ in un punto dello spazio e' definito come la forza per unita' 
+			di carica elettrica positiva alla quale e' soggetta una carica puntiforme $q$, detta carica "di prova", 
+			se posta nel punto:
+			\[ E = \lim_{q \to 0} \frac{F}{q} \]
+			Dalla legge di Coulomb segue che una carica $Q$ posta in $r^{'}$ genera un 
+			campo elettrica che in un punto qualsiasi $r$ e definito dalla seguente espressione:
+			\[ E(r) = \frac{Q}{4 \pi \epsilon_0} \cdot \frac{r - r^{'}}{\vert \vert r - r^{'} \vert \vert} \]
+			Da questa formula si può ricavare la forza elettrica tra due cariche $q_1$ e $q_0$, che e' uguale a:
+			\[ \overrightarrow{F} = q_0 \cdot \frac{q_1}{4 \pi \epsilon_0 r^2_{10}} \overrightarrow{u_{10}}
+			= q_0 \overrightarrow{E}(\overrightarrow{r_0}) \]
+			con $\overrightarrow{u_{10}}$ il vettore spostamento con direzione da $q_1$ a $q_0$, 
+			$r_{10}$ la distanza tra la carica $q_1$ alla carica $q_0$.
+		\subsection{Energia Potenziale Elettrostatica}
+			L'energia potenziale elettrica, anche detta energia potenziale elettrostatica, e' l'energia potenziale del campo
+	    		elettrostatico. \\
+	    		Si tratta dell'energia posseduta da una distribuzione di carica elettrica, ed e' legata alla 
+	    		forza esercitata dal campo generato dalla distribuzione stessa. \\
+	    		L'energia elettrostatica e' descritta come il lavoro necessario per portare un sistema di cariche elettriche in
+	    		una data configurazione ed e' definita come:
+	    		\[ W_n = \frac{1}{2} \sum_{i,j=1}^n \frac{q_i q_j}{4 \pi \epsilon_0 r_{ij}} \]
+	    		\newpage
+	    	\subsection{Potenziale Elettrico}
+	    		Data una regione di spazio in cui e' presente un campo elettrico conservativo, si definisce potenziale elettrico
+	    		in un punto il valore dato dal rapporto dell'energia potenziale elettrica (o elettrostatica) rilevato da una
+	    		carica di prova : 
+	    		\[ V = \frac{U}{q_{prova}} \]
+	    		Il potenziale dunque e' una quantità scalare e \textbf{non dipende} dal valore della carica di prova. \\
+	    		Esso viene misurato in volt: tra due punti $A$ e $B$ di una regione di spazio sede di un campo elettrico c'è una
+	    		differenza di potenziale di $1V$ se la forza elettrica compie il lavoro di un Joule per portare una carica di 
+	    		un Coulomb da $A$ a $B$. \\
+	    		Il lavoro $dW$ svolto dal campo elettrico $E_0$ per un percorso infinitesimo $ds$ su una carica $q$ e' dato da:
+	    		\[ dW = qE_0 \cdot ds \]
+	    		e per calcolare il lavoro lungo una linea $l$ da un punto $A$ ad un punto $B$:
+	    		\begin{equation*}
+	    			\begin{split}
+	    			 	W &= W_A - W_B = \int_{A}^{B} qE_0 \cdot ds = \\
+	    			 	  &= \int_{r_A}^{r_B} \frac{q_0 Q}{4 \pi \epsilon_0 r^2} \cdot u_r dl = \\
+	    			 	  &= \frac{q_0 Q}{4 \pi \epsilon_0} \cdot (\frac{1}{r_A} - \frac{1}{r_B}) \\
+	    			\end{split}
+			\end{equation*}	    		
+	    		Consideriamo ora  $W(\infty) = 0$ : 
+	    		\[ W(r) = \frac{q q_0}{4 \pi \epsilon_0 r} = -\int_{\infty}^{r} \overrightarrow{E} \cdot d\overrightarrow{r} = 
+	    		W(r) - W(\infty) = \int_{r}^{\infty} F \cdot ds \]
+	    		Se il lavoro e' positivo, allora  esso rappresenta il lavoro per costruire il sistema $(r \rightarrow \infty)$, 
+	    		altrimenti se e' negativo rappresenta il lavoro del sistema per disgregarsi $(r \leftarrow \infty)$.
+	    	\subsection{Superfici Equipotenziali}
+	    		Si definiscono \textbf{superfici equipotenziali} per il potenziale elettrico le superfici in ogni 
+	    		punto delle quali il potenziale elettrico assume lo stesso valore, ovvero 
+	    		sono le superfici perpendicolari alle linee di campo dove il lavoro e' nullo:
+	    		\[ dL = - dV = \overrightarrow{E} \cdot d \overrightarrow{s} = 0 \]
+	    	\subsection{Linee di Campo}
+	    		Una linea di campo, anche detta linea di forza, e' una curva ideale che ha come tangente in ogni punto la
+	    		direzione del vettore del campo stesso. \\Per ogni punto passa una sola linea di campo. \\
+	    		Esse non si incrociano per nessun punto e non sono chiuse (altrimenti il flusso del campo $E$ sarebbe nullo)
+		\subsection{Flusso del Campo}
+			Si consideri la superficie infinitesima $dS$ in un campo elettrico $\overrightarrow{E}$ e la si consideri
+			approssimativamente come piana. Alla superficie posso associare un vettore di modulo uno (versore) 
+			$\widehat{n}$ che ne identifica l'orientamento, scegliendo il vettore perpendicolare alla superficie. \\
+			Se la superficie e' abbastanza piccola, posso considerare il campo elettrico costante in modulo direzione e 
+			verso su tutta la superficie. \\
+			Il flusso del campo elettrico attraverso questa piccola superficie e' definito come il prodotto del modulo $E$ del 
+			campo elettrico per l'estensione della superficie $dS$ per il coseno dell'angolo che la perpendicolare (o normale)
+			alla superficie fa con il campo elettrico. Il flusso e' quindi un prodotto scalare.:
+			\[ d \Phi (\overrightarrow{E}) = \overrightarrow{E} \cdot \widehat{n} = E \cdot dS \cdot cos(\theta)\]
+			Il flusso si può anche definire in termini di linee di campo: il numero di linee del campo elettrico che attraversano
+			una superficie e' proporzionale alla superficie e all'intensità del campo elettrico. \\ 
+			Il flusso del campo elettrico e' quindi proporzionale alle linee di campo che attraversano una superficie.
+		\subsection{Teorema di Gauss}
+			Si consideri una superficie sferica al centro del quale e' racchiusa una carica $Q$ positiva che genera un campo. \\
+			Ricaviamo delle porzioni (anche non uguali) di superficie tali che:
+			\[ \Phi_S(\overrightarrow{E}) =  \Phi_{S_1}(\overrightarrow{E}) + \cdots +  \Phi_{S_n}(\overrightarrow{E}) \]
+			Possiamo affermare che il flusso complessivo e' dato dalla somma di tutti i singoli flussi calcolati per ogni $S$.\\
+			Se calcolassimo il flusso di una singola superficie, potremmo notare che il vettore $\overrightarrow{E}$, 
+			partente dalla superficie, e il versore $\widehat{n}$, che essendo per definizione perpendicolare alla superficie,
+			coincidono. \\ Cio' significa che l'angolo $\theta = 0$ e quindi che:
+			\[ \Phi_{\Delta S_n}(\overrightarrow{E}) = E \cdot \Delta S_n \cdot cos(0) = E \cdot \Delta S_n \] 
+			Fatte queste considerazioni, riscriviamo la formula del flusso totale, sostituendo ogni singolo flusso con la formula
+			 appena ricavata:
+			\[ \Phi_S(\overrightarrow{E}) = E \cdot \Delta S_1 + \cdots + E \cdot \Delta S_n =
+			E \cdot (\Delta S_1 + \cdots + \Delta S_n) \]
+			Raccogliendo il fattore $E$, e' facile notare come la somma delle superfici e' in realtà l'intera superficie della
+			sfera. Riscriviamo quindi la formula scrivendo al posto della somma la formula per la superficie di una sfera, e al
+			posto di $E$ la formula del campo:
+			\[ \Phi_s(\overrightarrow{E}) = \frac{1}{4 \cdot \pi \cdot \epsilon_0} \cdot \frac{Q}{r^2} \times 
+			4 \cdot \pi \cdot r^2 = \frac{Q}{\epsilon_0} \]
+			Abbiamo quindi ricavato il \textbf{teorema di Gauss} :
+			\[ \Phi_s(\overrightarrow{E}) = \oint_{S} E \cdot dS = \frac{Q}{\epsilon_0} \]
+		\subsection{Teorema di Gauss in diverse superfici}
+			\paragraph*{Sfera di raggio r} Scegliamo come superficie chiusa $S$ una sfera di raggio $r$ concentrica con la carica 
+		 	e calcoliamo il flusso attraverso essa:
+			\begin{equation*}
+				\begin{split}
+					\Phi_E &= \oint_S \overrightarrow{E} \cdot d\overrightarrow{S} = \oint_S \frac{1}{4 \pi \epsilon_0} 
+					\cdot \frac{q}{r^2} \cdot d \overrightarrow{S} \\
+					&= \frac{1}{4 \pi \epsilon_0} \cdot \frac{q}{r^2} \cdot \oint_S \widehat{r} \cdot \widehat{n} \cdot d
+					\overrightarrow{S}
+				\end{split}
+			\end{equation*}
+			Visto che $E$ rimane costante, lo posso portare fuori dalla circuitazione ($\oint$). 
+			\begin{equation*}
+					\Phi_E = \frac{1}{4 \pi \epsilon_0} \cdot \frac{q}{r^2} \cdot \oint_S d\overrightarrow{S} = 
+					\frac{1}{4 \pi \epsilon_0} \cdot \frac{q}{r^2} \cdot (4 \pi r^2) = \frac{q}{\epsilon_0}
+			\end{equation*}
+			Quindi, indipendentemente dal raggio della sfera,
+			\[ \Phi_E = \frac{q}{\epsilon_0} \]
+			\paragraph*{Superficie generica}
+			Se la superficie $S'$ e' generica, sarà sempre possibile trovare una sfera $S$ completamente contenuta in $S'$. 
+			Non essendoci altre cariche, il numero delle linee di campo attraverso $S'$ sarà necessariamente uguale al numero delle
+			linee di campo attraverso $S$. Quindi: \[ \Phi_E(S') = \Phi_E(S) = \frac{q_{int}}{\epsilon_0} \]
+			\paragraph*{Carica esterna alla superficie} Data una superficie esterna alla carica $q$, consideriamo le linee di campo 
+			in un piccolo cono con vertice $q$. L'intersezione di questo cono con la superficie $S$ determina due piccole aree 
+			$\Delta S_1$ e $\Delta S_2$ attraversate dallo stesso numero di linee di campo:
+			\begin{equation*}
+			\begin{split}
+				\Delta \Phi_{cono} &= \Delta \Phi_1 + \Delta \Phi_2 \\
+				&= \vert \Delta \Phi_1 \vert - \vert \Delta \Phi_2 \vert = 0
+			\end{split}
+			\end{equation*}
+			Questo e' vero per ogni piccolo cono con vertice in $q$ che interseca la superficie $S$
+			\[ \Phi_E = \sum \Delta \Phi_{cono, i} = 0 \]
+			Per il principio di sovrapposizione, il risultato precedente e' generalizzabile a qualsiasi distribuzione di cariche.
+		\subsection{Teorema di Coulomb}
+			\paragraph*{Descrizione}
+			Il teorema di Coulomb e' una relazione che permette di determinare l'intensità del campo elettrico in prossimità della
+			superfici di un corpo conduttore conoscendo la densità di carica in quel punto. Permette quindi di calcolare il campo
+			elettrico in prossimità della superficie una volta che si conosce la densità con cui vi sono distribuite le cariche.
+			\paragraph*{Definizione}Dato un corpo conduttore la cui superficie sia caratterizzata da una densità' superficiale di 
+			carica $\sigma$, il campo elettrico prodotto in prossimità della superficie e':
+			\[ E = -\frac{\delta V}{\delta n} = \frac{\sigma}{\epsilon_0} \widehat{n} \]
+		\subsection{Discontinuità del campo elettrico}
+			Il campo elettrico e' definito come il rapporto tra la forza che il campo esercita su una carica e la carica stessa,
+			ovvero: \[ \overrightarrow{E} = \frac{\overrightarrow{F}}{q} \]
+			In condizioni statiche, il campo elettrico e' conservativo, quindi il potenziale e' continuo. 
+			Si consideri una sfera conduttiva carica. Dato che la sfera e' conduttiva, se poniamo una carica positiva, le cariche al 
+			suo interno tenderanno ovviamente a respingersi e conseguentemente, potendosi muovere, tendono ad allontanarsi il più
+			possibile tra loro. Dunque la sfera carica genera un campo elettrico per effetto delle cariche superficiali, 
+			ma all'interno il campo e' nullo. Esiste quindi una discontinuità nel campo. \\
+			Per calcolare se la componente \textbf{normale} del campo $\overrightarrow{E}$ ha discontinuità nell'attraversare 
+			una superficie carica, bisogna usare il teorema di Coulomb, ovvero:
+			\[ E_{\bot} = \frac{\sigma}{\epsilon_0} \]
+			Si ricorda inoltre che $E_{\parallel} = 0$
+		\subsection{Applicazioni di Gauss}
+			\subsubsection{Distribuzione piana infinita di carica con densità $\sigma$}
+				Se dividiamo lo spazio omogeneo ed isotropo (ovvero stesse proprieta' in tutte le direzioni) con un piano
+				verticale, la condizione che zone a destra e sinistra del piano devono essere per simmetria indistinguibili 
+				impone che:
+				\begin{itemize}
+					\item Le linee di campo devono essere perpendicolari al piano carico
+					\item Nei punti ad uguale distanza, a destra e sinistra del piano, il campo deve avere lo stesso valore
+				\end{itemize}
+				Scegliamo quindi come superficie chiusa per calcolare il flusso un cilindro retto di area di base $A$, con asse
+				perpendicolare al piano e basi equidistanti dal piano, denominate $A_1$ e $A_2$.
+				Segue quindi che :
+				\begin{equation*} \begin{split}
+					\underset{cilindro}{\oint} \overrightarrow{E} \cdot d\overrightarrow{S} &= 
+					\underset{A_1}{\int} \overrightarrow{E} \cdot d\overrightarrow{S} + \underset{sup.lat}{\int} 
+					\overrightarrow{E} \cdot 
+					d\overrightarrow{S} + \underset{A_2}{\int} \overrightarrow{E} \cdot d\overrightarrow{S} = 
+					\frac{q_{int}}{\epsilon_0} \\
+					\overrightarrow{E}_1 \cdot d\overrightarrow{S} &= \overrightarrow{E}_1 cos(0)dS \Rightarrow 
+					\underset{A_1}{\int}\overrightarrow{E}_1 \cdot d\overrightarrow{S} = E_1 \underset{A_1}{\int}
+					 d\overrightarrow{S} = E_1 A \\
+					\overrightarrow{E}_2 \cdot d\overrightarrow{S} &= \overrightarrow{E}_2 cos(0)dS \Rightarrow 
+					\underset{A_2}{\int}\overrightarrow{E}_2 \cdot d\overrightarrow{S} = E_2 \underset{A_2}{\int} 
+					d\overrightarrow{S} = E_2 A 
+				\end{split} \end{equation*} 
+				Sulla superficie laterale 
+				$\overrightarrow{E} \bot \overrightarrow{n} \Rightarrow \underset{sup.laterale}{\int \overrightarrow{E} \cdot 
+				d\overrightarrow{S}} = 0$
+				\[ \underset{cilindro}{\oint} \overrightarrow{E} \cdot d\overrightarrow{S} 
+				= E_1 A + E_2 A = \frac{q_{int}}{\epsilon_0} = \frac{\sigma A}{\epsilon_0}\]
+				Posto $E_1 = E_2 = E$,
+				\[ 2EA = \frac{\sigma A}{\epsilon_0} \Rightarrow E = \frac{\sigma}{2\epsilon_0}\]
+				Conclusione : \textbf{il campo e' uniforme e vale} \[\overrightarrow{E} = 
+				\frac{\sigma}{2\epsilon_0}	\overrightarrow{n}\]
+			\subsubsection{Doppia distribuzione piana infinita di carica di densità $\pm \sigma$}
+				Questo risultato ci permette di calcolare il campo elettrico, usando il principio di sovrapposizione, generato
+				da una doppia distribuzione piana infinita di carica con densità $\pm \sigma$.
+				\begin{itemize}
+					\item Alle estremità il campo e' nullo, visto che: 
+					\[\overrightarrow{E_T} = \overrightarrow{E_+} + \overrightarrow{E_-} = 0 \]
+					\item Invece all'interno della zona compresa fra i piani abbiamo un risultato diverso:
+					\[\overrightarrow{E_T} = \overrightarrow{E_+} + \overrightarrow{E_-} \neq 0 \]
+				\end{itemize}
+				Visto che il campo e' uniforme nella zona compresa fra i piani, calcoliamo quanto vale:
+				\[ E_T = 2 \frac{\sigma}{2\epsilon_0} = \frac{\sigma}{\epsilon_0} \]
+				Conclusione: \textbf{il campo e' uniforme nella zone compresa fra i piani e vale} $\overrightarrow{E} =
+				\frac{\sigma}{\epsilon_0} \overrightarrow{n}$ \textbf{mentre e' nullo all'esterno}.
+			\subsubsection{Distribuzione sferica di carica}
+				Consideriamo una sfera di raggio $R$ caricata con una carica $q$. 
+				Essendo in una situazione di simmetria sferica in uno spazio omogeneo ed isotropo, questo impone che :
+				\begin{itemize}
+					\item Le linee di campo devono avere direzione radiale
+					\item Nei punti ad uguale distanza dal centro della sfera il campo deve avere lo stesso valore
+				\end{itemize}
+				Con questo in mente, scegliamo come superficie chiusa per calcolare il flusso una sfera di raggio $r$ concentrica
+				con la sfera carica. Segue per $r \> R$.
+				\[ \Phi_E = \oint_{sfera} \overrightarrow{E} \cdot d\overrightarrow{S} = \frac{q_{int}}{\epsilon_0} \]
+				dove $q_{int} = q$, e per ogni elemento $d\overrightarrow{S}$ della sfera abbiamo:
+				\[ \overrightarrow{E} \cdot d \overrightarrow{S} = \overrightarrow{E} \cdot \overrightarrow{n}dS 
+				= E cos(0) dS = EdS \Rightarrow \]
+				\[ \Rightarrow \underset{sfera}{\int} \overrightarrow{E} \cdot d\overrightarrow{S} =
+				\underset{sfera}{\int} EdS = E \underset{sfera}{\int} dS = E \cdot ( \pi r^2) = \frac{q}{\epsilon_0} \]
+				Conclusione: \textbf{Il campo nei punti a distanza dal centro} $r \geq R$, e' \\
+				$\overrightarrow{E}(\overrightarrow{r}) = \frac{1}{4\pi \epsilon_0}\frac{q}{r^2}\widehat{r}$, 
+				ovvero uguale a quello che si otterrebbe concentrando tutta la carica nel centro della sfera. 
+				In particolare, se la sfera e' conduttrice, per $r < R$ il campo e' nullo.
+			\subsubsection{Doppia distribuzione sferica superficiale di carica}
+				Consideriamo due sfere concentriche di raggio $R_1$ e $R_2$ e con carica $+q$ e $-q$ sulle rispettive superfici.
+				Essendo ancora in una situazione di simmetria sferica, valgono ancora le considerazioni precedenti. \\
+				Scegliamo come superfici chiuse per calcolare il flusso delle due sfere di raggio $r_1$ e $r_2$ concentriche 
+				con la sfera.
+				\begin{itemize}
+					\item Per la sfera di raggio $R_1 < r_1 < R_2$ il risultato e' il medesimo al precedente, ovvero 
+					\[ \overrightarrow{E}(\overrightarrow{r}) = \frac{1}{4\pi \epsilon_0}\frac{q}{r^2}\widehat{r} \]
+					\item Per la sfera di raggio $r_2 > R_2$, procedendo come prima giungiamo a 
+					\[ \Phi_E = \underset{sfera2}{\int} \overrightarrow{E} \cdot d\overrightarrow{S} = \frac{q_{int}}{\epsilon_0}
+					\Rightarrow E \cdot (4 \pi r^2) = \frac{q_{int}}{\epsilon_0} \]
+					dove \[ q_{int} = +q - q = 0 \Rightarrow E = 0 \]
+				\end{itemize}
+				Conclusione: \textbf{il campo nei punti a distanza dal centro $R_1 \leq r \leq R_2$} e' \\ 
+				$\overrightarrow{E}(\overrightarrow{r}) = \frac{1}{4\pi \epsilon_0}\frac{q}{r^2}\widehat{r}$, \textbf{mentre per 
+				$r > R_2$ e' uguale a zero.} In particolare, se la sfera interna e' conduttrice, per $r < R_1$ e $r > R_2$ il 
+				campo risulta ancora nullo.
+		\subsection{Gradiente di una funzione}
+		Si consideri una funzione $f(x,y,z)$ definita su un insieme aperto $A \subseteq \mathbb{R}^3$ e sia $(x_0,y_0,z_0) 
+		\in A$. \\ Se esistono in $(x_0,y_0,z_0)$ sia la derivata parziale rispetto ad \[x,y,z \rightarrow 
+		f_x(x_0,y_0,z_0), f_y(x_0,y_0,z_0), f_z(x_0,y_0,z_0) \] allora e' possibile costruire un 
+		vettore che ha per componenti le derivate parziali: 
+		\[ \nabla f(x_0,y_0,z_0) = (f_x(x_0,y_0, z_0) , f_y(x_0,y_0,z_0), f_z(x_0,y_0,z_0)) \]
+		Il vettore prende il nome di gradiente della funzione $f$ valutato in $(x_0,y_0,z_0)$ o 
+		ancora $\nabla f(x_0,y_0,z_0)$
+		\subsection{Gradiente del Potenziale Elettrico}
+			\[
+				V_2 - V_1 = \int_{1}^2 \overrightarrow{\nabla} V \cdot dr = 
+				- \int_{1}^2 \overrightarrow{E} \cdot d\overrightarrow{r} \Rightarrow \overrightarrow{E} = 
+				- \overrightarrow{\triangledown} V 
+			\]
+			Dal potenziale $V(\overrightarrow{r})$ nello spazio si calcola il campo $\overrightarrow{E}(x,y,z)$.
+			\[ \overrightarrow{\nabla} A = (\delta_x A, \delta_y A, \delta_z A) \]
+			Essendo il campo $E$ conservativo, possiamo dire che 
+			\[ \begin{cases} 
+				\overrightarrow{E} = -\overrightarrow{\triangledown} V \\
+				\oint E = 0 \\
+				\overrightarrow{\triangledown} \times -\overrightarrow{E} = 0
+				\end{cases}
+			\]
+			\textbf{Nota}: Queste equazioni valgono solo in \textbf{elettrostatica}!
+			
+		\subsection{Equazione di Poisson}
+			\paragraph*{Definizione Canonica}
+			Sia $\phi = \phi(x)$ una funzione definita sulla chiusura dell'insieme $U$ di $\mathbb{R}^n$ a valori 
+			di $\mathbb{R}$.\\
+			L'equazione di Poisson per $\phi$ ha la forma 
+			\[ \vartriangle \phi = f \] dove $\vartriangle$ e' l'operatore di Laplace o laplaciano e $f$ e' definita in $U$
+			a valori di $\mathbb{R}$. Nello spazio euclideo l'operatore di Laplace e' spesso denotato con $\triangledown ^2$.\\
+			In coordinate cartesiane in tre dimensioni l'equazione prende la forma 
+			\[  \big (  \frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2} + \frac{\partial^2}{\partial z^2} \bigr )
+			\phi(x,y,z) = f(x,y,z) \]
+			\paragraph*{Definizione nel Campo Elettrostatico}
+			Le proprietà dell'elettrostatica si possono riassumere in una unica equazione, ovvero l'equazione di Poisson.\\
+			Sia definito $\vartriangle \cdot \vartriangle = \vartriangle ^2 = \partial_x ^2 + \partial_y ^2 + \partial_z ^ 2$ come la 
+			divergenza del gradiente e sia esso un operatore scalare. Allora possiamo dire che 
+			\[ \vartriangle^2 V = \frac{-\sigma}{\epsilon_0}  \Leftrightarrow 
+			 \frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2} + \frac{\partial^2}{\partial z^2} = 
+			 \frac{-\sigma}{\epsilon_0}
+			\]
+			e' una equazione differenziale del secondo ordine non omogenea, la cui soluzione e' il potenziale 
+			(ovvero il campo) in \textbf{ogni} punto dello spazio.
+		\subsection{Equazione di Laplace}
+		L'equazione di Laplace e' l'equazione omogenea associata all'equazione di Poisson. 
+		L'equazione \textbf{impone} che l'operatore di Laplace di una funzione incognita sia nullo. Quindi, 
+		l'equazione di Laplace non e' altro che l'equazione di Poisson messa uguale a zero:
+		\[ \nabla ^2 V = 0\]
+		
+	\newpage
+	\section{Elettrostatica nei Conduttori}
+		\subsection{Conduttori in Equilibrio}
+			Il conduttore può essere visto come un reticolo atomico immerso in un gas di elettroni liberi di muoversi
+            all'interno del materiale. In assenza di un moto netto degli elettroni in una certa direzione, il conduttore 
+			e' detto in equilibrio elettrostatico. In tale circostanza, valgono le seguenti proprietà:
+			\begin{itemize}
+				\item Il campo elettrico all'interno del conduttore e' ovunque nullo
+				\item Un qualunque eccesso di carica su conduttore deve localizzarsi superficialmente
+				\item All'esterno del conduttore, in prossimità della superficie, il campo elettrico e' perpendicolare alla
+					  superficie ed ha intensità pari a $\frac{\sigma}{\epsilon_0}$, dove $\sigma$ e' la densità 
+				 	  superficiale di carica.
+				\item Su un conduttore di forma irregolare la carica tende ad accumularsi laddove la 
+					  curvatura della superficie e' maggiore, ovvero sulle punte
+			\end{itemize}
+			In un conduttore sottoposto ad un campo elettrico esterno $E$ le cariche tendono a predisporsi 
+			lungo le superfici in base alla direzione del campo elettrico esterno $E$.
+			Quindi, si può affermare che 
+			\begin{enumerate}
+				\item $\overrightarrow{E_{int}} = 0$
+				\item $ V = cost$ 
+				\item $Q_{int} = 0$
+				\item $\overrightarrow{E} = \frac{\sigma}{\epsilon_0} \cdot \overrightarrow{n}$ sulla superficie
+			\end{enumerate}	
+		\subsection{Induzione Elettrostatica}
+			\paragraph*{Definizione} L'induzione elettrostatica e' un fenomeno tale per cui la carica elettrica all'interno di un
+			 oggetto viene ri-distribuita a causa della presenza di un altro oggetto carico nelle vicinanze. 
+			 A causa dell'induzione un oggetto elettricamente carico posto nelle vicinaze di un 
+			 corpo conduttore neutro provoca il manifestarsi di carica su quest'ultimo, senza che avvenga contatto tra i due.
+			 \paragraph*{Descrizione} Il fenomeno dell'induzione elettrostatica e' dovuto ad una ben precisa proprietà della 
+			 carica: il bipolarismo. L'induzione elettrostatica si basa quindi sul principio di redistribuzione delle cariche. 
+			 In equilibrio elettrostatico il campo elettrico ad un conduttore deve risultare nullo (per il teorema di Gauss). 
+		\subsection{Pressione di carica superficiale}
+			\paragraph*{Pressione elettrostatica} La pressione elettrostatica e' l'effetto della forza elettrostatica di Coulomb
+			,quando esercitata, all'interno di un conduttore su una superficie:
+			\[ p = \frac{F}{S} = \frac{\sigma^2}{2\epsilon_0} \]
+			dove $\sigma$ e' la densità superficiale di carica elettrica e $\epsilon_0$ la costante dielettrica del vuoto.
+			\paragraph*{Pressione elettrostatica nei condensatori}
+			Poiché tra le armature di un condensatore e' presente il campo elettrostatico 
+			$E = \frac{\vert \sigma \vert}{\epsilon_0}$, si può riscrivere la pressione elettrostatica come :
+			\[ p = \frac{F}{S}	 = \frac{1}{2} \cdot \epsilon_0 \cdot \vert E^2 \vert \]
+		\subsection{Cavità di un conduttore} 
+			In un conduttore cavo le cariche si distribuiscono sulla superficie esterna, mentre il potenziale all'interno della
+			cavità e' uguale a quello del conduttore, altrimenti si genererebbe un campo elettrico diverso da zero. La carica
+			totale sulla superficie che delimita la cavità e nulla:
+			\[ \oint_{\sum} \overrightarrow{E} \cdot n dS = \frac{Q}{\epsilon_0} = 0 \]
+			Inoltre, non possono esistere cariche spazialmente separate, in quanto il campo e' conservativo.
+			Dentro alla cavità non c'è mai una differenza di potenziale diversa da zero, indipendentemente 
+			dal potenziale a cui si trova il conduttore. Quindi il conduttore si comporta da \textbf{schermo} verso 
+			il mondo esterno.
+			Quindi possiamo dire che essendo la carica superficiale della cavità $\sigma_{sup.cav}$ uguale a zero, ricaviamo che
+			\begin{enumerate}
+				\item $E_{int.cond.} = 0 \Rightarrow \sum Q_{cav.sup} = 0$
+				\item $\oint E = 0$ per il campo conservativo $\Rightarrow E_{cav} = 0$
+			\end{enumerate}	
+		\subsection{Condensatore}
+			Il condensatore(noto come capacitore) e' un componente elettrico che immagazzina l'energia in un campo elettrostatico, 
+			che crea una differenza di potenziale. Il condensatore e' un componente ideale che puo' mantenere la carica e 
+			l'energia accumulata all'infinito.		 
+		\subsection{Capacità}
+			L'unita' di misura della capacità elettrica nel sistema SI e' il Farad (simbolo $F$) ed e' l'unita di 
+			misura derivata dal rapporto tra il coulomb e il volt:
+			\[ F = \frac{C}{V} = \frac{C^2}{J} \]
+			Un conduttore con capacita' di un $1F$ varia di un volt il suo potenziale quando la sua carica immagazzinata varia di
+			1 coulomb.
+			\textbf{La capacita' di un consensatore} e' quindi uguale a \[ C = \frac{Q}{\vartriangle V} \]
+		\subsection{Condensatori in Parallelo}
+			I condensatori in parallelo sono condensatori che vengono collegati tra loro in modo tale che, ai loro estremi,
+		 	sia presente la stessa differenza di potenziale $\triangle V$. 
+		 	La carica elettrica totale e' data dalla somma delle cariche elettriche presenti su ciascun condensatore:
+		 	\[ C_p = \sum_{i = 1}^n C_i \]
+		\subsection{Condensatori in Serie}
+			In un collegamento in serie, quando si conferisce una carica al sistema per induzione, 
+			ogni condensatore presente sul circuito si carica di quella stessa carica, in moto tale da avere la stessa carica $Q$
+			\[ \frac{1}{C_{s}} = \sum_{i = 1}^n \frac{1}{C_i} = \frac{Q}{C_{tot}}\]
+			
+	\newpage
+	\section{Elettrostatica nei Dielettrici} 
+		\subsection{Dipolo Elettrico}
+			Un dipolo elettrico e' un sistema composto da due cariche elettriche uguali e opposte di segno e separate da una
+			distanza costante nel tempo. Esso rappresenta l'approssimazione basilare del campo elettrico generato da un insieme 
+			di cariche globalmente neutro.
+		\subsection{Momento di Dipolo}
+			\paragraph*{Descrizione}
+			Dato un sistema di cariche, il momento elettrico, o momento di dipolo, e' una grandezza vettoriale che 
+			quantifica la separazione tra le cariche positive e negative, ovvero la polarità del sistema, e si misura 
+			in coulomb per metro.
+			\paragraph*{Definizione}
+			Date due cariche di segno opposto e uguale modulo $q$, il momento elettrico $p$ e' definito come :
+			\[ p = qd = \sum_{i=1}^n q_i r_i \]
+			dove $d$ e' il vettore spostamento dell'uno rispetto all'altro, orientato dalla carica negativa alla carica
+			positiva e per il quale deve valere $d = 0$ e $r_i$ e' la posizione della carica $q_i$. \\
+			Al momento di dipolo elettrico si associa un momento meccanico $M$ calcolato come \[ M = p \times E \]
+		\subsection{Dipolo Elettrico in un campo elettrostatico}
+			\subsubsection{Energia potenziale del dipolo}
+			\[U(\overrightarrow{r}) = -\overrightarrow{p} \cdot \overrightarrow{E} \]
+			\subsubsection{Forza}
+			\[ \overrightarrow{F} = (\overrightarrow{p} \cdot \overrightarrow{\nabla}) \overrightarrow{E} \]
+		\subsection{Dielettrici Lineari}
+			\paragraph*{Descrizione}
+			Un isolante dielettrico, detto anche dielettrico lineare, e' un materiale incapace di condurre la corrente 
+			elettrica. Si tratta di materiali, privi di cariche libere, le quali non riescono a far fornire al campo elettrico 
+			sufficiente energia per consentire gli elettroni di raggiungere la banda di conduzione.  Tuttavia il campo elettrico
+			e' in grado di polarizzare il materiale, genera cioè lo spostamento delle cariche, elettroni e nuclei, 
+			formando microscopici dipoli elettrici che generano all'interno del materiale un campo aggiuntivo opposto a 
+			quello esterno, manifestando una proprietà detta dielettricità.
+			\paragraph*{Definizione}
+			La maggior parte dei materiali isolanti puo' essere trattata come un dielettrico lineare omogeneo ed isotropo. 
+			Se considerassimo $D$ come un campo rispetto ai dielettrici, potremmo affermare che: 
+			\[ D = \epsilon_0 E + P = \epsilon_0 ( 1 + \chi)E = \epsilon_r \epsilon_0 E = \epsilon E \]
+			dove $\epsilon_0$ e' la costante elettrica del vuoto che vale $\frac{1}{c^2 \mu_0} 
+			\cong 8,8541878176 \cdot 10^{-12} \frac{F}{m} $ \\
+			Il numero $\epsilon_r$ e' la permittività elettrica relativa, mentre $\chi$ e' la suscettività 
+			elettrica del mezzo, che e' definita come la costante di proporzionalità tra il campo $E$ ed il 
+			conseguente vettore di polarizzazione $P$. Come conseguenza si ha che :
+			\[ P = (\epsilon_r - 1 ) \epsilon_0 E = \epsilon_0 \cdot \chi \cdot E \]
+			La suscettività e' quindi legata alla permittività relativa $\epsilon_r$ mediante la relazione 
+			\[ \chi = \epsilon_r -1 \] che nel vuoto diventa $\chi = 0$.
+		\subsection{Polarizzazione nel dielettrico}
+			\begin{itemize}
+				\item Dielettrico : $\vert \overrightarrow{P} \vert = \vert \sigma_p \vert$
+				\item Dielettrico Lineare : $P = \epsilon_0 \chi E_{tot}$
+				\item $E_{tot}$ dentro nel dielettrico : $E + \frac{P}{\epsilon_0} = \frac{\vert \sigma_l \vert}{\epsilon_0} = E_0$
+			\end{itemize}
+		\subsection{Teorema di Gauss nei Dielettrici}
+			Nei dielettrici, le cariche elettriche libere sono le sorgenti del vettore induzione, mentre nel 
+			vuoto lo erano per il campo elettrico.
+			\[ 
+				\Phi(\overrightarrow{E}) = \oint_{sup.chiusa.} \overrightarrow{E}d\overrightarrow{S} = \frac{Q_{tot}}{\epsilon_0} =
+				Q_{polarizzata} + Q_{libera}
+			\]
+			\[ Q_{polarizzata} = -\sigma_p \sum\]con $\sum$ la superficie.
+			\[ \oint PdS = P \sum \]
+		\subsection{Vettore Induzione Dielettrica}
+			Tramite il teorema di Gauss per i dielettrici possiamo affermare che il vettore spostamento $\overrightarrow{D}$ 
+			e' uguale a :
+			\[ \overrightarrow{D} = \epsilon_0 \overrightarrow{E} + \overrightarrow{P} \]
+			Se considerassimo $D$ come un campo, allora avremmo la stessa formula descritta nel paragrafo \textbf{3.4}.
+	
+	\newpage
+	\section{Energia Elettrostatica}
+		\subsection{Energia di un sistema di cariche}
+			Due cariche elettriche $Q$ e $q$ poste a una certa distanza $d$ posseggono una energia potenziale elettrica
+			elettrica $U$, tale che \[ U = k \frac{Qq}{d} \]. Cosa succede se si avesse un sistema di $n$ cariche?
+			Sappiamo che per tre cariche, ad esempio, si ha che :
+			\[ U = k \frac{q_1 q_2}{d_{12}} + k \frac{q_1 q_3}{d_{13}} + k \frac{q_2 q_3}{d_{23}} \]
+			con $d_{12}, d_{13} + d_{23}$ sono le distanze tra le cariche. Allora, seguendo lo stesso ragionamento 
+			per $n$ cariche, avremo che :
+			\[ U = k \cdot \sum_{i = 1}^n \sum_{j = i + 1}^n  \frac{q_i q_j}{d_{ij}} \]
+		\subsection{Sistema di Conduttori}
+			Consideriamo due conduttori carichi $A$ e $B$ in equilibrio e supponiamo che le linee di forza del campo
+			elettrico $\overrightarrow{E}$ vadano da uno all'altro. E' possibile costruire una superficie chiusa $S$ 
+			che intersechi i conduttori in corrispondenza delle superfici $dS_A$ e $dS_B$ e si chiuda all'interno di
+			essi con le superfici $S_A$ e $S_B$. Il flusso del campo elettrico attraverso la superficie $S$ e' nullo
+			siccome il campo e' nullo in corrispondenza delle superfici $S_A$ e $S_B$ ed e' parallelo alla superficie
+			considerata nella regione spaziale compresa tra i conduttori. Pertanto dalla legge di Gauss segue che deve
+			risultare nulla la somma delle cariche $dq_A$ e $dq_B$ interne ad $S$, localizzate sulle superfici $dS_A$ e
+			$dS_B$ dei due conduttori in questo modo:
+			\[ dq_A = -dq_B \]
+			Si conclude affermando che le cariche su due elementi superficiali corrispondenti sono
+			uguali in modulo ma di segno opposto. 
+			Questo risultato prende il nome di \textbf{teorema degli elementi superficiali corrispondenti}
+		\subsection{Energia immagazzinata in un condensatore}
+			In generale, il lavoro e' espresso come prodotto della carica per la differenza di potenziale
+			: $W = Q \cdot \triangle V$. In un condensatore le armature continueranno a caricarsi distribuendo la carica $Q$
+			uniformemente su tutta la loro superficie fino a quando la differenza di potenziale $\triangle V$ tra le armature 
+			non avrà raggiunto la differenza di potenziale della pila. E' possibile pero' suddividere il processo generale in tanti
+			piccoli intervalli. Si può dimostrare che il lavoro complessivamente svolto durante il processo e' dato 
+			dalla seguente formula:
+			\[ W_c = \frac{1}{2}QV = \frac{1}{2}CV^2 = \frac{1}{2} \frac{Q^2}{C} \]
+		\subsection{Energia del campo elettrico}
+			Per l'energia elettrica si definisce densita volumica di energia il rapporto tra l'energia immagazzinata nel
+			 condensatore e il suo volume interno:
+			\[ W_{\overrightarrow{E}} = \frac{W_C}{S \cdot d}  = \frac{1}{2}\frac{Q^2}{C} \cdot \frac{1}{S \cdot d} 
+			= \frac{1}{2}Q^2 \cdot \frac{d}{\epsilon \cdot S} \cdot \frac{1}{S \cdot d} = \frac{1}{2}Q^2 \cdot 
+			\frac{1}{\epsilon \cdot S^2}\] 
+			dove $S$ indica l'area delle armature, mentre $d$ la distanza che le separa. Nella formula possiamo isolare 
+			il quadrato del rapporto $\frac{Q}{S}$ che rappresenta la densità superficiale di carica :
+			\[ W_{\overrightarrow{E}} = \frac{1}{2\epsilon} \cdot \frac{Q^2}{S^2} = \frac{\sigma^2}{2\epsilon} \]
+			Ora, moltiplicando il numeratore e il moltiplicatore per $\epsilon$ potremmo ottenere il rapporto 
+			$\frac{\sigma}{\epsilon}$, che rappresenta appunto $E$
+			\[ W_{\overrightarrow{E}} = \epsilon \cdot \frac{\sigma^2}{2\epsilon^2} = 
+			\frac{\epsilon}{2} \cdot \frac{\sigma^2}{\epsilon^2} = \frac{\epsilon}{2} \cdot E^2 \]
+		\subsection{Moto di una carica in un campo elettrico uniforme}
+			In un campo elettrico $\overrightarrow{E}$ uniforme una carica $q$ risente di una forza
+			$\overrightarrow{F} =q\overrightarrow{E}$ costante.
+			\subsubsection{Moto della direzione del campo elettrico}
+			Se una particella di carica $a$ e massa $m$ parte da ferma, oppure ha una velocità iniziale parallela alle linee del
+			campo elettrico, il suo moto e' analogo a quello di un corpo soggetto alla forza peso, perché su di essa agisce una
+			accelerazione costante che, per la seconda legge della dinamica, vale:
+				\[ a = \frac{F}{m} = \frac{qE}{m} \]
+			\subsubsection{Velocità finale con partenza da fermo}
+			Una particella di carica $q$ e massa $m$ si trova in un campo elettrico uniforme con velocità iniziale nulla. 
+			Essa si sposta dal punto iniziale $A$ a un punto finale $B$ posto sulla stessa linea di campo su cui si trova $A$.
+			Se la particella si muove nel vuoto, su di essa non agiscono attriti. Per il teorema dell'energia cinetica abbiamo che
+			\[ K_f = K_i + W_{A \to B} \] dove $K_i$ e' l'energia cinetica finale, $K_i$ e' quella iniziale e $W$ e' 
+			il lavoro fatto dalla forza che agisce sulla particella. Visto che abbiamo $K_i = 0J$ (la particella parte da ferma) 
+			e $K_f = \frac{1}{2} mv^2$, il teorema dell'energia cinetica diventa 
+			\[ \frac{1}{2}mv^2 = W_{A \to B} \]
+			Dalla definizione di differenza di potenziale si ottiene che $W_{A \to B} = q(V_A - V_B)$, per cui
+			\[ \frac{1}{2} mv^2 = q(V_A - V_B) \]
+			Da questa equazione finalmente otteniamo l'equazione finale, ovvero
+			\[ v = \sqrt{\frac{2q (V_A - V_B)}{m}} \]
+			\subsubsection{Moto parabolico}
+			Consideriamo una carica $q$ di massa $m$  che entra tra due armature caricate di segni opposti, con 
+			il vettore velocità $\overrightarrow{v_0}$ parallelo alle armature stesse.
+			Una volta che si trova tra le armature, sulla carica agisce una forza $\overrightarrow{F} = q\overrightarrow{E}$,
+			perpendicolare a $\overrightarrow{v_0}$. Per il secondo principio della dinamica, su di essa e' impressa una
+			accelerazione costante $\overrightarrow{a} = \frac{q}{m}\overrightarrow{E}$, anch'essa perpendicolare a 
+			$\overrightarrow{v_0}$. Cio' significa che la particella e' soggetto a due moti simultanei:
+			\begin{itemize}
+				\item di moto uniforme nella direzione e nel verso di $\overrightarrow{v_0}$
+				\item di moto uniformemente accelerato nella direzione e nel verso di $\overrightarrow{a}$.
+			\end{itemize}
+			Se scegliamo un sistema cartesiano per rappresentare le formule, avremo che 
+			\[ \begin{cases} x = v_0 t \\ y = \frac{1}{2} \frac{qE}{m}t^2 \end{cases}\]
+			dove per $x$ abbiamo il moto uniforme orizzontale, 
+			per $y$ il moto uniformemente accelerato verticale.
+			
+	\newpage
+	\section{Correnti Elettriche}
+		\subsection{Corrente elettrica}
+			\paragraph*{Descrizione}			
+			La corrente elettrica indica lo spostamento complessivo delle cariche elettriche, ovvero un qualsiasi moto ordinato
+			definito operativamente come la quantità di carica elettrica che attraversa una determinata superficie nell'unità 
+			di tempo.
+			\paragraph*{Definizione}
+			Si consideri un conduttore di sezione $S$ attraverso il quale vi sia un moto ordinato di cariche. Si definisce
+			corrente elettrica la quantità di carica elettrica $\triangle Q$ che nell'intervallo di tempo $\triangle t$ attraversa 
+			la superficie $S$: 
+			\[ I = \frac{\triangle Q}{\vartriangle t} \]
+			Essa e' una quantità scalare poiché non possiede una direzione. \\ La potenza $P$ sviluppata dal campo elettrico e'
+			\[ P = \frac{dL}{dt} = I \triangle V \]
+		\subsection{Forza Elettromotrice}
+			La forza elettromotrice, comunemente abbreviata in \textbf{f.e.m.} e' il rapporto tra il lavoro compiuto da un
+			generatore elettrico per muovere le cariche dal polo a basso potenziale al polo a potenziale più alto 
+			e l'unita di carica spostata.
+			\subsubsection{F.e.m. di un generatore}
+				Il lavoro $L$ necessario al trasporto delle cariche verso i rispettivi poli e' direttamente proporzionale
+				alla quantità di carica $q$; la forza elettromotrice $E$ e' definita come quantità di lavoro compiuto per unità
+				di carica, secondo la formula:
+				\[ E = \frac{dL}{dq} \hspace{0.5cm} [V] \]
+				In un circuito chiuso, la differenza di potenziale $\triangle V$ misurata ai poli di un generatore reale risulta 
+				sempre leggermente inferiore alla forza elettromotrice del generatore per effetto della resistenza interna
+				$r_i$ dello stesso:
+				\[ \triangle V = E - i r_i \]
+		\subsection{Modello classico della conduzione elettrica}
+			L'Intensità di corrente elettrica può essere espressa in termini di quantità microscopiche quali la velocità
+			di deriva $v_D$ degli elettroni liberi all'interno del metallo (ovvero il valore medio della velocità degli
+			elettroni lungo la direzione del campo), il numero di elettroni liberi $n_e$ per unità di volume del metallo e 
+			la carica elettrica $e$ dell'elettrone. Esprimendo $I$ in funzione di tali quantità si ha che:
+			\[ I = n_e \cdot e \cdot A \cdot v_D \] che confrontata con $I = \frac{1}{\rho} EA $ si ottiene
+			\[ \rho = \frac{E}{n_e e v_D} \] con $\rho$ la densità volumetrica di carica, ovvero $\rho = \frac{Q}{V}$.\\
+			Poiché $\rho$ e' indipendente dal campo elettrico, la velocità di deriva degli elettroni $v_D$ risulta costante e
+			direttamente proporzionale all'intensità $E$ del campo elettrico. \\
+			Consideriamo dunque un elettrone scelto a caso e indichiamo con $\tau$ il tempo medio trascorso dall'ultima 
+			collisione dell'elettrone con il reticolo. Poiché l'elettrone e' soggetto ad una accelerazione 
+			$a = e \frac{E}{m_e}$, con $m_e$ la massa dell'elettrone, la velocità di deriva può essere espressa come : 
+			\[ v_D = \frac{e E}{m_e} \tau  = - \frac{e}{m_e}\tau \overrightarrow{E} \]
+			Inoltre, possiamo affermare che (tramite la sostituzione) 
+			\[ \rho = \frac{m_e}{n_e e^2 \tau} \]
+			Se $v_m$ indica la velocità media degli elettroni, la distanza media percorsa da un elettrone tra due 
+			urti consecutivi e' \[ \Lambda = v_m \tau \]
+			che sostituita nella equazione precedente permette di esprimere la resistiva del metallo in funzione 
+			di $\Lambda$ e $v_m$, cioè:
+			\[ \rho = \frac{m_e v_m}{n_e e^2 \Lambda} \]
+			con $\Lambda$ il cammino libero medio. In accordo alle leggi di Ohm la resistività del metallo e'
+			indipendente dal campo elettrico 
+		\subsection{Equazione di continuità per la carica}
+			\paragraph*{Descrizione}
+			La legge di conservazione della carica elettrica e' l'equazione di continuità per la carica elettrica. 
+			La legge afferma che il flusso della densità di corrente elettrica attraverso una qualunque superficie 
+			chiusa e' pari alla variazione della carica elettrica situata nel volume racchiuso dalla superficie.
+			\paragraph*{Definizione}
+			La legge di conservazione per la carica elettrica in forma differenziale e' l'equazione di continuità:
+			\[ \frac{\partial p}{\partial t} + \nabla \cdot J = 0 \] dove $J = \rho v$ e' la densità di corrente elettrica, 
+			con $\rho$ la densità di carica elettrica e $v$ la velocità di deriva. Dopo aver integrato in un volume ed essersi 
+			serviti del teorema della divergenza si ottiene la forma integrale:
+			\[ \frac{d}{dt} \int_{v} \rho d r^3 + \oint_{\partial v} J \cdot dS = 0 \] che può essere scritta come
+			\[ \frac{dQ}{dt} + I = 0 \] dove $Q$ e' la carica elettrica contenuta nel volume di integrazione e $I$ e' 
+			la corrente elettrica netta uscente dalla superficie che lo delimita. 
+		\subsection{Leggi di Ohm}
+			\subsubsection{Prima Legge di Ohm}
+				In un filo conduttore l'intensità di corrente $I$ e' direttamente proporzionale al voltaggio $V$ ed 
+				inversamente proporzionale alla resistenza $R$. La formula della prima legge di Ohm e' la seguente: 
+				\[ I = \frac{V}{R} \hspace{1.0cm} V = I \cdot R \hspace{1.0cm} R = \frac{V}{I} \]
+			\subsubsection{Seconda Legge di Ohm}
+				La resistenza di un filo conduttore e' direttamente proporzionale alla sua lunghezza $l$ ed 
+				inversamente proporzionale alla sua sezione $s$. La resistenza dipende inoltre dalla natura del 
+				materiale: ogni materiale ha la sua \textbf{resistenza specifica} che si indica con la lettera $\rho$
+				\[ R = \rho \frac{l}{s} \]
+		\subsection{Effetto Joule}
+			L'effetto Joule e' il fenomeno per cui il passaggio di corrente elettrica, facendo resistenza con il conduttore, 
+			produce calore. L'effetto Joule e' il principio di funzionamento della lampadina a incandescenza; difatti il 
+			calore dovuto a questo fenomeno provoca l'incandescenza del filamento di tungsteno
+		\subsection{Resistore}
+			Il resistore, anche chiamato resistenza, e' un tipo di componente elettrico destinato a opporre una 
+			specifica resistenza elettrica al passaggio della corrente elettrica.
+			\subsubsection{Resistore ideale}
+				Nella teoria dei circuiti il resistore e' un componente ideale che risponde, se lineare, alla legge di Ohm. 
+				La sua equazione caratteristica si desume dalla legge di Ohm, ovvero 
+				\[ V = R \cdot I \]
+				Oppure 
+				\[I = G \cdot V \] dove $G$ corrisponde alla conduttanza. Queste due formule si scelgono a seconda che 
+				si consideri come parametro la resistenza o la conduttanza.  La potenza assorbita dal resistore e' data da:
+				\[ P = V \cdot I = R \cdot I^2 = \frac{V^2}{R} = G \cdot V^2 \]
+			\subsubsection{Resistore reale}
+				I resistori reali sono caratterizzati dal valore della loro resistenza elettrica, espressa in ohm ($\omega$), 
+				nonché dalla massima potenza (ovvero energia per unità di tempo) che possono dissipare, senza distruggersi, 
+				espressa in watt.
+		\subsection{Leggi di Kirchoff}
+			\subsubsection{Prima legge di Kirchoff(ai nodi)}
+				La somma delle correnti entranti in un nodo e' uguale alla somma delle correnti uscenti, ovvero la somma 
+				algebrica delle correnti che interessano un nodo e' uguale a zero, tale che :
+				\[ {\sum}_i I_i = 0 \]
+			\subsubsection{Seconda legge di Kirchoff (alle maglie)}
+				La somma algebrica delle forze elettromotrici (f.e.m. : i generatori) e delle cadute di tensione
+				(le differenze di potenziale ai capi di ogni singola resistenza) che si incontrano in una maglia e' uguale
+				a zero, tale che 
+				\[ {\sum}_i E_i + {\sum}_i V_i = 0 \]
+				Inoltre
+				\[ I = \frac{V_{AB} + E}{R} \]
+		\subsection{Circuito elementare}
+			Il circuito elettrico elementare e' costituito da un generatore da un utilizzatore, dai conduttori in collegamento e da 
+			un interruttore. Il generatore ha la funzione di trasformare energia non elettrica in energia elettrica, 
+			l'utilizzatore di trasformare energia elettrica in altre forme di energia.
+			\subsubsection{Il generatore elettrico}
+				Analizzando un generatore di corrente continua possiamo dire che esso e' caratterizzato da una forza 
+				elettromotrice (f.e.m.) e da una resistenza interna. La differenza di potenziale ai suoi morsetti differisce dalla
+				forza elettromotrice per la caduta di tensione che si manifesta nella resistenza interna per effetto della 
+				corrente erogata. Si può affermare che la differenza di potenziale (d.d.p), solitamente indicata con $U$,
+				e' presente anche se il generatore non e' collegato a nessun utilizzatore. La forza elettromotrice si indica con
+				la lettera $E$ e rappresenta una caratteristica propria di ogni generatore. Parte di essa viene persa internamente 
+				al generatore stesso poiché essendo realizzato con materiali non perfettamente conduttori, presenta una sua 
+				resistenza interna $r$.  
+		\subsection{Carica di un Condensatore}
+			Un condensatore e' formato da due lastre metalliche parallele (dette armature), poste ad una distanza $d$ l'una 
+			dall'altra. Inizialmente le armature sono messe a terra, ossia possiedono carica nulla, e sono neutre. \\
+			Per caricare un condensatore si comincia da una sola armatura, che viene collegata ad un generatore di corrente. 
+			Il generatore di tensione sottopone l'armatura ad una certa differenza di potenziale $\triangle V$, cosicché 
+			la carica finale registrata sulla piastra sarà data da \[ Q = C \cdot \triangle V \]
+			Tuttavia la carica $Q$ non viene raggiunta immediatamente, ma solo dopo un certo intervallo di tempo; mentre
+			inizialmente si ha una intensità di corrente particolarmente elevata, con l'aumentare della carica sull'armatura,
+			aumenta anche la forza di repulsione tra le cariche dello stesso segno, e di conseguenza aumenta il lavoro che deve 
+			compiere il generatore contro le forze elettriche repulsive. Il flusso delle cariche elettriche sull'armatura
+			diventa sempre più lento, fino ad esaurirsi completamente al raggiungimento del valore massimo, ossia della 
+			carica $Q$. E' possibile esprimere la carica istantanea presente sull'armatura del condensatore, in funzione 
+			del tempo, tramite la seguente formula: \[q(t) = Q(1 - e^{- \frac{t}{RC}}) \] dove Q indica la carica massima
+			raggiunta, $R$ la resistenza elettrica del circuito e $C$ la capacità del condensatore. E' possibile determinare anche
+			l'intensità di corrente istante per istante, anch'essa avente andamento esponenziale ed e' data dalla formula:
+			\[ i = \frac{f_{em}}{R} \cdot e^{-\frac{t}{RC}} \] con $f_{em}$ la forza elettromotrice.
+		\subsection{Scarica di un Condensatore}
+			Anche nel caso del processo di scarica del condensatore, la carica $Q$ raggiunta \textbf{non} viene eliminata
+			tutta istantaneamente. La legge che descrive la quantità di carica presente sull'armatura in funzione del tempo e' 
+			data dalla formula:
+			\[ q(t) = Q \cdot e^{-\frac{t}{RC}} \]
+			L'Intensità di corrente durante questo processo ha la stessa espressione di quella precedente: infatti, anche in 
+			questo caso, inizialmente si ha una corrente piuttosto intensa, che pero diminuisce di intensità man 
+			mano che le cariche elettriche sulle armature diminuiscono:
+			\[ i = \frac{f_{em}}{R} \cdot e^{-\frac{t}{RC}} \]
+	
+	\newpage
+	\section{Magnetostatica nel Vuoto}
+		\subsection{Campo Magnetico}
+			Il campo magnetico e' un campo vettoriale solenoidale generato nello spazio dal moto di una carica elettrica o da un
+			campo elettrico variabile nel tempo. Insieme al campo elettrico esso costituisce il campo elettromagnetico, 
+			responsabile dell'interazione elettromagnetica. Solitamente viene indicato con $B$.
+		\subsection{Forza di Lorentz}
+			Sia data una carica elettrica puntiforme $q$ in moto con velocità istantanea $v$ in una regione caratterizzata
+			dalla presenza di un campo elettrico $E$ e un campo magnetico $B$. La forza di Lorentz e' la forza $F$ esercitata
+			dal campo elettromagnetico sulla carica, ed e' proporzionale a $q$ e al prodotto vettoriale tra $v$ e $B$ secondo la 
+			relazione:
+			\[ F(r,t,q) = q[(E(r,t) + v \times B(r,t)] \] dove $r$ e' la posizione della carica, 
+			$v = \dot{r}$ la sua velocità e $t$ il tempo. Una carica positiva viene accelerata nella direzione di $E$ e viene 
+			curvata nella direzione perpendicolare al piano formato da $v$ e $B$.
+			Nel caso in cui sia presente \textbf{solo il campo magnetico}, la formula puo' essere applicata al caso di un 
+			circuito filiforme di lunghezza $l$ percorso dalla corrente elettrica $I$ :
+			\[ F = I \int_l dl \times B \] e sapendo che per definizione \[ I dl = J dv \] con $J$ la densità di corrente,
+			si può estendere al caso più generale di un volume $V$ percorso da una corrente descritta dalla densità 
+			di corrente, per il quale si ha 
+			\[ F = I \int_l dl \times B = \int_V J \times B dv \]
+			Dal momento che la forza di Lorentz e' legata al campo magnetico tramite il prodotto vettoriale, la forza e 
+			il campo non hanno la stessa direzione, essendo perpendicolari. Come conseguenza di ciò, 
+			la forza di Lorentz non compie lavoro.
+		\subsection{Seconda legge di Laplace}
+			Consideriamo un filo percorso da una corrente $I$ lungo $l$: se la direzione del filo e' ortogonale alla direzione del
+			campo magnetico sperimentalmente si trova che la forza che agisce su di esso sarà mutuamente perpendicolare sia alla
+			direzione del campo magnetico che alla direzione del filo e proporzionale all'intensità della corrente 
+			ed alla lunghezza del filo. Consideriamo inoltre un generatore di $f.e.m.$ che fa scorrere la corrente nel 
+			circuito. Nel piano normale al filo vi e' un campo magnetico di intensità $\vert B \vert$. Si può definire
+			il campo di induzione magnetica, a partire dalla forza $\overrightarrow{F}$ misurabile come:
+			\[ \vert B \vert = \frac{\vert F \vert}{I \vert dl \vert} \] 
+			Se il filo e' parallelo alle linee del campo su di esso in generale non agisce nessuna forza. L'espressione 
+			matematica della forza di un campo magnetico su un filo percorso da corrente viene detta seconda legge di Laplace:
+			\[ d\overrightarrow{F} = I \overrightarrow{dl} \times \overrightarrow{B} \]
+			\textbf{Nota}: La famosa \textbf{regola della mano destra} puo' essere d'aiuto nel calcolo della forza agente. 
+			Infatti, se la direzione della corrente e' quella dell'indice della mano destra e quella del campo magnetico e' 
+			il medio, la direzione forza e' data dalla direzione del pollice
+		\subsection{Moto di una carica in un campo magnetico}
+			Una carica puntiforme che si muove con velocità $v$ all'interno di un campo magnetico e' sottoposta alla forza
+			di Lorentz. Tale forza, agendo sulla carica, ne modifica la traiettoria, costringendola a seguire un moto preciso.
+			Si può affermare che la forza di Lorentz che agisce su una particella non modifica il modulo della sua velocità, ma
+			soltanto la sua traiettoria: ciò che cambia e' la \textbf{direzione} e il \textbf{verso} della velocità 
+			della particella. Un moto uniforme che riflette queste stesse caratteristiche e' quello circolare, in cui la 
+			forza centripeta, rivolta cioè verso il centro della circonferenza, e perpendicolare in ogni punto alla velocità
+			tangenziale. Conoscendo l'espressione della forza di Lorentz, e quella della forza centripeta, si riesce a determinare
+			ulteriori informazioni sul moto della particella, come il raggio della circonferenza:
+			\[ F_q = q \cdot v \cdot B  \hspace{1.0cm} F_c = m \cdot \frac{v^2}{r} \rightarrow r = \frac{m \cdot v}{q \cdot B} \]
+			dove $m$ indica la massa della particella, $v$ la sua velocità, $q$ la sua carica e $B$ il campo magnetico cui essa
+			e' sottoposta. La velocità della particella, in un moto circolare uniforme, e' descritta come:
+			\[ v = \frac{2\pi r}{T} \]
+			Sostituendo questa formula nell'espressione precedente, possiamo esprimere anche il periodo del moto circolare:
+			\[ r = \frac{m \cdot v}{q \cdot B} = \frac{m}{q \cdot B} \cdot \frac{2\pi r}{T}
+			\rightarrow T = \frac{2\pi m}{q \cdot B} \]
+		\subsection{Effetto Hall}
+			L'effetto Hall e' la formazione di una differenza di potenziale, detto potenziale di Hall, sulle facce opposte 
+			di un conduttore elettrico dovuta a un campo magnetico perpendicolare alla corrente elettrica che scorre in esso.
+			L'elemento di Hall e' formato da una striscia di materiale che puo' condurre elettricità, di solito un metallo
+			conduttore o un semiconduttore. Come forma fisica si usa una striscia perché ha due dimensioni, lo spessore e'
+		    trascurabile rispetto alle altre due. In questo materiale viene fatta scorrere una corrente applicando una batteria 
+		    ai suoi capi. Nei conduttori gli elettroni si muovo dal polo negativo a quello positivo della batteria. Il magnete 
+		    crea un campo magnetico che va dal polo Nord al polo Sud dello stesso magnete. L'elemento di Hall e' immerso in 
+		    questo campo magnetico. Gli elettroni di conduzione si muovo, hanno cioè velocità, e risentono del campo 
+		    magnetico: su di loro agisce la forza di Lorentz:
+		    \[ \overrightarrow{F} = q\overrightarrow{v} \times \overrightarrow{B}\] dove $q$ e' la carica dell'elettrone pari a
+		    circa $-1,6022 \times 10^{-19} C$, $\overrightarrow{v}$ e' la velocità (di deriva) dell'elettrone 
+		    e $\overrightarrow{B}$ e' il campo magnetico. Man mano che gli elettroni si muovo, gli accumuli di carica aumentano.
+		    Dopo un tempo abbastanza lungo, si arriverà' ad una condizione di equilibrio dinamico delle forze 
+		    fra il campo elettrico e la forza di Lorentz, ovvero: \[ qE = qv_dB \] dove $E$ rappresenta il modulo del campo
+		    elettrico tra i due estremi del conduttore. Sia la tensione di Hall 
+		    \[triangle V_H = Ed = v_d Bd = \frac{1}{nq}\frac{iB}{d} \] troviamo $E$ e quindi la velocità' delle cariche elettriche.
+		    Il rapporto \[ R_H = \frac{1}{nq} \] viene detto \textbf{costante di Hall}. Tramite la costante di Hall, si può
+		    determinare il numero di cariche elettriche che attraversano una sezione dell'elemento di Hall, ovvero 
+		    la \textbf{corrente di Hall}:
+		    \[ n = \frac{i}{nv_d A}\] dove $n$ e' il numero di cariche per unita di volume, $i$ e' l'intensità di corrente 
+		    e $A$ e' l'area dell'elemento di Hall.
+		\subsection{Dipolo Magnetico}
+			Un dipolo magnetico e' un magnete ottenuto considerando una spira microscopica percorsa da corrente elettrica. 
+			La grandezza che caratterizza principalmente un dipolo magnetico e' il momento magnetico, 
+			che quantifica la tendenza del dipolo a orientarsi in una data direzione presenza di un campo magnetico esterno.
+		\subsection{Dipolo Magnetico in campo esterno}
+			Il campo magnetico generato da un dipolo e' calcolato considerando una spira percorsa da corrente elettrica. 
+			Nel limite in cui le sue dimensioni diminuiscono mantenendo costante il prodotto tra corrente ed area si ottiene 
+			il modello per il dipolo magnetico. Il potenziale magnetico della spira e' dato dall'espressione
+			\[ A = \frac{\mu_0}{4\pi} \frac{m \times r}{r^3} \]
+			dove $m$ e' il momento di dipolo magnetico e $\mu_0$ e' la permeabilità magnetica del vuoto. 
+			L'intensità del campo magnetico $B$ e' data da 
+			\[B(r) = \nabla \times A = \frac{\mu_0}{4\pi} \bigl( \frac{3r(m \cdot r)}{r^5} - \frac{m}{r^3} \bigr) \]
+			Si ottiene in questo modo il potenziale magnetico scalare: 
+			\[ \psi (r) = \frac{m \cdot r}{4\pi r^3} \]
+			da cui si ha che l'intensità di $H$ e' 
+			\[ H(r) = -\nabla \psi = \frac{1}{4\pi} \bigl( \frac{3r ( m\cdot r) }{r^5} - \frac{m}{r^3} \bigr) = \frac{B}{\mu_0} \]
+			Tale campo e' simmetrico rispetto alle rotazioni intorno all'asse del momento magnetico.
+		\subsection{Campi magnetici generati da correnti}
+			Consideriamo un filo qualunque percorso da corrente $i$ ed individuiamo un elemento $ds$ (tangente al filo ed 
+			orientato secondo la corrente). Possiamo trovare che il contributo di campo magnetico generato da questo elemento
+			e' \[dB = \frac{\mu_0}{4\pi} \frac{i \cdot ds \cdot sin\theta}{r^2} \] con $\theta$ l'angolo tra $ds$ e il vettore
+			$\overrightarrow{r}$ che individua il punto nello spazio nel quale si calcola $dB$. La quantità $\mu_0$ e' 
+			detta permeabilità magnetica nel vuoto ed ha valore 
+			\[ \mu_0 = 4\pi \cdot 10^{-7} \frac{T \cdot m}{A} \] La direzione esatta si ricava dal prodotto vettoriale 
+			$d\overrightarrow{S} \times \overrightarrow{u_r}$, per cui l'espressione precedente la si può scrivere come
+			\[ d\overrightarrow{B} = \frac{\mu_0}{4\pi} \frac{i \cdot d\overrightarrow{s} \times \overrightarrow{u_r}}{r^2} \]
+			nota come \textbf{prima legge elementare di Laplace}. Per un circuito finito si avrà
+			\[ \overrightarrow{B} = \frac{\mu_0 i}{4\pi} \oint {\frac{\overrightarrow{ds} \times \overrightarrow{u_r}}{r^2}} \]
+			che viene detta \textbf{Legge di Ampere-Laplace}.
+		\subsection{Legge di Ampere}
+			Il teorema di Ampere e' una legge fisica che afferma che l'integrale lungo una linea chiusa
+			del campo magnetico e' uguale alla somma delle correnti elettrica a essa concatenate moltiplicata per la costante di
+			permeabilità magnetica del vuoto. \\
+			La legge di Ampere può essere espressa sia in termini del campo magnetico nel vuoto $B$ , sia in termini del campo 
+			magnetico nei materiali $H$. Nel secondo caso gli effetti di polarizzazione magnetica sono compresi nella 
+			definizione di $ H = \frac{B}{\mu_0} - M $. La legge afferma che l'integrale lungo una linea chiusa $\partial S$ del 
+			campo magnetico $B$ e' uguale alla somma algebrica delle correnti elettrice $I_i$, concatenate a $\partial S$ 
+			moltiplicata per la costante di permeabilità magnetica del vuoto $\mu_0$:
+			\[ \oint_{\partial S} B \cdot dr = \mu_0 \sum_i I_i = \mu_0 I \] In termini della corrente $I'$ relativa a $H$ si ha:
+			\[ \oint_{\partial S} H \cdot dr = I' \]
+			Poiché la corrente netta che passa attraverso le superfici $S$ delimitate dalla curva chiusa $\partial S$ e' il
+			flusso di una densità di corrente elettrica $j = pv$, in cui $v$ e' la velocità delle cariche che compongono
+			la corrente e $p$ la loro densità volumica, la legge di Ampere si scrive:
+			\[ \oint_{\partial S} B \cdot dr = \mu_0 \int_S J \cdot dS = \mu_0 I \]
+			\[ \oint_{\partial S} H \cdot dr = \int_S J' \cdot dS = I' \]
+			Utilizzando il teorema del rotore:
+			\[ \oint_{\partial S} H \cdot dr = \int_S \nabla \times H \cdot dS = \int_S J \cdot dS \] eguagliando gli integrandi
+			si ottiene la forma locale della legge di Ampere:
+			\[ \nabla \times H = J \] che costituisce la quarta equazione di Maxwell solo nel caso stazionario.\\
+			\textbf{Nel caso si abbia il caso non stazionario}, la legge di Ampere mostra come un campo elettrico
+			variabile nel tempo sia sorgente di un campo magnetico. Inserendo la prima legge di Maxwell
+			nell'equazione di continuità si ottiene: \[ 0 = \nabla \cdot J + \frac{\partial p}{\partial t} = 
+			\nabla \cdot \bigl ( J + \epsilon_0 \frac{\partial E}{\partial t}  \bigr ) \] dove il termine 
+			\[ J_s = \epsilon_0 \frac{\partial E}{\partial t} \] e' detto \textbf{densità di corrente di spostamento}, 
+			e si somma alla densità di corrente nel caso non stazionario. Inserendo la densità di corrente 
+			generalizzata si ottiene la quarta equazione di Maxwell nel vuoto:
+			\[ \nabla \times B = \mu_0 ( J + J_s) \]
+			Nel caso in cui non ci si trovi piu nel vuoto, la legge di Ampere-Maxwell assume la forma piu generale:
+			\[ \nabla \times H = J + \frac{\partial D }{\partial t} \]
+		\subsection{Discontinuità del campo B}
+			Si consideri una lamina nel piano $xyz$ percorsa da una corrente superficiale omogenea, tale che 
+			\[ \overrightarrow{J} = J \overrightarrow{e_x} \] Lo spazio e' diviso in 2 regioni, in modo tale da considerare
+			$z > 0$ e $z < 0$. La discontinuità della componente tangenziale del campo magnetico si calcola in questo modo:
+			\[ \vartriangle \overrightarrow{B} = \overrightarrow{B}(z_+) - \overrightarrow{B}(z_-) = \mu_0 J \overrightarrow{e_y}\]
+			Nel caso di una distribuzione superficiale di carica elettrica la discontinuità e' nella componente normale del 
+			campo elettrico.
+		\subsection{Potenziale Vettore}
+			\paragraph*{Descrizione} Il potenziale vettore e' un campo vettoriale il cui rotore e' un dato campo vettoriale. 
+			E' l'analogo del potenziale scalare, che e' un campo scalare il cui gradiente e' un dato campo vettoriale.
+			\paragraph*{Definizione} Dato un campo vettoriale $ \alpha : \Omega_2 \subseteq \mathbb{R}^3 \rightarrow \mathbb{R}^3$,
+			il potenziale vettore di $\alpha$ e' un campo $\beta_2 : \Omega_2 \subseteq \mathbb{R}^3 \rightarrow R^3$ definito
+			formalmente dalla relazione 
+			\[ \alpha = \nabla \times \beta_2 \] ovvero $\alpha$ e' il rotore di $\beta_2$. Poiché la divergenza di un rotore
+			e' nulla, $\alpha$ deve avere divergenza(campo scalare) nulla, ovvero 
+			\[ \nabla \cdot \alpha = 0 \]
+			Esplicando le componenti del rotore di $\beta_2$, si ottiene il seguente sistema di 4 funzioni a tre variabili, con 
+			9 gradi di libertà:
+			\[ \begin{cases} 
+					\frac{\partial \beta_{2z}}{\partial y} - \frac{\partial \beta_{2y}}{\partial z} = \alpha_x \\
+					\frac{\partial \beta_{2x}}{\partial z} - \frac{\partial \beta_{2z}}{\partial x} = \alpha_y \\
+					\frac{\partial \beta_{2y}}{\partial x} - \frac{\partial \beta_{2x}}{\partial y} = \alpha_z 
+			\end{cases} \]
+		\subsection{Campo Solenoidale}
+			Nel calcolo vettoriale un campo vettoriale $V$ continuo in un insieme aperto $A \subset \mathbb{R}^3$ si definisce 
+			solenoidale se il flusso attraversa una qualsiasi superficie chiusa $S \subseteq A$ e' nullo:
+			\[ \int_S V \cdot \widehat{n} d\sigma =0 \]. Si può affermare che il campo vettoriale $V$ e' solenoidale se 
+			il flusso di $V$ attraversa una qualsiasi superficie $S \subseteq A$ dipende solo dal bordo della superficie.
+			Una proprietà del campo vettoriale solenoidale e' quella di avere le linee di campo chiuse. Inoltre, poiche 
+			la divergenza del campo e' nulla, e' possibile definire un potenziale vettore $A$, il cui rotore sia appunto
+			il campo :
+			\[ \nabla \times A = V \]. 
+		\subsection{Flusso Magnetico}
+			\paragraph*{Descrizione} Il flusso magnetico e' il flusso del campo magnetico attraverso una superficie. Essa e' 
+			una grandezza scalare che dipende dall'angolo d'incidenza delle linee di campo, dal valore della permeabilità
+			magnetica e dall'area della superficie stessa. Viene spesso indicato nelle formule con $\Phi_B$.
+			\paragraph*{Definizione}
+			Immaginando di scomporre una superficie generica $S$ in tessere di area infinitesimale $dS$, e' possibile determinare 
+			per ciascuna di queste la componente $B_\bot$ del vettore di campo magnetico $B$ perpendicolare alla superficie 
+			nella posizione della tessera considerata. Risulta dunque \[ B_\bot = B cos \alpha \], dove $\alpha$ indica l'angolo
+			compreso fra $B$ e la normale alla superficie. In generale, questa componente varia per ogni punto della 
+			superficie. Il flusso magnetico $d \Phi_B$ che attraversa questa area e' infinitesimale e' : \[ d \Phi_B = B \cdot dS \]
+			Il flusso magnetico complessivo attraverso l'intera superficie e' l'integrale dei contributi delel componenti
+			infinitesimali $d\Phi_B$ di tutti i punti della superficie:
+			\[ \Phi_B = \int_S d\Phi_B = \oint_{\partial S} A \cdot d\ell \] con $A$ il potenziale vettore e $\partial S$
+			il contorno di $S$. Per un campo magnetico omogeneo, l'integrale si semplifica e si ottiene il prodotto scalare tra 
+			$B$ e $S$:
+			\[ \Phi_B = B \cdot S = B_\bot S = BS cos \alpha \]
+			essendo $\alpha$ l'angolo compreso fra $B$ e $S$    
+	\newpage
+	\section{Campi Variabili Nel Tempo}
+		\subsection{Induzione Elettromagnetica}
+			L'induzione elettromagnetica e' il fenomeno fisico che lega l'elettricità e il magnetismo tra loro, 
+			visto che una corrente elettrica genera un campo magnetico e una variazione del campo magnetico 
+			genera una corrente elettrica in un conduttore. 
+		\subsection{Teorema del Flusso}
+			\paragraph*{Definizione}
+				Sia $F : \mathbb{R}^3 \smallsetminus \lbrace 0 \rbrace \rightarrow \mathbb{R}^3$ un campo vettoriale definito come
+				\[F = F_1 \frac{r}{r^3} \]. Data una superficie chiusa $\partial V$ che contenga l'origine e tale che ogni
+				 semiretta uscente dall'origine intersechi la superficie una e una sola volta, il teorema del flusso afferma che:
+				 \[ \Phi_{\partial V} (F) = 4 \pi F_1 \] dove $\Phi_{\partial V} (F)$ e' il flusso di $F$ sotto l'angolo
+				 solido giro $4\pi$. La relazione differenziale equivale a :
+				 \[ \nabla \cdot F = \sigma (r) \]
+			\paragraph*{Applicazione nel campo elettrico}
+				Il campo elettrico nel punto $r$ generato da una carica totale $Q_V$ posta nel punto $r_0$ vale
+				\[ D = \frac{Q_V}{4\pi}\frac{r - r_0}{\vert r - r_0 \vert^3} \]
+				Si ottiene che il flusso attraversa il bordo $\partial V$ di un volume $V$ e' dato da:
+				\[ \Phi_{\partial V}(D) = Q_V \] mentre se la superficie $\partial V$ non contiene $r_0$ il flusso e' nullo. Nel
+				caso di più cariche puntiformi interne alla superficie :
+				\[ \Phi_{\partial V}(D) = \sum_k q_k = \int_V p dv \]
+				Grazie al teorema della divergenza, si ottiene che \[ \nabla \cdot D = p\] con $p$ la densità delle cariche libere.
+				Il teorema assume quindi le seguenti formulazioni globale e locale:
+				\[ \Phi_{\partial V}(E) = \frac{Q_V}{\epsilon}  \hspace{1.0cm} \nabla \cdot E = \frac{p}{\epsilon} \] 
+				con $\epsilon = \epsilon_0 \cdot \epsilon_r$.
+		\subsection{Legge di Faraday}
+			La legge di Faraday descrive il manifestarsi di due fenomeni distinti: la forza elettromotrice dovuto alla 
+			forza di Lorentz che si manifesta a causa del moto di una spira in un campo magnetico, 
+			e la forza elettromotrice causata dal campo elettrico generato dalla variazione di flusso del campo magnetico.
+			\subsubsection{Forma Globale}
+				La legge di Faraday afferma che la forza elettromotrice $\vartriangle V$ indotta da un campo magnetico $B$
+				in una linea chiusa $\partial \sum$ e' pari all'opposto della variazione nell'unita' di tempo del flusso
+				magnetico $\Phi_{\sum} (B)$ del campo attraverso la superficie $\sum (t)$ che ha quella linea come frontiera:
+				\[ \triangle V = - \frac{\partial \Phi_{\sum} (B)}{\partial t} \] dove il flusso magnetico 
+				e' dato dall'integrale
+				di superficie :
+				\[ \Phi_{\sum} = \int_{\sum (t)} B(r,t) \cdot dA \] con $dA$ elemento dell'area $\sum$ attraverso la quale viene 
+				calcolato il flusso. La forza elettromotrice e' definita mediante il lavoro svolto dal campo elettrico per unita'
+				di carica $q$ del circuito:
+				\[ \triangle V = \frac{1}{q} \oint_{\partial \sum} F \cdot d\ell = \oint_{\partial \sum} (E + v \times B) \cdot 
+				d \ell \] dove $\partial \sum$ e' il bordo di $\sum$ e $F = q(E + v \times B)$ e' la forza di Lorentz. In caso di
+				circuito stazionario, l'integrale assume la forma :
+				\[ \oint_{\partial \sum } E \cdot d\ell = -\frac{\partial \Phi_{\sum} (B)}{\partial t} \]
+			\subsubsection{Forma Locale}
+				La forma locale (o differenziale) della legge di Faraday e' legata alla forma globale dal teorema del rotore:
+				\[ \oint_{\partial S} E \cdot dr = \int_S \nabla \times E \cdot ds \]
+				Per la definizione di flusso magnetico, e poiché il dominio di integrazione e' supposto costante nel tempo, si ha:
+				\[ -\frac{\partial \Phi_{S} (B)}{\partial t} = -\frac{\partial}{\partial t} \int_S B \cdot ds = \int_S -
+				\frac{\partial B}{\partial t} \cdot ds \]. Uguagliando gli integrandi segue la forma locale della legge di Faraday,
+				che rappresenta la terza equazione di Maxwell:
+				\[ \nabla \times E = -\frac{\partial B}{\partial t} \]
+		\subsection{Legge di Lenz}
+			La legge di Lenz e' una conseguenza del terzo principio della dinamica e della legge di conservazione dell'energia che 
+			determina la direzione della forza elettromotrice risultante dall'induzione elettromagnetica in un circuito elettrico.
+			La legge stabilisce che la variazione temporale del flusso del campo magnetico attraverso l'area abbracciata 
+			da un circuito genera nel circuito una forza elettromotrice che contrasta la variazione. La legge fornisce una
+			caratterizzazione qualitativa della direzione della corrente indotta nel circuito, e si esprime attraverso 
+			il segno meno della legge di Faraday:
+			\[ \epsilon = -\frac{\partial \Phi (B)}{\partial t} \] dove $\Phi$ e' il flusso del campo magnetico concatenato ed 
+			$\epsilon$ e' la forza elettromotrice.
+		\subsection{Bilancio Energetico}
+			Il bilancio energetico complessivo di un dispositivo capace di trasformare energia elettrica in energia meccanica e/o
+			viceversa deve tenere conto, oltre che dell'energia elettrica, dell'energia associata al campo elettromagnetico e
+			dell'energia meccanica, anche delle perdite di energia. Il bilancio energetico nell'unita di tempo si scrive come 
+			segue: \begin{center} (Energia Elettrica) = (Perdite Elettriche) + (Energia EM) + (Energia Meccanica) \end{center}
+			L'energia meccanica prodotta non rappresenta tuttavia l'energia meccanica realmente disponibile.
+			In termini di potenza, il bilancio energetico può essere riscritto come :
+			\[ P_e = P_d + \frac{d}{dt} (E_{EM} + E_K) + P_m \] dove $P_e$ e' la potenza elettrica fornita al sistema dai 
+			generatori elettrici, $P_d$ la potenza dissipata, $E_{EM}$ l'energia elettromagnetica accumulata nel dispositivo,
+			$E_K$ l'energia meccanica accumulata nel sistema e $P_m$ la potenza meccanica fornita dal dispositivo.
+			Durante una trasformazione infinitesima l'equazione precedente può essere rielaborata introducendo
+			le seguenti quantità:
+			\begin{enumerate}
+				\item $dL_e = P_e = \sum_m vi \cdot dt$ , ovvero il lavoro fornito dai generatori elettrici al sistema attraverso
+					  gli $m$ morsetti che entrano in $S$. La sommatoria e' estesa a tutti i morsetti
+				\item $dL_m = \sum_a \overline{F} \cdot \overline{dS} = P_m \cdot dt$ e' l'energia fornita dal sistema 
+					  sotto forma di lavoro per vincere le forze meccaniche esterne. $\overline{F}$ e' la generica forza trasmessa
+					  dal sistema attraverso il confine e $\overline{dS}$ lo spostamento del suo punto di applicazione.
+				\item $dQ = dE_d = P_d \cdot dt$ e' il calore ceduto dal sistema all'esterno.
+				\item $dE_c = \frac{d}{dt} (E_{EM} + E_K ) dt = d(E_{EM} + dE_K)$ e' l'incremento di energia elettromagnetica 
+					  e meccanica del sistema. 
+			\end{enumerate}
+			Il bilancio energetico esteso al sistema interno ad $S$ e' dunque:
+			\[ dL_e = dE_d + dE_c + dL_m = dQ _ dE_c + dL_m \]
+		\subsection{Mutua Induzione}
+			La mutua induttanza ( o mutua induzione) e' l'induttanza fra due circuiti elettricamente separati, quando il 
+			campo magnetico generato da uno esercita una forza elettromotrice sull'altro, e viceversa. La forza elettromotrice
+			indotta nel caso di mutua induttanza si scrive:
+			\[ f = - \frac{d \Phi_B}{dt} = - M \frac{di}{dt} \] dove $M$ e' chiamato coefficiente di mutua induttanza ed e'
+			dimensionalmente uguale ad una induttanza (Henry). Nel caso piu' generale, in cui si hanno due circuiti, ognuno
+			dei quali collegato ad un generatore, bisogna tenere conto sia della mutua induttanza che dell'autoinduzione:
+			\[ \begin{cases} \Phi_1 = L_1 i_1 + Mi_2 \\ \Phi_2 = Mi_1 + L_2i_2 \end{cases} \] In generale si ha questo fenomeno
+			nei trasformatori.
+		\subsection{Autoinduzione}
+			Poiché si ha una forza contro-elettromotrice ogni volta che interviene una variazione di flusso in un campo magnetico, 
+			se considerassimo un solenoide nel quale si faccia variare l'intensità della corrente, si produrrà un campo magnetico
+			variabile. Man mano che l'intensità della corrente aumenta, aumenta anche il flusso del campo magnetico dalla 
+			corrente stessa, quindi sul solenoide si produrrà una corrente indotta, il cui effetto e' quello di opporsi all'
+			aumento della corrente inducente. Questo fenomeno prende il nome di \textbf{autoinduzione} e la forza elettromotrice
+			che si genera prende il nome di \textbf{forza elettromotrice indotta}. 
+			In sintesi, quando il flusso di campo magnetico concatenato con un circuito varia per effetto della variazione 
+			dell'intensità della corrente del circuito stesso, la f.e.m. e' detta di autoinduzione ed ha formula 
+			\[ f.e.m. indotta = -\frac{\triangle \Phi}{\triangle t} \]
+		\subsection{Induttanza}
+			Una corrente elettrica $i$ che scorre in un circuito elettrico produce un campo magnetico nello spazio circostante: se 
+			la corrente varia nel tempo, il flusso magnetico $\Phi_B$ del campo concatenato al circuito risulta variabile, 
+			determinando entro il circuito una forza elettromotrice indotta che si oppone alla variazione del flusso. 
+			Il \textbf{coefficiente di autoinduzione} $L$ del circuito e' il rapporto tra il flusso del campo magnetico concatenato
+			e la corrente, che nel caso di una spira e' dato da 
+			\[ L = \frac{\Phi_{\overrightarrow{B}}}{i} \] L'unita' di misura dell'induttanza e' detta Henry, ed essa equivale a 
+			\[ 1H = 1 Wb \cdot A^{-1} \]. In un induttore di 1 Henry una variazione di corrente di 1 ampere al secondo genera una
+			forza elettromotrice di 1 volt che e' pari al flusso di 1 weber al secondo. Analogamente la \textbf{dissuadenza} di una
+			semplice spira sarà pari a 
+			\[ \Lambda = \frac{i}{\Phi_B} \]
+			L'energia immagazzinata in un solenoide può essere espressa per mezzo della sua induttanza caratteristica $L$ e della
+			corrente $i$ che scorre nelle sue spire. La sua relazione e' \[ W = \frac{1}{2} Li^2 \] dove $W$ e' 
+			l'energia immagazzinata.
+		\subsection{Induttore}
+		\subsection{Circuito RL}
+			Un circuito RL e' un circuito elettrico del primo ordine basato su una resistenza e sulla presenza di 
+			un elemento dinamico, ovvero l'\textbf{induttore}
+			\subsubsection{Evoluzione Libera}
+				Si chiama circuito $RL$ in evoluzione il circuito composto da una resistenza e da un induttore percorso da
+				corrente. Evoluzione libera significa che il circuito non ha sorgenti esterne di tensione o di corrente, e questi
+				funziona con corrente alternata. L'equazione del circuito, tramite la legge di Kirchhoff, e':
+				\[ i(t) + i_L(t) = 0 \rightarrow \frac{V(t)}{R} + i_L (t) = 0 \]
+				La tensione segue la: \[ V(t) = L \cdot \frac{di_L (t)}{dt} = -R \cdot i_L (0) \cdot e^{-tR/L} \]
+				Al rapporto $\frac{L}{R} = \tau[s]$ viene dato il nome di costante di tempo del circuito ed e' una quantità 
+				caratteristica costante del circuito, da cui segue che \[ i(\tau) = \frac{1}{e} \]
+			\subsubsection{Generatore di corrente costante}
+				Ipotizzando che il generatore di corrente eroghi una corrente $I_0$ costante nel tempo, possiamo scrivere 
+				l'equazione di Kirchhoff delle correnti:
+				\[ I_0 = i(t) + i_L(t) = \frac{V(t)}{R} + i_L (t) \] dove $V(t)$ e' la tensione. La tensione segue la:
+				\[ V(t) = L \cdot \frac{di_L (t)}{dt} = -R \cdot (i_L (0) - I_0) \cdot e^{-t/ \tau}  \]
+				In particolare, la risposta del circuito $RL$ ad una corrente costante e' composta di due pari: il termine
+				\[ i_L (0) - I_0) e^{-t/\tau} \] e detto \textbf{risposta transitoria} o transiente del circuito, mentre il
+				termine $I_0$ e' la risposta permanente o a regime del circuito.
+			\subsubsection{Generatore di corrente costante a tratti}
+				Prendiamo un segnale a gradino del tipo
+				\[ u(t) = \begin{cases} 0 \hspace{1.0cm} per \hspace{1.0cm} t < 0 \\ 1  \hspace{1.0cm} per \hspace{1.0cm}t > 0 
+				\end{cases} \]
+				Il calcolo della corrente ai capi di $L$ e' data per $t > 0$:
+				\[ i_L (t) = I_0 ( 1 - e^{- \frac{t}{\tau}} \]
+				Ovviamente invece che a $t = 0$ si può scegliere un qualsiasi istante $t_0$ con le modifiche conseguenti:
+				\[ u(t - t_0) = \begin{cases} 0  \hspace{1.0cm} per \hspace{1.0cm} t < t_0 \\ 1  
+				\hspace{1.0cm} per \hspace{1.0cm}t > t_0 \end{cases} \]
+				Il calcolo della corrente ai capi di $L$ e' data per $t > t_0$:
+				\[ i_L(t) = I_0 ) 1 - e^{-\frac{t - t_0}{\tau}} ) \cdot u(t - t_0) \]
+				Si può notare che la corrente ai capi di $L$ per $t < t_0$ e' nulla, per $t > t_0$ cresce 
+				esponenzialmente come se vi fosse un generatore costante:
+				\[ I_0 = u(t > t_0) = 1 \cdot I_0 \]
+			\subsubsection{Risposta del circuito RL all'onda quadra}
+				Applicando un segnale periodico a gradino si ha un'onda quadra:
+				\[ i(t) = I_0[u(t_i) - u(t_j)] \]
+				La risposta del circuito $RL$ e':
+				\[ i+L(t) = I_0 (1- e^{-\frac{t}{\tau}}) \]
+			\subsubsection{Risposta in frequenza del circuito RL}
+				Calcoliamo come si comporta un circuito RL applicando un generatore di onda sinusoidale. In questo caso
+				possiamo applicare la legge di Kirchhoff per il circuito 
+				\[ I_0 sin(w t) = \frac{V(t)}{R} + i_L (t) \]
+				con gli stessi ragionamenti fatti all'inizio possiamo riscrivere l'equazione come:
+				\[ I_0 sin(wt) =  \frac{L}{R}\frac{di_L (t)}{dt} + i_L (t) \]
+				e quindi risolvere l'equazione differenziale a coefficienti costanti con termine noto:
+				\[ \frac{di_L (t)}{dt} + \frac{1}{\tau}i_L (t) = \frac{I_0 sin(wt)}{\tau}\]
+				nel quale $\tau =\frac{L}{R}$ e' ancora la costante di tempo del circuito . La soluzione generale e' data
+				dalla somma della soluzione dell'omogenea associata 
+				\[ i_L(t) = i_L(0) e^{-\frac{t}{\tau}}\] e una soluzione particolare : \[ K sin(wt + \theta \] dove $K$ e' una
+				costante. Dunque, la soluzione generale e':
+				\[ i+L{t} = i_L(0)e^{-\frac{t}{\tau}} + Ksin(wt + \theta) \]
+				Per $t = 0$ la corrente e' nulla, mentre per $t \rightarrow \infty$ essa tende asintoticamente al valore
+				massimo $i = \frac{f_g}{R}$ che e' dato dalla prima legge di Ohm
+			\subsubsection{Chiusura del Circuito}
+				Il circuito comprende un generatore di forza elettromotrice $f_g$, una resistenza $R$ e una induttanza $I$.
+				Alla chiusura del circuito, dalla seconda legge di Kirchhoff ricaviamo l'equazione del circuito:
+				\[ f_g - L\frac{di}{dt} = Ri \rightarrow Li' + Ri = f_g \]
+				La soluzione dell'equazione del circuito che rispetta la condizione iniziale data e':
+				\[ i(t) = \frac{f_g}{R}(1 - e^{-\frac{R}{L}t}) \]
+			\subsubsection{Apertura del circuito}
+				Supponiamo di disinserire il generatore. L'equazione del circuito e' semplicemente \[Li' + Ri = 0\] che ammette
+				soluzione \[I_{om} = Ae^{-\frac{R}{L}t} \] Per determinare il valore della costante indeterminata $A$, si deve
+				imporre la condizione che all'istante in cui l'interruttore viene aperto la corrente abbia praticamente raggiunto
+				il valore  $i = \frac{f_g}{R}$. Si ottiene quindi che nel circuito circola ancora l'extracorrente di apertura:
+				\[ i(t) = \frac{f_g}{R}e^{-\frac{R}{L}t}\] che tende esponenzialmente a zero quando il tempo tende all'infinito.		
+			
+	\newpage
+	\section{Energia Magnetica}
+		\subsection{Definizione}
+			L'energia magnetica e' l'energia associata al campo magnetico. Insieme all'energia potenziale elettrica, essa 
+			costituisce l'energia del campo elettromagnetico. L'energia potenziale di un magnete con momento magnetico $m$ in un
+			campo magnetico $B$ e' definita come il lavoro della forza magnetica (momento magnetico) nel ri-allineare il momento di
+			dipolo magnetico, ed e' pari a :
+			\[E = -m \cdot B \] dove nel caso di una spira di vettore area $A$ percorsa da corrente $I$ si ha $m = IA$. L'energia
+			immagazzinata in un induttore di induttanza $L$ percorso da corrente $I$ e' invece $LI^2 / 2$.
+			Nel caso di materiali in cui la relazione tra $B$ e $H$ sia lineare, l'energia magnetica contenuta in un volume 
+			$\tau$ e' data da :
+			\[ U_m = \frac{1}{2} \int_{\tau} H \cdot B d\tau = \int_{\tau} d\tau \] dove $u_m = \frac{1}{2}H \cdot B$ e'
+			la densità di energia magnetica. 
+		\subsection{Circuito RL}
+			Per ricavare l'espressione della densità di energia del campo magnetico e' possibile considerare il caso di un 
+			circuito RL nel quale sia presente un solenoide infinito ideale di induttanza $L$ e un resistore di resistenza $R$.
+			Per la geometria del solenoide, in cui $S$ e' la sezione e $N$ il numero di spire, si procede in questo modo:
+			\[ L \frac{dI}{dt} = \frac{d\Phi}{dt} = \frac{d}{dt}(NSB) = NS \frac{dB}{dt} \] 
+			L'equazione che governa il circuito e':
+			\[f - L \frac{dI}{dt} =  RI \] Sostituendo in quest'ultima la prima e moltiplicando per $I dt$:
+			\[ fIdt = RI^2 dt + ISN \frac{dB}{dt} dt = RI^2 dt + ISN dB \]
+			Notiamo come l'energia somministrata all'induttanza in un tempo $dt$, che e' interpretata come l'energia 
+			necessaria ad aumentare l'intensità del campo $dB$, e'
+			\[ dE_H = INS dB = S\cdot lnI \cdot dB \] dove $l$ e' la lunghezza del solenoide e $n$ la densità di spire. Dividendo
+			per il volume del solenoide $Sl$:
+			\[ dp_H = \frac{dE_H}{Sl} = nIdB = HdB \] Tale relazione ha validità generale, ma per l'esatto calcolo dell'energia e'
+			necessario conoscere la relazione tra $B$ e $H$, cioè la curva di isteresi. Nel caso di materiali diamagnetici
+			(tipologia di magnetismo molto debole), la loro relazione vale \[ B = \mu H\] dove $\mu$ e' la permeabilità magnetica 
+			del materiale. L'energia e' facilmente calcolabile tramite una espressione analoga a quella del campo elettrico:
+			\[ E_H = \int_V \frac{1}{2}H\cdot B d^3 r = \int_V p_H d^3 r \] dove $p_H = \frac{1}{2} H \cdot B$ e' la
+			\textbf{pressione magnetica}
+		\subsection{Induttore}
+			L'energia magnetica può essere definita attraverso un induttore a partire dal fenomeno dell'autoinduzione: dalla
+			legge di Faraday-Neumann-Lenz deriva che se il flusso del campo magnetico concatenato con il circuito varia nel tempo si
+			produce nel circuito stesso una forza elettromotrice data dalla derivata rispetto al tempo del flusso del campo di 
+			induzione magnetica cambiata di segno. La corrente che attraversa il circuito per via della forza elettromotrice
+			indotta e' data:
+			\[ i = -\frac{1}{R}\frac{\partial \Phi}{\partial t} \]
+			Viceversa tutte le volte che facciamo circolare la corrente che percorre il circuito produciamo una forza elettromotrice 
+			indotta e questo e' il fenomeno dell'autoinduzione. In questo modo si vede che il flusso $\Phi(B)$ e' proporzionale
+			alla corrente secondo la :
+			\[ \Phi(B) = Li \] dove $L$ e' detto\textbf{coefficiente di autoinduzione} e si misura in $[ \Omega s ] = [H]$. 
+			Si conclude che l'energia associata al campo magnetico generato da una corrente elettrica che circola in un 
+			circuito e' data da :
+			\[ E_H = \int^i _0 Li di = \frac{1}{2}Li^2 (t) \]
+			Una forma alternativa dell'energia magnetica e' quella di considerare la sua densità, ovvero la pressione magnetica:
+			\[ p_H = \frac{dE_H}{dr^3} = \int^i _0 H dB \] misurata in $Pa$ (Pascal)
+			
+		
+	\newpage
+	\section{Equazioni di Maxwell e Onde \\ Elettromagnetiche}
+		\subsection{Equazioni di Maxwell nel vuoto}
+			\subsubsection{Legge di Gauss Elettrica}
+				\begin{itemize}
+					\item Forma Locale $ \nabla \cdot E = \frac{p}{\epsilon_0}$
+					\item Forma Globale $ \oint_{\partial v} E \cdot dS = \frac{\int_V p dV}{\epsilon_0}$
+				\end{itemize}
+			\subsubsection{Legge di Gauss Magnetica}
+				\begin{itemize}
+					\item Forma Locale $\nabla \cdot B = 0$
+					\item Forma Globale $\oint_{\partial V} B \cdot dS = 0$
+				\end{itemize}
+			\subsubsection{Legge di Faraday}
+				\begin{itemize}
+					\item Forma Locale $\nabla \times E = - \frac{\partial B}{\partial t}$
+					\item Forma Globale $\nabla_{\partial S} E \cdot dl = -\frac{\partial}{\partial t} \int_S B \cdot dS$
+				\end{itemize}
+			\subsubsection{Legge di Ampere-Maxwell}
+				\begin{itemize}
+					\item Forma Locale $\nabla \times B = \mu_0 J + \mu_0 \epsilon_0 \frac{\partial E}{\partial t}$
+					\item Forma Globale $\oint_{partial S} B\cdot dl = \mu_0 \int_S J\cdot dS + \mu_0 
+										\epsilon_0 \oint_S \frac{\partial E}{\partial t} \cdot dS $
+				\end{itemize}
+				
+		\subsection{Equazioni di Maxwell nei materiali}
+			\subsubsection{Legge di Gauss Elettrica}
+				\begin{itemize}
+					\item Forma Locale $\nabla \cdot D = p_f$
+					\item Forma Globale $\oint_{\partial V} D \cdot dS = \int_V p_f dV$
+				\end{itemize}
+			\subsubsection{Legge di Gauss Magnetica}
+				\begin{itemize}
+					\item Forma Locale $\nabla \cdot B= 0$
+					\item Forma Globale $\oint_{\partial V} B \cdot dS = 0$
+				\end{itemize}
+			\subsubsection{Legge di Faraday}
+				\begin{itemize}
+					\item Forma Locale  $\nabla \times E = -\frac{\partial B}{\partial t}$
+					\item Forma Globale $\oint_{\partial S} E \cdot dl = -\frac{\partial}{\partial t} \int_S B \cdot dS$
+				\end{itemize}
+			\subsubsection{Legge di Ampere-Maxwell}
+				\begin{itemize}
+					\item Forma Locale $\nabla \times H = J_f + \frac{\partial D}{\partial t}$
+					\item Forma Globale $\oint_{\partial S} H \cdot dl = \int_s J_f \cdot dS + \frac{\partial}{\partial t} \oint_S
+										D \cdot dS $
+				\end{itemize}
+		\subsection*{Descrizione degli elementi delle Leggi di Maxwell}
+		$S$ e' una superficie chiusa, $\partial S$ il suo contorno (la curva definita considerando una sezione di $S$, $V$ e' un
+		volume e $\partial V$ la superficie che lo delimita. Gli integrali su $S$ e $\partial V$ definiscono il flusso delle 
+		grandezze integrate, l'integrale di linea su $\partial S$ definisce una circuitazione mentre su $V$ e' un integrale 
+		di volume. Il vettore $E$ e' il campo elettrico nel vuoto, $D = \epsilon_0 E + P$ e' il campo elettrico nei materiali
+		(detto anche induzione elettrica) e tiene conto della polarizzazione elettrica $P$, $B$ e' il campo magnetico percepito in
+		un punto, anche detto induzione magnetica, inoltre $H = B / \mu_0 - M$ e' un campo magnetico introdotto nei materiali, che
+		tiene conto della polarizzazione magnetica $M$, e $p_f$ e' la densità di carica elettrica libera, ovvero la 
+		densità di carica non confinata in un dielettrico. Il prodotto $J_f = p_f v$ e' il vettore densità di corrente elettrica 
+		libera. I tensori $\epsilon, \mu$ sono rispettivamente la permittività elettrica e la permeabilità magnetica.
+		Le relazioni sono:
+		\[ D = \epsilon E = \epsilon_0 \epsilon_r E \hspace{1.0cm} H = \frac{B}{\mu} = \frac{B}{\mu_0 \mu_r} \hspace{1.0cm}
+		\frac{1}{c^2} = \epsilon_0 \mu_0 \]
+		dove $c$ e' la velocità della luce, $\epsilon_r, \mu_r$ sono dette costante dielettrica relativa e permeabilità magnetica
+		relativa, e sono caratteristiche del mezzo.
+		
+		\subsection{Corrente di spostamento}
+			Si consideri il vettore induzione elettrica, definito come:
+			\[ D = \epsilon_0 E + P \] dove $E$ e' il campo elettrico e $P$ la polarizzazione elettrica. 
+			\textbf{La densità di corrente di spostamento} e' definita come la variazione nel tempo del vettore induzione elettrica:
+			\[ J_s = \frac{\partial D}{\partial t} = \epsilon_0 \frac{\partial E}{\partial t} + \frac{\partial P}{\partial t} \]
+			\textbf{La corrente di spostamento} che attraversa una data superficie $S$ e' allora definita nella forma più' generale
+			come il flusso della desnita di corrente di spostamente attraverso tale superficie:
+			\[ i_s = \int_S J_S \cdot dS = \epsilon_0 \int_S \frac{\partial E(t)}{\partial t} \cdot dS \]
+		\subsection{Legge di Ampere-Maxwell}
+			Un campo elettrico variabile nel tempo e' sperimentalmente sorgente di un campo magnetico, rendendo necessaria una
+			 estensione della legge di Ampere. Inserendo la prima legge di Maxwell nell'equazione di continuità si ottiene
+			\[ \nabla \cdot J + \frac{\partial p}{\partial t} = \nabla \cdot ( j + \epsilon \frac{\partial E}{\partial t} \]
+			Inserendo la densità di corrente generalizzata nella legge di Ampere nel vuoto:
+			\[ \nabla \times B = \mu_0 (J + \epsilon_0 \frac{\partial E}{\partial t} \]
+			si ottiene la legge di Ampere-Maxwell nel vuoto.
+
+		\subsection{Definizione di Onda Elettromagnetica}
+			Si supponga di trovarsi in un dielettrico omogeneo ed isotropo, elettricamente neuotr e perfetto, privi di cariche 
+			libere localizzate, sorgenti del campo elettromagnetico. Le equazione che descrivono la propagaione del campo
+			sono le equazioni delle onde per il campo elettrico e magnetico, due equazioni differenziali alle derivate 
+			parziali vettoriali:
+			\[ \nabla^2 E - \epsilon \mu \frac{\partial^2 E}{\partial t^2} = 0 \hspace{1.5cm} 
+			\nabla^2 B - \epsilon \mu \frac{\partial^2 B}{\partial t^2} = 0 \]
+			La soluzione generale dell'equazione delle onde in una dimensione e' una onda:
+			\[ u(x,t) = F(x - vt) + G(x + vt) \] che si propaga con velocità $v$ costante :
+			\[ v = \frac{1}{\sqrt{\epsilon \mu}} \] Nel vuoto $v$ diventa la velocità della luce.
+			Una rappresentazione compatta della equazione dell'onda e' ottenuta tramite l'uso dell'operatore di d'Alembert, definito
+			come 
+			\[ \square = \frac{\partial^2}{\partial x^2} + \frac{\partial^2}{\partial y^2} + \frac{\partial^2}{\partial z^2}  
+			+ \frac{1}{v^2} \frac{\partial^2}{\partial t^2} = \nabla^2 - \frac{1}{c^2}\frac{\partial^2}{\partial t^2}\]
+			e in questo modo le equazioni delle onde si scrivono:
+			\[ \square E = 0 \hspace{1.5cm} \square B = 0 \]
+		\subsection{Proprietà di un'onda elettromagnetica}
+			Le equazioni di Maxwell forniscono diverse informazioni riguardanti la propagazione delle onde elettromagnetiche. 
+			Si consideri un generico campo:
+			\[ E = E_0 f (\widehat{k} \cdot x - c_0 t)\] dove $E_0$ e' l'ampiezza costante, $f$ e' una funzione differenziabile al
+			secondo ordine, $\widehat{k}$ e' il versore della direzione di propagazione e $x$ la posizione. 
+			Tramite Maxwell possiamo scrivere che 
+			\[ \nabla \cdot E = \widehat{k} \cdot E_0 f' (\widehat{k} \cdot x - c_0 t) = 0 \hspace{1.0cm} E \cdot\widehat{k} = 0\]
+			\[ \nabla \times E = \widehat{k} \times E_0 f' (\widehat{k} \cdot x - c_0 t) = -\frac{\partial B}{\partial t}
+			\hspace{1.0cm} B = \frac{1}{c_0}\widehat{k} \times E\]
+			Dalle equazioni di Maxwell si evince che in una onda elettromagnetica i campi sono ortogonali fra loro e ortogonali 
+			alla direzione di propagazione, che le loro ampiezze sono proporzionali e che la costante di tale proporzionalità e'
+			la velocità di propagazione, che dipende dalle caratteristiche del mezzo in cui si propaga.
+		\subsection{Energia e Vettore di Poynting}
+			Ogni onda elettromagnetica e' in grado di trasferire energia tra due punti dello spazio. Si consideri il caso di una
+			onda piana, e si prenda un volume arbitrario $\tau$ contenente un campo elettromagnetico. Al suo interno la densità
+			di energia elettrica vale :
+			\[ u_e = \frac{1}{2} E \cdot D \] mentre la densità di energia magnetica vale : \[u_m = \frac{1}{2} B \cdot H \].
+			L'energia totale all'interno del volume sarà quindi 
+			\[ U = \int_V u_E dV + \int_V u_m dV = \int_V (\frac{E \cdot D}{2} + \frac{H \cdot B}{2}) dV \]
+			Derivando questa equazione e sfurttando le relazioni tra gli operatori rotore e divergenza si ottiene:
+			\[ \frac{\partial U}{\partial t} = - \int_S (E \times H) dS - \int_V E \cdot J dV \] Il termine $P = E \times H$ e' 
+			\textbf{il vettore di Poynting}, mentre il secondo integrale al secondo membro rappresenta il contributo dell'energia
+			del campo elettrico per la presenza della carica contenuta nel volume $V$.
+
+		
+\end{document}
