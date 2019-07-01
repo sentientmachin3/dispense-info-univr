@@ -15,6 +15,7 @@ Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman
 - Fondamenti dell'informatica (Teoria + Guida pratica)
 - Elaborazione segnali e immagini (In progress)
 - Architettura degli Elaboratori (In progress)
+- Fisica 2
 
 #### MAGISTRALE
 - Linguaggi (Con schema delle regole di inferenza)
