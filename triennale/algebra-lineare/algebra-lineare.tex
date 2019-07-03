@@ -1,0 +1,1943 @@
+\documentclass[a4paper, 10pt]{article}
+%librerie / userpackage
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[colorlinks]{hyperref}
+%settaggi package
+\hypersetup{
+		colorlinks = true,
+		linkcolor = black
+}
+\usepackage{palatino}
+\usepackage[margin=3cm]{geometry}
+%documento
+\begin{document}
+	\clearpage
+	
+	\begin{titlepage}
+	\centering
+	\vspace*{\fill}
+	{\scshape\LARGE Università degli Studi di Verona \par}
+	\vspace{1.5cm}
+	\line(1,0){180} \\
+	{\huge\bfseries Algebra Lineare\par}
+	\line(1,0){180} \\
+	\vspace{0.5cm}
+	{\scshape\Large Riassunto dei principali argomenti\par}
+	\vspace{2cm}
+	{\Large\itshape Matteo Marzio\par}
+	\vspace{1cm}
+	\vspace{5cm}
+	\vspace*{\fill}
+	% Bottom of the page
+	{\large \today\par}
+\end{titlepage}
+	{
+		\color{black}
+		\thispagestyle{empty}
+	}
+	%indice
+	\tableofcontents
+	
+	%Inizio 
+	\newpage
+	\section{Matrice}
+	Una matrice e' una tabella ordinata di elementi. Puo' essere definita come una funzione 
+		\[
+			A = \lbrace 1, ... , m \rbrace \times \lbrace 1 , ..., n \rbrace  \rightarrow \mathbb{K}
+		\]
+	dove $m$ e $n$ sono interi positivi e $\mathbb{K}$ e' un qualunque insieme fissato. 
+	Le righe orizzontali di una matrice sono chiamate righe, mentre quelle verticali colonne. 
+	Una matrice $m \times n$ e' descritta come sopra e si rappresenta come:
+		\[
+		A =
+		\begin{bmatrix}
+			a_{11} & \dots & a_{1n} \\
+			a_{21} & \dots & a_{2n} \\
+			\vdots & \ddots & \vdots \\
+			a_{m1} & \dots & a_{mn}
+		
+		\end{bmatrix}
+		\]
+	Indicando con $[a_{ij}]$ l'elemento posizionato alla riga $i$-esima e nella colonna $j$-esima, 
+	con $1 \leq i \leq m$ e $1 \leq j \leq n$.
+	
+	\subsection{Uguaglianza tra due matrici}
+	Due matrici si dicono uguali se 
+		\begin{itemize}
+			\item Hanno la stessa forma (ovvero stesse colonne e stesse righe)
+			\item In ogni posizione della matrice le matrici hanno lo stesso coefficiente
+		\end{itemize}
+	Ad esempio, le matrici 
+		
+		\begin{align*}
+			A = \begin{bmatrix}
+				1 & 0 \\
+				1 & 0
+			\end{bmatrix}		
+			B = \begin{bmatrix}
+				1 & 1 \\
+				1 & 0
+			\end{bmatrix}
+		\end{align*}
+		
+	\textbf{non} sono uguali, visto che $a_{12}\neq b_{12}$, quindi con coefficienti diversi.
+	
+	\subsection{Somma tra due matrici aventi stessa forma}
+	Siano $A,B$ due matrici di forma $m \times n$, con $A = [a_{ij}]$, $B = [b_{ij}]$ e $1 \leq i \leq m$, 
+	$1 \leq j \leq n$.\\
+	Si definisce $A + B = [c_{ij}]$ di forma $m \times n$ con $c_{ij} = a_{ij} + b_{ij}$ come la somma di
+	matrici. \\
+	Esempio:
+	\begin{align*}
+			A = \begin{bmatrix}
+				1 & 0 \\
+				1 & 0
+			\end{bmatrix}					
+			B = \begin{bmatrix}
+				1 & 1 \\
+				1 & 0
+			\end{bmatrix}
+			\\
+			C = A + B \rightarrow
+			C = \begin{bmatrix}
+				2 & 1 \\
+				2 & 0
+			\end{bmatrix}
+		\end{align*}
+	\subsection{Proprietà associativa della somma}
+	Siano $A,B,C$ matrici di forma $m \times n$.  
+	Sia $(A + B) + C = A + ( B + C)$. Allora, posta la validità della proprietà associativa anche per la 
+	somma tra matrici, 
+	$(a_ij + b_ij) + c_ij = a_ij + (b_ij + c_ij)$   
+	
+	\newpage
+	\subsection{Matrice Nulla}
+	Sia $A$ una matrice di forma $m \times n$.\\
+	$0_{mn}$ e' la matrice nulla di forma $m \times n$, in cui tutti i coefficienti sono nulli (o zero), 
+	ovvero $A + 0_{mn} = A$. \\
+	Inoltre, $A + (-A) = 0_{mn}$
+	
+	%Matrice con scalare
+	\subsection{Moltiplicare una matrice per uno scalare}
+	Una grandezza \textbf{scalare}, abbreviata in $scalare$, e' una grandezza che viene descritta unicamente,
+	dal punto di vista 
+	matematico, associata agli spazi vettoriali costruiti sul corpo attraverso l'operazione di moltiplicazione.
+	\\
+	Sia $A = [a_{ij}]$, con $1 \leq i \leq m$, $1 \leq j \leq n$. Sia $c$ scalare. Allora $cA = [b_{ij}]$ con 
+	$1 \leq i \leq m$, 
+	$1 \leq j \leq n$ tale che $b_{ij} = ca_{ij}$ \\
+	Inoltre:
+	\begin{itemize}
+		\item $(\alpha + \beta) A = \alpha A + \beta A$
+		\item $(\alpha + \beta) a_{ij} = \alpha a_{ij} + \beta a_{ij}$
+		\item $\alpha (A + B) = \alpha A + \alpha B$
+		\item $\alpha (a_{ij} + b_{ij}) = \alpha a_{ij} + b_{ij}$
+		\item $(\alpha \cdot \beta ) A = \alpha (\beta \cdot A)$
+		\item $1 \cdot A = A$
+	\end{itemize}
+	
+	\subsection{Tipologie di Matrici}
+	\begin{itemize}
+		\item Matrice $n \cdot n$ : quadrata 
+			\[ \begin{bmatrix}
+				1 & 0 \\
+				1 & 0
+			\end{bmatrix} 
+			\]
+			\item Matrice $m \cdot 1$ : vettore colonna
+			\[ \begin{bmatrix}
+				1 \\
+				1
+			\end{bmatrix} \]
+			
+		\item Matrice Triangolare Superiore : quadrata con i coefficienti, con indice di riga 
+		maggiore dell'indice di colonna, uguali a zero, ovvero ogniqualvolta $i > j$ 
+			\[ \begin{bmatrix}
+				1 & 1 & 1\\
+				0 & 1 & 1\\
+				0 & 0 & 1
+			\end{bmatrix} \]
+			Se $A,B$ sono triangolari superiori, allora $AB$ e' triangolare superiore
+		\item Matrice Triangolare Inferiore : quadrata con i coefficienti, con indice di colonna 
+		superiore dell'indice di riga, uguali a zero, ovvero ogniqualvolta $i < j$
+			\[ \begin{bmatrix}
+				1 & 0 & 0\\
+				1 & 1 & 0\\
+				1 & 1 & 1
+			\end{bmatrix} \]
+			Se $A,B$ sono triangolari inferiori, allora $AB$ e' triangolare inferiore
+		\item Una matrice quadrata e' diagonale se i coefficienti, con indice di riga diverso dall'indice di
+		colonna, 
+		      equivalgono a zero.
+		\item La somma di matrici triangolari superiori e' uguale a una matrice triangolare superiore, 
+		      analogo per matrici triangolari inferiori.
+	\end{itemize}
+	
+	\subsection{Trasposta di una matrice}
+	Sia $A = [a_ij]$ con $1 \leq i \leq m$, $1 \leq j \leq n$. La trasposta della matrice A e' la matrice
+	ottenuta scambiando le
+	righe con le colonne della matrice originaria e si rappresenta come $A^T = [b_{ij}]$ con $1 \leq i \leq n$,
+	$1 \leq j \leq m$, dove $b_{ij} = a_{ji}$
+		\begin{align*}
+			A = \begin{bmatrix}
+				1 & 2 & 3 \\
+				4 & 5 & 6
+			\end{bmatrix}		
+			A^T = \begin{bmatrix}
+				1 & 4 \\
+				2 & 5 \\
+				3 & 6
+			\end{bmatrix}
+		\end{align*}
+	Inoltre:
+	\begin{itemize}
+		\item $(A^T)^T = A$
+		\item $(A + B)^T = A^T + B^T$
+		\item $(\alpha A)^T = \alpha A^T$
+	\end{itemize}
+	
+	\subsection{Simmetria e AntiSimmetria di una matrice}
+	Una matrice $A$ si dice \textbf{simmetrica} se $A=A^T$ 
+
+		\begin{align*}
+			A = \begin{bmatrix}
+					\color{red}1 & \color{red}3 & \color{red}-1 \\
+					\color{blue}3 & \color{blue}2 & \color{blue} 4 \\
+					 -1 & 4 & 1
+ 			\end{bmatrix}		
+			A^T = \begin{bmatrix}
+				\color{red}{1} & \color{blue}{3} & -1 \\
+				\color{red}{3} & \color{blue}{2} &  4 \\
+				\color{red}{-1} & \color{blue}{4} & 1
+			\end{bmatrix}
+		\end{align*} 
+	Una matrice $A$ si dice \textbf{antisimmetrica} se $A=-A^T$ 
+
+		\begin{align*}
+			A = \begin{bmatrix}
+					\color{red}0 & \color{red}4 & \color{red}-2 \\
+					\color{blue}-4 & \color{blue}0 & \color{blue} 5 \\
+					 2 & -5 & 0
+ 			\end{bmatrix}		
+			A^T = \begin{bmatrix}
+				\color{red}{0} & \color{blue}{-4} & 2 \\
+				\color{red}{4} & \color{blue}{0} & -5 \\
+				\color{red}{-2} & \color{blue}{5} & 0
+			\end{bmatrix}
+		\end{align*}
+	\\
+	\textbf{Teorema}: Ogni matrice quadrata e' somma, in modo unico, di una simmetrica e una antisimmetrica:\\
+	\textbf{Dimostrazione} : Supponiamo $A = B + C$, con $B = B^T, C = -C^T$.
+	\begin{equation*}
+		\begin{split}
+			A &= B + C \\
+			A^T &= (B + C)^T = B^T + C^T = B + (-C) = B - C \\
+			A + A^T &= (B + C) + (B - C) = B + B + C - C = B + B = 2B \\
+			B &= \frac{1}{2} \cdot(2B) = \frac{1}{2} \cdot(A+A^T) \\
+			A - A^T &= (B + C) - (B - C) = B + C - B + C = 2C \\
+			C &= \frac{1}{2}\cdot(A - A^T)
+		\end{split}
+	\end{equation*}
+	Prendiamo $B$: si noti come $\frac{1}{2}(A + A^T)$ sia simmetrica.
+	\begin{equation*}
+		\begin{split}
+			(\frac{1}{2}(A+A^T)^T &= \frac{1}{2}(A+A^T)^T \\
+			&= \frac{1}{2} (A^T + A^{TT}) = \frac{1}{2}(A+A^T)\\
+			&= \frac{1}{2}(A+A^T)
+		\end{split}
+	\end{equation*}
+	Prendiamo $C$: si noti come $\frac{1}{2}(A-A^T)$ sia antisimmetrica.
+	\begin{equation*}
+		\begin{split}
+			(\frac{1}{2}(A-A^T)^T) &= \frac{1}{2}(A^T - A) \\
+			&= \frac{1}{2}((-1)(A-A^T)) \\
+			&= - \frac{1}{2}(A-A^T)
+		\end{split}
+	\end{equation*}
+	\\
+	Concludiamo affermando che: 
+	\begin{equation*}
+		A = \frac{1}{2}(A+A^T) + \frac{1}{2}(A-A^T)
+	\end{equation*}
+	Abbiamo quindi dimostrato il teorema.
+	
+	\subsection{Moltiplicazione tra matrici}
+	Si definisce il prodotto di una matrice $A$  $m \times n$ per una matrice $B$ $n \times p$ come la matrice
+	$AB$  $m \times p$ in cui il coefficiente di posto $(i,j)$ e' il prodotto della i-esima riga di $A$ per la 
+	j-esima colonna di $B$. \\
+	\textbf{Esempio}
+	\begin{align*}
+		A = 
+		\begin{bmatrix}
+			1 & 2 & 3 \\
+			4 & 5 & 6 
+		\end{bmatrix}
+		B = 
+		\begin{bmatrix}
+			3 & -1 & 0 & -1 \\
+			4 & 2 & -2 & 2 \\
+			0 & 3 & -4 & 1
+		\end{bmatrix}
+	\end{align*}
+	Il risultato della moltiplicazione tra la matrice $A$ : $2 \times 3$ e la matrice $B$ : $3 \times 4$ 
+	e' una matrice $AB$ : $2 \times 4$
+	
+	\[ Posto (1,1): 	\begin{bmatrix}	1 & 2 & 3 \end{bmatrix} \begin{bmatrix} 3 \\ 4 \\ 0 \end{bmatrix} 
+			= (1 \cdot 3) + (2 \cdot 4) + (3 \cdot 0) = 11 \]
+	
+	\[ Posto (1,2): 	\begin{bmatrix} 1 & 2 & 3 \end{bmatrix} \begin{bmatrix} -1 \\ 2 \\ 3 \end{bmatrix}
+			= (1 \cdot -1) + (2 \cdot 2) + (3 \cdot 3) = 12  \]
+			
+	\[ Posto (1,3): \begin{bmatrix} 1 & 2 & 3 \end{bmatrix} \begin{bmatrix} 0 \\ -2 \\ -4 	\end{bmatrix}
+			= (1 \cdot 0) + (2 \cdot -2) + (3 \cdot -4) = -16 \]
+	
+	\[ Posto (1,4): 	\begin{bmatrix} 	1 & 2 & 3 \end{bmatrix} \begin{bmatrix} -1 \\ 2 \\ 1 \end{bmatrix}
+			= (1 \cdot -1) + (2 \cdot 2) + (3 \cdot 1) = 6 \]
+	
+	\begin{align*} 
+		Posto (2,1): \begin{bmatrix} 4 & 5 & 6 \end{bmatrix} \begin{bmatrix} 3 \\ 4 \\ 6 \end{bmatrix} = 32 		
+		\hspace{0.5cm}			
+		Posto (2,2): \begin{bmatrix} 4 & 5 & 6 \end{bmatrix} \begin{bmatrix} -1 \\ 2 \\ 3 	\end{bmatrix} = 24 
+	\end{align*}
+	
+	\begin{align*}	
+		Posto (2,3): \begin{bmatrix} 4 & 5 & 6 \end{bmatrix} \begin{bmatrix} 0 \\ -2 \\ -4 \end{bmatrix} = -34 
+		\hspace{0.5cm}
+		Posto (2,4): \begin{bmatrix} 4 & 5 & 6 \end{bmatrix} \begin{bmatrix} -1 \\ 2 \\ 1 	\end{bmatrix}= 12 
+	\end{align*}
+	
+	Il risultato della moltiplicazione sarà:
+	\begin{align*}
+		AB = \begin{bmatrix}
+			11 & 12 & -16 & 6 \\
+			32 & 24 & -34 & 12
+		\end{bmatrix}
+	\end{align*}
+	\textbf{Attenzione!} Non si può sempre affermare che $A \cdot B = B \cdot A$. Per rendere vera questa 
+	uguaglianza si richiede che $m = n$ \\
+	Inoltre:
+	\begin{itemize}
+		\item $A \cdot (B \cdot C) = (A \cdot B) \cdot C$
+		\item $(A + B) \cdot C = A \cdot C + B \cdot C$
+		\item $A \cdot (\alpha B) = \alpha (AB) = (\alpha A) \cdot B$
+	\end{itemize}
+	
+	\subsection{Matrice Identità (o Identica)}
+	La matrice Identità, anche detta matrice identica o matrice unità, e' una matrice quadrata in cui tutti gli
+	 elementi della
+	diagonale principale sono costituiti dal numero 1, mentre i restanti coefficienti sono 0. Viene indicata con $I$ o 
+	con $I_{n}$, dove $n$ e' il numero di righe della matrice.
+		\[ I_1= \begin{bmatrix} 1 \end{bmatrix} \]
+		\[ I_2 = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix} \]
+		\[ I_3 = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} \]
+	La matrice identità $I_{n}$ di forma $n \times n$ si rappresenta in questo modo:
+	\[
+		\begin{bmatrix}
+			1 & 0 & \cdots & 0 \\
+			0 & 1 & \cdots & 0 \\
+			\vdots & \vdots & \ddots & \vdots \\
+			0 & 0 & \cdots & 1
+		\end{bmatrix}
+	\]
+	Per ogni $A$ $m \times n$ : $AI_{n} = A$. Per ogni $B$ $n \times p$ : $I_{n}B = B$. 
+	
+	\subsection{Matrice Inversa}
+	La matrice $L$ si dice inversa \textbf{sinistra} di $A$ ($m \times n$) se $LA = I_n$, con $L$ ($m \times n$)\\
+		\[ L = \begin{bmatrix} -1 & 1 \end{bmatrix} A = \begin{bmatrix} 1 \\ 2 \end{bmatrix} \]
+		\[ LA = 1 = I_{1} \]
+	La matrice $R$ si dice inversa \textbf{destra} di $A$ ($m \times n$) se $AR = I_m$, con $R$ ($m \times n$)\\
+	Se $A$ ha inversa sinistra $L$ e inversa destra $R$, allora $L = R$ \\
+	Se la matrice dei coefficienti di un sistema ha inversa destra, il sistema ha almeno una soluzione \\
+	Se la matrice dei coefficienti di un sistema ha inversa sinistra, il sistema ha al più una soluzione 
+	
+	\subsection{Trasposta di più matrici}
+	Siano $A$ $m \times n$, $B$ $n \times p$ matrici. Sappiamo che $AB$ $m \times p$. 
+	Consideriamo le trasposte $A^T$ $n \times m$, $B^T$ $p \times n$. Allora $B^T A^T = (AB)^T$.\\
+	\textbf{Dimostrazione}\\
+	Consideriamo $B = [b_{ij}]$, $B^T = [b^{'}_{ij}]$. Quindi $b^{'}_{ij} = b_{ji}$. \\
+	Posto $(i,j)$ in $B^T A^T$:
+	\begin{equation*}
+		\begin{split}
+			\sum_{1 \leq k \leq n} b^{'}_{ik} a^{'}_{kj} &= \sum_{1 \leq k \leq n} b_{ki} a_{jk} \\
+			&= \sum_{1 \leq k \leq n} a_{jk} b_{ki} 
+		\end{split}
+	\end{equation*}
+	Possiamo confermare che il coefficiente di posto $(i,j)$ in $(AB)$ e' uguale al coefficiente di posto $(i,j)$ in $(AB)^T$. \\
+	Quindi, $(AB)^T = B^T A^T$. Abbiamo dimostrato il teorema.
+
+	\subsection{Numeri Complessi}
+	Aggiungiamo ora ai numeri reali un nuovo numero \textit{i} con la proprietà che $i^{2} = -1$.\\
+	Alcune proprietà dei numeri immaginari sono:
+	\begin{itemize}
+		\item $i^3 = i^2 \cdot i = -i$
+		\item $i^4 = i^3 \cdot i = (-i)i$
+		\item $(-i)^4 = 1$
+		\item $i^4 = (-i)^4 = 1$
+	\end{itemize}
+	Definiamo $z$ come la \textbf{somma} della parte reale $a$ e la parte immaginaria $bi$ 
+	\[
+		z = a + bi
+	\]
+	Definiamo $\bar{z}$ come il coniugato di $z$ ed e' la \textbf{differenza} tra la parte 
+	reale $a$ e la parte immaginaria $bi$ 
+	\[
+		\bar{z} = a - bi
+	\]
+	Se il modulo di $\vert z \vert = 1$, allora $z \bar{z} = 1$ e quindi $z^{-1} = \bar{z}$ \\
+	Se $z \neq 0$, allora $\vert \vert z \vert ^{-1} z \vert = 1$, perché $\vert \vert z \vert ^{-1}
+	\vert = \vert z \vert ^{-1}$
+	Inoltre:
+	\begin{itemize}
+		\item $\overline{z_{1}z_{2}} = \bar{z_{1}} \bar{z_{2}}$
+		\item $\overline{z_{1}+z_{2}} = \bar{z_{1}} + \bar{z_{2}}$
+	\end{itemize}
+	Se $z \neq 0$ : definisco $u = \vert z \vert ^{-1} z$.  Allora  $z = \vert z \vert u$ e $\vert u \vert = 1$. \\
+	Avremmo quindi $u = a + bi$, $a^2 + b^2 = 1$.
+	
+	\subsection{Formula di De Moivre}
+	La formula di De Moivre e' una delle basi dell'analisi dei numeri complessi. 
+	Essa permette di esprimere la potenza di un numero complesso nella sua forma trigonometrica : 
+	\[
+		(cos \alpha + i sin \alpha)^{n} = cos(n\alpha) + isin(n\alpha)
+	\]
+	valida per ogni numero reale $x$, con $n$ intero e $i$ immaginaria. \\
+	\textbf{In generale}, se $z$ e $w$ sono numeri complessi, allora per $\alpha = z$ e $n = w$  
+	\[
+		(cosz + isinz)^{w}
+	\]
+	assume più di un valore, mentre
+	\[
+		cos(wz) + isin(wz)
+	\]
+	ha un solo valore. \\
+	\textbf{Esercizio} \\
+	Dati $z \neq 0$ e $n > 0$ intero, trovare tutti i numeri complessi $w$ tali che $w^{n} = z$ \\
+	Caso speciale : $\vert z \vert = 1$	\\
+	Risolvere $(cos \gamma + i sin \gamma )^{n} = cos \alpha + i sin \alpha $
+	\begin{equation*}
+		\begin{split}
+		cos(n\gamma) + isin(n\gamma) &= cos\alpha + isin\alpha \\
+		n\gamma &= \alpha + 2k \pi \\
+		\gamma &= \frac{\alpha}{n} + \frac{2k\pi}{n}
+		\end{split}
+	\end{equation*}
+	Abbiamo quindi $n$ soluzioni distinte per $k = 0, 1, 2, \cdots, n - 1$ \\
+	\begin{equation*}
+		\begin{split}
+			w^3 &= 1 \\
+			(cos\gamma + isin\gamma)^{3} &= cos 0 + isin0  \\
+			3 \gamma &= 0 + 2k\pi (k=0,1,2) \\
+			\gamma _{1} &= 0 : w_{1} = 1 \\
+			\gamma _{2} &= \frac{2}{3}\pi : w_{2} = - \frac{1}{2} + i \frac{\sqrt{3}}{2} \\
+			\gamma _{3} &= \frac{4}{3}\pi : w_{3} = - \frac{1}{2} - i \frac{\sqrt{3}}{2} \\
+			w^{3} - 1 &= 0 \\
+			(w - 1)(w^2 + w + 1) &= 0
+ 		\end{split}
+	\end{equation*}
+	Otteniamo che $w_{1} = 1$, $w_{2} = \frac{-1 + i\sqrt{3}}{2}$, $w_{3} = \frac{-1 - i\sqrt{3}}{2}$ \\
+	\textbf{Caso generale} :
+	\[ w^n = z = \vert z \vert u \]
+	\[ w = \vert z \vert ^{\frac{1}{n}} w_{1} \]
+	\[ w^{n}_{1} = u \]
+	
+	\subsection{Teorema fondamentale dell'Algebra}
+	Ogni polinomio di grado maggiore di zero a coefficienti complessi ha una radice complessa
+	
+	\subsection{Rango di una matrice}
+	Sia $A$ una qualsiasi matrice, quadrata o rettangolare, a coefficienti in un campo $\mathbb{K}$ 
+	(per esempio $\mathbb{R}$ o $\mathbb{C}$), con $m$ righe e $n$ colonne. Il suo rango, o \textbf{caratteristica}, 
+	si indica con $rango(A), rk(A), rg(A), p(A), r(A)$ e ha le seguenti definizioni:
+	\begin{itemize}
+		\item E' il massimo numero di righe linearmente indipendenti di $A$
+		\item E' il massimo numero di colonne linearmente indipendenti di $A$
+		\item E' la dimensione dell'immagine dell'applicazione lineare
+	\end{itemize}
+	
+	\subsection{Vettori linearmente indipendenti}
+	Consideriamo uno spazio vettoriale $V$ su un campo $\mathbb{K}$, e siano $v_1, v_2, \cdots, v_{n}$ vettori di $V$.\\
+	Si dice che gli $n$ vettori $v_1, v_2, \cdots, v_{n}$ sono \textbf{linearmente indipendenti tra loro} se, 
+	prendendo $n$ scalari $a_{1}, a_{2} , \cdots, a_{n} \in K$ e imponendo 
+	\[ a_1 v_1 + a_2 v_2 + \cdots + a_n v_n = 0 \]
+	risulta che la precedente uguaglianza e' soddisfatta se e solo se 
+	\[ a_1 = a_2 = \cdots = a_{n} = 0 \]
+	\textbf{Esempio}
+	Consideriamo due vettori $v_{1} = (1,0) , v_{2} = (0,1) \in \mathbb{R} ^{2}$. \\
+	Consideriamo inoltre due generici scalari $a,b \in \mathbb{R}$ e imponiamo che sia nulla
+	 la generica combinazione lineare $av_1 + b_v2$.
+	\[ a(1,0) + b(0,1) = (0,0) \]
+	Svolgendo le operazioni tra vettori otteniamo
+	\begin{equation*}
+		\begin{split}
+			(a\cdot 1 , b \cdot 0) + (0 \cdot a, 1 \cdot b) &= (0,0) \\
+			(a,0) + (0,b) &= (0,0) 	\\
+			(a,b) &= (0,0) 
+		\end{split}
+	\end{equation*}	 
+	La precedente uguaglianza e' soddisfatta se e solo se $a = b = 0$, il che ci permette di 
+	concludere che i vettori sono linearmente indipendenti.
+	
+	\subsection{Algoritmo di Gauss per il calcolo del Rango}
+	L'algoritmo di Gauss, definita anche come \textbf{eliminazione} di Gauss oppure anche come la
+	semplificazione di una matrice tramite operazioni elementari, permette di calcolare il rango di una matrice.\\
+	Sia $A$ una matrice qualsiasi di tipo $m \times n$. Sulle righe di $A$ si possono eseguire le cosiddette 
+	operazioni elementari sulle righe. Tali operazioni sono di tre tipi, e sono definite come segue:
+	\begin{itemize}
+		\item L'operazione $P_{ij}$, che significa scambiare la riga $A_{i}$ di $A$ con la riga $A_{j}$
+		\item L'operazione $E_{ij}(n)$, che significa \textbf{sommare} alla riga $A_{i}$ di $A$ la riga $A_{j}$, 
+			  moltiplicata per lo scalare $n$, con $i \neq j$. In altre parole, alla riga $A_{i}$ si 
+			  sostituisce la riga $A_{i} + kA_{j}$.
+		\item L'operazione $E_{i}(n)$, che significa moltiplicare la riga $A_{i}$ per lo scalare $n$, con $k \neq 0$
+	\end{itemize}
+	Inoltre, l'operazione $E_{ij}$ significa che la riga $i$ viene sostituita con la riga $j$ e viceversa.\\
+	Obiettivo dell'algoritmo di Gauss e' di trasformare la matrice $A$ nella matrice a scala $S$,
+	cercando di ottenere più' colonne linearmente indipendenti. \\
+	\textbf{Esempio} : consideriamo la matrice $A (3 \times 4)$ descritta come segue
+	\[
+	A=
+		\begin{bmatrix}
+			2 & 6 & 3 & 4 \\
+			1 & -2 & \frac{1}{2} & 1 \\
+			-1 & 1 & -\frac{1}{2} &  \frac{2}{5}
+		\end{bmatrix}
+	\]
+	Notiamo che $a_{11}$ non e' uguale a 1, quindi dobbiamo applicare $E_{1}(\frac{1}{2})$. \\
+	Proseguiamo poi con $E_{21}(-1)$ e $E_{31}(1)$.
+	\[
+		\begin{bmatrix}
+			2 & 6 & 3 & 4 \\
+			1 & -2 & \frac{1}{2} & 1 \\
+			-1 & 1 & -\frac{1}{2} &  \frac{2}{5}
+		\end{bmatrix}
+		\stackrel{E_{1}(\frac{1}{2})}{\Longrightarrow}		
+		\begin{bmatrix}
+			1 & 3 & \frac{3}{2} & 2 \\
+			1 & -2 & \frac{1}{2} & 1 \\
+			-1 & 1 & -\frac{1}{2} &  \frac{2}{5}
+		\end{bmatrix}
+		\stackrel{E_{21}(-1)}{\Longrightarrow}
+	\]	
+	\[
+		\begin{bmatrix}
+			1 & 3 & \frac{3}{2} & 2 \\
+			0 & -5 & -1 & -1 \\
+			-1 & 1 & -\frac{1}{2} &  \frac{2}{5}
+		\end{bmatrix}
+		\stackrel{E_{31}(1)}{\Longrightarrow}	
+		\begin{bmatrix}
+			1 & 3 & \frac{3}{2} & 2 \\
+			0 & -5 & -1 & -1 \\
+			0 & 4 & 1 &  \frac{12}{5}
+		\end{bmatrix}
+	\] 
+	Possiamo notare che la prima colonna e' diventata linearmente indipendente. \\
+	Proseguiamo con la seconda colonna:
+	\[
+		\begin{bmatrix}
+			1 & 3 & \frac{3}{2} & 2 \\
+			0 & -5 & -1 & -1 \\
+			0 & 4 & 1 &  \frac{12}{5}
+		\end{bmatrix}
+		\stackrel{E_{2}(- \frac{1}{5})}{\Longrightarrow}
+		\begin{bmatrix}
+			1 & 3 & \frac{3}{2} & 2 \\
+			0 & 1 & 1/5 & 1/5 \\
+			0 & 4 & 1 &  \frac{12}{5}
+		\end{bmatrix}
+		\stackrel{E_{32}(-4)}{\Longrightarrow}				
+		\begin{bmatrix}
+			1 & 3 & \frac{3}{2} & 2 \\
+			0 & 1 & 1/5 & 1/5 \\
+			0 & 0 & 1/5 &  \frac{8}{5}
+		\end{bmatrix}
+	\]
+	Anche la seconda colonna e' diventata linearmente indipendente.\\ 
+	Passiamo alla terza colonna.
+	\[
+		\begin{bmatrix}
+			1 & 3 & \frac{3}{2} & 2 \\
+			0 & 1 & 1/5 & 1/5 \\
+			0 & 0 & 1/5 &  \frac{8}{5}
+		\end{bmatrix} 
+		\stackrel{E_{3}(5)}{\Longrightarrow}
+		\begin{bmatrix}
+			1 & 3 & \frac{3}{2} & 2 \\
+			0 & 1 & 1/5 & 1/5 \\
+			0 & 0 & 1 &  8
+		\end{bmatrix} 
+	\]
+	La nostra nuova matrice $S$ sarà 
+	\[	
+		S = 
+		\begin{bmatrix}
+			1 & 3 & \frac{3}{2} & 2 \\
+			0 & 1 & 1/5 & 1/5 \\
+			0 & 0 & 1 &  8
+		\end{bmatrix}
+	\]
+	L'algoritmo finisce qui, in quanto la matrice $S$ che abbiamo trovato e' a scala.\\
+	
+	\subsection{Trovare le Soluzioni dell'Algoritmo di Gauss}
+	Consideriamo la matrice $A (3 \times 5)$
+	\[
+	A=
+		\begin{bmatrix}
+			2 & 6 & 3 & 2 & 4 \\
+			1 & -2 & \frac{1}{2} & \frac{9}{4} & 1 \\
+			-1 & 1 & -\frac{1}{2} & -1 & \frac{2}{5}
+		\end{bmatrix}
+	\]
+	Applichiamo l'algoritmo di Gauss in modo tale da ottenere la base $S$ :
+	\[
+	S=
+		\begin{bmatrix}
+			1 & 3 & \frac{3}{2} & 1 & 2 \\
+			0 & 1 & \frac{1}{5} & -\frac{1}{4} & \frac{1}{5} \\
+			0 & 0 & 1 & 5 & 8
+		\end{bmatrix}
+	\]
+	Otteniamo le equazioni derivanti dalla matrice: possiamo notare come non sia presente 
+	l'equazione per $x_4$  che ci serve per risolvere il sistema. \\Allora possiamo aggiungere $x_4 = h$ in modo
+	tale da poter risolvere il sistema.
+	\[
+	\begin{cases}
+		x_1 + 3x_2 + \frac{3}{2}x_3 + x_4 = 2 \\
+		x_2 + \frac{1}{5}x_3 + -\frac{1}{4} = \frac{1}{5} \\
+		x_3 + 5x_4 = 8 \\
+		x_4 = h
+	\end{cases} \rightarrow
+	\begin{cases}
+		x_1 + 3x_2 + \frac{3}{2}x_3 + x_4 = 2 \\
+		x_2 + \frac{1}{5}x_3 + -\frac{1}{4} = \frac{1}{5} \\
+		x_3 = 8 - 5h \\
+		x_4 = h
+	\end{cases} \rightarrow
+	\begin{cases}
+		x_1 + 3x_2 + \frac{3}{2}x_3 + x_4 = 2 \\
+		x_2 = -\frac{7}{5} + \frac{5}{4}h\\
+		x_3 = 8 - 5h \\
+		x_4 = h
+	\end{cases} 
+	\]
+	\[
+	\begin{cases}
+		x_1  = -\frac{29}{4} + \frac{11}{4}h \\
+		x_2 = -\frac{7}{5} + \frac{5}{4}h\\
+		x_3 = 8 - 5h \\
+		x_4 = h
+	\end{cases} \longrightarrow
+	\begin{bmatrix}
+			-\frac{29}{4} \\ -\frac{7}{5} \\ 8 \\ 0
+		\end{bmatrix}
+		+h
+		\begin{bmatrix}
+			\frac{11}{4} \\ \frac{5}{4} \\ -5 \\ 1
+		\end{bmatrix}
+	\]
+	Il sistema ha \textbf{infinite soluzioni}. \\
+	\textbf{In generale}, esistono tre casi:
+	\begin{itemize}
+		\item $[0]$ : se l'ultima colonna e' dominante, allora \textbf{non} esiste soluzione
+		\item $[1]$ : se l'ultima colonna e l'unica non dominante, allora \textbf{esiste una} (e una sola) soluzione
+		\item $[\infty]$: se l'ultima colonna non e' dominante e ci sono altre colonne non dominanti, 
+						  allora esistono \textbf{infinite} soluzioni
+	\end{itemize}
+	
+	\subsection{Proprietà delle Matrici Invertibili}
+		\begin{itemize}
+		 	\item La matrice $A$ ($m \times n)$ si dice invertibile se ha inversa destra \textbf{e} sinistra
+			\item  Se $A,B$ $(n \times n)$ sono invertibili, allora $AB$ e' invertibile.
+		 	\item Se $A$ e' invertibile, $A^{-1}$ indica l'unica inversa destra e sinistra di A
+		 	\item \textbf{Attenzione:} $(AB)^{-1} = B^{-1}A^{-1}$
+		 	\item Se $A$ e' una matrice $m \times n$, allora esiste $E$ invertibile tale che 
+		 		\[ EA = 
+		 			\begin{bmatrix}
+		 				a \cdots \cdots \\
+		 				0 \cdots \cdots \\
+		 				\vdots \ddots \vdots \\
+		 				0 \cdots \vdots 
+		 			\end{bmatrix}
+		 		\]
+		 	\item Supponiamo che $A (m \times n)$ abbia inversa destra $R$. Allora $R$ e' anche inversa sinistra di $A$.
+		 	\item Sia $A (m \times n)$, con $m > n$. Allora $A$ non ha inversa destra.
+		 	\item Se $A (m \times n)$ ha inversa destra, allora $m \leq n$.
+		 	\item Se $A (m \times n)$ ha inversa sinistra, allora $m \geq n$.
+		 	\item Se $A (m \times n)$ ha inversa destra e sinistra, allora $m = n$.
+		\end{itemize}
+		
+	\subsection{Matrice Invertibile}
+	Una matrice quadrata $A$ di ordine $n$, ovvero di forma $n \times n$, si dice invertibile se esiste una matrice
+	quadrata $B$ di ordine $n$ tale che $AB = BA = I$. In  tal caso B si dice la matrice inversa di $A$, e si denota 
+	con il simbolo $A^{-1} := B$ 
+	\paragraph*{Teorema} Per una matrice $A (m \times n)$ le seguenti sono equivalenti:
+	\begin{itemize}
+		\item $(a)$ $A$ ha inversa destra
+		\item $(b)$ Ogni sistema lineare $Ax = b$ ha soluzione
+		\item $(c)$ $A$ ha rango $m$
+	\end{itemize}
+	\paragraph*{Teorema} Per una matrice $A (m \times n)$ le seguenti sono equivalenti:
+	\begin{itemize}
+		\item $(a)$ $A$ ha inversa sinistra
+		\item $(b)$ Il sistema $Ax = 0$ ha soluzione unica
+		\item $(c)$ $A$ ha rango $n$
+		\item $(d)$ $A^{H}A$ e' invertibile
+	\end{itemize}
+	\textbf{Nota}\\
+	$\overline{A}$ e' la matrice che si ottiene coniugando tutti i coefficienti di $A$ tale che 
+	\[ A^{H} = (\overline{A})^{T} = \overline{(A^{T})} \hspace{1cm}(H-trasposta)
+	\] 
+	\textbf{Svolgimento dell'algoritmo}\\
+	Si consideri $[A | I_{n}]$ e si esegua l'eliminazione in avanti e all'indietro. La matrice finale sarà
+	della forma $[I_{n} | B]$. Allora $B = A^{-1}$\\
+	\textbf{Esempio}\\
+	\[
+		A =
+		\begin{bmatrix}
+		1 & -1 & 2 \\
+		0 & 2 & 1 \\
+		-1 & 0 & -2
+		\end{bmatrix}
+		I_{n} =
+		\begin{bmatrix}
+		1 & 0 & 0 \\
+		0 & 1 & 0 \\
+		0 & 0 & 1
+		\end{bmatrix}
+	\]
+	\[
+		\begin{bmatrix}
+		1 & -1 & 2 & \vrule{} & 1 & 0 & 0\\
+		0 & 2 & 1 & \vrule{} & 0 & 1 & 0\\
+		-1 & 0 & -2 & \vrule{} & 0 & 0 & 1
+		\end{bmatrix} 
+		\stackrel{E_{31}(1)}{\Longrightarrow}
+		\begin{bmatrix}
+		1 & -1 & 2 & \vrule{} & 1 & 0 & 0\\
+		0 & 2 & 1 & \vrule{} & 0 & 1 & 0\\
+		0 & -1 & 0 & \vrule{} & 1 & 0 & 1
+		\end{bmatrix} 
+		\stackrel{E_{2}(\frac{1}{2})}{\Longrightarrow}
+		\begin{bmatrix}
+		1 & -1 & 2 & \vrule{} & 1 & 0 & 0\\
+		0 & 1 & \frac{1}{2} & \vrule{} & 0 & \frac{1}{2} & 0\\
+		0 & -1 & 0 & \vrule{} & 1 & 0 & 1
+		\end{bmatrix} 
+		\stackrel{E_{32}(1)}{\Longrightarrow}
+	\]
+	\[
+		\begin{bmatrix}
+		1 & -1 & 2 & \vrule{} & 1 & 0 & 0\\
+		0 & 1 & \frac{1}{2} & \vrule{} & 0 & \frac{1}{2} & 0\\
+		0 & 0 & \frac{1}{2} & \vrule{} & 1 & \frac{1}{2} & 1
+		\end{bmatrix} 
+		\stackrel{E_{3}(2)}{\Longrightarrow}
+		\begin{bmatrix}
+		1 & -1 & 2 & \vrule{} & 1 & 0 & 0\\
+		0 & 1 & \frac{1}{2} & \vrule{} & 0 & \frac{1}{2} & 0\\
+		0 & 0 & 1 & \vrule{} & 2 & 1 & 2
+		\end{bmatrix} 
+		\stackrel{E_{13}(-2)}{\stackrel{E_{23}(-\frac{1}{2})}{\Longrightarrow}}
+		\begin{bmatrix}
+		1 & -1 & 0 & \vrule{} & -3 & -2 & -4\\
+		0 & 1 & 0 & \vrule{} & -1 & 0 & -1\\
+		0 & 0 & 1 & \vrule{} & 2 & 1 & 2
+		\end{bmatrix}
+		\stackrel{E_{12}(1)}{\Longrightarrow}
+	\]
+	\[
+		\begin{bmatrix}
+		1 & 0 & 0 & \vrule{} & -4 & -2 & -5\\
+		0 & 1 & 0 & \vrule{} & -1 & 0 & -1\\
+		0 & 0 & 1 & \vrule{} & 2 & 1 & 2
+		\end{bmatrix}
+	\]
+	\[
+		I_{n} \hspace{2cm} A^{-1}
+	\]
+	\paragraph*{Teorema} Sia $A$ una matrice $2 \times 2$, costruita come segue :
+	\[
+		\begin{bmatrix}
+			a & b \\
+			c & d
+		\end{bmatrix}
+	\]
+	La matrice $A$ e' invertibile se e solo se  $ad - bc \neq 0$, e in tal caso, 
+	\[ A^{-1} = \frac{1}{ad-bc}\begin{bmatrix} d & -b \\ -c & a \end{bmatrix} \]
+	
+	\subsection{Matrici Elementari}
+	Una matrice elementare e' una matrice quadrata a coefficienti reali o complessi.
+	Si indica con
+	\begin{itemize}
+		\item $E_{i}(c)$, con $c \neq 0$, la matrice che si ottiene eseguendo $E_{i}(c)$ sulla matrice identità $I_{n}$.
+			  Analogamente, indica una matrice ottenuta effettuando la moltiplicazione della riga $i$-esima di $I_{n}$ 
+			  per un numero $c$. 
+		      Eseguire $E_{i}(c)$ sulla matrice $A$ equivale a calcolare $E_{i}(c)A$. 
+		      \[
+		      E_{i}(c) =
+		      \begin{bmatrix}
+		      	1  &  &  &  & \\
+		      	   & \ddots  &  &  & \\
+		      	   &  & c &  & \\
+		      	   &  &  &  \ddots & \\
+		      	   &  &  &  & 1 \\
+		      \end{bmatrix}
+		      \]
+		\item $E_{ij}(d)$, con $i \neq j$, la matrice che si ottiene dalla matrice identità $I_{n}$ 
+			  eseguendo $E_{ij}(d)$. 
+			  Analogamente, indica una matrice ottenuta dalla matrice identità $I_{n}$ aggiungendo alla riga
+			  $i$-esima della matrice identità $I_{n}$ la riga $j$-esima di $I_{n}$ moltiplicata per $m$.
+			  Eseguire $E_{ij}(d)$ sulla matrice $A$ equivale a calcolare $E_{ij}(d)A$. 
+			  \[
+		      E_{ij}(d) =
+		      \begin{bmatrix}
+		      	1  &  &  &  & \\
+		      	& \ddots  &  &  & \\
+		      	&  &  1 &  & \\
+		      	&  d  & & \ddots & \\
+		      	&  &  &  & 1 \\
+		      \end{bmatrix}
+		      \]
+		\newpage
+		\item $E_{ij}$, con $i \neq j$ la matrice che si ottiene dall'identità eseguendo $E_{ij}$. 
+			  Analogamente, indica una matrice ottenuta dalla matrice identità $I_{n}$ scambiando le righe $i$-esima 
+			  e $j$-esima.
+			  Eseguire $E_{ij}$ sulla matrice $A$ equivale a calcolare $E_{ij}A$.
+			  
+			  Essa viene definita anche come \textbf{matrice di permutazione elementare}.
+			  \[
+		      E_{ij} =
+		      \begin{bmatrix}
+		      	1  &  &  &  & \\
+		      	& 0  &  & 1 & \\
+		      	&  &  \ddots &  & \\
+		      	&  1  & & 0 & \\
+		      	&  &  &  & 1 \\
+		      \end{bmatrix}
+		      \]
+	\end{itemize}
+	$E_{i}(c) (c \neq 0)$, $E_{ij}(A) (i \neq j$ e $E_{ij} (i \neq j)$ sono invertibili.
+	\begin{itemize}
+		\item $E_{i}(c)^{-1} = E_{i}(c^{-1})$
+		\item $E_{ij}(d)^{-1} = E_{i}(-d)$
+		\item $E_{ij}^{-1} = E_{ij}$
+	\end{itemize}	 
+	
+	\subsection{Decomposizione LU}
+	Una decomposizione LU, o decomposizione LUP o decomposizione di Doolittle, 
+	e' una fattorizzazione di una matrice $A$ in una matrice triangolare inferiore $L$, una matrice triangolare
+	superiore $U$ e una matrice di permutazione $P$. 
+	\paragraph*{Teorema} Sia $A$ una matrice \textbf{invertibile}. Allora $A$ può essere decomposta come 
+	\[ A = LU \]
+	\textbf{Svolgimento dell'algoritmo} \\
+	Usiamo l'algoritmo di Gauss per trovare la matrice triangolare superiore $U$
+	\[
+		A=
+		\begin{bmatrix}
+		2 & 6 & 3 & 2 \\
+		1 & -2 & \frac{1}{2} & \frac{9}{4} \\
+		-1 & 1 & -\frac{1}{2} & -1
+		\end{bmatrix}
+		\stackrel{E_{1}(\frac{1}{2})}\Longrightarrow	
+		\begin{bmatrix}
+		1 & 3 & \frac{3}{2} & 1 \\
+		1 & -2 & \frac{1}{2} & \frac{9}{4} \\
+		-1 & 1 & -\frac{1}{2} & -1
+		\end{bmatrix}
+		\stackrel{E_{31}(1)}{\stackrel{E_{21}(-1)}\Longrightarrow}
+		\begin{bmatrix}
+		1 & 3 & \frac{3}{2} & 1 \\
+		0 & -5 & -1 & \frac{5}{4} \\
+		0 & 4 & 1 & 0
+		\end{bmatrix}
+		\stackrel{E_{2}(-\frac{1}{5})}\Longrightarrow	
+	\]
+	\[
+		\begin{bmatrix}
+		1 & 3 & \frac{3}{2} & 1 \\
+		0 & 1 & \frac{1}{5} & -\frac{1}{4} \\
+		0 & 4 & 1 & 0
+		\end{bmatrix}
+		\stackrel{E_{32}(4)}\Longrightarrow	
+		\begin{bmatrix}
+		1 & 3 & \frac{3}{2} & 1 \\
+		0 & 1 & \frac{1}{5} & -\frac{1}{4} \\
+		0 & 0 & \frac{1}{5} & 1
+		\end{bmatrix}
+		\stackrel{E_{3}(5)}\Longrightarrow
+		\begin{bmatrix}
+		1 & 3 & \frac{3}{2} & 1 \\
+		0 & 1 & \frac{1}{5} & -\frac{1}{4} \\
+		0 & 0 & 1 & 5
+		\end{bmatrix}
+		= U
+	\]
+	Sappiamo che i passaggi necessari per applicare l'algoritmo di Gauss sono:
+	\[ U = E_{3}(5) \cdot E_{32}(-4) \cdot E_{2}(-\frac{1}{5}) \cdot E_{31}(1) \cdot 
+	E_{21}(-1) \cdot E_{1}(\frac{1}{2}) \cdot A \]
+	Ora consideriamo $F$ come
+	\[ F = E_{3}(5) \cdot E_{32}(-4) \cdot E_{2}(-\frac{1}{5}) \cdot E_{31}(1) \cdot 
+	E_{21}(-1) \cdot E_{1}(\frac{1}{2}) \]
+	In modo tale da avere $U = FA$, con $F$ invertibile. 
+	Per avere $F^{-1}$ dobbiamo fare l'inversa dei passaggi fatti, partendo dall'ultimo passaggio con 
+	ogni elemento del passaggio invertito :
+	\begin{equation*}
+		\begin{split}
+		F^{-1} &= E_{1}(\frac{1}{2})^{-1} \cdot E_{21}(-1)^{-1} \cdot E_{31}(1)^{-1} \cdot E_{2}(-\frac{1}{5})^{-1} 
+		\cdot E_{32}(-4)^{-1} \cdot E_{3}(5)^{-1} \\
+		&= E_{1}(2) \cdot E_{21}(1) \cdot E_{31}(-1) \cdot E_{2}(-5) \cdot E_{32}(4) \cdot E_{3}(\frac{1}{5})
+		\end{split}
+	\end{equation*}
+	Applichiamo i passaggi per ottenere $F^{-1}$ alla matrice identità in modo tale da ottenere $L$:
+	\[
+		I_3 =
+		\begin{bmatrix}
+			1 & 0 & 0 \\
+			0 & 1 & 0 \\
+			0 & 0 & 1
+		\end{bmatrix}
+		\stackrel{E_{3}(\frac{1}{5})}\Longrightarrow
+		\begin{bmatrix}
+			1 & 0 & 0 \\
+			0 & 1 & 0 \\
+			0 & 0 & \frac{1}{5}
+		\end{bmatrix}
+		\stackrel{E_{32}(4)}\Longrightarrow
+		\begin{bmatrix}
+			1 & 0 & 0 \\
+			0 & 1 & 0 \\
+			0 & 4 & \frac{1}{5}
+		\end{bmatrix}
+		\stackrel{E_{2}(-5)}\Longrightarrow
+	\]
+	\[
+		\begin{bmatrix}
+			1 & 0 & 0 \\
+			0 & -5 & 0 \\
+			0 & 4 & \frac{1}{5}
+		\end{bmatrix}
+		\stackrel{E_{31}(-1)}\Longrightarrow
+		\begin{bmatrix}
+			1 & 0 & 0 \\
+			0 & -5 & 0 \\
+			-1 & 4 & \frac{1}{5}
+		\end{bmatrix}
+		\stackrel{E_{21}(1)}\Longrightarrow
+		\begin{bmatrix}
+			1 & 0 & 0 \\
+			1 & -5 & 0 \\
+			-1 & 4 & \frac{1}{5}
+		\end{bmatrix}
+		\stackrel{E_{1}(2)}\Longrightarrow
+	\]
+	\[
+		\begin{bmatrix}
+			2 & 0 & 0 \\
+			1 & -5 & 0 \\
+			-1 & 4 & \frac{1}{5}
+		\end{bmatrix}
+		= L (=F^{-1})
+	\]
+	
+	\subsection{Decomposizione con la matrice di permutazione P}
+	Nel caso in cui si applichi $E_{ij}$ alla matrice $A$ per calcolare $LU$, si deve anche considerare 
+	la matrice di permutazione $P$, definita dai passaggi $E_{ij}$ (scambio di riga)
+	\[ P = \prod E_{ij}\]
+	Dopodiché, otteniamo $P^{T}$, ovvero l'inversa della matrice di permutazione (o trasposta della matrice)
+	\[ P^{T} = P^{-1} \cdot I_{n} = (\prod E_{ij})^{-1} \]
+	Infine, per svolgere la decomposizione con la matrice di permutazione bisogna svolgere
+	\[ PA = LU \]
+	\textbf{Esempio}\\
+	Consideriamo una matrice $A (4 \times 5)$ a cui e' stata applicata $E_{34}, E_{23}$. Allora: 
+	\begin{equation*}
+		\begin{split}	
+		PA &= LU \\	
+		P &= E_{34} \cdot E_{23}  \\
+		P^{-1} &= E_{23} E_{34} = P^{T} \\
+		A &= P^{T}LU
+		\end{split}
+	\end{equation*}
+	\[
+		P^{T} = E_{23}
+		\begin{bmatrix}
+		1 & 0 & 0 & 0 \\
+		0 & 1 & 0 & 0 \\
+		0 & 0 & 0 & 1 \\
+		0 & 0 & 1 & 0
+		\end{bmatrix}
+		=
+		\begin{bmatrix}
+		1 & 0 & 0 & 0 \\
+		0 & 0 & 0 & 1 \\
+		0 & 1 & 0 & 0 \\
+		0 & 0 & 1 & 0
+		\end{bmatrix}
+	\]
+	\textbf{Ogni} matrice invertibile e' prodotto di matrici elementari.
+	\newpage
+
+	\section{Spazi Vettoriali}
+	Uno spazio vettoriale su un campo $\mathbb{K}$ e' un insieme $V$ dotato di due funzioni che soddisfano una 
+	certa lista di assiomi. Gli elementi di $V$ sono detti \textbf{vettori} e quelli di $\mathbb{K}$ \textbf{scalari}. \\
+	Le operazioni sono:
+	\[ V \times V \longrightarrow V \hspace{1cm} (u,v) \mapsto u + v \]
+	\[ \mathbb{C} \times V \longrightarrow V \hspace{1cm} (\alpha ,v) \mapsto \alpha \cdot v \]
+	
+	\subsection{Proprietà degli Spazi Vettoriali}
+	\paragraph*{$A_1$} $ (u + v) + w = u + (v + w)$
+	\paragraph*{$A_1$} Esiste $\textbf{0} \in V$ tale che $v + \textbf{0} = $, $\textbf{0} + v = v$
+	\paragraph*{$A_3$} Per ogni $v \in V$ esiste $w \in V$ tale che $v + w = \textbf{0}, w + v = \textbf{0}$
+	\paragraph*{Proprietà} Supponiamo di trovare $z \in V$ tale che $v + z = v$, $z + v = v$ per ogni $v \in V$. 
+						   In particolare $\textbf{0} + z = \textbf{0}$ ma anche $z + \textbf{0} = \textbf{0}$. 
+						   Allora $z = \textbf{0}$
+	\paragraph*{Proprietà} Supponiamo che $v + w = \textbf{0}$, $w + v = \textbf{0}$, $v + w^{'} = \textbf{0}$, 
+						   $w^{'} + v = \textbf{0}$. Allora 
+						   \begin{equation*}
+						   	\begin{split}
+						   		w^{'} &= w^{'} + \textbf{0} = w^{'} + (v + w) \\
+						   		(A_1) \rightarrow &= (w^{'} + v) + w = \textbf{0 + w} \\
+						   		&= w
+						   	\end{split}
+						   \end{equation*}						    
+	\textbf{Convenzione} : $x - y = x + (-y)$ \\
+	\paragraph*{$M_1$} $\alpha (\beta v) = (\alpha \beta) v$, con $\alpha , \beta \in \mathbb{C}, v \in V$
+	\paragraph*{$M_2$} $(\alpha + \beta) v = \alpha v + \beta v$, con $\alpha , \beta \in \mathbb{C}, v \in V$
+	\paragraph*{$M_3$} $\alpha (v + w) = \alpha v + \alpha w$, con $\alpha \in \mathbb{C}, v, w \in V$
+	\paragraph*{$M_4$} $ 1v = v$
+	\paragraph*{Proprietà} Se $w + w = w$, allora $w = \textbf{0}$
+	
+	\newpage
+	\subsection{Sottospazi}
+	Si consideri uno spazio vettoriale $V$ su un campo $\mathbb{K}$. Si dice che un sottoinsieme $U$ \textbf{non vuoto} $U$ di 
+	$V$ ($U \subseteq V$) e' un sottospazio vettoriale se $U$ e' uno spazio vettoriale su $\mathbb{K}$ rispetto alle stesse
+	operazioni di somma tra vettori e di prodotto di un vettore per uno scalare definite da $V$, ovvero:
+	\paragraph*{$S_1$} $\textbf{0} \in U$
+	\paragraph*{$S_2$} Se $u_1, u_2 \in U$, allora $u_1 + u_2 \in U$
+	\paragraph*{$S_3$} Se $u \in U$ e $\alpha \in \mathbb{C}$, allora $\alpha u \in U$
+	
+	
+	\subsection{Proprietà dei Sottospazi}
+	\begin{itemize}
+		\item $A m \times n$ : $N(A) = \lbrace v \in \mathbb{C}^{n} \vert Av = 0 \rbrace$ e' uno sottospazio di $\mathbb{C}^{n}$
+		\item $\lbrace \textbf{0} \rbrace, V$ sono sottospazi di $V$
+		\item $v \in V$; $<v> = \lbrace \lambda v \vert \lambda \in \mathbb{C} \rbrace$
+	\end{itemize}
+	
+	\paragraph*{$S_1$} $\textbf{0} = 0v$
+	\paragraph*{$S_2$} $u_1, u_2 \in <v> : u_1 = \lambda _1 v, u_2 = \lambda _2 v; u_1 + u_2 = (\lambda _1 + \lambda _2 ) v$
+	\paragraph*{$S_3$} $u \in <v>, \alpha$ scalare, $u = \lambda v$. Allora $\alpha u = \alpha (\lambda v) = (\alpha \lambda ) v$
+	\paragraph*{Teorema} Sia $u \subseteq V$. Allora $U$ e' un sottospazio di $V$ se e solo se 
+	\begin{enumerate}
+		\item $U \neq \emptyset$
+		\item Se $u_1, u_2 \in U, \alpha _1 , \alpha _2 \in \mathbb{C}$, allora $\alpha _1 u_1 + \alpha _2 u_2 \in U$
+	\end{enumerate}
+	Prendo $v_1, v_2, \cdots, v_n \in V$. $ \lbrace v_1, v_2, \cdots, v_n \rbrace$ si chiama \textbf{insieme finito di vettori di
+	V}.\\
+	
+	\subsection{Combinazione Lineare}
+	Sia $a$ un insieme finito di vettori di $V$, ovvero $a = \lbrace v_1 , v_2 , \cdots, v_n \rbrace$. \\
+	Una combinazione lineare di $a$ e' un vettore della forma $\alpha _1  v_1 + \alpha _2  v_2 + \cdots + \alpha _n  v_n$ 
+	con scalari $\alpha _1 , \alpha _2 , \cdots, \alpha _n$. 
+	\begin{itemize}
+		\item L'insieme delle combinazioni lineari di $a$ si denota con $<a>$.
+		\item $\lbrace \rbrace$ e' un insieme finito di vettori. \\
+		\item Per convenzione, $\textbf{0}$ e' (l'unica) combinazione lineare di $\lbrace \rbrace$
+	\end{itemize}
+	
+	\paragraph*{Proposizione} Se $a =  \lbrace v_1, v_2, \cdots, v_n \rbrace$ e' un insieme finito di vettori in $V$, 
+			  allora $<a>$ e' uno sottospazio di $V$
+	\paragraph*{Proposizione} Se $V \neq \lbrace \textbf{0} \rbrace $, allora $V$ e' un insieme infinito.
+	
+	\paragraph*{Proposizione} Se $\alpha v = \textbf{0}$, allora $\alpha = 0$ oppure $v = \textbf{0}$
+	
+	\paragraph*{Proposizione} Se $v \neq 0$ e $\alpha , \beta$ sono scalari distinti, allora $\alpha v \neq \beta v$
+	
+	\subsection{Spazio delle Colonne}
+	Sia $A = [ a_1, a_2, \cdots, a_n] m \times n$. Si definisce lo spazio delle colonne $C(A)$ di $A$ come 
+	\[	C(A) = <a_1; a_2; \cdots ; a_n> \hspace{0.7cm} sottospazio \hspace{0.2cm} di \hspace{0.2cm} \mathbb{C}^{m} \] 
+	\textbf{Esempio}: 
+	\begin{equation*}
+		\begin{split}
+			A = \begin{bmatrix} 1 & 2 & -1 \\ -1 & 1 & 4 \\ 0 & 0 & 0 \end{bmatrix}
+			&= \begin{bmatrix} v_1 & v_2 & v_3 \end{bmatrix} \\
+			a &= \lbrace v_1 ; v_2 ; v_3 \rbrace \\
+			C(A) = <a> &= <v_1; v_2 ; v_3> \\
+			\alpha _1 v_1 + \alpha _2 + v_2 + \alpha _3 + v_3 &= 
+			\begin{bmatrix}
+				\alpha _1 + 2\alpha _2 - \alpha _3 \\
+				-\alpha _1 + \alpha _2 = 4 \alpha _3 \\
+				0
+			\end{bmatrix}
+		\end{split}
+	\end{equation*}
+	
+	\paragraph*{Proposizione} Sia $\mathbb{C}^{3} = <e_1; e_2; e_3>$. Sia inoltre 
+	\[ \alpha _1 e_1 + \alpha _2 e_2 + \alpha _3 e_3 = \begin{bmatrix} \alpha _1 \\ \alpha _2 \\ \alpha _3 \end{bmatrix} \]
+	Non esistono insiemi $a$ con meno di tre elementi tali che $<a> = \mathbb{C}^3$
+	\subsection{Linearità dipendente e indipendente}
+	\begin{itemize}
+	\item $a = \lbrace v_1; v_2; \cdots; v_n \rbrace$ e' \textbf{linearmente dipendente} se esistono 
+						 $\alpha _1, \alpha _2, \cdots, \alpha _n$ non tutti nulli, tali che 
+	\[ \alpha_1 v_1 + \alpha_2 v_2 + \cdots + \alpha_n v_n = \textbf{0} \]
+	\item Se si permutano gli elementi di un insieme linearmente dipendente, si ottiene un insieme 
+					    linearmente dipendente
+	\item $a = \lbrace v_1; v_2; \cdots; v_n \rbrace$ e' linearmente dipendente se e solo se uno dei vettori 
+						 di $a$ e' combinazione lineare dei rimanenti
+	\item L'insieme $a = \lbrace v_1; v_2; \cdots; v_n \rbrace$ e' \textbf{linearmente indipendente} se, da 
+							 \[ \alpha_1 v_1 + \alpha_2 v_2 + \cdots + \alpha_n v_n = \textbf{0} \] segue
+							 \[ \alpha_1 = 0, \alpha_2 = 0,  \cdots , \alpha_n = 0 \]
+	\item Diremo che $B$ e' un sottoinsieme di $a$ se si ottiene da $a$ eliminando qualche elemento. 
+		  Se $B \subseteq a$ e $a$ e' linearmente indipendente, allora $B$ e' linearmente indipendente, 
+		  analogo se $a$ e' linearmente dipendente
+	\item $\lbrace v \rbrace $ e' linearmente indipendente se e solo se $v \neq \textbf{0}$
+	\end{itemize}
+	\paragraph*{Teorema} L'insieme delle colonne dominanti di una matrice in forma ridotta e' linearmente indipendente. \\
+	\paragraph*{Dimostrazione}
+		  \[ U = \begin{bmatrix}
+		  	u_1 & u_2 & u_3 & u_4 & u_5 & u_6 & u_7 \\
+		  	1 & 3 & 2 & 4 & 6 & 8 & -1 \\
+		  	0 & 0 & 1 & 5 & 7 & 9 & -2 \\
+		  	0 & 0 & 0 & 0 & 0 & 1 & -3 \\
+		  	0 & 0 & 0 & 0 & 0 & 0 & 1 \\
+		  	0 & 0 & 0 & 0 & 0 & 0 & 0
+		  \end{bmatrix} \]
+		  $\lbrace u_1; u_3; u_6; u_7 \rbrace$ e' linearmente indipendente, in quanto 
+		  \[ \alpha_1 u_1 + \alpha_2 u_3 + \alpha_3 u_6 + \alpha_4 u_7 = \textbf{0} \]
+		  \[
+		  \begin{cases}
+		  	\alpha_1 + 2\alpha_2 + 8\alpha_3 - \alpha_4 = 0 \\
+		  	\alpha_2 + 9\alpha_3 - 2\alpha_4 = 0 \\
+		  	\alpha_3 - 3\alpha_4 = 0 \\ 
+		  	\alpha_4 = 0
+		  \end{cases}
+		  \]
+		  La matrice del sistema e' $ \begin{bmatrix}u_1 & u_3 & u_6 & u_7 & | & 0 \end{bmatrix}$. Essa e' in forma 
+		  ridotta e le colonne delle incognite sono dominanti: 
+		  \[ \rightarrow \alpha_1 = 0 , \alpha_2 = 0, \alpha_3 = 0, \alpha_4 = 0 \]
+		  Ogni colonna non dominante di una matrice in forma ridotta e' combinazione lineare delle colonne dominanti 
+		  che la precedono
+	\paragraph*{Proposizione} Supponiamo che $a = \lbrace v_1; \cdots ; v_n \rbrace$ sia linearmente dipendente e 
+							 sia $B$ l'insieme che si ottiene da $a$ rimuovendo un vettore che sia combinazione lineare 
+							 dei rimanenti. Allora $<B> = <a>$.
+	\paragraph*{Corollario} Se $B \subseteq a$, allora $<B> \subseteq <a>$
+	
+	
+	\subsection{Insieme (o sistema) di Generatori}
+	Sia $V$ uno spazio vettoriale su un campo $\mathbb{K}$.\\ Un insieme di vettori $\lbrace v_1, v_2, \cdots, v_n 
+	\rbrace \subseteq V$ e' un sistema di generatori (o insieme di generatori) di $V$ se ogni elemento di $V$ si può
+	esprimere mediante una combinazione lineare di tali vettori. 
+	\begin{itemize}
+		\item Diremo quindi che $a$ e' un insieme di generatori di $V$ se $<a> = V$
+		\item $V$ e' finitamente generato se ha un insieme di generatori
+	\end{itemize}
+	
+	\paragraph*{Proposizione} Se $a = \lbrace v_1 ; \cdots ; v_n \rbrace$ e' un insieme di generatori di V e 
+						 $B = \lbrace w_1; \cdots; w_m \rbrace$ e' linearmente indipendente (in $V$), allora $m \leq n$ (Steinitz)
+	\begin{itemize}
+		\item Un insieme di generatori di V che sia linearmente indipendente si chiama una \textbf{base} di $V$
+		\item Ogni spazio vettoriale finitamente generato ha una base
+	\end{itemize}
+	
+	\paragraph*{Teorema} Se $a = \lbrace v_1 ; \cdots ; v_n \rbrace$ e $B = \lbrace w_1; \cdots; w_m \rbrace$ 
+						sono basi si $V$, allora $m = n$
+	\paragraph*{Dimostrazione} 
+	\[ 
+		m \leq n
+		\begin{cases}
+			a \hspace{1.0cm} ins.generatori \\
+			B \hspace{1.0cm} lin.indip.
+		\end{cases}
+		n \leq m
+		\begin{cases}
+			a \hspace{1.0cm} lin.indip \\
+			B \hspace{1.0cm} ins.generatori
+		\end{cases}
+	\]
+	
+	\subsection{Dimensione di V}
+	Se $V$ e' uno spazio vettoriale finitamente generato, il numero di elementi in una base di $V$ si chiama 
+	\textbf{dimensione di V} e si rappresenta come $dimV$
+	\paragraph*{Esempio} $dim\mathbb{C}^n = n$ in quanto $\lbrace e_1; \cdots; e_n \rbrace$ e' una base di $\mathbb{C}^n$
+	\paragraph*{Esempio} $dim \lbrace \textbf{0} \rbrace = 0$ perché $\lbrace \rbrace$ e' una base
+	\paragraph*{Esempio} $dimM_{m \times n}(\mathbb{C)} = mn$. 
+	\noindent \\ \\
+	Si supponga $V$ finitamente generato. Il minimo numero di elementi in un insieme di generatori e' $dimV$ 
+	\paragraph*{Teorema} Sia $dimV = n$. 
+		\begin{itemize}
+			\item Se $\lbrace v_1; \cdots ; v_n \rbrace $ e' un insieme di generatori, allora e' una base
+			\item Se $\lbrace v_1; \cdots ; v_n \rbrace $ e' linearmente indipendente, allora e' una base
+		\end{itemize}
+	\paragraph*{Dimostrazione}
+	Ad esempio, se $\lbrace v_1; \cdots ; v_n \rbrace $ non fosse una base, sarebbe linearmente dipendente. 
+	Ma allora troverei una base di $V$ con meno di $n$ elementi.
+	
+	\paragraph*{Esercizio} Si dimostri che 
+	\[ \lbrace v_1 = \begin{bmatrix} 1 \\ -1 \\ 0 \end{bmatrix} ;
+			   v_2 = \begin{bmatrix} 2 \\ 1 \\ -1 \end{bmatrix} ;
+			   v_3 = \begin{bmatrix} 0 \\ 0 \\ -1 \end{bmatrix}
+	   \rbrace \] e' una base di $\mathbb{C}^3$.\\
+	   Devo vedere chi e' linearmente \textbf{indipendente}: suppongo 
+	   \[ \lbrace \alpha_1 v_1 + \alpha_2 + v_2 + \alpha_3 + v_3 = 0 \rbrace \]
+	   \[ \begin{bmatrix}
+	   		1 & 2 & 0 \\
+	   		-1 & 1 & 0 \\
+	   		0 & -1 & -1
+	   	  \end{bmatrix} \stackrel{E_{21}}{\longrightarrow}
+	   	  \begin{bmatrix}
+	   		1 & 2 & 0 \\
+	   		0 & 3 & 0 \\
+	   		0 & -1 & -1
+	   	  \end{bmatrix} \stackrel{E_{32}(1)}{\stackrel{E_2(\frac{1}{3})}{\longrightarrow}}
+	   	  \begin{bmatrix}
+	   		1 & 2 & 0 \\
+	   		0 & 1 & 0 \\
+	   		0 & 0 & 1
+	   	  \end{bmatrix}
+	   	\]
+	
+	\paragraph*{Proposizione} Se $U$ e' un sottospazio di $V$ (finitamente generato), 
+							  allora $U$ e' finitamente generato e $dimU \leq dimV$
+	\paragraph*{Corollario} $U=V$ se e solo se $dimU = dimV$
+
+	\subsection{Formula di Grassmann}
+	\paragraph*{Enunciato}
+	Sia $V$ uno spazio vettoriale su un campo $\mathbb{K}$. dotato di dimensione finita, 
+	ovvero dotato di una base finita. Siano $W$ e $U$ due sottospazi di $V$. 
+	Indicando con $W + U$ il sottospazio somma di $W$ e $U$ dato da 
+	\[ W + U := \lbrace \textbf{w + u} \vert \textbf{w} \in W, \textbf{u} \in U \rbrace \]
+	e con $W \cap U$ il loro sottospazio intersezione, la formula di Grassmann afferma che 
+	\[ dim(W + U) = dim(W) + dim(U) - dim(W \cap U) \]
+	\paragraph*{Somma diretta}
+	Due sottospazi $U$ e $W$ sono in somma diretta se $U \cap W = \lbrace \textbf{0} \rbrace $. 
+	La formula di Grassmann asserisce che 
+	\[ dim(U + W) = dim(U) + dim(W) \]
+	Se inoltre $V = U + W$, si dice che $V$ si decompone in somma diretta di $U$ e $W$ e si scrive:
+	\[ V = U \oplus W  \Leftrightarrow U \cap W = \lbrace \textbf{0} \rbrace \]
+	In questo caso il sottospazio $W$ e' un \textbf{supplementare} di $U$ (e viceversa)
+	\paragraph*{Condizioni Equivalenti} Per due sottospazi $U,K$ di $V$ le seguenti condizioni sono equivalenti:
+	\begin{itemize}
+		\item $U + K = U \oplus K \Leftrightarrow U \cap K = \lbrace \textbf{0} \rbrace$
+		\item Ogni elemento di $U + K$ si scrive \textbf{in modo unico} come $u + k$, con $u \in U, k \in K$.
+		\item Se $u \in U, k \in K, u + k = 0$, allora $u = 0, k = 0$
+	\end{itemize}
+	
+	\newpage
+	\section{Basi}
+	Si dice base di uno spazio vettoriale un insieme di vettori grazie ai quali si può ricostruire in modo unico tutti i vettori dello spazio mediante combinazioni lineari. 
+	\subsection{Applicazione Lineare}
+	Una trasformazione lineare, detta anche \textbf{applicazione lineare} o \textbf{mappa lineare} e' una
+	funzione lineare tra due spazi vettoriali sullo stesso campo, preservandone le combinazioni lineari.
+	\paragraph*{Enunciato} Siano $V$ e $W$ due spazi vettoriali sullo stesso campo $\mathbb{K}$. Una funzione 
+	\[ f : V \rightarrow W \] e' una trasformazione lineare se soddisfa le seguenti proprietà:
+	\begin{itemize}
+		\item Additività : $f(x + y) = f(x) + f(y)$
+		\item Omogeneità di grado 1 : $f(\alpha x) = \alpha f(x)$
+	\end{itemize}
+	per ogni coppia di vettori $x$ e $y$ in $V$ e per ogni scalare $\alpha$ in $\mathbb{K}$. \\
+	\textbf{Nota} Se $f : V \rightarrow W$ e' lineare, allora $f(\textbf{0}) = \textbf{0}$ 
+	
+	\subsection{Proprietà delle applicazioni Lineari}
+	
+	\begin{itemize} 
+	\item Sia $f : V \rightarrow W$. $f$ e' lineare se, per $u,v \in V$, $\alpha$ scalare 
+	\begin{equation*}
+		\begin{split}
+		f(u + v) &= f(u) + f(v) \\
+		f(\alpha v) &= \alpha f(v)
+		\end{split}
+	\end{equation*}
+	
+	\item Sia $f : U \rightarrow V, g:V \rightarrow W$, con ($U,V,W$ spazi vettoriali) 
+						   e siano $f,g$ lineari. Allora $g \circ f : U \rightarrow W$ e' lineare.
+	\item  $f : V \rightarrow W$ e' iniettiva se, da $v_1 \neq v_2 (v_1,v_2 \in V)$ 
+						    segue \\ $f(v_1) \neq f(v_2)$
+	\item $f : V \rightarrow W$ e' iniettiva se, da $f(v_1) = f(v_2) (v_1,v_2 \in V)$ 
+						   segue $v_1 = v_2$
+	\item Sia $f:V \rightarrow W$. Lo spazio nullo (o nucleo) di $f$ e'
+						   \[N(f) = \lbrace v \in V \vert f(v) = 0 \rbrace \]
+	\item Sia $f:V \rightarrow W$ lineare. Allora $f$ e' iniettiva se e solo 
+						   se $N(f) = \lbrace 0 \rbrace$
+	\item Sia $f : V \rightarrow W$ lineare, $Im(f) = \lbrace f(v) \vert v \in V \rbrace$.
+				   $Im(f)$ e' uno sottospazio di $W$ 
+				   \begin{enumerate}
+				   	\item $0 = f(0) \in Im(f)$
+				   	\item $w_1, w_2 \in Im(f), \alpha_1, \alpha_2$ scalari. Allora:
+				   	\begin{equation*}
+				   		\begin{split}
+				   		w_1 = f(v1)&, w_2 = f(v_2) \\
+				   		\alpha_1 w_1 + \alpha_2 w_2 &= \alpha_1 f(v_1) + \alpha_2 f(v_2) \\
+				   		&= f(\alpha_1 v_1 + \alpha_2 v_2) \in Im(f)
+				   		\end{split}
+				   	\end{equation*}
+				   	
+				   \end{enumerate}
+	\item $f:V \rightarrow W$ e' suriettiva se $Im(f) = \textbf{W}$
+	\item Supponiamo $f:V \rightarrow W$ lineare e biettiva (ovvero iniettiva e suriettiva). 
+		  Si può definire $f^{-1} : W \rightarrow V$ con $f^{-1}(w) = v$ se e solo se $f(v) = w$. 
+		  Allora $f^{-1}$ e' lineare
+	\item $f \circ f^{-1} = id_w; f \circ f^{-1}(w) = w ; f^{-1} \circ f = id_v ; f^{-1}(f(v)) = v$
+	\item Sia $f : U \rightarrow V, g : V \rightarrow W$, con $g$ biettiva. Allora $rk(g \circ f) = rk(f)$
+	\item $f = g^{-1} \circ g \circ f$
+	\item Se $f$ e' biettiva, allora $rk(g) = rk(g \circ f)$
+	\end{itemize}
+
+	\subsection{Teorema nullità più rango}
+	\paragraph*{Definizione} Il teorema del rango, detto anche teorema nullità più rango, o teorema della
+							 dimensione, afferma che la somma tra la dimensione dell'immagine e la dimensione
+							 del nucleo di una trasformazione lineare e' uguale alla dimensione del dominio.
+							 In modo equivalente, la somma del rango e della nullità di una matrice e' uguale 
+							 al numero di colonne della matrice.
+	\paragraph*{Enunciato} Se $f:V \rightarrow W$ e' lineare e $V$ e' finitamente generato, allora $Im(f)$ 
+						   e' linearmente generato e  \[ dimV = dimN(f) + dimIm(f) \] con $dimN(f)$ la 
+						   nullità e $dimN(f)$ il rango.
+	\begin{itemize}
+		\item $dimIm(f)$ si chiama rango di $f$. Siccome $Im(f_A) = C(A)$, il rango di $A$ e' $dimC(A)$.
+		\item Il rango della matrice $A$ e' $dimC(A)$
+		\item $f$ e' iniettiva se $dimN(f) = 0$
+		\item $f$ e' suriettiva se $dimIm(f) = dimV$
+		\item Il rango di $f$ si può descrive come $rk = dimIm(f)$
+		\item $rk(g \circ f) \leq rk(g)$
+	\end{itemize}
+	
+	
+	\subsection*{Proprietà del rango}
+	\begin{itemize}
+	
+	
+	\item Un insieme di colonne di $A$ e' linearmente dipendente se e solo se 
+						  il corrispondente insieme di colonne di $B$ e' linearmente dipendente, 
+						  analogo con "indipendente"
+	\item{Enunciato} $U$ in forma ridotta:
+		\begin{itemize}
+			\item Le colonne dominanti formano un insieme linearmente indipendente 
+			\item Le colonne non dominanti sono combinazione lineare delle colonne dominanti
+		\end{itemize}
+	
+	
+	\item Sia $A$ matrice $m \times n$, $F$ una matrice $m \times m$ invertibile. 
+						  Poniamo B = FA. $rk(f_A) = rk(f_F \circ f_A) = rk(f_{FA}) = rk(f_B)$
+	
+	\item Siano $A (m \times n)$, $U = FA$ con $F$ invertibile. Allora $rk(A) = rk(U) =$ numero di colonne dominanti.
+	Una base di $C(A)$ e' l'insieme delle colonne di A corrispondenti alle colonne dominanti di $U$.
+	
+	\paragraph{Esempio} \[ A = \begin{bmatrix} 1 & 2 & -1 \\ -1 & 1 & 4 \\ 0 & 0 & 0 \end{bmatrix} \stackrel{E_2(\frac{1}{3})}
+						{\stackrel{E_{21}(1)}{\longrightarrow}} \begin{bmatrix}
+							1 & 2 & -1 \\ 0 & 1 & 1 \\ 0 & 0 & 0  \end{bmatrix} \Rightarrow C(A) = \lbrace 
+							\begin{bmatrix} 1 \\ -1 \\ 0 \end{bmatrix} ; \begin{bmatrix} 2 \\ 1 \\ 0 	\end{bmatrix} \rbrace
+						\]
+	\item Si supponga $A$ $m \times n$, $G n \times n$ invertibile. Allora $C(A) = C(AG)$
+	\item Sia $B = FA, F$ invertibile. Allora $B^H = A^H F^H, F^H$ invertibile. 
+		  Quindi $dimC(A^H) = dimC(B^H) \Leftrightarrow rkA^H = rkB^H$
+
+	\item Se $U$ e' in forma ridotta, allora $dimC(U) = dimC(U^H)$, con $dimC(U)$ il numero di colonne dominanti e
+		  $dimC(U^H)$ il numero di righe non nulle in $U$
+	\paragraph*{Esempio} 
+	\[  U = 
+		\begin{bmatrix} 
+			1 & * & * & * & *  & * \\
+			0 & 0 & 1 & * & * & * \\
+			0 & 0 & 0 & 0 & 0 & 1 \\
+			0 & 0 & 0 & 0 & 0 & 0 
+		\end{bmatrix} 
+	\]
+	\[  U^T = 
+		\begin{bmatrix}
+		1 & 0 & 0 & 0 \\
+		* & 0 & 0 & 0 \\
+		* & 1 & 0 & 0 \\
+		* & * & 0 & 0 \\
+		* & * & 0 & 0 \\
+		* & * & 1 & 0 
+		\end{bmatrix}
+		\Rightarrow 
+		\begin{cases}
+		\alpha_1 = 0  \\ \\
+		 *\alpha_1 + \alpha_2 = 0 \\ \\ 
+		*\alpha_1 + *\alpha_2 + \alpha_3 = 0 \\
+		\end{cases}
+	\]
+	\item Sia $A$ una matrice, $U = FA, U$ ridotta. Allora \[ rkA = rkU= rkU^H = rkA^H \] lo stesso con $A^T$)
+	\end{itemize}
+
+	\paragraph*{Esercizio} Sia \[a = \lbrace \begin{bmatrix}1 \\ -1 \\0 \\ 1 \end{bmatrix}; 
+	\begin{bmatrix}0 // 1 // 0 // 1 \end{bmatrix} \rbrace \] Voglio estenderlo a una base di $\mathbb{C}^4$.
+	\[
+	A= \begin{bmatrix}1 & 0 \\ -1 & 1 \\ 0 & 0 \\ 1 & 1 \end{bmatrix} : \mathbb{C}^4 = C(A) \oplus N(A^H) \]
+	Una base di $C(A)$ e' $a$. Basta trovare quindi una base di $N(A^H)$
+	\[ 
+		A^H = \begin{bmatrix} 1 & -1 & 0 & 1 \\ 0 & 1 & 0 & 1 \end{bmatrix} \stackrel{E_{12}(1)}{\Longrightarrow}
+		\begin{bmatrix}1 & 0 & 0 & 2 \\ 0 & 1 & 0 & 1 \end{bmatrix}\begin{cases} x_1 = -2x_4 \\ x_2 = -x_4 \end{cases}
+	\]
+	Scriviamo $B$ come la base di $N(A^H)$
+	\[ B = \lbrace \begin{bmatrix} 0 \\ 0 \\ 1 \\ 0 \end{bmatrix} ; \begin{bmatrix} 0 \\ 0 \\ 1 \\ 0 \end{bmatrix} \rbrace \]
+	Quindi 
+	\[ \lbrace \begin{bmatrix} 1 \\ -1 \\ 0 \\1 \end{bmatrix} ; \begin{bmatrix} 0 \\ 1 \\ 0 \\ 1 \end{bmatrix} ; 
+			  \begin{bmatrix} 0 \\ 0 \\ 1 \\ 0 \end{bmatrix} ; \begin{bmatrix} -2 \\ -1 \\ 0 \\ 1 \end{bmatrix} \rbrace \]
+			  e' una base di $\mathbb{C}^4$			   
+	\paragraph*{Esercizio}
+	\[ A = \begin{bmatrix} 1 & i & 6 & 8i \\ 2i & -2 & 0 & 9 \\ 1 & i & 6 & 8i \end{bmatrix} 
+		\stackrel{E_2(\frac{1}{12i})}{\stackrel{E_{31}(-1)}{\stackrel{E_{21}(-2i)}{\Longrightarrow}}}
+		\begin{bmatrix} 1 & i & 6 & 8i \\ 0 & 0 & 1 & 2i \\ 0 & 0 & 0 & 0 \end{bmatrix}
+	\] La prima e la terza colonna sono linearmente indipendenti, quindi $rkA = 2$. Calcoliamo quindi $C(A)$
+	\[ C(A) = \lbrace \begin{bmatrix} 1 \\ 2i \\ 1 \end{bmatrix} ; \begin{bmatrix} 6 \\ 0 \\ 6 \end{bmatrix} \rbrace \]
+	Calcoliamo ora $N(A)$
+	\[ \stackrel{E_{12}(-6)}{\Longrightarrow}\begin{bmatrix}
+	1 & i & 0 & -4i \\ 0 & 0 & 1 & 2i \\ 0 & 0 & 0 & 0 
+	\end{bmatrix} \begin{cases} x_1 = -ix_2 + 4ix_4 \\ x_3 = -2ix_4 \end{cases} \]
+	\[ N(A) = \lbrace \begin{bmatrix} -i \\ 1 \\ 0 \\ 0 \end{bmatrix} ;
+			 \begin{bmatrix} 4i \\ 0 \\ -2i \\ 1 \end{bmatrix} \rbrace
+	 \]
+	 Possiamo dire che $dim\mathbb{C}^4 = dimN(A) + rkA = 2 + 2 = 4$. Calcoliamo ora il rango di $A^H$
+	 \[ A^H = \begin{bmatrix} 1 & -2i & 1 \\ -i & -2 & -i \\ 6 & 0 & 6 \\ -8i & 8 & -8i \end{bmatrix} 
+	   \stackrel{E_{41}(8i)}{\stackrel{E_{31}(-6)}{\stackrel{E_{21}(i)}{\Longrightarrow}}} 
+	   \begin{bmatrix} 1 & -2i & 1 \\ 0 & 0 & 0 \\ 0 & 12i & 0 \\ 0 & 24 & 0 \end{bmatrix}
+	   \stackrel{E_{42}(-24)}{\stackrel{E_{2}(\frac{1}{12i})}{\stackrel{E_{23}}{\Longrightarrow}}}
+	   \begin{bmatrix} 1 & -2i & 1 \\ 0 & 1 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 0 \end{bmatrix}
+	   \]
+	  Il rango di $A^H$ e' equivalente a 2 $\Longrightarrow rkA^H = 2$. Calcoliamo $C(A^H)$ 
+	  \[ C(A^H) = \lbrace \begin{bmatrix} 1 \\ -i \\ 6 \\ -8i \end{bmatrix} ; 
+	  \begin{bmatrix} -2i \\ -2 \\ 0 \\ 8 \end{bmatrix} \rbrace \]
+	  Infine calcoliamo $N(A^H)$. 
+	  \[ \stackrel{E_{12}(2i)}{\Longrightarrow}\begin{bmatrix}  1 & 0 & 1 \\ 0 & 1 & 0 \\ 0 & 0 & 0 \\ 0 & 0 & 0  \end{bmatrix}
+	  \begin{cases} x_1 = -x_3 \\ x_2 = 0 \end{cases} \]
+	  \[ N(A^H) = \lbrace \begin{bmatrix} -1 \\ 0 \\ \color{red}{1} \end{bmatrix} \rbrace \]
+	  
+	  \subsection{Applicazione delle coordinate rispetto alla base}
+	  Sia $V$ uno spazio vettoriale, $B = \lbrace v_1; \cdots; v_n \rbrace$ una base. Se $v \in V$, allora 
+	  \[v = \alpha_1 v_1 + \cdots + \alpha_n v_n \] in modo \textbf{unico}. 
+	  \[ v = \alpha_1 v_1 + \cdots + \alpha_n v_n = \beta_1 v_1 + \cdots + \beta_n v_n  = 
+	  (\alpha_1 - \beta_1)v_1 + \cdots + (\alpha_n - \beta_n) v_n = 0\] 
+	  Quindi per ogni valore compreso tra 1 e $n$,  $\alpha = \beta$. Perciò posso definire
+	  \[ C_B : V \rightarrow \mathbb{C}^n \] tramite 
+	  \[C_B(v) = \begin{bmatrix} \alpha_1 \\ \vdots \\ \alpha_n \end{bmatrix} \] se e solo se 
+	  \[ v = \alpha_1 v_1 + \alpha_2 v_2 + \cdots + \alpha_n v_n \]
+	  Si definisce quindi $C_B$ come l'applicazione delle coordinate rispetto alla base $B$.
+	  
+	  \subsection{Proprietà delle coordinate rispetto alla base}
+	  \begin{itemize}
+	  	\item $C_B$ e' lineare e biettiva. 
+	  		\begin{equation*}
+	  			\begin{split}
+	  				v,w \in V: v &= \alpha_1 v_1 + \cdots + \alpha_n v_n \\
+	  				&= \beta_1 v_1 + \cdots + \beta_n v_n \\
+	  				v + w &= (\alpha_1 + \beta_1) v_1 + \cdots + (\alpha_n + \beta_n)v_n   
+	  			\end{split} 
+	  		\end{equation*} 
+	  	\item $C_B$ e' iniettiva: se $C_B = \textbf{0}$, allora $v = 0v_1 + 0v_2 + \cdots + 0v_n = 0$. 
+	  		 Ma allora $dimV = n = dim\mathbb{C}^n$. Perciò $C_B$ e' anche suriettiva.
+	  \end{itemize}
+	  
+	  \paragraph*{Esercizio}
+	  Sia $V = P_4(\mathbb{C})$, con $P$ rappresentante polinomi di grado inferiore al 4. Una base e' sicuramente 
+	  \[ \lbrace 1; x ; x^2; x^3 \rbrace = B \] Consideriamo ora $a$ : essa e' una base di $P_4(\mathbb{C})$?
+	  \[ a = \lbrace 1-x; 1 + x; 2 - x^2; x^2 - x^3 \rbrace \].
+	  \paragraph*{Svolgimento (parziale)}
+	  Calcoliamo $C_B$ in base agli elementi di $a$:
+	  \begin{equation*}
+	  	\begin{split}
+	  		C_B(1-x) &=  \begin{bmatrix} 1 \\ -1 \\ 0 \\ 0 \end{bmatrix} \hspace{0.5cm}
+	  		C_B(1+x) =  \begin{bmatrix} 1 \\ 1 \\ 0 \\ 0 \end{bmatrix} \\
+	  		C_B(2-x^2) &=  \begin{bmatrix} 2 \\ 0 \\ -1 \\ 0 \end{bmatrix} \hspace{0.5cm}
+	  		C_B(x^2-x^3) =  \begin{bmatrix} 0 \\ 0 \\ 1 \\ -1 \end{bmatrix} 
+	  	\end{split}
+	  \end{equation*}
+	  Partendo dalla matrice 
+	  \[ \begin{bmatrix}  1 & 1 & 2 & 0 \\ -1 & 1 & 0 & 0 \\ 0 & 0 & -1 & 1 \\ 0 & 0 & 0 & -1 \end{bmatrix} \]
+	  (ovvero l'insieme dei vettori colonna calcolati precedentemente) sfruttiamo l'algoritmo di Gauss per
+	  calcolare la matrice diagonalmente superiore. Troveremo quindi che il rango e' uguale a 4.\\ Quindi, 
+	  possiamo dire che $a$ e' una base per $P_4(\mathbb{C})$.
+	  
+	 
+	\subsection{Base Canonica}
+	Qualunque sia $N \in \mathbb{R}^n$, si definisce base canonica di $\mathbb{R}^n$ l'insieme 
+	\[ \lbrace e_1, e_2, \cdots, e_n \rbrace \] formato dai seguenti vettori : 
+	\begin{equation*} 
+		\begin{split} e_1 &= (1, 0 , \cdots, 0) \\ e_2 &= (0,1,\cdots,0) \\ \cdots &\cdots \cdots \\ 
+					  e_n &= (0,0,\cdots, 1)
+		\end{split}
+	\end{equation*}
+						
+	\subsection{Matrice del Cambiamento di Base}
+	\paragraph{Definizione} 
+	La matrice di cambiamento di base e' una matrice quadrata e invertibile che permette di effettuare 
+	il passaggio da una base di uno spazio vettoriale a un'altra base dello stesso spazio vettoriale. \\
+	\paragraph*{Enunciato} 
+	Siano \[ B = \lbrace v_1, v_2 , \cdots, v_n \rbrace \] \[ B^{'}=\lbrace v_{1}^{'}, v_{2}^{'}, \cdots, v_{n}^{'} \rbrace \]
+	basi dello spazio vettoriale $V$ di dimensione $n$. Per definizione di base di uno spazio vettoriale, 
+	un qualunque vettore $\textbf{w} \in V$ si può scrivere come \[ \textbf{w} = w_1v_1 + w_2 v_2 + \cdots + w_n v_n (*) \]
+	dove $w_1, w_2, \cdots, w_n$ sono le componenti (o coordinate) di $\textbf{w}$ rispetto alla base $B$. 
+	Anche $B^{'}$ e' una base di $V$, dunque 
+	\[ \textbf{w} = \lbrace w_{1}^{'} v^{'}_1 + \cdots + w_{n}^{'} v^{'}_n \rbrace (**) \] dove $w_1^{'}, \cdots, w_n^{'}$ 
+	sono le coordinate di \textbf{w} rispetto alla base $B^{'}$. Nella relazione $(*)$ al posto dei vettori $v_1, 
+	\cdots, v_n$ sostituiamo le precedenti combinazioni lineari.  Con il confronto con $(**)$ otteniamo che 
+	\begin{equation*}
+		\begin{split}
+			w^{'}_1 &= \alpha_{11}w_1 + \alpha_{12}w_2 + \cdots + \alpha_{1n}w_n  \\
+			w^{'}_2 &= \alpha_{21}w_1 + \alpha_{22}w_2 + \cdots + \alpha_{2n}w_n \\
+			\cdots & \cdots \\
+			w^{'}_n &= \alpha_{n1}w_1 + \alpha_{n2}w_2 + \cdots + \alpha_{nn}w_n 
+		\end{split}
+	\end{equation*}
+	Esse forniscono le relazioni che legano le coordinate del vettore $\textbf{w} \in V$ rispetto alle basi $B$ e $B^{'}$.
+	La matrice 
+	\[ M_{B \rightarrow B^{'}} = \begin{bmatrix}
+		\alpha_{11} & \alpha_{12} & \cdots  & \alpha_{1n} \\
+		\alpha_{21} & \alpha_{22} & \cdots  & \alpha_{2n} \\
+		\vdots & \vdots & \ddots & \vdots \\
+		\alpha_{n1} & \alpha_{n2} & \cdots  & \alpha_{nn} \\
+	\end{bmatrix} \]
+	la cui $i$-esima colonna e' costituita dalle coordinate del vettori $v_i$ della base $B$ rispetto alla base
+	$B^{'}$ e' detta \textbf{matrice del cambiamento di base} dalla base $B$ alla base $B^{'}$, e' una matrice invertibile 
+	e la si indica con $M_{B \rightarrow B^{'}}$
+	
+	\subsection{Cambiamenti di Base}
+	Sia $f : V \rightarrow W $, con $B, B^{'}$ basi di $V$, $D,D^{'}$ basi di W. \\
+	Supponiamo di conoscere $A^{'}$ tale che 
+	\[ C_D^{'}(f(v)) = A^{'}C_B^{'}(v) \]. Vogliamo trovare $A$ tale che 
+	\begin{enumerate}
+		\item $C_D(f(v)) = AC_B(v)$
+		\item $C_D^{'}(f(v)) = A^{'}C_{B^{'}}(v)$
+		\item $C_B(v) = M_{B \leftarrow B^{'}}C_{B^{'}}(v)$
+	\end{enumerate}
+	Sappiamo che 
+	\begin{equation*}
+		\begin{split}
+			C_D(f(v)) &= M_{D \leftarrow D^{'}}C_{D^{'}}(f(v)) \\
+			&= M_{D \leftarrow D^{'}}A^{'}C_{B^{'}}(v) \\
+			&= M_{D \leftarrow D^{'}}A^{'}M^{-1}_{B \leftarrow B^{'}}\\
+			A &= M_{D \leftarrow D^{'}}A^{'}M^{-1}_{B \leftarrow B^{'}}
+		\end{split}
+	\end{equation*}
+
+	\subsection{Rappresentazione matriciale delle applicazioni \\ lineari} 
+	\paragraph*{Definizione}
+	Siano $V$ e $W$ due spazi vettoriali di dimensione $m$ e $n$ rispettivamente e sia $T : V
+	\rightarrow W$ una applicazione lineare di $V$ in $W$. Siano inoltre $B = \lbrace v_1 , \cdots, v_n \rbrace$ una base 
+	dello spazio vettoriale $V$ e $C = \lbrace w_1, \cdots, w_n$ una base di $W$.\\
+	La matrice associata ad una applicazione lineare $T : V \rightarrow W$ rispetto alle basi $\lbrace v_1,
+	\cdots, v_n \rbrace$ di $V$ e $ \lbrace w_1 , \cdots , w_n \rbrace$ di $W$ e la matrice che ha per $j$-esima
+	colonna il vettore delle coordinate dell'immagine $T(v_j)$ rispetto alla base di W.
+	\paragraph*{Enunciato}Avendo 
+	\begin{equation*}
+		\begin{split}
+			T(v_1) &= \alpha_{11}w_1 + \cdots + \alpha_{n1} w_n \\
+			\cdots \cdots & \cdots \cdots  \cdots \cdots \\
+			T(v_m) &= \alpha_{1m} w_1 + \cdots + \alpha_{nm} w_n 
+		\end{split}
+	\end{equation*}
+	La matrice 
+	\[
+		A_T ^{B,C} = \begin{bmatrix}
+			\alpha_{11} & \cdots & a_{1m} \\
+			\vdots	& \ddots & \vdots \\
+			a_{n1} & \cdots & a_{nm}	
+		\end{bmatrix}
+	\]
+	Si dice matrice associata alla applicazione lineare $T$ rispetto alle base $B$ e $C$. In altri termini, la matrice
+	associata alla applicazione lineare $T : V \rightarrow W$ rispetto alle basi $ \lbrace v_1 , v_2, \cdots, v_m \rbrace$ 
+	di $V$ e $\lbrace w_1, w_2, \cdots, w_n \rbrace$ di $W$ e' quella matrice che ha per $j$-esima colonna il vettore delle
+	coordinate dell'immagine di $T(v_j)$ rispetto alla base di $W$.
+	\paragraph*{Esercizio}
+	Sia \[T : \underbrace{\mathbb{R}^3}_{V} \rightarrow \underbrace{\mathbb{R}^2}_{W} \] l'applicazione lineare 
+	definita come segue: \[ T(x,y,z) = (x + y , z)\]Vogliamo trovare la matrice associata a tale applicazione lineare 
+	rispetto alle basi
+	\begin{equation*}
+		\begin{split}
+			B &= \lbrace \underbrace{(1,0,1)}_{v_1} , \underbrace{(1,0,0)}_{v_2} , \underbrace{(1,1,1)}_{v_3} 
+			\rbrace \hspace{0.2cm} di \hspace{0.2cm} \mathbb{R}^3 \\  			
+			C &= \lbrace \underbrace{(0,1)}_{w_1}, \underbrace{(1,1)}_{w_2} \rbrace \hspace{0.2cm} di \hspace{0.2cm}
+			\mathbb{R}^2
+		\end{split}
+	\end{equation*}
+	Troviamo innanzitutto le immagini $T(v_1), T(v_2), T(v_3)$ dei vettori della base $B$ tramite l'applicazione lineare:
+	\begin{equation*}
+		\begin{split}
+			T(v_1) &= T(1,0,1) = (\underbrace{1 + 0}_{x + y},\underbrace{1}_{z}) = (1,1)\\
+			T(v_2) &= T(1,0,0) = (1 + 0,0) = (1,0)\\
+			T(v_3) &= T(1,1,1) = (1 + 1, 1) = (2,1)
+		\end{split}
+	\end{equation*}
+	Scriviamo ora i vettori immagine appena scritti come combinazione lineare dei vettori della base $C$
+	\begin{equation*}
+		\begin{split}
+			T(v_1) &= T(1,0,1) = (1,1) = \underbrace{0}_{\alpha_{11}} \cdot \underbrace{(0,1)}_{w_1} + 
+			\underbrace{1}_{\alpha_{21}} \cdot \underbrace{(1,1)}_{w_2} \\
+			T(v_2) &= T(1,0,0) = (1,0) = \underbrace{-1}_{\alpha_{12}} \cdot \underbrace{(0,1)}_{w_1} + 
+			\underbrace{1}_{\alpha_{22}} \cdot \underbrace{(1,1)}_{w_2} \\
+			T(v_3) &= T(1,1,1) = (2,1) = \underbrace{-1}_{\alpha_{13}} \cdot \underbrace{(0,1)}_{w_1} + 
+			\underbrace{2}_{\alpha_{23}} \cdot \underbrace{(1,1)}_{w_2} 
+		\end{split}
+	\end{equation*}
+	Di conseguenza la matrice associata alla applicazione lineare $T$ rispetto alle basi $B$ e $C$ sarà
+	\[ A_T ^{B,C} = \begin{bmatrix} 0 & -1 & -1 \\ 1 & 1 & 2 \end{bmatrix} \]
+	
+	\newpage
+	\section{Spazi Euclidei}
+	\subsection{Lunghezza di un vettore}
+	La lunghezza di un vettore solitamente dovrebbe essere:
+	\begin{itemize}
+		\item un numero reale maggiore di zero
+		\item 0 solo se il vettore e' nullo
+		\item compatibile con il prodotto per scalari
+	\end{itemize}
+	
+	\subsection{Norma su uno spazio vettoriale}
+	Una norma e' una funzione che assegna ad ogni vettore di uno spazio vettoriale, tranne lo zero, una lunghezza positiva.\\
+	Una norma su uno spazio vettoriale reale o complesso $V$ e' una funzione 
+	\[ V \rightarrow \mathbb{R}, v \longmapsto \vert \vert v \vert \vert \] tale che 
+	\begin{enumerate}
+		\item $||v|| \geq 0;$ se $||v|| = 0$, allora $v = 0$
+		\item $||\alpha v|| = |\alpha| \cdot ||v||$
+		\item $||u + v|| \leq ||u|| + ||v||$
+	\end{enumerate}
+	
+	\subsection{Spazio vettoriale Euclideo (prodotto interno)}
+	\paragraph*{Definizione}
+	Uno spazio euclideo e' uno spazio affine (ovvero con una struttura strettamente collegata a quella dello 
+	spazio vettoriale) in cui valgono gli assiomi (principi) e i postulati (assiomi considerati veri senza dimostrazione)
+	della geometria euclidea.
+	\paragraph*{Enunciato}
+	Un prodotto interno su $V$ e' una funzione \[ V \times V \rightarrow \mathbb{C}\]\[ (v,w) \longmapsto (v | w)\]
+	\begin{enumerate}
+		\item $(v|w) = \overline{(w | v)}$
+		\item $(u|\alpha v + \beta w) = \alpha(u | v) + \beta(u|w)$
+		\item $(v|v) \geq 0;$ se $(v|v) = 0$, allora $v = 0$
+	\end{enumerate}
+	Uno spazio vettoriale si dirà euclideo se e' fissato un certo prodotto interno su $V$
+	\paragraph*{Esempio Fondamentale} Il prodotto interno \textbf{standard} su $\mathbb{C}^n$ e' 
+	\[ (v | w) = v^H w \] 	
+	\begin{enumerate} 
+		\item $\overline{(w|v)} = \overline{(w^H v)} = (w^H v)^H = v^H w^{HH} = v^H w = (v | w)  \checkmark$ 
+		\item $\cdots \checkmark$
+		\item $v^H v \geq 0 \checkmark \Longrightarrow v^H v = 0 : v = 0 \checkmark$
+	\end{enumerate}
+	
+	
+	\subsection{Disuguaglianza di Cauchy-Schwarz}
+	Se $V$ e' uno spazio vettoriale euclideo e $v,w \in V$, allora \[ |(v|w)| \leq \sqrt{(v|v)} \sqrt{(w|w)} \]
+	con $\sqrt{(v|v)} = ||v|| $
+	
+	
+	\subsection{Complemento Ortogonale di un Sottospazio}
+	\paragraph*{Enunciato} Sia $U \subseteq V$ un sottospazio di un dato spazio vettoriale euclideo $V$: si definisce il 
+	\textbf{complemento ortogonale} di $U$ in $V$, e lo si indica con $U^{\perp}$, come il sottoinsieme di $V$ definito da 
+	\[ U^\perp := \lbrace v \in V \hspace{0.2cm} t.c. \hspace{0.2cm} (u | v) = 0 \hspace{0.2cm} per 
+	\hspace{0.2cm} ogni \hspace{0.2cm} u \in U \rbrace \]
+	\paragraph*{Proprietà}
+	\begin{itemize}
+		\item $\lbrace 0 \rbrace ^\perp = V $
+		\item $V^\perp = \lbrace 0 \rbrace$
+		\item $u \neq 0 : <u> \bigoplus <u>^\perp = V$
+		\item Se $U = <u_1; \cdots; u_n>$, allora $V = U \bigoplus U^\perp$
+		\item Se $U_1 \\subseteq U_2$ (sottospazi di $V$), allora $U_1 ^\perp \supseteq U_2 ^\perp$
+		\item $U \subseteq U^{\perp \perp}$
+		\item $U^{\perp \perp \perp} = U^\perp$
+		\item $C(A)^\perp = N(A^H)$
+		\item $C(A^H)^\perp = N(A)$
+		\item Se $V$ e' finitamente generato e $U$ e' un sottospazio di $V$, allora $U \bigoplus U^\perp = V$
+	\end{itemize}
+	\paragraph{Enunciato}
+	Ogni vettore $V \in V$ si scrive, in modo unico, come \[v = v^{'} + v^{"} \] con $v^{'} \in U, v^{"} \in U^\perp$.
+	Questo definisce una funzione \[P_U : V \rightarrow V \] che associa $v^{'}$ a $v$ (proiezione ortogonale a $U$) 
+	
+	\newpage
+	\section{Altre operazioni con le matrici}
+	
+	\subsection{Determinante}
+	\paragraph*{Definizione} 
+	Il determinante di una matrice e' un numero associato a ciascuna matrice \textbf{quadrata}, 
+	e ne esprime alcune proprietà algebriche e geometriche. Se $A$ e' una matrice quadrata, il suo determinante si 
+	indica con $det(A)$ o $|A|$, e si calcola in modi differenti a seconda della dimensione della matrice.
+	\paragraph*{Determinante di matrici $1 \times 1$}
+	Il determinante di una matrice formata da un solo elemento e' uguale all'elemento stesso 
+	\[ det \begin{bmatrix} a \end{bmatrix} = a \]
+	\paragraph*{Determinante di matrici $2 \times 2$}
+	Il determinante di una matrice quadrata di ordine 2 (ovvero $2 \times 2$) e' dato dal prodotto degli elementi della
+	diagonale principale meno il prodotto degli elementi dell'antidiagonale (diagonale opposta). Dunque, se abbiamo una
+	matrice $2 \times 2$ possiamo calcolarne il determinante con la formula 
+	\[ det \begin{bmatrix} a & b \\ c & d \end{bmatrix} = (a \dot d) - (b \dot c) \]
+	\paragraph*{Determinante di matrici $3 \times 3$ - Regola di Sarrus}
+	Per calcolare il determinante di una matrice quadrata di ordine 3 possiamo applicare la \textbf{regola di Sarrus}, 
+	secondo cui
+	\[ det \begin{bmatrix} a_{11} & a_{12} & a_{13} \\ a_{21} & a_{22} & a_{23} \\ a_{31} & a_{32} & a_{33} \end{bmatrix} = \]
+	\[ a_{11} \cdot a_{22} \cdot a_{33} + a_{12} \cdot a_{23} \cdot a_{31} + a_{13} \cdot a_{21} \cdot a_{32} - (
+	a_{13} \cdot a_{22} \cdot a_{31} + a_{12} \cdot a_{21} \cdot a_{33} + a_{11} \cdot a_{23} \cdot a_{32}) \]
+	Per semplificare il calcolo, basta riscrivere la matrice accostando la matrice stessa sulla sua destra per poi
+	\begin{enumerate}
+		\item sommare i prodotto lungo le prime tre diagonali complete da sinistra verso destra
+		\item sommare i prodotti lungo le ultime tre antidiagonali complete percorse da destra verso sinistra
+		\item calcolare la differenza tra i risultati ottenuti dai punti $(1)$ e $(2)$
+	\end{enumerate}	
+	\paragraph*{Determinante di matrici di ordine $n$ - Teorema di Laplace}
+	Il teorema di Laplace permette di calcolare il determinante di una matrice quadrata attraverso formule ricorsive, dette
+	\textbf{sviluppi di Laplace}, che possono essere applicate per righe o per colonne, e si possono applicare a 
+	matrici quadrate di ordine $n$ qualsiasi.
+
+	\subparagraph*{Sviluppo di Laplace per righe}
+	Fissata una qualsiasi riga della matrice $A$, il determinante di $A$ e' pari alla somma dei prodotti degli elementi 
+	della riga scelta per i rispettivi complementi algebrici. In formula : 
+	\[ det(A) = \sum_{j=1}^{n} [a_{ij} \cdot (-1)^{i + j} \cdot det(A_{ij}] \]
+	(ci si muove lungo la $i$-esima riga)
+	
+	\subparagraph*{Sviluppo di Laplace per colonne}
+	Fissata una qualsiasi riga della matrice $A$, il determinante di $A$ e' pari alla somma dei prodotto degli elementi 
+	della colonna scelta per i rispettivi complementi algebrici. In formula : 
+	\[ det(A) = \sum_{i=1}^{n} [a_{ij} \cdot (-1)^{i + j} \cdot det(A_{ij}] \]
+	(ci si muove lungo la $j$-esima colonna)
+	
+	
+	\subsection{Autovalori e Autovettori}
+	Sia $A$ una matrice quadrata di ordine $n$ a coefficienti in un campo $\mathbb{K}$, ossia $A \in Math(n,n,\mathbb{K}$. 
+	Si dice che lo scalare $\lambda _0 \in \mathbb{K}$ e' un \textbf{autovalore} della matrice quadrata $A$ se esiste 
+	un vettore colonna non nullo $v \in \mathbb{K}^n$ tale che \[ A\textbf{v} = \lambda _0 \textbf{v} \]
+	Il vettore $v$ e' detto \textbf{autovettore relativo all'autovalore} $\lambda _0$
+	\subsection{Autospazio relativo a un autovalore}
+	Gli autovettori relativi a uno stesso autovalore $\lambda_0$  di una matrice quadrata $A$ di ordine $n$, 
+	insieme al vettore nullo, formano un sottospazio vettoriale di $\mathbb{K}^n$. Tale sottospazio prende il nome di
+	 \textbf{autospazio relativo all'autovalore} $\lambda_n$, si indica con $V_{\lambda_0}$ ed e' definito come segue:
+	\[ V_{\lambda_0} := \lbrace v \in \mathbb{K}^n \hspace{0.4cm} t.c. \hspace{0.4cm} A \textbf{v} = \lambda_0 \textbf{v}
+	\rbrace \]
+	\paragraph*{Osservazione} Se $v_1, v_2, \cdots, v_k$ sono $k \leq n$ autovettori associati ad autovalori distinti di una
+	matrice quadrata $A \in Mat(n,n,\mathbb{K}$ allora $v_1, v_2, \cdots v_k$ sono linearmente indipendenti
+	
+	\subsection{Teorema di Rouche' Capelli}
+	
+	\subsection{Polinomio caratteristico e calcolo di autovalori e \\autovettori di una matrice}
+	\paragraph*{Enunciato}
+	Sia $A$ una matrice quadrata di ordine $n$ a coefficienti in un campo $\mathbb{K}$. Dalla definizione di autovalore si 
+	sa che lo scalare $\lambda_0 \in \mathbb{K}$ e' un autovalore di $A$ se esiste un vettore (colonna) \textbf{non nullo}
+	$v \in \mathbb{K}^n$ tale che \[ A \textbf{v} = \lambda_0 \textbf{v} \] da cui segue che 
+	\[A \textbf{v} - \lambda_0 \textbf{v} = 0 \] ovvero vale a dire che \[ (A - \lambda_0 Id_n)\textbf{v} = 0\] dove con 
+	$Id_n$ rappresenta la matrice identità avente lo stesso ordine della matrice $A$. Dalla teoria sui sistemi lineari, 
+	per poter ammettere una soluzione banale la matrice incompleta associata al sistema deve avere determinante uguale a
+	zero, ovvero \[ det(A - \lambda_0 Id_n) = 0 \] Se si considera $\lambda$ una incognita, allora l'espressione
+	\[ det(A - \lambda Id_n)\] corrisponde a un polinomio, che viene chiamato per definizione 
+	\textbf{polinomio caratteristico} associato alla matrice $A$. \\ Siano $\lambda_1, \lambda_2, \cdots, \lambda_n$ gli
+	autovalori distinti di $A$, con $0 < m \leq n$. Per ogni autovalore $\lambda_i$, si calcola il corrispondente
+	autospazio, cioè lo spazio degli autovettori associati a $\lambda_i$. Per farlo, si deve considerare il sistema lineare
+	omogeneo \[(A-\lambda_i Id_n ) \textbf{v} = 0\] ed estrarne una base per l'insieme delle soluzioni. Si trova cosi una
+	base per l'autospazio relativo a $\lambda_i$ e l'insieme dei vettori che formano la base sono gli autovettori associati
+	all'autovalore $\lambda_i$.
+	\paragraph*{Esercizio}
+	Calcolare gli autovalori e autovettori della matrice 
+	\[A = \begin{bmatrix}2 & 1 & 0 \\ 1 & 3 & 1 \\ 0 & 1 & 2 \end{bmatrix} \]
+	\textbf{Svolgimento}: calcoliamo il polinomio caratteristico associato ad $A$
+	\begin{equation*} 
+		\begin{split}
+			P_A(\lambda) &= det  (A - \lambda I_3) = \\
+			&= det \biggl( \begin{bmatrix} 2 & 1 & 0 \\ 1 & 3 & 1 \\ 0 & 1 & 2
+			 \end{bmatrix} - \lambda \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1  \end{bmatrix} \biggr) = \\
+			&= det \biggl( \begin{bmatrix} 2 & 1 & 0 \\ 1 & 3 & 1 \\ 0 & 1 & 2 
+			 \end{bmatrix} - \begin{bmatrix} \lambda  & 0 & 0 \\ 0 & \lambda & 0 \\ 0 & 0 & \lambda \end{bmatrix} \biggr) = \\
+			&= det \biggl( \begin{bmatrix}2-\lambda & 1 & 0 \\ 1 & 3- \lambda & 1 \\ 0 & 1 & 2-\lambda \end{bmatrix} \biggr)
+		\end{split}
+	\end{equation*}
+	Applicando la regola di Sarrus si ricava che 
+	\[P_A(\lambda) = det \begin{bmatrix}2-\lambda & 1 & 0 \\ 1 & 3- \lambda & 1 \\ 0 & 1 & 2-\lambda \end{bmatrix} = 
+	-\lambda^3 + 7\lambda^2 - 14\lambda + 8 \]
+	Troviamo quindi gli zeri scomponendolo con la regola di Ruffini
+	\[ P_A(\lambda) = 0 \Rightarrow  -(\lambda - 4)(\lambda -2)(\lambda -1) =0 \]
+	Dunque $\lambda_1 = 1, \lambda_2 = 2 , \lambda_3 = 4$ sono gli autovalori della matrice $A$. \\
+	Per determinare gli autovettori associati a $\lambda_1 = 1$ consideriamo il sistema lineare omogeneo 
+	$(A - \lambda_1 I_3) \textbf{v} = 0$, ossia $(A - I_3) \textbf{v} = 0$ \\
+	Per ottenere il sistema lineare in forma estesa sostituiamo $A$ con la matrice fornita, $Id_3$ con la matrice 
+	identità di ordine 3, $\textbf{v}$ col vettore colonna 
+	\[ v = \begin{bmatrix}x \\ y \\ z \end{bmatrix} \] e $\textbf{0}$ col vettore colonna formato da soli zero.
+	\[ 
+		\biggl( \begin{bmatrix} 2 & 1 & 0 \\ 1 & 3 & 1 \\ 0 & 1 & 2 \end{bmatrix} - 
+		\begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} \biggr) \begin{bmatrix} x \\ y \\ z \end{bmatrix} =
+		\begin{bmatrix} 0 & 0 & 0 \end{bmatrix} 
+	\]
+	\[ 
+		\biggl( \begin{bmatrix} 1 & 1 & 0 \\ 1 & 2 &1 \\ 0 & 1 & 1 \end{bmatrix} \begin{bmatrix} x \\ y \\ z \end{bmatrix} \biggr) =
+		\begin{bmatrix} 0 & 0 & 0 \end{bmatrix} 
+	\]
+	\[   \begin{bmatrix} x + y \\ x + 2y + z \\ y + z \end{bmatrix} =\begin{bmatrix} 0 & 0 & 0 \end{bmatrix}  \]\
+	Due matrici sono uguali se hanno le stesse componenti (coefficienti), quindi l'uguaglianza diventerà un sistema lineare:
+	\[ \begin{cases} x + y = 0 \\ x + 2y + z = 0 \\ y + z = 0 \end{cases} \] di cui dobbiamo ricavare una base per lo spazio
+	 delle soluzioni. La matrice incompleta associata al sistema 
+	\[ \begin{bmatrix} 1 & 1 & 0 \\ 1 & 2 & 1 \\ 0 & 1 & 1 \end{bmatrix} \] ha rango uguale a 2. 
+	Infatti ha determinante nullo ed e' immediato trovare una sottomatrice di ordine 2 con determinante diverso da zero. 
+	Per il teorema di Rouche' Capelli il sistema ammette $\infty^{3-2} = \infty^1$ soluzioni. 
+	Assegniamo a una delle incognite il ruolo di parametro libero. \\Ponendo ad esempio $y = a$, con $a \in \mathbb{R}$,
+	ricaviamo la generica soluzione del sistema col metodo di sostituzione:
+	\[ \begin{cases} y = a \\ x + y = 0 \rightarrow x = -a \\ y + z = 0 \rightarrow z = -a \end{cases} \]
+	Le $\infty^1$ soluzioni del sistema sono \[ (x,y,z) = (-a,a,-a) = a(-1,1,-1) \]
+	Possiamo dire che \[ B_{V_{\lambda_1}} = \lbrace(-1,1,-1) \rbrace \] e' una base per l'autospazio 
+	relativo all'autovalore $\lambda_1 = 1$ che $(-1,1,-1)$ e' un autovettore relativo all'autovalore $\lambda_1 = 1$
+	
+	\subsection{Molteplicità algebrica di un autovalore}
+	\paragraph*{Enunciato}
+	Sia $A$ una matrice quadrata di ordine $n$ e sia $\lambda_0$ un suo autovalore. Si dice \textbf{molteplicita algebrica
+	dell'autovalore} $\lambda_0$ il numero che esprime quante volte l'autovalore $\lambda_0$ annulla il polinomio
+	caratteristico e si indica con $m_a(\lambda_0)$
+	\paragraph*{Esercizio}
+	Calcolare la molteplicità algebrica degli autovalori associati alla seguente matrice:
+	\[ A = \begin{bmatrix} 0 & 1 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 1 \end{bmatrix} \]
+	\textbf{Svolgimento}: il polinomio caratteristico $P_A(\lambda)$ e' dato da
+	\begin{equation*}
+		\begin{split}
+		 P_A(\lambda) &= det(A - \lambda Id_3) = det \biggl( \begin{bmatrix} 0 & 1 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 1 \end{bmatrix}
+		 - \lambda \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} \biggr) = \\
+		 &= det(A - \lambda Id_3) = det \biggl( \begin{bmatrix} 0 & 1 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 1 \end{bmatrix}
+		 -  \begin{bmatrix}  \lambda& 0 & 0 \\ 0 & \lambda & 0 \\ 0 & 0 & \lambda \end{bmatrix} \biggr) = \\
+		 &= det \biggl( \begin{bmatrix} -\lambda & 1 & 0 \\ 1 & -\lambda & 0 \\ 0 & 0 & 1 - \lambda \end{bmatrix} \biggr) \\
+		&= (1 - \lambda) (\lambda^2 - 1) 
+		\end{split}
+	\end{equation*}
+	Calcoliamo ora gli zeri del polinomio:
+	\[ P_A(\lambda) = (1 - \lambda) (\lambda^2 - 1) = (1 - \lambda)(\lambda -1)\lambda + 1) \]
+	e quindi gli autovalori della matrice $A$ sono $\lambda_0 = 1, \lambda_1 = -1$. \\
+	Qual e' la loro molteplicità algebrica?
+	\begin{itemize}
+		\item $m_a(1) = 2$ in quanto $\lambda_0 = 1$ annulla due volte il polinomio caratteristico $P_A(\lambda)$
+		\item $m_a(-1) = 1$ in quanto $\lambda_1 = -1$ annulla una sola volta il polinomio caratteristico $P_A(\lambda)$
+	\end{itemize}
+	\subsection{Molteplicità geometrica di un autovalore}	
+	\paragraph*{Enunciato}Data una matrice quadrata $A$ di ordine $n$ e sia $\lambda_0$ un suo autovalore, si definisce
+    \textbf{molteplicità geometrica} di $\lambda_0$ la dimensione dell'autospazio relativo a $\lambda_0$, cioè il numero di
+	elementi di una qualsiasi base dell'autospazio relativo a $\lambda_0$, e si indica con $m_g(\lambda_0)$ \\
+	In termini pratici, la molteplicità geometrica dell'autovalore $\lambda_0$ si calcola con la formula 
+	\[ m_g(\lambda_0) = n - rk(A- \lambda_0 Id_n) \] dove $n$ e' l'ordine della matrice quadrata $A$ e $rk(A-\lambda_0 Id_n)$
+	indica il rango della matrice $(A - \lambda_0 Id_n)$ ottenuta sottraendo ad $A$ la matrice $\lambda_0 Id_n$, data dal
+	prodotto dell'autovalore $\lambda_0$ per la matrice identità di ordine $n$.
+	
+	\paragraph*{Esercizio}
+	Sia $A$ una matrice $3 \times 3$ definita come segue:
+	\[A = \begin{bmatrix} 0 & 1 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 1 \end{bmatrix} \]
+	Abbiamo già calcolato che i suoi autovalori sono $\lambda_0 = 1, \lambda_1 = -1$. Sappiamo inoltre che l'ordine della 
+	matrice e' 3. Dunque
+	\begin{equation*}
+		\begin{split}
+			m_g(\lambda_0) &= n - rk(A - \lambda_0 Id_3) = \\
+			&= 3 - rk \biggl( \begin{bmatrix} 0 & 1 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 1  \end{bmatrix} - 1 \cdot 
+			   \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} \biggr) = \\
+			&= 3 - rk \biggl( \begin{bmatrix} 0 & 1 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 1  \end{bmatrix} -  
+			   \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} \biggr) =  \\
+			 &= 3 - rk \biggl( \begin{bmatrix} -1 & 1 & 0 \\ 1 & -1 & 0 \\ 0 & 0 & 0  \end{bmatrix}  \biggr)  = 3 - 1 = 2
+		\end{split}
+	\end{equation*}
+	Con $\lambda_0 = 1$ otteniamo che la molteplicità geometrica e' uguale a 2
+	\begin{equation*}
+		\begin{split}
+			m_g(\lambda_1) &= n - rk(A - \lambda_1 Id_3) = \\
+			&= 3 - rk \biggl( \begin{bmatrix} 0 & 1 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 1  \end{bmatrix} - (-1) \cdot 
+			   \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} \biggr) = \\
+			&= 3 - rk \biggl( \begin{bmatrix} 0 & 1 & 0 \\ 1 & 0 & 0 \\ 0 & 0 & 1  \end{bmatrix} -  
+			   \begin{bmatrix} -1 & 0 & 0 \\ 0 & -1 & 0 \\ 0 & 0 & -1 \end{bmatrix} \biggr) = \\
+			 &= 3 - rk \biggl( \begin{bmatrix} 1 & 1 & 0 \\ 1 & 1 & 0 \\ 0 & 0 & 2  \end{bmatrix}  \biggr)  = 3 - 2 = 1
+		\end{split}
+	\end{equation*}
+	Con $\lambda_1 = -1$ otteniamo che la molteplicità geometrica e' uguale a 1 \\
+	\textbf{Nota}: $ 1 \leq m_g(\lambda_0) \leq m_a(\lambda_0) \leq n $
+ 	
+	\subsection{Matrice Diagonalizzabile}
+	\paragraph*{Definizione}
+	Una matrice diagonalizzabile e' una matrice quadrata simile a una matrice diagonale. 
+	In altri termini, una matrice $A$ e' diagonalizzabile se esiste una matrice invertibile $P$ tale che 
+	\[PD = AP \] dove $D$ e' una matrice diagonale dello stesso ordine di $A$.
+	
+	\paragraph*{Enunciato} Sia $A$ una matrice quadrata di ordine $n$ a coefficienti in un campo $\mathbb{K}$. 
+	Si dice che $A$ e' una matrice diagonalizzabile se e' simile ad una matrice diagonale $D$ di ordine $n$.
+	Stando alla definizione di matrici simili, ciò equivale ad affermare che $A \in Mat(n,n,\mathbb{K})$ e' 
+	diagonalizzabile se e solo se esiste una matrice invertibile $P$ tale che \[ D = P^{-1} AP \] ossia \[PD = AP \]
+	La matrice $P$ e' detta matrice diagonalizzante di $A$
+	
+	\subsection{Teorema di Diagonalizzabilità}
+	\paragraph{Definizione}
+	Una matrice quadrata $A$ e' diagonalizzabile in un campo $\mathbb{K}$ se e solo se valgono le seguenti condizioni:
+	\begin{enumerate}
+		\item Il numero degli autovalori di $A$ appartenenti al campo $\mathbb{K}$ e contati con la loro molteplicità e' 
+		 pari all'ordine della matrice
+		 \item La molteplicità geometrica di ciascun autovalore coincide con la relativa molteplicità algebrica
+	\end{enumerate}
+	\paragraph*{Casi particolari}
+	\begin{itemize}
+		\item Se $A = (a_{ij})$ e' una matrice simmetrica, cioe' se $a_{ij} = a_{ji}$, per ogni $i \neq j$,
+		 allora $A$ e' diagonalizzabile
+		\item Se $A$ e' una matrice quadrata di ordine $n$ che ammette esattamente $n$ autovalori distinti in $\mathbb{K}$,
+		 allora $A$ e' diagonalizzabile nel campo $\mathbb{K}$
+		 \item Se $\mathbb{K} = \mathbb{C}$, o se $\mathbb{K}$ e' un campo algebricamente chiuso, 
+		 il primo punto del teorema di diagonalizzabilità e' verificato in automatico	
+	\end{itemize}
+	\paragraph*{Esercizio}
+	Stabilire se la seguente matrice e' diagonalizzabile 
+	\[ A = \begin{bmatrix} 0 & 1 & 0 \\ -1 & 0 & 0 \\ 0 & 0 & 1 \end{bmatrix}\]
+	\textbf{Svolgimento} : dobbiamo verificare la validità delle condizioni $(1)$ e $(2)$ del teorema di diagonalizzabilità.
+	Iniziamo calcolando gli autovalori della matrice, che sono gli zeri del polinomio caratteristico.
+	\begin{equation*}
+		\begin{split}
+			P_A(\lambda) &= det(A - \lambda Id_3) = det \biggl( \begin{bmatrix} 0 & 1 & 0 \\ -1 & 0 & 0 \\ 0 & 0 & 1
+			 \end{bmatrix} - \lambda \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix} \biggr) = \\
+			 &= det(A - \lambda Id_3) = det \biggl( \begin{bmatrix} 0 & 1 & 0 \\ -1 & 0 & 0 \\ 0 & 0 & 1
+			 \end{bmatrix} - \begin{bmatrix} \lambda & 0 & 0 \\ 0 & \lambda & 0 \\ 0 & 0 & \lambda \end{bmatrix}
+			 \biggr) = \\
+			 &= det \biggl( \begin{bmatrix} -\lambda & 1 & 0 \\ -1 & -\lambda & 0 \\ 0 & 0 & 1 - \lambda 
+			 \end{bmatrix}\biggr) =\\ 
+			 &= (1-\lambda)(\lambda^2 + 1)
+		\end{split}
+	\end{equation*}
+	Le radici (o zeri) del polinomio caratteristico sono $\lambda_0 =1, \lambda_1 = i, \lambda_2 = -i$. \\
+	Possiamo concludere che la matrice \textbf{non} e' diagonalizzabile in $\mathbb{R}$ perche' per $\mathbb{K} = \mathbb{R}$
+	non e' soddisfatta la prima condizione del teorema di diagonalizzabilità. Tale matrice e' pero diagonalizzabile in 
+	$\mathbb{C}$,infatti in campo complesso ammette 3 autovalori distinti, tinti quant'è l'ordine della matrice.
+	
+	\paragraph*{Esercizio}
+	Stabilire se la matrice $A$ e' diagonalizzabile in $\mathbb{R}$ e in caso affermativo calcolare la matrice 
+	diagonalizzante e la matrice diagonale a cui essa e' simile. 
+	\[ A = \begin{bmatrix} 1 & 2 & 1 \\ 0 & 2 & 0 \\ 1 & -2 & 1 \end{bmatrix} \]
+	\textbf{Svolgimento Prima parte} : 
+	calcoliamo gli autovalori della matrice $A$, dati dagli zeri del polinomio caratteristico
+	\[ P_A(\lambda) := det(A - \lambda Id_3) = (2 - \lambda)(\lambda^2 - 2\lambda) = -\lambda(\lambda - 2)^2 \]
+	I suoi zeri, e quindi gli autovalori della matrice, sono
+	\begin{itemize}
+		\item $\lambda_0 = 0$ con molteplicità algebrica $1 : m_a(0) = 1$
+		\item $\lambda_1 = 2$ con molteplicità algebrica $1 : m_a(2) = 2$
+	\end{itemize}
+	Entrambi appartengono a $\mathbb{R}$ e la somma delle loro molteplicità e' uguale all'ordine della matrice, ma ciò non
+	basta per concludere che $A$ e' diagonalizzabile. Dobbiamo individuare le molteplicità geometriche di $\lambda_0$ e 
+	$\lambda_1$. 
+	\begin{itemize}
+		\item Dal momento che $m_a(0) = 1$, la sua molteplicità geometrica e' automaticamente 1, e quindi 
+		$m_a(0) = m_g(0) = 1$
+		\item Per $\lambda_1 = 2$ bisogna calcolare $m_g(2) = 3 - rk( A - 2Id_3)$. Otterremo che $m_g(2) = 2 = m_a(2)$.
+	\end{itemize}
+	Possiamo concludere dicendo che la matrice $A$ e' diagonalizzabile  \newpage 
+	\textbf{Svolgimento Seconda parte}
+	Per trovare la matrice diagonalizzante dobbiamo determinare gli autovettori relativi a ciascun autovalore. 
+	A tal fine calcoliamo una base per l'autospazio $V_{\lambda_0}$ relativo all'autovalore $\lambda_0 = 0$ e una base 
+	per l'autospazio $V_{\lambda_1}$ associato a $\lambda_1 = 2$. \\
+	Poiché $\lambda_0 = 0, (A - 0Id_n)x = 0$, dove $x \in \mathbb{R}^3$ e' 
+	il vettore colonna delle incognite e $\textbf{0} \in R^3$ e' il vettore colonna formato da soli zero. 
+	\[ \begin{bmatrix} 1 & 2 & 1 \\ 0 & 2 & 0 \\ 1 & -2 & 1 \end{bmatrix} 
+	\begin{bmatrix} x \\ y \\ z \end{bmatrix} \begin{bmatrix} 0 \\ 0 \\ 0 \end{bmatrix}  \Longrightarrow 
+	\begin{cases} x + 2y + z \\ 2y = 0 \\ x - 2y + z = 0 \end{cases} \]
+	In riferimento alla matrice $A$ sappiamo che la molteplciita' geometrica dell'autovalore $\lambda_0 = 0$ e' $m_g(0) = 1$,
+	dunque il precedente sistema ammette $\infty^1$ soluzioni. Assegniamo allora a 1 delle incognite il ruolo di 
+	parametro libero. \\ Ponendo ad esempio $z = \alpha$, con $\alpha \in \mathbb{R}$, le soluzioni del sistema sono
+	\[ (x,y,z) = (-\alpha, 0, \alpha) = \alpha(-1,0,1) \]
+	Una base per l'autospazio relativo a $\lambda_0 = 0$ e' $B_{v_0} = \lbrace (-1,0,1) \rbrace$, 
+	ragion per cui $v_0$ e' un autovettore relativo a $\lambda_0 = 0$. \\
+	Lo stesso processo deve essere applicato per $\lambda_1 = 2$\\
+	Determiniamo quindi una base per lo spazio delle soluzioni:
+	\[(A - 2Id_3) x = 0 \Longrightarrow 
+	\begin{bmatrix}-1 & 2 & 1 \\ 0 & 0 & 0 \\ 1 & -2 & -1	\end{bmatrix}\begin{bmatrix} x \\ y \\ z \end{bmatrix} = 
+	\begin{bmatrix}0 \\ 0 \\ 0	\end{bmatrix} \Rightarrow \begin{cases} -x + 2y + z = 0 \\ x - 2y - z = 0 \end{cases} \]
+	La molteplicità geometrica di $\lambda_1 = 2$ e' $m_g(2) = 2$, dunque il sistema ammette $\infty^2$ soluzioni. 
+	Poniamo $y = \alpha, z = \beta$, con $\alpha, \beta \in \mathbb{R}$, e calcoliamo le soluzioni del sistema 
+	ricavando il valore
+	 dell'incognita $x$ in funzione di $\alpha$ e $\beta$.
+	\[ x - 2y - z = 0 \Rightarrow x = 2y + z \Rightarrow x = 2\alpha + \beta \]
+	Le soluzione del sistema sono 
+	\[ (x,y,z) = (2\alpha + \beta, \alpha, \beta) = \alpha(2,1,0) + \beta(1,0,1) \]
+	Una base dell'autospazio $B_{V_2}$ relativo all'autovalore $\lambda_1 = 2$ e' 
+	\[  B_{V_2} = \lbrace (2,1,0),(1,0,1) \rbrace \] e quindi $v_1 = (2,1,0)$ e $v_2 = (1,0,1)$ autovettori. \\
+	La matrice diagonalizzante $P$, e quindi la nostra soluzione, sara' uguale a 
+	\[ P = \begin{bmatrix}v_0 &  v_1 & v_2 \end{bmatrix} = 
+	\begin{bmatrix} -1 & 2 & 1 \\ 0 & 1 & 0 \\ 1 & 0 & 1  \end{bmatrix} \]
+	Ora non resta che calcolare \[ D = P^{-1} A P \]
+	
+\end{document}
