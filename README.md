@@ -16,6 +16,7 @@ Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman
 - Elaborazione segnali e immagini (In progress)
 - Architettura degli Elaboratori (In progress)
 - Fisica 2
+- Algebra Lineare
 
 #### MAGISTRALE
 - Linguaggi (Con schema delle regole di inferenza)
