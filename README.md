@@ -1,6 +1,7 @@
 # Dispense Informatica Univr
 Collezione di codice LaTex di dispense scritte per alcuni corsi della Laurea in Informatica dell'Università di Verona.
 Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman@hotmail.it`. 
+Bioinfo, non disperate, qualcuno ha pensato anche a voi [qua](https://materialebioinfounivr.wordpress.com/)
 
 ## Corsi inclusi nelle dispense
 #### TRIENNALE:
