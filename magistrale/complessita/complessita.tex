@@ -550,7 +550,8 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 				\forall x \in \instance{A},\ \prob{B}(\alg{A}(x)) = yes \ \Leftrightarrow \ \prob{A}(x) = yes
 			\]
 		\end{definit}
-	ossia se è possibile tramite $\alg{A}$ ridurre un'istanza dell'insieme $\instance{A}$ ad un'istanza del problema $\prob{B}$. L'algoritmo $\alg{A}$ è l'algoritmo di riduzione. \\
+	ossia se è possibile tramite $\alg{A}$ ridurre un'istanza dell'insieme $\instance{A}$ ad un'istanza del problema $\prob{B}$. L'algoritmo $\alg{A}$ è l'algoritmo di riduzione.\\
+	NB: La riduzione alla Karp serve a dimostrare che $\prob{B}$ NON è più facile di  $\prob{A}$\\
 		
 		\begin{prop}
 			Se $ \prob{A} \leqslant_K \prob{B} \quad\text{ e }\quad \prob{B}\in \p \quad \Rightarrow\quad \prob{A}\in\p $
@@ -558,8 +559,11 @@ VerifyK-Colouring(G = (V,E), $ f(v_1), \dots, f(v_n) $)
 		\begin{prop}
 			Se $ \prob{A} \leqslant_K \prob{B} \quad\text{ e }\quad \prob{B}\in \np \quad \Rightarrow\quad \prob{A}\in\np $
 		\end{prop} 
+		\begin{prop}
+			Se $ \prob{A} \leqslant_K \prob{B} \quad\text{ e }\quad \prob{A}\notin \p \quad \Rightarrow\quad \prob{B}\notin\p $
+		\end{prop} 
 		
-		Come effettivamente svolgiamo le trasformazioni?
+		%Come effettivamente svolgiamo le trasformazioni?
 		
 		\subsection{Problema SAT}
 			\begin{definit}[SAT]
