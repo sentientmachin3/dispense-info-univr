@@ -19,6 +19,7 @@ Bioinfo, non disperate, qualcuno ha pensato anche a voi [qua](https://materialeb
 - Architettura degli Elaboratori (In progress)
 - Fisica 2
 - Algebra Lineare
+- Sistemi
 
 #### MAGISTRALE
 - Linguaggi (Con schema delle regole di inferenza)
