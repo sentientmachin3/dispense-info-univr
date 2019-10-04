@@ -1,0 +1,138 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[italian]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{titling}
+\usepackage{libertine}
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+% \setlength{\droptitle}{-12em}
+
+\title{\textbf{Verifica Automatica - Domande di Teoria}}
+\date{}
+\pagenumbering{gobble}
+
+\newcommand{\until}{\mathcal{U}}
+
+\begin{document}
+	\maketitle
+	\section{Dare sintassi e semantica delle formule CTL}
+	\paragraph{Sintassi.} L'alfabeto è costituito da:
+	\begin{itemize}
+		\item \textit{simboli proposizionali:} $p_0, p_1, \dots, p_n$;
+		\item \textit{connettivi logici:} $\rightarrow, \bot$
+		\item \textit{operatori modali:}$\forall \bigcirc, \forall \until, \exists \until, \dots$ ;
+		\item \textit{simboli ausiliari:} $(,)$
+	\end{itemize}
+
+	\paragraph{Semantica.} Dato $M=\langle S,N,V \rangle$, $M \models S \times WFF$ è definita come:
+	\begin{enumerate}
+		\item $M, s \not\models \bot$
+		\item $M, s \models p$ iff $p \in V(s)$
+		\item $M, s \models A \wedge B \iff M, s \models A \wedge M, s \models B$
+		\item $M, s \models A \vee B \iff M, s \models A \vee M, s \models B$
+		\item $M,s \models \neg A \iff M, s \not\models A$
+		\item $M, s \models A \rightarrow B \iff (M, s \models A \rightarrow M, s \models B)$
+		\item $M, s \models \forall \square A \iff \forall b_s \forall s' \in b_s\ M, s' \models A$
+		\item $M, s \models \forall \diamond A \iff \forall b_s \exists s' \in b_s\ M, s' \models A$
+		\item $M, s \models \exists \square A \iff \exists b_s \forall s' \in b_s\ M, s' \models A$
+		\item $M, s \models \exists \diamond A \iff \exists b_s \exists s' \in b_s\ M, s' \models A$
+		\item $M, s \models \forall \bigcirc A \iff \forall s' (sNs' \rightarrow M, s' \models A)$
+		\item $M, s \models \exists \bigcirc A \iff \exists s' (sNs' \wedge M, s' \models A)$
+		\item $M, s \models B\ \exists \until A \iff \exists b_s, \exists k (M, b_s[k] \models A \wedge \forall j \in [0, k-1] b_s[j] \models B)$
+		\item $M, s \models B\ \forall \until A \iff \forall b_s, \exists k (M, b_s[k] \models A \wedge \forall j \in [0, k-1] b_s[j] \models B)$
+	\end{enumerate}
+
+	\section{Si definiscano gli automi di Buchi generalizzati. Dato un automa generalizzato di Buchi B, si definisca il linguaggio accettato da B.}
+
+	Un automa di Buchi non deterministico generalizzato è una tupla \[ G = \langle Q, \Sigma, \delta, Q_0, \mathcal{F}\rangle \]
+	dove \begin{itemize}
+		\item $Q$ è l'insieme degli stati (finito);
+		\item $\Sigma $ è l'alfabeto di simboli utilizzati;
+		\item $\delta : Q \times \Sigma \to 2^Q$
+		\item $Q_0 \subseteq Q$ è l'insieme degli stati inziali;
+		\item $\mathcal{F} \subseteq 2^Q$ è l'insieme degli accept set.
+	\end{itemize}
+
+	Una run $q_0, q_1, \dots, q_n$ è  accettante se ogni accept set è visitato infinitamente spesso, ovvero se \[ \forall F \in \mathcal{F} \overset{\infty}{\exists} i \in \mathbb{N}\ s.t. q_i \in F\]
+	Il linguaggio generato da tali automi è \[ L_\omega(G) = \lbrace  \text{ insieme delle parole infinite che hanno una run accettante } \rbrace \]
+
+	Notare che, se non ci sono stati di accettazione, un GNBA accetta tutte le possibili parole, mentre un NBA (che al posto di $\mathcal{F}$ ha solo un insieme $F$ di stati finali) non accetta nulla.
+
+	\section{Dare sintassi e semantica delle formule LTL. Mostrare come l'operatore $\square$ sia definito a partire dall'until.}
+
+	\paragraph{Sintassi.} La sintassi delle formule LTL è così composta: \[ \phi ::=\ a\ \vert\ true\ \vert\ \phi_1 \vee \phi_2 \vert \neg\ \phi\ \vert\ \bigcirc\ \phi \vert\ \phi_1 \until \phi_2  \]
+
+	dove $a \in AP$.
+
+	\newpage
+	\paragraph{Semantica.} Viene data la semantica per $\sigma = A_0A_1 \dots \in (2^{AP})^\omega$.
+
+	\begin{itemize}
+		\item $\sigma \models true$
+		\item $\sigma \models a$ if $A_0 \models a\ a \in A_0)$
+		\item $\sigma \models \phi_1 \vee \phi_2 $ if $\sigma \models \phi_1$ or $\sigma \models \phi_2$
+		\item $\sigma \models \neg\phi$ if $\sigma \neg\models \phi$
+		\item $\sigma \models \bigcirc	\phi$ if $\text{suffix}(\sigma, 1) = A_1A_2A_3 \dots \models \phi$
+		\item $\sigma \models \phi_1 \until \phi_2$ se esiste $j\geq 0$ tale che:\begin{itemize}
+			\item suffix$(\sigma, j) = A_jA_{j+1}A_{j+2} \dots \models \phi_2\ \wedge$
+			\item suffix$(\sigma, i) = A_iA_{i+1}A_{i+2} \dots \models \phi_1$ for $0 \geq i \geq j$
+		\end{itemize}
+		\item $\sigma \models \diamond \phi$ se e solo se $\exists j\geq 0$ tale che $A_jA_{j+1}A_{j+2} \dots \models \phi$
+		\item  $\sigma \models \square \phi $ se e solo se $\forall j\geq 0$ tale che $A_jA_{j+1}A_{j+2} \dots \models \phi$
+	\end{itemize}
+
+	L'operatore $\square$ è  definito dal weak-until come $\phi\ W\ false$
+
+	\section{Si diano le definizioni di unconditional LTL-fairness, weak LTL-fairness e strong LTL-fairness. Cosa è una traccia fair per un TS?}
+
+	\begin{itemize}
+		\item $\rho$ is uncond. fair se $\overset{\infty}{\exists} i \geq 0 . \alpha_i \in A$;
+		\item $\rho$ is strongly fair se $\overset{\infty}{\exists} i \geq 0. A \cap Act(s_i) \neq \emptyset \implies \overset{\infty}{\exists} i \geq 0. \alpha_i \in A$
+		\item $\rho$ is strongly fair se $\overset{\infty}{\forall} i \geq 0. A \cap Act(s_i) \neq \emptyset \implies \overset{\infty}{\exists} i \geq 0. \alpha_i \in A$
+	\end{itemize}
+
+	Una traccia $\rho$ è $\mathcal{F}-fair$ se, data una fairness assumption \[ \mathcal{F} =\langle \mathcal{F}_{strong}, \mathcal{F}_{weak}, \mathcal{F}_{ucond} \rangle \]
+
+	vale che: \begin{itemize}
+		\item $\rho$ è uncond. fair;
+		\item $\rho$ è strongly fair;
+		\item $\rho$ è  weakly fair.
+	\end{itemize}
+
+	per tutte le $A \in F-\dots$.
+
+	\section{Si dia la definizione di TS. Si definiscano i concetti di cammino infinito e di proprietà di un TS.}
+
+	Un transition system è una tupla \[ T = (S, Act, \rightarrow, S_0, AP, L) \]
+	dove \begin{itemize}
+		\item $S$ è un insieme di stati;
+		\item $Act$ è l'insieme delle azioni;
+		\item $\rightarrow \subseteq S \times Act \times S$ è la relazione di transizione;
+		\item $S_0$ è lo stato iniziale;
+		\item $AP$ è l'insieme delle \textit{atomic propositions}
+		\item $L:S \to 2^{AP}$ è la funzione di labeling.
+	\end{itemize}
+
+	Un \textbf{cammino infinito} è un path che non contiene stati finali, ma continua a reiterare su un self-loop nello stato "finale".
+
+	\section{Dare sintassi e semantica delle formule LTL rispetto ai TS.}
+	Considero solo tracce infinite. Dato un TS senza stati terminali, una formula su $AP \phi$, l'interpretazione di $\phi$ su cammini infiniti è \[ \pi = s_0s_1 \dots \models \phi \iff trace(\pi) \models \phi \iff trace(\pi) \in Words(\phi) \]
+	dove \[ Words(\phi) = \lbrace \sigma \in (2^{AP})^\omega : \sigma \models \phi \]	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
