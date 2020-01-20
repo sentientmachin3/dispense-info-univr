@@ -227,4 +227,42 @@
 		Im(\lambda)\beta_1 (t) + Im(\lambda )^2\beta_2 (t) + \cdots & + Im(\lambda^{n-1}) \beta_{n-1}(t) &= e^{\lambda t} sin(\omega t)
 	\end{empheq}
 	dove $ \ Re(\lambda) = \alpha\ $ e $ \ Im(\lambda) = \omega $.
+
+	\section*{Varie}
+	\subsection*{Funzione di trasferimento}
+	Dato il sistema: \[ a_i \frac{d^iy(t)}{dt^i} + \dots + a_1 \frac{dy(t)}{dt} + a_0y(t) = b_j\frac{d^ju(t)}{dt^j} + \dots + b_1\frac{du(t)}{dt} + b_0 u(t) \]
+
+	allora \[ W(s) = \frac{b_js^j + \dots + b_1s + b_0}{a_is^i + \dots + a_1s + a_0} = \vec{C}(s\mathbb{I} - \vec{A})^{-1}\vec{B} + \vec{D} \]
+
+	Il polinomio caratteristico è: \[P(s) = det(s\mathbb{I} - \mathbb{A})\] le cui soluzioni $\lambda_1, \dots, \lambda_n $ sono gli autovalori della matrice $\mathbb{A}$.
+
+
+	\subsection*{Modi del sistema}
+	Date $p_0, p_1, \dots, p_n$le radici di $P(s)$ e $r_0, r_1, \dots, r_n$ le relative molteplicità, definiamo i modi del sistema come \[m_{i, j} = \frac{t^j}{j!}e^{p_i}t\] e si classificano: \begin{itemize}
+		\item \textbf{convergenti a 0} se $Re\lbrace p_i\rbrace < 0$;
+		\item \textbf{limitati} se $Re\lbrace p_i\rbrace \leq 0$ e i modi relativi a $p_i$ sono semplici ($r_i = 1$);
+		\item \textbf{divergenti} altrimenti.
+	\end{itemize}
+	\noindent\hrulefill
+	\section*{Stabilità}
+	\textbf{Stato di equilibrio} $x_e$ tale che, dato $\dot{x}(t) = f(x(t))$, vale $f(x_e) = 0$.
+
+	\noindent
+	Il sistema è \textbf{stabile} se tutti i modi sono limitati, \textbf{asintoticamente stabile} se tutti i suoi modi sono convergenti a 0.
+
+	\subsection*{Stabilità alla Lyapunov}
+	Sia l'origine un punto di equilibrio ($V: W \to \mathbb{R}$ definita positiva).
+	\begin{itemize}
+		\item $\dot{V}: W \to \mathbb{R}$ semi-definita negativa $\rightarrow$ origine stabile;
+		\item $\dot{V}: W \to \mathbb{R}$ definita negativa $\rightarrow$ origine asint. stabile;
+	\end{itemize}
+
+	\subsection*{Criterio ridotto di Lyapunov}
+	Data $J$ matrice Jacobiana del sistema, diciamo che \begin{itemize}
+		\item l'origine è un punto di equilibrio stabile se $\forall\lambda_i$ di $\mathbb{A}$, $Re\lbrace\lambda_i\rbrace < 0$;
+		\item l'origine NON è un punto di equilibrio stabile se $\exists\lambda_i$ di $\mathbb{A}$, $Re\lbrace\lambda_i\rbrace \geq 0$;
+	\end{itemize}
+
+
+
 \end{document}
