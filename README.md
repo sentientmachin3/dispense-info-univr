@@ -32,5 +32,6 @@ Bioinfo, non disperate, qualcuno ha pensato anche a voi [qua](https://materialeb
 - Sistemi informativi
 - Crittografia (In progress)
 - Sicurezza delle Reti (In progress)
+- Verifica Automatica di Sistemi (domande di teoria)
 
 Make TeX, not Word.
