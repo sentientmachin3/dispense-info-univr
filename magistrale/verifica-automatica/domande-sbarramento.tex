@@ -7,9 +7,9 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 
-% \setlength{\droptitle}{-12em}
+\setlength{\droptitle}{-12em}
 
-\title{\textbf{Verifica Automatica - Domande di Teoria}}
+\title{\LARGE\textbf{Verifica Automatica \\\large\scshape Domande di Teoria}}
 \date{}
 \pagenumbering{gobble}
 
@@ -18,13 +18,11 @@
 \begin{document}
 	\maketitle
 	\section{Dare sintassi e semantica delle formule CTL}
-	\paragraph{Sintassi.} L'alfabeto è costituito da:
-	\begin{itemize}
-		\item \textit{simboli proposizionali:} $p_0, p_1, \dots, p_n$;
-		\item \textit{connettivi logici:} $\rightarrow, \bot$
-		\item \textit{operatori modali:}$\forall \bigcirc, \forall \until, \exists \until, \dots$ ;
-		\item \textit{simboli ausiliari:} $(,)$
-	\end{itemize}
+	\paragraph{Sintassi.}
+	\begin{align*}
+		\Phi &:= true\ \vert\ a\ \vert\ \Phi_1\ \wedge\Phi_2\ \vert\ \neg\Phi\ \vert\exists\Psi\ \vert\ \forall\Psi \\
+		\Psi &:=\circ\Phi\vert\ \Phi_1\ \until\ \Phi_2\ \vert\ \diamond\Phi\ \vert\ \square\Phi
+	\end{align*}
 
 	\paragraph{Semantica.} Dato $M=\langle S,N,V \rangle$, $M \models S \times WFF$ è definita come:
 	\begin{enumerate}
@@ -55,8 +53,10 @@
 		\item $\mathcal{F} \subseteq 2^Q$ è l'insieme degli accept set.
 	\end{itemize}
 
-	Una run $q_0, q_1, \dots, q_n$ è  accettante se ogni accept set è visitato infinitamente spesso, ovvero se \[ \forall F \in \mathcal{F} \overset{\infty}{\exists} i \in \mathbb{N}\ s.t. q_i \in F\]
-	Il linguaggio generato da tali automi è \[ L_\omega(G) = \lbrace  \text{ insieme delle parole infinite che hanno una run accettante } \rbrace \]
+	Una run $q_0, q_1, \dots, q_n$ per una parola $A_0A_1\dots\in\Sigma^\omega$ è un path $\pi = q_0q_1\dots$ dove $q_0 \in Q_0$ e $q_{i+1}\in\delta (q_i, A_i)$. 
+	
+	Una run si dice accettante se ogni accept set è visitato infinitamente spesso, ovvero se \[ \forall F \in \mathcal{F} \overset{\infty}{\exists} i \in \mathbb{N}\ s.t. q_i \in F\]
+	Il linguaggio generato da tali automi è \[ L_\omega(G) = \lbrace\sigma\in\Sigma^\omega :\sigma \text{ ha una run accettante in } G \rbrace \]
 
 	Notare che, se non ci sono stati di accettazione, un GNBA accetta tutte le possibili parole, mentre un NBA (che al posto di $\mathcal{F}$ ha solo un insieme $F$ di stati finali) non accetta nulla.
 
@@ -71,9 +71,9 @@
 
 	\begin{itemize}
 		\item $\sigma \models true$
-		\item $\sigma \models a$ if $A_0 \models a\ a \in A_0)$
+		\item $\sigma \models a$ if $A_0 \models a\ (a \in A_0)$
 		\item $\sigma \models \phi_1 \vee \phi_2 $ if $\sigma \models \phi_1$ or $\sigma \models \phi_2$
-		\item $\sigma \models \neg\phi$ if $\sigma \neg\models \phi$
+		\item $\sigma \models \neg\phi$ if $\sigma \not\models \phi$
 		\item $\sigma \models \bigcirc	\phi$ if $\text{suffix}(\sigma, 1) = A_1A_2A_3 \dots \models \phi$
 		\item $\sigma \models \phi_1 \until \phi_2$ se esiste $j\geq 0$ tale che:\begin{itemize}
 			\item suffix$(\sigma, j) = A_jA_{j+1}A_{j+2} \dots \models \phi_2\ \wedge$
@@ -115,11 +115,11 @@
 		\item $L:S \to 2^{AP}$ è la funzione di labeling.
 	\end{itemize}
 
-	Un \textbf{cammino infinito} è un path che non contiene stati finali, ma continua a reiterare su un self-loop nello stato "finale".
+	Un \textbf{cammino infinito} è una sequenza di stati $\pi = s_0s_1\dots$ di lunghezza infinita.
 
 	\section{Dare sintassi e semantica delle formule LTL rispetto ai TS.}
 	Considero solo tracce infinite. Dato un TS senza stati terminali, una formula su $AP \phi$, l'interpretazione di $\phi$ su cammini infiniti è \[ \pi = s_0s_1 \dots \models \phi \iff trace(\pi) \models \phi \iff trace(\pi) \in Words(\phi) \]
-	dove \[ Words(\phi) = \lbrace \sigma \in (2^{AP})^\omega : \sigma \models \phi \]	
+	dove \[ Words(\phi) = \lbrace \sigma \in (2^{AP})^\omega : \sigma \models \phi\rbrace \]	
 
 
 
