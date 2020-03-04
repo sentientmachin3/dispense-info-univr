@@ -27,7 +27,7 @@ Bioinfo, non disperate, qualcuno ha pensato anche a voi [qua](https://materialeb
 - Linguaggi (Con schema delle regole di inferenza)
 - Analisi di Sistemi Informatici
 - Progettazione di sistemi embedded
-- Sistemi Dinamici (Obsoleta)
+- Sistemi Dinamici
 - Sistemi ad Eventi Discreti (Incompleta)
 - Complessità
 - Intelligenza Artificiale (Incompleta)
