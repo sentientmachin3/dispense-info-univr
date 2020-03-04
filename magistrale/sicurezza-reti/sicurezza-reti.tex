@@ -1,6 +1,7 @@
-\documentclass[a4paper, 10pt]{article}
+\documentclass[a4paper, 11pt, twoside]{article}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{float}
@@ -9,16 +10,20 @@
 \usepackage{color}
 \usepackage{latexsym}
 \usepackage{lstautogobble}
+\usepackage{titlesec}
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage[margin=3cm]{geometry}
 \usepackage{hyperref}
 \usepackage{tikz}
+\usepackage{fancyhdr}
 \usepackage{libertine}
 \hypersetup{
 	hidelinks, 
 	colorlinks = true,
 	linkcolor = black,
 }
+
+\newcommand{\sectionbreak}{\clearpage}
 
 \usetikzlibrary{shapes, arrows}
 
@@ -29,6 +34,10 @@
 \newcommand{\pub}{PU_b}
 \newcommand{\pra}{PR_a}
 \newcommand{\prb}{PR_b}
+
+\pagestyle{fancy}
+\fancyhead[LE,RO]{\nouppercase{\rightmark}}
+\fancyhead[LO,RE]{\nouppercase{\leftmark}}
 
 \begin{document}
 	\clearpage
@@ -424,11 +433,85 @@
 	\paragraph{Procedura di firma e verifica.} La procedura di firma è semplice: dato $m \in \mathcal{M}$, A calcola $s=S_A(m)$ e trasmette $(m,s)$. La procedura di verifica per A consiste nel calcolare $u=V(m,s)$. Se $u=true$ allora la firma è verificata.
 	
 	\paragraph{Implementazione del meccanismo di firma.}
-	
+	Lo schema per un possibile protocollo di firma reversibile (che usa crittografia simmetrica) funziona nel modo seguente: \begin{itemize}
+		\item siano $M$ e $C$ il messaggio e la signature;
+		\item siano $e,d$ le chiavi usate per cifrare/decifrare;
+		\item definiamo come funzione di firma $S_A = D_d$;
+		\item definiamo quindi la verifica $V_A = \begin{cases}
+			true &\text{if } E_e(s) = m; \\
+			false &\text{otherwise}
+		\end{cases}$
+	\end{itemize}
 
+	Questo schema è passibile di \textit{forgery attack}:\begin{enumerate}
+		\item un attaccante B seleziona una $s \in S$ random e calcola $m = E_e(s)$;
+		\item dato che $M=S$, può submittare $(m,s)$ come messaggio con signature;
+		\item la verifica ritorna \textit{true} anche se A non ha firmato $M$.
+	\end{enumerate}
 	
+	La soluzione è identificare come $\mathcal{M}'$ un sottoinsieme dei messaggi firmabili, e ridefinire $V_A$ in modo che dia true solo se $E_e(s) \in \mathcal{M}'$. In tal modo il messaggio può essere recuperato, e si ottiene un protocollo tanto sicuro quanto più piccolo è $\mathcal{M}'$ .
 
-	
+	RSA costituisce un meccanismo di firma, dal momento che la forgery è prevenuta firmando i messaggi con una struttura fissa, ossia un hash firmato, mandato col messaggio.
+a
+	\section{Public Key Infrastructures}
+	Una PKI è una infrastruttura che consente agli utenti di correlare una chiave ad un altro utente.
+	Per registrare una chiave presso una CA (\textit{Certification Authority}), un utente deve prima generare la sua coppia di chiavi e consegnare la chiave pubblica alla CA, la quale poi firma un certificato digitale che associa l'utente alla chiave.
+
+	Oltre al mantenimento delle chiavi, la PKI fornisce il servizio di revoca, recovery e aggiornamento delle chiavi.
+
+	I componenti di una PKI (sia aperta che chiusa) sono i seguenti: \begin{itemize}
+			\item \textbf{Certification Authority:} crea e mantiene le directory e la CRL (Certificate Revocation List);
+			\item \textbf{Directory:} rende disponibili la CRL e i certificati e deve identificare in modo univoco gli utenti;
+			\item \textbf{Registration Authority:} sovrintende il processo di registrazione degli utenti e ne gestisce l'autenticazione.
+	\end{itemize}
+
+    \subsection{Certificati}
+    Un certificato è semplicemente un token che collega una chiave ad un'identità. Per costruire un certificato la CA firma con la sua chiave privata un messaggio contenente la rappresentazione dell'utente titolare della chiave e la sua chiave pubblica, insieme ad un timestamp.
+
+    Il problema tuttavia si ripercuote sulla CA. Come si può validare il certificato della CA? Ci sono due possibili approcci: \begin{itemize}
+        \item costruire una gerarchia ad albero con la root trustata a priori;
+        \item arrangiare una fiducia collettiva tra tutti.
+    \end{itemize}
+
+    \paragraph{Certificati X.509.} Sono un tipo di certificato standard ora utilizzato da moltissime applicazioni (IPSEC, SSL/TLS, ecc.), e sono basati sull'uso di crittografia a chiave pubblica (RSA raccomandato).
+
+    Un normale certificato X.509 è composto dai seguenti campi: \begin{itemize}
+        \item \textbf{Serial number:} unico tra i certificati;
+        \item \textbf{Signature alg. identifier:} identificatore dell'algoritmo usato per firmare il certificato;
+        \item \textbf{Issuer name:} la CA che ha firmato il certificato;
+        \item \textbf{Periodo di validità};
+        \item \textbf{Subject name:} nome dell'utente a cui il certificato si riferisce (l'utente la cui chiave è certificata);
+        \item \textbf{Subject PK info:} informazioni sulla chiave pubblica dell'utente;
+        \item \textbf{Signature:} l'hash di tutti gli altri campi, firmato con la chiave pubblica della CA.
+    \end{itemize}
+
+    Se un utente vuole accedere ad un certificato e verificare la chiave di un utente procede come segue:
+    \begin{enumerate}
+        \item L'utente decifra la signature con la chiave pubblica della CA;
+        \item Usa le informazioni della signature per calcolare l'hash degli altri campi, che confronta con quello contenuto nella signature (se corrispodono il certificato è valido);
+        \item Controlla il periodo di validità per verificare che la chiave sia ancora valida.
+    \end{enumerate}
+
+    \paragraph{Modelli fiduciari.}
+    Per stabilire la validità di un certificato esistono vari modelli di fiducia che stabiliscono in che modo gli utenti si fidano delle CA.
+
+    \begin{itemize}
+        \item \textbf{Fiducia diretta.} Ogni utente iscritto ad una CA si fida di tutti gli altri iscritti a quella CA. Tutti i certificati sono nella stessa directory.
+        
+        \item \textbf{Fiducia gerarchica.} Per molti utenti è più comodo avere molte CA, ognuna coprente una porzione degli utenti totali. Le CA vengono ordinate in maniera gerarchica ad albero, in cui ogni nodo non-foglia è certificato dai nodi soprastanti.
+
+        \textbf{Cross certification:} se le CA si sono scambiate le corrispondenti chiavi pubbliche, allora due utenti registrati presso due CA diverse possono ottenere le rispettive chiavi attraverso una \textbf{catena di certificati}.
+    \end{itemize}
+
+    
+    \paragraph{Key revocation.}
+    Come specificato in precedenza, la CA mantiene una CRL. Un certificato può essere revocato per svariate motivazioni: \begin{itemize}
+        \item la chiave privata dell'utente è stata compromessa;
+        \item l'utente non è più registrato presso quella CA;
+        \item il certificato della CA è compromesso.
+    \end{itemize}
+
+
 	
 	
 	
