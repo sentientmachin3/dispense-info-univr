@@ -511,12 +511,95 @@ a
         \item il certificato della CA è compromesso.
     \end{itemize}
 
+    \section{Realizzazione e verifica di protocolli}
+    Prima di passare a come si realizza un protocollo, diamo alcune fondamentali definizioni.
+    \begin{definit}
+        Un protocollo consiste in un insieme di regole che determinano come avviene lo scambio di messaggi tra due utenti.
+    \end{definit}
 
+	Un protocollo di sicurezza usa meccanismi di tipo crittografico per raggiungere determinati obiettivi di sicurezza.
 	
+	Per la costruzione di un protocollo è necessario stabilire una notazione di tutti gli elementi coinvolti:
+	\begin{itemize}
+		\item Entità che partecipano;
+		\item Le chiavi necessarie sono:
+			\begin{itemize}
+				\item cifratura: $\lbrace M\rbrace_K$ ($\lbrace M\rbrace_{K_A}$ è la cifratura con la chiave pubblica di A);
+				\item firma: $\lbrace M\rbrace_{K^{-1}}$ (la firma con la chiave privata di A è $\lbrace M\rbrace_{K_A^{-1}}$)
+				\item nel caso di chiavi simmetriche si usa $\lbrace M\rbrace_{K_{AB}}$
+			\end{itemize}
+		\item Nonces: $NA, N1, \dots$ numeri usati per le fasi di challenge/response;
+		\item Timestamps $T$, usati per la validità delle chiavi.
+	\end{itemize}
+
+	Una singola comunicazione tra due entità è indicata come \[ A \to B : \lbrace A, T_1, K_{AB}\rbrace_{K_B} \]
+
+	È inoltre necessario fare delle assuzione sulle capacità dell'attaccante:
+	\begin{enumerate}
+		\item Eavesdropping completo su tutti i messaggi mandati;
+		\item Modifica e re-routing di tutti i messaggi;
+		\item L'avversario può essere uno dei principals, oppure esterno, oppure anche una combinazione dei due;
+		\item L'avversario è capace di ottenere il valore di tutte le precedenti chiavi di sessione (replay attack).
+	\end{enumerate}
+
+	\subsection{Protocollo di Needham - Schroeder (NSPK)}
+	È un protocollo di scambio di chiavi, procede come segue:
+	\begin{enumerate}
+		\item $A \to B: \lbrace NA, A\rbrace_{K_B}$;
+		\item $B \to A: \lbrace NA, NB\rbrace_{K_A}$;
+		\item $A \to B: \lbrace NB\rbrace_{K_B}$
+	\end{enumerate}
+
+	Il protocollo opera assumendo che i principals possano generare nonces, e conoscano ognuno la chiave pubblica dell'altro.
+
+	Gli obiettivi del protocollo sono:
+	\begin{itemize}
+		\item Autenticità dei messaggi;
+		\item Garantire la timeliness dei messaggi (no replay attack);
+		\item Garantire la sicurezza di specifici assets (ovvero le chiavi generate).
+	\end{itemize}
+
+	Il protocollo NSPK fu provato essere vulnerabile ad un attacco di tipo MITM. Fu migliorato semplicemente agguingendo alla risposta di B il nome di B. In tal modo A riceve il nome di B, si rende conto di aver scambiato il precedente messaggio con un intruso e chiude il canale.
 	
+	\subsection{Esempi di protocolli vulnerabili}
+	Definiamo prima un elenco delle tipologie di attacco disponibili ad un attaccante del tipo assunto alla sezione precedente:
+	\begin{itemize}
+		\item Man-in-the-middle (parallel sessions): $A \leftrightarrow Z \leftrightarrow B$;
+		\item Replay attack: riusa parti di messaggi precedenti;
+		\item Masquerading attack: Z convince altri principals che la chiave di A sia $K_Z$
+		\item Reflection attack: manda l'informazione trasmessa di ritorno al mittente;
+		\item Oracle attack: sfrutta la disponibilità di un sistema a poter essere usato come oracolo (si/no);
+		\item Type flaw attack: sostituisce il campo di un messaggio con un contenuto diverso (il nome per la chiave ad esempio).
+	\end{itemize}
 	
+	L'esempio più classico è l'attacco MITM sul protocollo di Diffie-Hellman, a meno che non usi chiavi autenticate.
+
+	\paragraph{Type-flaw attack.} Ci sono vari esempi di type-flaw attacks.
+	Gli esempi più classici sono il protocollo Otway Rees (Authenticated server based key distribution), e l'Andrew Secure RPC.
+
+	Nel caso Otway-Rees, il protocollo è così composto: \begin{align*}
+		M_1. A \to B&: I,A,B, \lbrace N_A, I, A, B\rbrace_{K_{AS}} \\
+		M_2. B \to S&: I,A,B, \lbrace N_A, I, A, B\rbrace_{K_{AS}}, \lbrace N_B, I, A, B\rbrace_{K_{BS}} \\
+		M_3. S \to B&: I, \lbrace N_A, K_{AB}\rbrace_{K_{AS}}, \lbrace N_B, K_{AB}\rbrace_{K_{BS}}\\
+		M_4. B \to A&: I, \lbrace N_A, K_{AB}\rbrace_{K_{AS}}
+	\end{align*}
+
+	Le chiavi del server sono note e I indica una run del protocollo.
+	La vulnerabilità risiede nel fatto che, supponendo $\vert \lbrace I,A,B\rbrace\vert = \vert\lbrace K_{AB} \rbrace\vert$, un attaccante può inoltrare un messaggio del tipo 1 come messaggio del tipo 4. In tal modo $A$ vede il suo nonce e accetta $(I, A, B)$ come chiave di sessione.
+
+	Per questo protocollo si prostpetta un secondo scenario di attacco, ovvero quello in cui l'attaccante fa da server, e inoltre a B, invece della chiave, la tripla $(I, A, B)$. In tal modo B e A usano $(I, A, B)$ come chiave e la secrecy non vale più.
 	
-	
+	Nel caso Andrew-Secure RPC, il protocollo funziona così: \begin{align*}
+		M_1. A \to B&: A, \lbrace N_A\rbrace_{K_{AB}}\\
+		M_2. B \to A&: \lbrace N_A +1, N_B\rbrace_{K_{AB}}\\
+		M_3. A \to B&: \lbrace N_B + 1\rbrace_{K_{AB}}\\
+		M_4. B \to A&: \lbrace K'_{AB}, N_B'\rbrace_{K_{AB}}\\
+	\end{align*}
+
+	$K'_{AB}$ è la chiave di sessione e $N'_B$ è il nonce per la sessione seguente. L'attaccante può muoversi in modo che, in $M_4$, la chiave scambiata sia $N_A + 1$, previa intercettazione di $M_2$. Ciò nonostance, la segretezza dei messaggi non è violata.
+
+	\paragraph{Protocollo Denning - Sacco.}
+
 	
 	
 	
