@@ -5,7 +5,6 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{float}
-\usepackage{fixltx2e}
 \usepackage{listings}
 \usepackage{color}
 \usepackage{latexsym}
@@ -599,14 +598,114 @@ a
 	$K'_{AB}$ è la chiave di sessione e $N'_B$ è il nonce per la sessione seguente. L'attaccante può muoversi in modo che, in $M_4$, la chiave scambiata sia $N_A + 1$, previa intercettazione di $M_2$. Ciò nonostance, la segretezza dei messaggi non è violata.
 
 	\paragraph{Protocollo Denning - Sacco.}
+	Il protocollo si svolge in 3 passi: \begin{align*}
+		A\to S&: A, B \\
+		S\to A&: C_A, C_B \\
+		A \to B&: C_A, C_B, \lbrace\lbrace T_A, K_{AB}\rbrace_{K_A^{-1}}\rbrace_{K_B}
+	\end{align*}
 
+	dove: \begin{itemize}
+		\item $S$ è un server che funge da CA;
+		\item $K_{AB}$ chiave di sessione segreta;
+		\item $K_B$ chiave pubblica di B;
+		\item $K_A^{-1}$ chiave privata di A, usata per firma;
+		\item $C_A, C_B$ sono i certificati per A e B;
+		\item $T_A$ timestamp generato da A.
+	\end{itemize}
+
+	Il punto di forza di questo protocollo risiede nel fatto che B è sicuro che la chiave pubblica sia di A in quanto è firmata con la sua chiave privata, il tutto cifrato con la chiave pubblica di B, il che indica che il messaggio è per B. Come extra, la chiave di A è provata da $C_A$.
+
+	Questo protocollo è vulnerabile ad un MITM, ma è risolvibile aggiungendo i nomi di A e B insieme al timestamp e la chiave. In tal modo è facile verificare se qualcuno usa la propria chiave per modificare la cifratura della firma.
+
+	\paragraph{Parallel sessions attack.} Consideriamo un semplice (ed estramamente lazy) protocollo di autenticazione: \begin{align*}
+		M_1. A \to B&: \lbrace N_A\rbrace_{K_{AB}}\\
+		M_2. B \to A&: \lbrace N_A + 1 \rbrace_{K_{AB}}
+	\end{align*}
+	Il protocollo è vulnerabile ad un attacco di tipo parallel sessions (con oracolo).
+	L'attacco è banale:
+
+	\begin{align*}
+		M_1. A \to I&: \lbrace N_A\rbrace_{K_{AB}}\\
+		M_2. I \to A&: \lbrace N_A \rbrace_{K_{AB}}\\
+		M_3. A \to I&: \lbrace N_A + 1\rbrace_{K_{AB}}\\
+		M_4. I \to A&: \lbrace N_A + 1 \rbrace_{K_{AB}}
+	\end{align*}
+
+	L'unica soluzione a questo attacco è, come nei casi precedenti, aggiungere il nome di A nel messaggio cifrato.
+
+	\paragraph{Replay attack.} Consideriamo il protocollo Needham-Schroeder per chiavi condivise: \begin{align*}
+		M_1. A \to S&: A, B, N_1 \\
+		M_2. S \to A&: \lbrace N_1, B, K_{AB}, \lbrace K_{AB}, A\rbrace_{K_{BS}} \rbrace_{K_{AS}} \\
+		M_3. A \to B&: \lbrace K_{AB}, A\rbrace_{K_{BS}} \\
+		M_4. B \to A&: \lbrace N_2\rbrace_{K_{AB}}\\
+		M_5. A \to B&: \lbrace N_2-1\rbrace_{K_{AB}}
+	\end{align*}
+
+	Tale protocollo è passabile di replay attack, in quanto un qualsiasi attaccante Z, supponendo che abbia recuperato la chiave di una precedente run del protocollo ($K'_{AB}$), potrebbe agire come segue:
+	\begin{align*}
+		M_3. Z \to B&: \lbrace K'_{AB}, A\rbrace_{K_{BS}} \\
+		M_4. B \to A&: \lbrace N_2\rbrace_{K'_{AB}}\\
+		M_5. A \to B&: \lbrace N_2-1\rbrace_{K'_{AB}}
+	\end{align*}
 	
+	In tal modo verrebbe compromessa la segretezza dei messaggi. Un possibile fix è quello di aggiungere dei timestamp da usare come timeout, oppure aggiungere un handshake extra all'inizio del protocollo.
 	
+	\section{Kerberos}
+	Kerberos è un protocollo di autenticazione in ambienti distribuiti. È costruito su alcuni principi di base: \begin{itemize}
+		\item Sicurezza (no eavesdropping);
+		\item Affidabilità;
+		\item Trasparenza: l'utente usa un password singola per l'accesso alla rete, ignaro dei protocolli sottostanti (SSO);
+		\item Scalabilità: il sistema deve essere in grado di supportare molti utenti/servizi alla volta.
+	\end{itemize}
 	
+	\subsection{Architettura e funzionamento}
+	L'architettura Kerberos è strutturata come segue: \begin{itemize}
+		\item KAS (\textit{Kerberos Authentication Server}) per l'autenticazione;
+		\item TGS (\textit{Ticket Granting Server}) per l'autorizzazione;
+		\item Servizi di controllo dei ticket.
+	\end{itemize}
 	
-	
-	
-	
-	
+	Supponiamo ora che un utente voglia accedere ad un servizio. L'architettura funziona come segue: \begin{enumerate}
+		\item L'utente richiede il servizio, richiedendo al KAS un ticket-granting ticket;
+		\item Il KAS verifica l'accesso, genera il ticket e crea la chiave di sessione. Il tutto viene cifrato con una chiave calcolata usando la psw di accesso.
+		\item La workstation dell'utente chiede la password, che usa per decifrare il messaggio in arrivo, poi manda l'authenticator (username, indirizzo di rete e timestamp attuale) al TGS;
+		\item il TGS decifra il tutto, verifica la richiesta, genera il ticket per il server con il servizio richiesto e manda il tutto alla workstation;
+		\item La workstation manda il ticket per il server e l'authenticator al server stesso;
+		\item Il server verifica che ticket e authenticator matchino, quindi da accesso al servizio. Se è richiesta autenticazione mutuale, il server manda indietro il suo authenticator.
+	\end{enumerate}
+
+	È importante sottolineare che la fase 1 e 2 (\textbf{autenticazione}) sono svolte ad ogni sessione di login, i messaggi 3 e 4 (\textbf{autorizzazione}) sono svolti per ogni tipo di servizio mentre i messaggi 5 e 6 (\textbf{accesso al servizio}) sono scambiati ad ogni accesso al servizio.
+
+	\paragraph{Autenticazione.} La fase di autenticazione procede come: \begin{align*}
+		1.A \to KAS&: A, TGS \\
+		2.KAS \to A&: \lbrace K_{A, TGS}, TGS, \mathcal{T}_1, \lbrace A, TGS, K_{A, TGS}, \mathcal{T}_1  \rbrace_{K_{KAS, TGS}}\rbrace_{K_AS}
+	\end{align*}
+
+	La sezione $\lbrace A, TGS, K_{A, TGS}, \mathcal{T}_1  \rbrace_{K_{KAS, TGS}}$ è l'\textit{AuthTicket}. $K_{A, TGS}$ ha un lifetime di alcune ore. 
+
+	\paragraph{Autorizzazione.}
+	La fase di autorizzazione contiene i messaggi 3 e 4, ovvero \begin{align*}
+		3.A \to TGS&: \text{\textit{AuthTicket}}, \lbrace A, T_2\rbrace_{K_{A, TGS}}, B\\
+		4.TGS \to A&:\lbrace K_{AB}, B, T_3, \lbrace A, B, K_{AB}, T_3\rbrace_{K_{B, TGS}} \rbrace_{K_A, TGS}
+	\end{align*}
+
+	La sezione del messaggio 3 $\lbrace A, T_2\rbrace_{K_{A, TGS}}$ è l'\textit{autenticator}, che ha un periodo di validità molto ridotto (secondi). Lo scopo dell'autenticator è quello di scongiurare eventuali replay attacks. Il TGS fornisce la chiave $K_{AB}$ con lifetime di alcuni minuti, e un \textit{ServTicket} ($\lbrace A, B, K_{AB}, T_3\rbrace_{K_{B, TGS}}$)
+
+	\paragraph{Service phase.} La fase di accesso al servizio procede con i messaggi 5 e 6, ovvero: \begin{align*}
+		5. A \to B&: \text{\textit{ServTicket, Authenticator}}\\
+		6. B \to A&: \lbrace T_4 + 1\rbrace_{K_{AB}}
+	\end{align*}
+
+	Dopo la risposta del server, l'utente è autenticato e può iniziare ad usare il servizio.
+
+	\subsection{Scalabilità}
+	Definiamo \textit{realm} lo spazio definito da un server Kerberos. Il server salva username e password solo per gli utenti del suo realm. Tuttavia, una grande rete potrebbe essere divisa in più realms. Per questo motivo Kerberos è dotato anche di protocolli inter-realm, dove i server si registrano l'un l'altro e, nel caso un utente dovesse accedere ad un servizio posizionato in un altro realm, il KAS fornisce il ticket per accedere al TGS dell'altro realm. \\
+
+	Kerberos 4 è soggetto a particolari limitazioni, quali il possibile flooding del KAS da parte di un attaccante, e la pesantezza della doppia crittografia, rimossa in Kerberos 5.
+
+	Tutto il meccanismo inotre si basa sulla sincronizzazione dei timestamp, pertanto, se un host dovesse essere compromesso, per l'attaccante potrebbe essere possibile modificare i timestamps e attuare un replay attack.
+
+
+
 
 \end{document}
