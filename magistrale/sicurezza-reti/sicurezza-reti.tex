@@ -15,11 +15,24 @@
 \usepackage{hyperref}
 \usepackage{tikz}
 \usepackage{fancyhdr}
-\usepackage{libertine}
+\usepackage{listings}
+\usepackage{newtxtext}
 \hypersetup{
 	hidelinks, 
 	colorlinks = true,
 	linkcolor = black,
+}
+
+\lstset{
+	language=C,
+	keywordstyle=\color{black},
+	showtabs=false,
+	showspaces=false,
+	showstringspaces=false,
+	basicstyle=\ttfamily\small,
+	breaklines=true,
+	tabsize=2,
+	escapeinside={(*@}{@*)}
 }
 
 \newcommand{\sectionbreak}{\clearpage}
@@ -705,7 +718,44 @@ a
 
 	Tutto il meccanismo inotre si basa sulla sincronizzazione dei timestamp, pertanto, se un host dovesse essere compromesso, per l'attaccante potrebbe essere possibile modificare i timestamps e attuare un replay attack.
 
+	\section{SSL/TLS}
+	TLS è un protocollo nato dall'evoluzione di SSL, che garantisce una cifratura end-to-end anche in presenza di una rete compromessa. TLS è composto da un \textbf{Record Protocol} che protegge i dati scambiati tra client e server, e l'\textbf{Handshake protocol}, reponsabile della fase di handshake tra le parti.
 
+	\subsection{SSL Handshake}
+	L'handshake è composto di 4 fasi: \begin{enumerate}
+		\item Decisione dei protocolli crittografici da adottare;
+		\item Scambio di chiavi del server;
+		\item Scambio di chiavi del client;
+		\item Fine, connessione online.
+	\end{enumerate}
+
+	\paragraph{Decisione dei protocolli.} I messaggi scambiati in questa fase sono 2: \begin{enumerate}
+		\item \lstinline{client_hello}: il client invia al server un messaggio $\lbrace A, N_A, S_{id}, P_A\rbrace$, contenente il nome di A, un nonce, il session id e le preferenze sugli algoritmi per lo scambio delle chiavi e di compressione;
+		\item \lstinline{server_hello:} lo stesso messaggio, ma con gli algoritmi e il nonce del server.
+	\end{enumerate}
+
+	\paragraph{Scambio chiave del server.} Il sever manda al client un certificato X.509v3 (\lstinline{server_certificate}) $cert(S, K_S)$. Notare che in realtà il protocollo prevede che si possa anche negoziare l'algoritmo per lo scambio delle chiavi e anche richiedere un certificato per il client (supponendo che il client abbia un propria chiave pubblica).
+
+	\paragraph{Scambio chiavi del client.} Il client risponde con: \begin{enumerate}
+		\item \lstinline{client_certificate}: il proprio certificato (se può);
+		\item \lstinline{client_key_exchange}: \textit{pre-master secret}, PMS, cifrato con la chiave pubblica del server (arrivata tramite il certificato della fase 2). Il PMS sarà usato per calcolare il \textit{master secret} $M$, che ha utilizzi più avanti;
+		\item \lstinline{certificate_verify}: la risposta al controllo di validità del certificato. 
+	\end{enumerate}
+
+	\paragraph{Fine della comunicazione.} Client e server si scambiano due messaggi \lstinline{finish}, cifrati con chiavi simmetriche generate dai nonce e $M$. Il messaggio di finish è un hash dei precedenti messaggi, garantendo integrità di tutti i messaggi precedenti.
+
+	\subsection{Attacchi ad SSL}
+	\paragraph{Version rollbcack attack.} L'attaccante trickava il server ad usare un versione più vecchia di SSL (già violata), per poter accedere al contentuto del protocollo (analogamente, è possibile trickare il client ad usare protocolli di cifratura deboli).
+
+	Per questo motivo, il protocollo fu aggiornato includendo nei messaggi cifrati anche la versione del protocollo, affinchè nessun attaccante tra client e server potesse intercettare i messaggi e reinoltrarli con la versione più vecchia di SSL (si parla di \textit{chosen-protocol}).
+
+	\paragraph{Phishing - vulnerabilità UI.} Un altro problema è rappresentato dagli utenti, che, anche se sotto attacco, non si prendono la briga di controllare con quale azienda stanno scambiando dati (controllando il certificato in uso), oppure sono soggetti a phishing.
+
+	\paragraph{SSLstrip.} In tal caso, l'attaccante si trova tra client e server e, supponendo sia in grado di intercettare le pagine web che client e server stanno scambiando, può modificare, rimpiazzando il protocollo HTTPS con HTTP, ottenendo così informazioni sensibili senza che client e server ne vengano a conoscenza.
+
+	\paragraph{Vulnerabilità nello storage delle chiavi.} In questo caso, la vulnerabilità non risiede nel client nè nel protocollo in sè, quanto nel modo in cui le chiavi sono immagazzinate nel server (molto spesso non cifrate), per non dover inserire la passphrase ad ogni boot.
+
+	
 
 
 \end{document}
