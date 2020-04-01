@@ -1,8 +1,10 @@
-\documentclass[a4paper, 11pt, twoside]{article}
+\documentclass[a4paper, 10pt, twoside]{article}
 \usepackage[english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{listings}
@@ -17,6 +19,9 @@
 \usepackage{fancyhdr}
 \usepackage{listings}
 \usepackage{newtxtext}
+\usepackage{tikz}
+
+\usetikzlibrary{shapes, arrows}
 \hypersetup{
 	hidelinks, 
 	colorlinks = true,
@@ -755,7 +760,110 @@ a
 
 	\paragraph{Vulnerabilità nello storage delle chiavi.} In questo caso, la vulnerabilità non risiede nel client nè nel protocollo in sè, quanto nel modo in cui le chiavi sono immagazzinate nel server (molto spesso non cifrate), per non dover inserire la passphrase ad ogni boot.
 
-	
+	\section{IPSec}
+	IPSec è un protocollo che implementa un canale sicuro di trasmissione per le applicazioni, cifrando e autenticando tutto il traffico in uscita da un host. IPSec di per sè garantisce: \begin{itemize}
+		\item \textbf{Confidenzialità}, cifrando i dati;
+		\item \textbf{Integrità}, in quanto i router alla fine del tunnel calcolano un hash o un checksum dei dati in arrivo;
+		\item \textbf{Autenticazione}, attraverso un meccanismo di firme e certificati.
+	\end{itemize}
 
+	Definiamo \textit{Security Association} una one-way relationship tra due entità, e definisce delle politiche sui servizi di sicurezza, come ad esempio il protocollo crittografico usato, l'hash per l'autenticazione, ecc.
+
+	IPSec in sè è dotato di un insieme di protocolli all'interno della specifica:\begin{itemize}
+		\item \textbf{Authentication Header (AH)} per l'integrità e l'autenticità dei pacchetti;
+		\item \textbf{Encapsuating Security Payload (ESP)} per la protezione della confidenzialità (integrità in modo opzionale);
+		\item \textbf{Key Management (IKE)} per la gestione delle chiavi.
+	\end{itemize}
+
+	IPSec può operare in due modalità: una \textbf{tunnel mode} in cui ogni pacchetto viene cifrato e diventa parte di un pacchetto più grande (site-to-site VPN), oppure la \textbf{transport mode}, che consiste nell'inserire l'header IPSec all'interno di un normale pacchetto IP, senza creare nuovi pacchetti (remote access VPN).
+	\vspace{1cm}
+
+	\begin{tikzpicture}[every node/.style={draw, minimum height=1.5cm, minimum width=1.5cm,align=center}]
+		\node [] (iph) {IP \\ Header};
+		\node [right= 0 pt of iph, fill=orange, align=center] (ipsh) {IPSec\\ Header};
+		\node [right= 0pt of ipsh] (tcph) {TCP \\ Header};
+		\node [minimum width=4cm, right= 0 pt of tcph] (pl) {Payload};
+		\node [draw=none, right=3.5cm of pl] (lab) {Transport Mode};
+		
+		\node [below=1 cm of iph, fill=cyan] (niph) {New IP \\ Header};
+		\node [right= 0 pt of niph, fill=orange, align=center] (ipsh1) {IPSec\\ Header};
+		\node [right=0pt of ipsh1] (iph1) {IP \\ Header};
+		\node [right= 0pt of iph1] (tcph1) {TCP \\ Header};
+		\node [minimum width=4cm, align=center, right= 0 pt of tcph1] (pl1) {Payload};
+		\node [draw=none, right=2cm of pl1] (lab1) {Tunnel Mode};
+	\end{tikzpicture}
+
+	\subsection{Authentication Header}
+	L'authentication header sta tra l'header IP e quello TCP, e fornisce al destinatario informazioni per identificare la SA. L'header è strutturato come segue:
+
+	\begin{center}
+		\begin{tikzpicture}[every node/.style={draw, minimum height=1cm, minimum width=12cm,align=center,node distance=-\pgflinewidth, text centered}]
+			\coordinate[](A) at (-2.25,1);
+			\coordinate[](B) at (9.75,1);
+			\draw[<->, thick, dashed] (A) -- (B);
+			\node[draw=none] at (3.75, 1.25) (lab) {32 bits};
+			\node[minimum width=4.5cm] (nexth) {\textbf{Next header} \\ tipo payload dopo AH};
+			\node[minimum width=4.5cm, right=of nexth] (pll) {\textbf{Payload length} \\ lunghezza di AH};
+			\node[minimum width=3cm,right=of pll] (r) {\textbf{Reserved}};
+			\node[](spi) at (3.75,-1) {\textbf{Security Parameters Index} \\ identificazione della SA};
+			\node[](snf) at (3.75,-2) {\textbf{Sequence number field} \\ contatore (anti replay-attack)};
+			\node[](adata) at (3.75,-3) {\textbf{Authentication Data} \\ dati di auth. (un MAC, ecc)};
+		\end{tikzpicture}
+	\end{center}
+	
+	L'AH in transport mode è inserito tra l'header IP e il payload, e il MAC viene fatto di tutto il pacchetto. In tunnel mode tutto il pacchetto è autenticato, il nuovo header IP, così come l'AH sono inseriti per ultimi. L'AH fornisce quindi un canale autenticato end-to-end.
+
+	\subsection{Encapsulating Security Payload}
+	L'header ESP specifica solo il protocollo di cifratura e, in maniera opzionale, per l'autenticazione.
+	In transport mode (end-to-end encryption tra host che supportano IPSec) viene cifrato solo il payload del pacchetto (l'header IP rimane invariato), mentre in tunnel mode (VPN setup) tutto il pacchetto viene cifrato, ad esclusione del nuovo header IP.
+
+	Riassumiamo i servizi offerti da IPSec come segue:\\
+	\vspace{0.5cm}
+
+	\begin{center}	
+		\begin{tabular}{lccc}
+			\toprule
+			& \textbf{AH} & \textbf{ESP (encr. only)} & \textbf{ESP w/auth} \\
+			\midrule
+			Access control & \checkmark & \checkmark & \checkmark \\
+			Connectionless integrity & \checkmark & & \checkmark \\
+			Data origin auth. & \checkmark & & \checkmark \\
+			Replayed packets rejec. & \checkmark & \checkmark & \checkmark \\
+			Confidentiality & & \checkmark & \checkmark \\
+			Limited traf. flow conf. & & \checkmark & \checkmark \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
+
+	\subsection{IKE - Internet Key Exchange}
+	IKE è un protocollo che, a dispetto del nome, può stabilire anche delle SA. È prodotto dall'evoluzione di vecchi protocolli come ISAKMP (framework per lo scambio di chiavi e gestione delle SA), e Oakley (joint key generation), entrambi basati su Diffie-Hellman.
+
+	Il punto con Diffie-Hellman risiede nella PFS (\textit{Perfect Forward Secrecy}), ovvero il concetto secondo il quale un attaccante che registra un'intera conversazione cifrata non la può decifrare anche se possiede le chiavi di entrambi gli utenti. La chiave sta nel generare una chiave di sessione temporanea, non derivabile dalle informazioni salvate da ogni nodo.
+
+	IKE procede in 2 fasi:
+	\begin{enumerate}
+		\item Le due entità che comunicano negoziano una SA, accordandosi sui cifrari e le funzioni di hash da usare nella fase 2;
+		\item l'SA della fase 1 è usata per creare delle SA figlie, con lo scopo di cifrare e autenticare le future comunicazioni (non spiegato qua).
+	\end{enumerate}
+
+	\paragraph{Fase 1.} La fase uno può eseguire in due modalità differenti, entrambi producenti una SA: una \textbf{main mode}, molto più flessbile, con meccanismi di protezione delle identità, e  una \textbf{aggressive mode}, che scambia la metà dei messaggi, ma non prevede alcun meccanismo di protezione dell'identità. Ognuna di queste modalità ammette 4 varianti, dipendenti dal metodo di autenticazione.
+
+	\subparagraph{Main mode.}
+	La main mode è composta dei seguenti messaggi: \begin{enumerate}
+		\item $I \to R: C_I, ISA_I$: l'intiator manda al responder l'SA con gli algoritmi che supporta;
+		\item $R \to I: C_I, C_R, ISA_R$ il responder risponde con gli algoritmi scelti;
+		\item $I\to R: C_I, C_R, X, N_I$ l'intiator manda al responder il suo $X$ di DH e un suo nonce;
+		\item $I\to R: C_I, C_R, Y, N_R$ il responder risponde con il suo $Y$, calcolato da $g$ e $p$ inviati insieme ad $X$, e il suo nonce;
+		\item $I\to R: C_I, C_R, \lbrace ID_I, AUTH_I\rbrace_K$;
+		\item $I\to R: C_I, C_R, \lbrace ID_R, AUTH_R\rbrace_K$.
+	\end{enumerate}
+
+	I messaggi 5 e 6 sono cifrati con la chiave $K$, generata precedentemente con DH. Gli $ID$ sono identificatori di host, mentre $AUTH$ sono dati di autenticazione, dipendenti dalle varianti utilizzate.
+
+	\subparagraph{Quick mode.} La quick mode è un condensato della main mode in 3 messaggi, senza l'autenticazione dell'identità dei due interlocutori:\begin{enumerate}
+		\item $I \to R:$ autenticazione, materiale per il calcolo della chiave e proposta della SA;
+		\item $R \to I:$ SA accettata, materiale di risposta della chiave;
+		\item $I \to R:$ hash totale per il controllo di integrità.
+	\end{enumerate}
 
 \end{document}
