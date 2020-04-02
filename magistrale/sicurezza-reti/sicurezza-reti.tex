@@ -21,7 +21,7 @@
 \usepackage{newtxtext}
 \usepackage{tikz}
 
-\usetikzlibrary{shapes, arrows}
+\usetikzlibrary{shapes, arrows, positioning}
 \hypersetup{
 	hidelinks, 
 	colorlinks = true,
@@ -865,5 +865,129 @@ a
 		\item $R \to I:$ SA accettata, materiale di risposta della chiave;
 		\item $I \to R:$ hash totale per il controllo di integrità.
 	\end{enumerate}
+
+	\section{Privacy e Anonimato}
+	Cominciamo con delle definizioni a spam: \begin{itemize}
+		\item \textit{Anonimity:} confidenzialità dell'identità di una persona;
+		\item \textit{Privacy:} confidenzialità delle informazioni che un utente non vuole condividere.
+	\end{itemize}
+
+	Il concetto di privacy nell'IT security può essere specializzato nei concetti di \textbf{anonimity} e \textbf{data protection}.
+
+	Ora, l'anonimato online è un concetto difficile da attuare, a causa della tipologia del traffico in internet (IP nei pacchetti, analisi del traffico, ecc) ma, esiste sicuramente un gruppo di azioni che non possono essere distinte dallo stesso traffico generato da altri utenti. Tale gruppo è detto \textbf{anonimity set}. Più grande è l'anonimity set, maggiore è lo spazio nel quale ci si può muovere rimanendo anonimi.
+
+	Quindi, l'anonimato è tanto migliore quanti più utenti aderiscono al servizio che rende anonimi (TOR, per citarne uno).
+
+	\subsection{Proxies}
+	I proxy sono server che inoltrano il traffico in arrivo, rendendolo anonimo agli occhi dell'effettivo destinatario. Le debolezze dell'avere una struttura di questo tipo risiedono nel fatto che il proxy sa tutto dell'effettivo mittente, e il traffico rimane in ogni caso analizzabile.
+
+	Una parziale soluzione al problema sono le proxy chain. Con un singolo proxy la situazione sarebbe la seguente: 
+	
+	\begin{center}
+		\begin{tikzpicture}[node distance= 2.5cm]
+			\node [draw, minimum height=1cm](src){Source};
+			\node [draw, minimum height=1cm, right=of src](proxy) {Proxy};
+			\node [draw, minimum height=1cm, right=of proxy](dst){Dest. Server};
+			\draw[thick,->](src)--(proxy) node[midway, above] {$k_P(M, S)$};
+			\draw[thick,->](proxy)--(dst) node[midway, above] {$M$};
+		\end{tikzpicture}	
+	\end{center}
+
+	dove $M$ è il messaggio e $S$ l'IP del server destinazione.
+	Supponendo invece di avere una proxy chain, con cifratura a cascata, il modello diventerebbe questo: 
+	
+	\begin{center}
+		\begin{tikzpicture}[thick,scale=0.6, every node/.style={scale=0.8}]
+			\node [draw, minimum height=1cm](src){Source};
+			\node [draw, minimum height=1cm, right=3.8cm of src](p1) {$P_1$};
+			\node [draw, minimum height=1cm, right=2.6cm of p1](p2) {$P_2$};
+			\node [draw, minimum height=1cm, right=1.5cm of p2](p3) {$P_3$};
+			\node [draw, minimum height=1cm, right=of p3](dst){Dest. Server};
+			\draw[thick,->](src)--(p1) node[midway, above] {$k_{P_1}(k_{P_2}(K_{P_3}(M, S), P_3) , P_2))$};
+			\draw[thick,->](p1)--(p2) node[midway, above] {$k_{P_2}(K_{P_3}(M, S), P_3)$};
+			\draw[thick,->](p2)--(p3) node[midway, above] {$k_{P_3}(M, S)$};
+			\draw[thick,->](p3)--(dst) node[midway, above] {$M$};
+		\end{tikzpicture}
+	\end{center}
+	
+	Una vistosa miglioria è data dal fatto che ogni proxy ora vede solo l'hop a lui precedente e l'hop a lui successivo. In ogni caso, l'analisi del traffico è ancora possibile. Una soluzione è data dalle \textbf{Mix networks}.
+
+	\subsection{Mix networks}
+
+	Sono un meccanismo costruito apposta per avere un canale anonimo, anche in presenza di un attaccante, anche supponendo che ques'ultimo conosca sorgente e destinazione e possa modificare i messaggi. 
+
+	\paragraph{Invio di un messaggio.} Un Mix è un server che processa oggetti mail.
+	In sostanza, per mandare un messaggio a B il server Mix funziona come segue: \[ \langle R_1, \langle R_0, M\rangle_{K_B}\rangle, B \rangle_{K_1} \to \langle\langle R_0, M\rangle_{K_B}, B\rangle \]
+
+	Ogni $R_i$ è una stringa random di padding. Apparentemente sembra un normalissimo proxy, ma Mix fa anche altre operazioni per confondere l'analisi del traffico: \begin{itemize}
+		\item I Mix funzionano con messaggi a lunghezza fissa (splitting di quelli lunghi, padding di quelli corti);
+		\item l'ordine di arrivo dei pacchetti è mescolato, solitamente dividendo i pacchetti in gruppi differenti;
+		\item l'informazione duplicata è filtrata (cross checking in tutti i gruppi);
+		\item deve essere presente un certo volume di traffico $\to$ l'anonimity set è più grande $\to$ migliore l'anonimato (una possibile soluzione consiste nell'invio di pacchetti dummy da parte dei client).
+	\end{itemize}
+
+	Tavolta i mix possono generare delle "ricevute", così formate: \[ \langle C, \langle R_1, \langle R_0, M\rangle_{K_B}\rangle, B \rangle_{K_1}\rangle_{K_1^-1}  \]
+	dove $C$ è una costante intera relativamente grande. Fatto ciò, il mittente può poi dimostrare di aver mandato il messaggio fornendo come prova \[ \langle\langle R_0, M\rangle_{K_B}, B\rangle \]
+
+	Le stesse problematiche di un singolo proxy si ripresentano con un singolo mix (se è compromesso, l'anonimato scompare); in tal caso è bene scegliere un path di server Mix. Con questo meccanismo il mittente deve quindi preparare un messaggio incapsulato per ogni Mix, ossia \[R_n\langle R_{n-1}, \dots, \langle R_1, \langle R_0, M\rangle_{K_B}, B\rangle_{K_1} \dots, B_{n-2}\rangle_{K_{n-1}}, B_{n-1}\rangle_{K_n}\]
+
+	Ogni Mix intermedio spoglia il messaggio che riceve decifrandolo e reinoltrandolo al mix successivo, fino ad arrivare al destinatario originale. 
+
+	\paragraph{Risposta ad un messaggio.} Per rispondere ad un messaggio ricevuto da un mittente anonimo $x$, colui che risponde assembla un messaggio così formato: \[\langle\langle R_1, A_x\rangle_{K_1}, \langle R_0, M\rangle_{K_x}\rangle\] dove: \begin{itemize}
+		\item $R_1$ è la stringa random (usabile anche come chiave condivisa);
+		\item $K_x$ è una nuova chiave pubblica;
+		\item $A_x$ è l'indirizzo di $x$.
+	\end{itemize}
+
+	Il server Mix di risposta, ricevuto il messaggio, trasforma quello che riceve in \[\langle A_x,\langle\langle R_0, M\rangle_{K_x}\rangle_{R_1}\]
+
+	Il mittente originale del messaggio può decifrare il contenuto in quanto $K_x$ e $R_1$ sono state generate da lui quando ha mandato il primo messaggio.
+
+	Incapsulando a cascata il sistema a mix singolo con più mix, si ottiene una situazione duale a quella per l'invio dei messaggi.
+
+	Questo meccanismo garantisce un buon grado di anonimato, inoltre, con un buon volume di traffico, i dummy packets possono anche essere evitati. Il tracciamento del pacchetto è evitato grazie alla frammentazione/padding dei pacchetti iniziali, e sono implementati anche dei replay filter per evitare dei replay attacks.
+
+	Ovviamente le network Mix non sono immuni di svantaggi, infatti sono ad altissima latenza (sconsigliate per il web browsing), inoltre le cifratura e decifratura sono decisamente costose, a livello computazionale.
+
+	La difficoltà sta quindi nel creare reti anonime a bassa latenza, ad esempio usando crittografia a chiave pubblica per stabilire un "circuito" con chiavi simmetriche pairwise.
+
+	\subsection{Randomized Routing e TOR}
+	L'idea di un meccanismo del genere è quella di nascondere la sorgente del messaggio forwardando i pacchetti in maniera casuale, in tal modo i router non sanno se il mittente (= da chi ricevono il pacchetto sia effettivamente la sorgente oppure un altro router).
+
+	Il meccanismo di routing proposto da TOR è detto \textbf{onion routing}, e suppone inizialmente che la sorgente del pacchetto stabilisca un path di router (anche compromessi) e che possa anche decidere arbitrariamente la lunghezza del path.
+
+	Inizialmente il client stabilisce una chiave di sessione simmetrica con il primo onion router.
+	Successivamente il client stabilisce una nuova chiave di sessione con il secondo router del path, con un tunnel attraverso il primo, e così via, fino alla destinazione del pacchetto. Alla fine i due client saranno collegati e potranno comunicare attraverso il path generato.
+
+	Per mandare il messaggio alla destinazione, dal momento che Alice conosce tutte le chiavi di ogni router con cui ha stabilito la chiave di sessione, costruisce il messaggio \[ \langle \lbrace R_2, k_1\rbrace , \langle\lbrace R_3, k_2\rbrace, \dots, \langle\lbrace B, k_n\rbrace,\lbrace M\rbrace_{K_B}\rbrace_{k_n}\rangle_{k_{n-1}}, \dots,\rangle \rbrace_{k_1}\rangle \]
+
+	Ci sono delle questioni di management della rete, quali: \begin{itemize}
+		\item molte applicazioni che possono utilizzare lo stesso circuito;
+		\item la necessità di mantenere dei directory servers, con liste di onion routers, le loro posizioni, le chiavi, ecc.
+		\item È necessario il controllo di come i router entrano a far parte della rete (per gli attaccanti è possibile genereare dei "fake" onion router, si parla di \textbf{sybil attack}).
+	\end{itemize}
+
+	Da TOR è prevista l'esistenza di server che gestiscono gli entry point server, fornendo indirizzi e posizioni ai server di lookup, che sono consultatabili dagli utenti quando. Ovviamente tali sever devono essere accessibili da qualunque luogo,resistenti a DOS e attacchi fisici.
+
+	L'utilizzo di questi server avviene attraverso randez-vous server, a cui l'utente si collega (tramite circuito); poi manda ad un entry point l'indirizzo (e l'autorizzazione, se necessaria) del RV server. Se l'hidden server decide di "dialogare" con l'utente, si collega al RV point.
+
+	\subsection{Data protection e privacy policies}
+	Una \textbf{privacy policy} è una specifica su come i dati degli utenti vengono utilizzati, sotto quali condizioni e quali obblighi comporti detenerli.
+
+	Le policies più comuni descrivono: \begin{itemize}
+		\item Controllo sull'accesso ai dati;
+		\item Azioni richieste prima di accedere ai dati;
+		\item Azioni che devono essere fatte entro un certo periodo di tempo (informare il data owner ogni volta che i suoi dati sono utilizzati);
+		\item Restrizioni sulla distribuzione dei dati;
+		\item Restrizioni sui motivi per i quali i dati sono utlilzzati;
+		\item Restrizioni sul mantenimento dei dati;
+		\item Meccanismi di protezione obbligatoria dei dati (e.g. backup cifrati);
+		\item Dovere di mantenre i dati aggiornati.
+	\end{itemize}
+
+	La formalizzazione delle politiche sulla privacy avviene attraverso linguaggi machine-friendly (P3P, W3C), che possono eventualmente essere portati in formati computer-readable (XML).
+	Altri privacy oriented languages sono SAML, EPAL (da IBM), SOAP (Microsoft metadata).
+
+	Esistono poi dei meccanismi di rinforzo delle politche sulla privacy quali la \textit{Online Privacy Alliance}, un gruppo si 50 compagnie che adottano un unico insieme di linee guida per la preservazione e l'utilizzo dei dati, il tutto controllato e monitorato da terze parti.
 
 \end{document}
