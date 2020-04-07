@@ -990,4 +990,74 @@ a
 
 	Esistono poi dei meccanismi di rinforzo delle politche sulla privacy quali la \textit{Online Privacy Alliance}, un gruppo si 50 compagnie che adottano un unico insieme di linee guida per la preservazione e l'utilizzo dei dati, il tutto controllato e monitorato da terze parti.
 
+	\section{Intrusion Detection}
+	\subsection{Intruder}
+	Prima di parlare di intrusioni in sè, distringuiamo i vari e possibili tipi di intrusi: \begin{itemize}
+		\item \textbf{Masquerader}: un individuo non autorizzato all'uso del pc;
+		\item \textbf{Misfeasor}: un utente legittimo che accede non autorizzato alle risorse;
+	\end{itemize}
+
+	Al di là dei singoli utenti intrusi, si può parlare anche di gruppi di hacker organizzati, anche sotto controllo governativo, più proni all'uso di backdoor o RAT per tornare al bersaglio quando sia necessario.
+	
+	\subsection{Detection delle intrusioni}
+	I meccanismi di intrusion detection mirano a identificare e se necessario bloccare tali tentativi (ovviamente non sono infallibili), ma in ogni caso agiscono da deterrente e raccolgono informazioni utili per migliorare la sicurezza del sistema in sè. L'unico problema è che gli IDS assumono che l'intruso si comporti in maniera differente da un utente normale, inoltre tendono ad avere un fail ratio relativamente alto, dovuto all'alto numero di falsi positivi/negativi che tendono ad avere.
+
+	Ci sono molteplici approcci all'intrusion detection, ossia: \begin{itemize}
+		\item \textbf{Rilevamento statistico delle anomalie}: sono un insieme di meccanismi basati su threshold (azioni ripetute, inusuali per un utente standard), oppure anche meccanismi profile-based, che mirano a costruire un profilo per ogni utente e usarlo per rilevare possibili anomalie nei comportamenti. 
+		\item \textbf{Rilevamento basato su regole}: meccanismi orientati verso la rilevazione di azioni che esulano dai comportamenti standard, oppure che riconoscono tentativi di violazione al sistema basati su una conoscenza pregressa delle azioni malevole;
+	\end{itemize}
+
+	\paragraph{Audit records.} Sono dei record studiati per raccogliere ogni attività utente svolta.
+	Ci sono due approcci comuni: \begin{itemize}
+		\item \textbf{Audit record nativi}: sono posizionati su ogni workstation;
+		\item \textbf{Audit record detection-specific}: sono generati da una facility dedicata.
+	\end{itemize}
+
+	Ogni audit record è strutturato con i seguenti campi:\begin{enumerate}
+		\item Soggetto;
+		\item Azione svolta;
+		\item Oggetti su cui l'azione si è svolta;
+		\item Eccezioni varie, se presenti;
+		\item Risorse utilizzate;
+		\item Timestamp.
+	\end{enumerate}
+
+	
+
+	\paragraph{IDS distribuiti.} In reti molto ampie, l'idea migliore è quella di usare IDS distribuiti, per coordinare la difesa dell'intera rete. Ciò pone alcuni problemi, quali: \begin{itemize}
+		\item formati di audit record differenti;
+		\item integrità e confidenzialità dei dati in rete;
+		\item architettura (centralizzata vs decentralizzata).
+	\end{itemize}
+
+	Il modello più classico di IDS di rete è costituito da 3 entità:\begin{itemize}
+		\item \textbf{Host agent module}: uno per ogni host, raccolgono dati lavorando in background sul sistema monitorizzato;
+		\item \textbf{LAN monitor agent module}: opera analogamente al'host agent module, ma lavora sul traffico di rete;
+		\item \textbf{Central manager module}: modulo che raccoglie i dati dagli altri due, li processa e mette insieme i report ricevuti per verificare possibili intrusioni.
+	\end{itemize}
+	Questo schema è disegnato per essere indipendente dal sistema operativo host.
+
+	Ogni agente procede quindi filtrando l'informazione di interesse, formattando l'output generando un \textit{Host Audit Record} (HAR), che viene passato ad un modulo di analisi per controllare se nel record generato vi sono attività sospette. In caso sia rilevata un attività sospetta, i dati vengono inviati al central manager che, in alternativa, può anche eseguire una query all'agente per ottenere dati che sono necessari alla correlazione con i dati ricevuti da altri agenti.
+
+	\subsection{Honeypots}
+	Gli honeypots sono sistemi esca per ingannare gli attaccanti e indurli a credere di stare attaccando un sistema chiave. Spesso sono correlati di finti dati sensibili per renderli maggiormente credibili. 
+
+	Gli honeypot fornisono una serie di vantaggi, in quando consentono di:\begin{itemize}
+		\item raccogliere dati relativi all'attaccante (quando sono dotati di sistemi di monitoraggio);
+		\item mettono al riparo i veri sistemi sensibili;
+	\end{itemize}
+
+	Gli honeypot sono sostanzialmente delle macchine volutamente vulnerabili, e sono posizionabili in diversi postazioni nella rete: \begin{itemize}
+		\item esternamente al firewall di rete $\rightarrow$ tracciano attacchi ad indirizzi IP non usati all'interno della rete, non comportano rischi per i sistemi vitali. Tuttavia, non hanno possibilità di ingannare gli attaccanti interni.
+		\item nella DMZ $\rightarrow$ l'amministratore di rete deve assicurarsi che gli altri sistemi della DMZ siano adeguatamente protetti, inoltre il firewall di solito blocca richieste provenitenti dalla DMZ.
+		\item completamente interno alla rete $\rightarrow$ cattura gli insider, permette di individuare errori nella configurazione del firewall. Di contro, se l'honeypot è compromesso, tutta la rete è vulnerabile, in più il firewall deve essere configurato in modo da permettere il traffico da e verso l'honeypot, il che espone la rete ai potenziali rischi di cui sopra.
+	\end{itemize}
+
+	\subsection{Gestione delle password}
+	Le password andrebbero salvate in forma cifrata (UNIX usa DES con sale), magari con funzioni hash crittografiche. Tuttavia è necessario proteggere anche il file dove la password sono salvate.
+
+	Studi recenti e antichi dimostrano che il problema maggiore della password sono gli utenti, perchè le scelgono troppo semplici o corte. In tal senso è importante imporre linee guida per la creazione della password (lunghezza minima, variazione dei caratteri, evitare parole di uso comune), ma ancora meglio sarebbe se i computer generassero le password che servono.
+
+	L'approccio migliore in ogni caso è il controllo proattivo, ossia lasciare che l'utente scelga la password e lasciare che sia il sistema a decidere se accettarla oppure no.
+
 \end{document}
