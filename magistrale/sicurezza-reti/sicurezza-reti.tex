@@ -218,8 +218,6 @@
 	\subsection{Cifrari a trasposizione}
 	Funzionano in maniera leggermente diversa. Dato un blocco di lunghezza $l$ e $\mathcal{K}$ un insieme di permutazioni su $\lbrace 1 \dots t \rbrace$, si ha che \[ \encr(m) = m_{e(1)}, \dots, m_{e(2)} \] Per decodificare si applica la permutazione inversa ad ogni carattere del ciphertext.
 	
-	\subsection{Cifrario di Feistel}
-	
 	\subsection{Data Encryption Standard (DES)}
 	È un cifrario a blocchi che lavora su blocchi di 64 bit. Fu in effetti il primo standard di crittografia, e ne furono rilasciate versioni aggiornate che lavorassero su chiavi di lunghezza maggiore (3-DES). Non è ancora stato violato, ma è possibile ridurre in tempo lineare lo spazio delle chiavi da $2^{56}$ a $2^{43}$.
 	
@@ -1060,4 +1058,39 @@ a
 
 	L'approccio migliore in ogni caso è il controllo proattivo, ossia lasciare che l'utente scelga la password e lasciare che sia il sistema a decidere se accettarla oppure no.
 
+	\section{Firewalls}
+	I firewall costituiscono un perimetro di difesa con un singolo collo di bottiglia. La loro funzione è quella di filtrare il traffico che li attraverso da e per la rete che coprono.
+
+	I firewall lavorano seguendo quelle che vengono chiamate \textbf{security policies}, ovvero un insieme di regole che descrivono come il firewall debba comportarsi relativamente al tipo di traffico che riceve. Le policies possono riguardare un insieme di caratteristiche, come indirizzi IP, specifici applicativi o utenti, o anche in base all'attività della rete.
+
+	Di contro, i firewall dispongono di limitazioni, quali: \begin{itemize}
+		\item Non possono proteggere da attacchi disegnati apposta per aggirare i firewall;
+		\item Non proteggono da attaccanti interni alla rete;
+		\item Un laptop o dispositivo portatile infettato al di fuori della rete coperta, se si collega alla rete la infetta e il firewall non può porvi rimedio.
+	\end{itemize}
+
+	\subsection{Packet filtering firewalls}
+	Questo tipo di firewall opera semplicemente un filtraggio dei pacchetti basato su regole, quali: \begin{itemize}
+		\item IP sorgente o destinazione;
+		\item Indirizzo a livello di trasporto (utile per protocolli come SMTP o  Telnet);
+		\item Interfaccia di rete.
+	\end{itemize}
+
+	Sono inoltre ammesse delle politiche di default, la \textbf{default allow}, che permette tutto ciò che non è vietato, oppure la \textbf{default deny}, che vieta tutto ciò che non sia esplicitamente permesso, e in tal caso i vari permessi devono essere specificati uno per uno.
+
+	Come specificato sopra, i filtering packets firewalls hanno debolezze piuttosto marcate, infatti non controllano i dati a livello applicativo, non supportano l'autenticazione utente, non rilevano alterazioni dei pacchetti e sono estremamente vulnerabili a violazioni dovute alla misconfigurazione.
+
+	I packet filtering firewall permettono varie superfici di attacco, quali IP spoofing (pacchetti provenienti dall'esterno ma aventi un IP di un host interno alla rete), modifiche al path di routing, sperando che ci sia una qualche misconfig che permetta l'accesso da punti particolari, frammentazioni dei pacchetti.
+
+	\subsection{Stateful inspection firewalls}
+	Uno stateful inspection firewall mantiene una tabella con tutte le connessioni su porte non riservate (i.e. con numero $ > 1024$). Dal momento che un semplice packet filtering deve mantenere tutte queste porte aperte, si vengono a creare vulnerabilità facilmente exploitabili. Con una tabella simile, il packet filtering può rimuovere tutti i pacchetti in entrata da connessioni non presenti nella tabella.
+	Un altro vantaggio dello stateful inspection è che si hanno record delle connessioni su porte non riservate, cosa che con un semplice packet filter non avviene mai.
+
+	\subsection{Application Level Gateway}
+	Un application gateway (o proxy) funziona in modo leggermente diverso: se un host si vuole collegare ad un servizio remoto manda le credenziali di accesso al proxy, che, verificato il login, fa da relay tra server e client. Gli application level gateway sono più sicuri dei packet filter, ma di contro si ha un overhead dovuto al processing aggiuntivo.
+
+	\subsection{Circuit Level Gateway}
+	I circuit level gateway funzionano da proxy in una situazione analoga agli application level proxy, ma sono implementati a livello di trasporto, ciò significa che non ispezionano i dati dell'applicazione, ma fanno semplicemente da relay tra due connessioni TCP o UDP, tutto sta nel decidere quali connessioni saranno permesse. Questo tipo di firewall è usato nelle reti in cui tutti gli utenti sono trusted.
+
+	Un esempio di tale gateway è dato dal protocollo SOCKS, un protocollo usato per il routing di connessioni attraverso un proxy server.
 \end{document}
