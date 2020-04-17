@@ -41,6 +41,8 @@
 }
 
 \newcommand{\sectionbreak}{\clearpage}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.5pt}
 
 \usetikzlibrary{shapes, arrows}
 
@@ -98,7 +100,7 @@
 		\item Confidenzialità: non ci sono fughe di informazioni;
 		\item Integrità: non ci sono modifiche alle informazioni;
 		\item Disponibilità: non ci sono "danneggiamenti" ai servizi;
-		\item Accountability\footnote{La traduzione più vicina è \textit{responsabilità}.}: le azioni sono sempre riconducibili ai diretti responsabili;
+		\item Accountability: le azioni sono sempre riconducibili ai diretti responsabili;
 		\item Autenticazione: l'origine dei dati può essere identificata con sicurezza.
 	\end{itemize}
 	
@@ -1069,7 +1071,8 @@ a
 		\item Un laptop o dispositivo portatile infettato al di fuori della rete coperta, se si collega alla rete la infetta e il firewall non può porvi rimedio.
 	\end{itemize}
 
-	\subsection{Packet filtering firewalls}
+	\subsection{Tipologie di firewall}
+	\paragraph{Packet filtering firewalls.}
 	Questo tipo di firewall opera semplicemente un filtraggio dei pacchetti basato su regole, quali: \begin{itemize}
 		\item IP sorgente o destinazione;
 		\item Indirizzo a livello di trasporto (utile per protocolli come SMTP o  Telnet);
@@ -1082,15 +1085,60 @@ a
 
 	I packet filtering firewall permettono varie superfici di attacco, quali IP spoofing (pacchetti provenienti dall'esterno ma aventi un IP di un host interno alla rete), modifiche al path di routing, sperando che ci sia una qualche misconfig che permetta l'accesso da punti particolari, frammentazioni dei pacchetti.
 
-	\subsection{Stateful inspection firewalls}
+	
+	\paragraph{Stateful inspection firewalls.}
 	Uno stateful inspection firewall mantiene una tabella con tutte le connessioni su porte non riservate (i.e. con numero $ > 1024$). Dal momento che un semplice packet filtering deve mantenere tutte queste porte aperte, si vengono a creare vulnerabilità facilmente exploitabili. Con una tabella simile, il packet filtering può rimuovere tutti i pacchetti in entrata da connessioni non presenti nella tabella.
 	Un altro vantaggio dello stateful inspection è che si hanno record delle connessioni su porte non riservate, cosa che con un semplice packet filter non avviene mai.
 
-	\subsection{Application Level Gateway}
-	Un application gateway (o proxy) funziona in modo leggermente diverso: se un host si vuole collegare ad un servizio remoto manda le credenziali di accesso al proxy, che, verificato il login, fa da relay tra server e client. Gli application level gateway sono più sicuri dei packet filter, ma di contro si ha un overhead dovuto al processing aggiuntivo.
+	\paragraph{Application Level Gateway.} Un application gateway (o proxy) funziona in modo leggermente diverso: se un host si vuole collegare ad un servizio remoto manda le credenziali di accesso al proxy, che, verificato il login, fa da relay tra server e client. Gli application level gateway sono più sicuri dei packet filter, ma di contro si ha un overhead dovuto al processing aggiuntivo.
 
-	\subsection{Circuit Level Gateway}
-	I circuit level gateway funzionano da proxy in una situazione analoga agli application level proxy, ma sono implementati a livello di trasporto, ciò significa che non ispezionano i dati dell'applicazione, ma fanno semplicemente da relay tra due connessioni TCP o UDP, tutto sta nel decidere quali connessioni saranno permesse. Questo tipo di firewall è usato nelle reti in cui tutti gli utenti sono trusted.
+	\paragraph{Circuit Level Gateway.} I circuit level gateway funzionano da proxy in una situazione analoga agli application level proxy, ma sono implementati a livello di trasporto, ciò significa che non ispezionano i dati dell'applicazione, ma fanno semplicemente da relay tra due connessioni TCP o UDP, tutto sta nel decidere quali connessioni saranno permesse. Questo tipo di firewall è usato nelle reti in cui tutti gli utenti sono trusted.
 
 	Un esempio di tale gateway è dato dal protocollo SOCKS, un protocollo usato per il routing di connessioni attraverso un proxy server.
+
+	\subsection{Firewall basing}
+	I firewall possono essere costituiti da una macchina posta in rete, tipicamente Linux, ma ci sono anche altre alternative.
+
+	\paragraph{Bastion host.} Un bastion host è una macchina usata specificatamente come firewall, ed esegue un application gateway o un circuit level proxy. È l'host più esposto in rete, pertanto deve essere adeguatamente hardenizzato, deve quindi: \begin{itemize}
+		\item eseguire una versione stabile e sicura del suo sistema operativo;
+		\item eseguire soltanto i servizi proxy che l'amministratore di rete decide di fargli eseguire;
+		\item poter opzionalmente richiedere un qualche tipo di autenticazione utente, così come potrebbero fare i servizi hostati sull'host;
+		\item i proxy hostati devono essere piccoli, sicuri ed indipendenti;
+		\item i proxy devono eseguire come utente non-root.
+	\end{itemize}
+
+	\paragraph{Host-based firewall.} Sono firewall, tipicamente posizionati su un server, disegnati apposta per proteggere uno specifico host in rete, i vantaggi sono dati dal fatto che può essere usato indipendentemente dalla topologia della rete e fornisce un layer extra di protezione.
+
+	\paragraph{Firewall personali.} I firewall personali sono uno strumento software installato su una macchina allo scopo di fornire protezione per quello specifico host. 
+	Lo scopo principale di un personal firewall è quello di bloccare le connessioni da remoto, magari impostando una politica di \textbf{default deny} in ingresso, ma può anche essrere utilizzato per impedire magari a malware e worm di propagarsi in rete. Generalmente quindi, una buona configurazione per il firewall è quella che blocca tutte le connessioni in ingresso e tutte quelle in uscita ad esclusione dei servizi che si usano maggiormente (connessioni SSH, FTP, HTTP/s, ecc.).
+
+	\subsection{Configurazioni e posizioni per i firewall}
+	\paragraph{Configurazione con DMZ.} Se l'azienda ha una qualche tipo di DMZ (porzione di rete con servizi aziendali, quali webserver, server mail, server DNS,...), una buona idea è quella di usare un firewall esterno (subito prima dell'uscita dalla rete aziendale), e un firewall interno, tra la DMZ e l'insieme delle workstation degli utenti. In tal modo: \begin{itemize}
+		\item il firewall esterno protegge la DMZ;
+		\item il firewall interno aggiunge un layer di protezione oltre al firewall esterno \begin{itemize}
+			\item copre le workstation da attacchi portati attraverso la DMZ;
+			\item copre la DMZ da attacchi portati dalle workstation (insider intruder)
+		\end{itemize}
+	\end{itemize}
+
+	Ovviamente si possono usare più firewall interni, per coprire zone differenti della rete, ad esempio coprendo i server interni dalle workstation e viceversa.
+
+	\begin{center}
+		\includegraphics[scale=0.4]{img/frw_dmz.png}	
+	\end{center}
+	
+
+	\paragraph{VPN firewall.} Nel caso delle VPN, l'idea migliore è quella di piazzare IPSec in un firewall prima del boundary router (l'ultimo hop prima dell'host remoto da contattare). In tal modo la comunicazione via VPN rimane cifrata fino al firewall, tuttavia non può fare l'inspection dei relativi pacchetti, perchè nell'header IPSec in tunnel mode è tutto cifrato.
+
+	\begin{center}
+		\includegraphics[scale=0.4]{img/vpnfirewall.png}
+	\end{center}
+
+	\newpage
+	\paragraph{Firewall distribuiti.} Il sistema a firewall distribuito può essere efficace se si combinano firewall host-based e firewall stand-alone in determinate posizioni. In questo modo i firewall host-based sui server e sulle workstation utente proteggono le macchine da insiders, mentre gli stand-alone posizionati ai margini della rete proteggono da attacchi esterni.
+	Uno schema esemplificativo:
+	\begin{center}
+		\includegraphics[scale=0.4]{img/distfirewall.png}
+	\end{center}
+
 \end{document}
