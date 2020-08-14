@@ -1,13 +1,14 @@
 \documentclass{article}
 
 \usepackage[italian]{babel}
-\usepackage[utf8x]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{booktabs}
 \usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{titlesec}
+\usepackage{etaremune}
 
 \hypersetup{hidelinks}
 
@@ -67,19 +68,21 @@
 
     \newpage
     \tableofcontents
+    \addtocontents{toc}{\protect\thispagestyle{empty}}
+    \thispagestyle{empty}
 
     \newpage
-
+    \thispagestyle{empty}
     \section{Introduzione}
         La presente è una dispensa riguardante il corso di \textbf{Reti di Calcolatori}. Per la stesura di questa dispensa si è fatta fede al materiale didattico fornito direttamente dal professore nell'Anno Accademico 2018/2019. Eventuali variazioni al programma successive al suddetto anno non saranno quindi incluse.\\
         Insieme a questo documento in formato PDF viene fornito anche il codice \LaTeX  con cui è stato generato, reperibile all'indirizzo \url{https://github.com/davbianchi/dispense-info-univr.git}.
 
 \newpage
-    \section{A brief introduction to Computer Networks}
+    \section{Una breve introduzione alle Reti}
         \subsection{Protocollo e Dispositivi}
         Per prima cosa diamo la definizione di \textbf{protocollo}
 
-        \paragraph{Protocollo} Definisce un formato e l'ordine dei messaggi scambiati tra due o più entità in comunicazione.\\
+        \paragraph{Protocollo} Definisce un formato e l'ordine dei messaggi scambiati tra due o più entità in comunicazione, così come le azioni intraprese in fase di trasmissione/ricezione di un messaggio.\\
         \\
         Quelli a cui noi siamo abituati sono i \textit{protocolli umani}, in questo caso invece faremo riferimento ai \textit{protocolli di rete}. In questi protocolli le entità sono dispositivi HW e SW.
         I protagonisti possono essere
@@ -98,8 +101,9 @@
             \end{itemize}
 
             \subsubsection{Commutazione di Circuito}
-                Nella \textit{Commutazione di Circuito} si ha un circuito dedicato per l'intera durata della sessione, utilizzabile in modo esclusivo. Le risorse sono infatti usate "\textit{alla chiamata}". L'ampiezza della banda su cui è possibile trasmettere è infatti la capacità del commutatore, queste risorse vengono divise in pezzi ed ogni pezzo viene allocato ai vari collegamenti.\\ 
-                La naturale conseguenza dell'impossibilità nel condividere risorse è l'inutilizzo delle risorse inattive.\\
+                Nella \textit{Commutazione di Circuito} per l'intera durata della sessione si hanno risorse riservate per consentire la comunicazione tra sistemi periferici, utilizzabili in modo esclusivo. Le risorse sono infatti usate "\textit{alla chiamata}", quindi potrebbe essere necessario un accodamento per l'utilizzo di queste.\\
+                L'ampiezza della banda su cui è possibile trasmettere è infatti la capacità del commutatore, queste risorse vengono divise in pezzi ed ogni pezzo viene allocato ai vari collegamenti.\\ 
+                La naturale conseguenza dell'impossibilità nel condividere risorse è l'inutilizzo di queste.\\
                 La banda può essere suddivisa in base a due criteri
                 \begin{itemize}
                     \item \textbf{Divisione di Frequenza}
@@ -118,13 +122,9 @@
                 Tutti gli esempi precedenti vengono proposti prendendo in considerazione una situazione con 4 utenti 
 
             \subsubsection{Commutazione di Pacchetto}
-                In questa metodologia il flusso dei dati viene suddiviso in "\textit{pacchetti}" e ciascuno di questi utilizza completamente il canale.\\
-                In questo caso non vi è, però, un accesso esclusivo alle risorse o ad una loro parte, infatti i vari pacchetti devono \textit{competere} per per l'accesso ad esse. Le risorse vengono utilizzate infatti a seconda delle necessità risolvendo il problema dell'inattività della Commutazione di Circuito.\\
-                Si presti attenzione al fatto che la richiesta di risorse può eccedere il quantitativo di risorse disponibili creando il fenomeno conosciuto come \textbf{congestione}. Nello specifico i pacchetti sia accodano nell'attesa di utilizzare il collegamento, tenendo presente che verranno trasmessi solo dopo che il commutatore avrà ricevuto l'intero pacchetto (\textbf{Store and Forward}).\\
-                La Commutazione di Pacchetto permette il \textit{Multiplexing Statistico}.\\
-                \\
-                Può succedere, a causa dell'impossibilità del buffer di fare lo storage di altri pacchetti, che alcuni di questi vengano scartati. Quando un pacchetto viene scartato può essere ritrasmesso come no.\\
-                \\
+                In questa metodologia il flusso dei dati viene suddiviso in "\textit{pacchetti}", questi viaggiano attraveso i collegamenti e la loro velocità è pari alla \textit{velocità totale di trasmissione} del collegamento stesso. Se invio quindi un pacchetto di \textit{L} bit su un canale con valocità \textit{R bps}, il tempo totale srà di \textit{L/R secondi}.\\
+                I commutatori di pacchetto utilizzano la \textbf{trasmissione store-and-forward}, quindi prima di poter inviare in uscita il primo bit di un pacchetto questo dovrà essere arrivato interamente nel buffer.\\                \\
+                Può succedere, a causa dell'impossibilità del buffer di fare lo storage di altri pacchetti, che alcuni di questi vengano scartati. Quando un pacchetto viene scartato può essere ritrasmesso come no.\newpage
                 L'arrivo dei pacchetti può avvenire in ritardo, distinguiamo 4 tipi di ritardo
                 \begin{itemize}
                     \item \textbf{Ritardo di Elaborazione del Nodo}
@@ -179,7 +179,34 @@
             \item \underline{Affidabile}: Non ci sono perdite perchè il ricevente informa sempre dell'avvenuta ricezione
             \item \underline{Non Affidabile}: Sono possibili perdite di dati
         \end{itemize}
+        Definiamo ora lo stack dei livelli Internet, o \textbf{Stack Protocollare}, e vediamo come questi sono disposti
+        \begin{etaremune}
+            \item Applicazione
+            \item Trasporto
+            \item Rete
+            \item Collegamento
+            \item Fisico
+        \end{etaremune}
 
+        \subsection{Applicazione}
+            Include protocolli quali \textit{HTTP}, \textit{SMTP} e \textit{FTP}. Tramite \textit{DNS} avviene anche la traduzione dei nomi degli host in indirizzi di rete a 32 bit.\\
+            In questo livello i pacchetti scambiati prendono il nome di \textbf{messaggi}.
+
+        \subsection{Trasporto}
+            Troviamo due protocolli a livello di trasporto: \textit{TCP} e \textit{UDP}. TCP fornisce un servizio \textit{connection-oriented}, garantendo la consegna dei messaggi e controllo di flusso. Altra caratteristica è la possibilità di spezzare segmenti troppo lungi in segementi più piccoli e fornisce un meccanismo di controllo della congestione.\\
+            UDP invece fornisce un servizio \textit{non connection-oriented}, senza garantire la consegna dei messaggi, senza controllo di flusso e congestione.\\
+            I pacchetti a livello Trasporto prendono il nome di \textbf{segmenti}.
+
+        \subsection{Rete}
+            Si occupa di trasferire i pacchetti da un host all'altro. Il protocollo a livello di Trasporto passa al livello di Rete un \textit{segmento} e \textit{un indirizzo di destinazione}.\\
+            Il livello di Rete comprende il protocollo \textit{IP}, che definisce i campi dei pacchetti e come sistemi periferici e router agiscono su questi.\\
+            Contiene anche vari prtocolli di instradamento che determinano i percorsi che il pacchetto deve seguire da sorgente a destinazione.\\
+            I pacchetti prendono il nome di \textbf{datagrammi}.
+
+        \subsection{Collegamento}
+            Si occupa del vero e proprio trasferimento dei datagrammi da nodo a nodo. Possono esserci diversi protocoli di livello 2 tra un nodo e l'altro, il livello di Rete dovrà quindi dattarsi di conseguenza.\\
+            A livello Collegamento i pacchetti prendono il nome di \textbf{trame} o \textbf{frames}. 
+        
     \section{Livello Applicazione}
         \subsection{Architettura Client-Server}
             \paragraph{Server} Il \textit{server} è un host sempre attivo con indirizzo IP fisso.
@@ -234,7 +261,7 @@
                     \item Il client HTTP comincia una connessione TCP con il server HTTP sulla porta 80
                     \item Il server HTTP, in attesa di una connessione TCP alla porta 80 "accetta" la connessione e avvisa il client
                     \item Il client trasmette un \textit{messaggio di richiesta} nella socket della connessione TCP indicando quale oggetto vuole
-                    \item Il server HTTP riceve il messaggio di richiesta, forma un messaggio di risposta che contiene l'oggetto richiesto, lo invia poi nella sua socket
+                    \item Il server HTTP riceve il messaggio di richiesta, forma un \textit{messaggio di risposta} che contiene l'oggetto richiesto, lo invia poi nella sua socket
                     \item Il server HTTP chiude la connessione TCP
                     \item Il client HTTP riceve il messaggio contenente la risposta, esaminando poi il file HTML ripeterà $ n $ volte questi passi per ogni oggetto aggiuntivo che gli servirà
                 \end{enumerate}
@@ -306,10 +333,10 @@
 
             \subsubsection{Cache Web}
                 L'obiettivo è quello di soddisfare la richiesta dell'utente senza contattare il server d'origine. In questo modo il browser invia tutte le richieste HTTP al \textit{Server Proxy}. Se l'oggetto richiesto è nella cache allora viene ritornato, altrimenti il server proxy si fa carico della richiesta al server d'origine, ritornando poi l'oggetto al client.
-                Questo metodo è stato implementato al fine di rendere più veloce la risposta del server al client, riducendo di conseguenza il traffico.
+                Questo metodo è stato implementato al fine di rendere più veloce la risposta del server al client, riducendo di conseguenza il traffico.\\
 
                 \subsubsubsection{GET Condizionale}
-                    L'obiettivo è quello di non inviare un oggetto se la \textit{cache} ne ha già una copia aggiornata. Nella \textit{richiesta} viene specificata la data di ultima modifica dell'oggetto, se la copia cache è aggiornata il server non invia l'oggetto nella risposta.
+                    L'obiettivo è quello di non inviare un oggetto se la \textit{cache} ne ha già una copia aggiornata. Distinguiamo un messaggio \textit{conditional GET} dal fatto che nella sua intestazione è presente il campo \texttt{If-modified-since:} seguito da un timestamp, che rappresenta la data di modifica del file, se questo è stato modificato dopo il timestamp il server provvederà ad inviarne una copia aggiornata, ignorerà la richiesta altrimenti.
                 
         \subsection{FTP}
             Il \textbf{File Transfer Protocol} serve per il trasferimento di file da/a un host remoto.\\
@@ -346,7 +373,7 @@
                     \item \textit{Chiusura} 
                 \end{itemize}
                 Alcuni dettagli da ricordare sono che SMTP usa una connessione persistente ed il messaggio sia nel formato \textit{ASCII a 7 bit}.\\
-                Possiamo paragonare SMTP e HTTP molto facilmente, infatti se HTTP esegue un azione di \textit{pull} SMTP ne esegue un di \textit{push}, la differenza sta nel come vengono inviati gli oggetti. HTTP incapsula ogni oggetto in un proprio messaggio di risposta mentre SMTP può inviare più oggetti in un singolo messaggio.\\
+                Possiamo paragonare SMTP e HTTP molto facilmente, infatti se HTTP esegue un'azione di \textit{pull} SMTP ne esegue una di \textit{push}, la differenza sta nel come vengono inviati gli oggetti. HTTP incapsula ogni oggetto in un proprio messaggio di risposta mentre SMTP può inviare più oggetti in un singolo messaggio.\\
                 \\
                 I messaggi hanno un proprio formato, naturalmente, sono infatti composti da \textit{intestazione} e \textit{corpo}. L'intestazione contiene \textit{from}, \textit{to} e \textit{subject}, banale capire cosa sono, mentre il corpo è l'effettivo messaggio. Si può invece usare \textbf{MIME} per estendere il messaggio. Con questo viene aggiunto il supporto a
                 \begin{itemize}
@@ -390,7 +417,7 @@
                     Con \textit{IMAP} i messaggi vengono mantenuti sul server, offrendo inoltre la possibilità di organizzarli in cartelle. A differenza di POP3 lo stato dell'utente viene mantenuto tra le varie sessioni. 
 
                 \subsubsubsection{HTTP}
-                    Alcuni server di posta utilizzano \textit{HTTP} per l'interazione con i messaggi di posta in entrata, tra questi \textit{Gmail, Yahoo! Mail} e \textit{Hotmail} per citarne alcuni.
+                    Alcuni server di posta utilizzano \textit{HTTP} per l'interazione con i messaggi di posta in entrata, tra questi \textit{Gmail, Yahoo! Mail} e \textit{Hotmail}, per citarne alcuni.
 
         \subsection{DNS}
             Le persone come noi hanno molti modi per identificarsi, come il Nome o il Codice Fiscale. Gli Host (o i Router) invece vengono tanto identificati con un codice a \textit{32 bit} detto \textit{Indirizzo IP} quanto da un nome, si pensi al fatto che per connettersi a \textit{Google} non si digita un IP ma \textit{www.google.it}.\\
@@ -400,8 +427,14 @@
                 \includegraphics[width=\textwidth]{pic/gerarchia_dns.png}
                 \label{Gerarchia dei Server DNS}
             \end{figure}
-            Il server \textit{Radice} viene contattato da un server DNS locale che non può risolvere un nome, se anch'esso non conosce la mappatura contatta un server DNS autorizzato, ottenendola. La ritorna poi al server DNS locale.
-
+            Il server \textit{Radice} viene contattato da un server DNS locale che non può risolvere un nome, se anch'esso non conosce la mappatura contatta un server DNS autorizzato, ottenendola. La ritorna poi al server DNS locale.\\
+            \\
+            Oltre alla traduzione degli hostname in indirizzi IP, DNS offre altri servizi, quali:
+            \begin{itemize}
+                \item \textbf{Host Aliasing}: Fornisce degli alias per i nomi più complessi, in questo caso il nome originale viene detto \textit{hostname canonico}.
+                \item \textbf{Mail Server Aliasing}: Stesso concetto, applicato però ai domini degli indirzzi di posta elettronica.
+                \item \textbf{Load Distribution}: Redistribuisce il carico tra server replicati, ad esempio quelli di siti molto trafficati.
+            \end{itemize}
             \subsubsection{Server TLD}
                 I \textbf{Top-Level Domain} si occupano dei nomi \textit{com, org, edu, ecc}. e tutti quelli locali di alto livello (\textit{uk, fr, ecc.}).\\
                 Ogni organizzazione dotata di host Internet pubblici deve fornire i record DNS che mappano i nomi di tali host agli indirizzi IP. 
@@ -449,15 +482,15 @@
             \end{itemize} 
 
             \subsubsection{Programmazione con TCP}
-                Il client, per prima cosa deve contattare il server e quest'ultimo deve essere in esecuzione ed aver creato uuna socket che da il "benvenuto" al client.\\
-                Il client, a sua volta, per contattare il server crea una socket TCP specificando IP e numero di porta del processo server. Creata questa il client TCP stabilisce al connessione con il server.\\
+                Il client, per prima cosa deve contattare il server e quest'ultimo deve essere in esecuzione ed aver creato una socket che da il "benvenuto" al client.\\
+                Il client, a sua volta, per contattare il server crea una socket TCP specificando IP e numero di porta del processo server. Creata questa il client TCP stabilisce la connessione con il server.\\
                 Al momento del contatto da parte del client il server crea la socket per il suo processo, permettendo così la comunicazione con il processo client. È possibile quindi che lo stesso server comunichi con più client contemporaneamente.\\
-                Passiamo ora d un po' di terminologia
+                Passiamo ora ad un po' di terminologia
                 \begin{itemize}
                     \item \textbf{Flusso (Strem)}: Sequenza di caratteri che fluisce da/verso un processo
                           \begin{itemize}
                               \item \textbf{Flusso d'Ingresso (Input Stream)}: Collegato ad un origine d'ingresso (tastiera o socket, per esempio)
-                              \item \textbf{Flusso d'Uscita (Output Stream)}: Collegato ad un uscita per il processo (monitor o socket ad esempio)
+                              \item \textbf{Flusso d'Uscita (Output Stream)}: Collegato ad un uscita per il processo (monitor o socket, ad esempio)
                           \end{itemize} 
                 \end{itemize}
 
@@ -477,8 +510,8 @@
         \begin{itemize}
             \item Indirizzamento a livello applicazione, multiplexing e demultiplexing
                   \begin{itemize}
-                      \item Differenziazione delle diverse applicazioni che utilizzano il protocollo per il trasferimento dati
-                      \item multiplazione in caso di reti comuni
+                      \item \textit{Demultiplexing}: Trasporto dei dati dai segmenti alla giusta socket
+                      \item \textit{Multiplexing}: Azione per radunare dati dalle varie socket per incapsularli in segmenti (ognuno con una propria intestazione) che verranno poi passati al livello Rete 
                   \end{itemize}
             \item Instaurazione e gestione delle connessioni
             \item Recupero degli errori
@@ -498,7 +531,7 @@
                     \label{Header TCP}
                 \end{figure}
                 \begin{itemize}
-                    \item \textbf{Source/Destinazion Port} (16 bit ciascuna)\\ 
+                    \item \textbf{Source/Destination Port} (16 bit ciascuna)\\ 
                           Indirizzi della porta sorgente e destinazione (rispettivamente)
                     \item \textbf{Sequence Number} (32 bit)\\
                           Numero di sequenza del primo byte del payload (DATA nell'immagine)
@@ -513,7 +546,7 @@
                     \item \textbf{Checksum} (16 bit)\\
                           Risultato di un calcolo che serve per comprendere se il segmento contiene errori
                     \item \textbf{Urgent Pointer} (16 bit)\\
-                          Indica che il ricevente deve iniziare a leggere il campo DATA dal numero di byte specificato. usato se si inviano comando che generano eventi \textit{asincroni} urgenti
+                          Indica che il ricevente deve iniziare a leggere il campo DATA dal numero di byte specificato. Usato se si inviano comandi che generano eventi \textit{asincroni} urgenti
                 \end{itemize}
                 Vi sono anche 6 \textbf{flag}
                 \begin{itemize}
@@ -552,7 +585,7 @@
                               \end{itemize}
                         \item La stazione A riscontra il segmento SYN di B con un ACK
                     \end{itemize}
-                    Questa procedura apre due canali monodirezionali, che visti come un'unica entità risultano un unico canale monodirezionale.\\
+                    Questa procedura apre due canali monodirezionali, che visti come un'unica entità risultano un unico canale bidirezionale.\\
                     I segmenti SYN, ACK, dati, ecc. sono particolari, i loro campi dell'header assumono valori particolari
                     \begin{itemize}
                         \item Un segmento SYN è un segmento vuoto, possiede solo l'header ed il suo flag \textit{SYN} è posto a 1
@@ -721,7 +754,7 @@
 
 \newpage                
     \section{Livello di Rete}
-        La funzione chiave del \textbf{Livello di Rete} è il \textbf{routing}, ovvero la determinazione del percorso che dovranno seguire i datagrammi dalla sorgente alla destinazione. Altra funzione fondamentale è il \textbf{forwarding} che trasferisce i pacchetti da una porta di input ad una porta di output appropriata. Entrambe queste funzioni si basano sull'\textit{addressing}.\\
+        La funzione chiave del \textbf{Livello di Rete} è il \textbf{routing}, ovvero la determinazione del percorso che dovranno seguire i datagrammi dalla sorgente alla destinazione. Altra funzione fondamentale è il \textbf{forwarding} che trasferisce i pacchetti da una porta di input ad un'appropriata porta di output. Entrambe queste funzioni si basano sull'\textit{addressing}.\\
         Tutte queste operazioni si basano sul funzionamento del \textbf{router}, le cui principali sono
         \begin{itemize}
             \item Eseguire algoritmi e protocolli di routing (RIP, OSPF, BGP)
@@ -739,7 +772,8 @@
                 La commutazione tra porte avveniva attraverso un bus condiviso. La velocità di commutazione era data dalla velocità del bus.
 
             \subsubsection{Commutazione con rete interconnessa}
-                Sfrutta le \textit{Reti di Banyan}, ossia reti di interconnessione sviluppate per connettere \textit{processori in architetture multiprocessore}. I datagrammi vengono frammentati in celle di lunghezza fissa, commutate successivamente in matrici ottimizzate.
+                Sfrutta le \textit{Reti di Banyan}, ossia reti di interconnessione sviluppate per connettere \textit{processori in architetture multiprocessore}. I datagrammi vengono frammentati in celle di lunghezza fissa, commutate successivamente in matrici ottimizzate.\\
+                Consiste in \textit{2n} bus che collegano \textit{n} porte di input a \textit{n} porte di output.
 
         \subsection{Porte di Output}
             Due concetti
@@ -858,7 +892,7 @@
                         \item \textbf{Indirizzo di Rete (Suffisso a 0)}: Indica il solo prefisso di una rete, identifica quindi le rete nel complesso. Non deve mai comparire come indirizzo di destinazione di un datagramma.
                         \item \textbf{Directed Broadcast (Suffisso a 1)}: Semplifica il broadcasting, il datagramma con questo indirizzo di destinazione viaggia su Internet fino a raggiungere la rete indicata dal prefisso per poi essere consegnato a tutti gli host della stessa.
                         \item \textbf{Limited Broadcast (Tutti i bit a 1)}: Il datagramma con questo indirizzo come destinazione verrà consegnato a tutti gli host della rete dell'host che ha generato il datagramma. Utilizzato durante lo \textit{startup del sistema}, quando l'host non conosce ancora l'indirizzo di rete.
-                        \item \textbf{This Host (Tutti i bit a 0)}: Durante il boot un host non può ancora indicare un indirizzo sorgente corretto in quanto non lo possiede ancora. A tale scopo questo indirizzo indica "This Host", ossia indica lo stesso host che ha generato il datagramma. Non valido come "\textit{Destination IP Address}" di un datagramma.
+                        \item \textbf{This Host (Tutti i bit a 0)}: Durante il boot un host non può ancora indicare un indirizzo sorgente corretto in quanto non lo possiede ancora. A tale scopo questo indirizzo indica "This Host", ossia indica lo stesso host che ha generato il datagramma. Non valido come "\textit{Destination IP Address}" di un datagramma. Utilizzato in fase di startup per dialogare con i \textit{server DHCP}.
                         \item \textbf{Loopback (127.0.0.0/8)} Utilizzato per testing, invece che far girare due programmi su host separati il programmatore utilizza un solo host per entrambi ed utilizza quest'indirizzo per farli comunicare. Il suffisso è irrilevante (solitamente si utilizza 127.0.0.1). Di fatto non viene trasmesso alcun datagramma in quanto come viene inviato esso torna a se stesso. 
                     \end{itemize}
 
@@ -912,12 +946,11 @@
             \\
             Quando un host si accende
             \begin{itemize}
-                \item Invia in \textit{broadcast} una \textbf{DHCP-Request}
-                \item Il server risponde con una \textbf{DHCP-Response}
-                      \begin{itemize}
-                          \item DHCP chiama "\textit{offerta}" il messaggio inviato dal server
-                          \item Si dice, infatti, che il server stia \textit{offrendo} un indirizzo al client
-                      \end{itemize}
+                \item Invia in \textit{broadcast} una \textbf{DHCP discover} utilizzando UDP attraverso la \textit{porta 67}. In questo messaggio l'indirizzo sorgente sarà \textit{0.0.0.0}
+                \item Il server DHCP risponde con una \textbf{DHCP offer} in \textit{broadcast} su tutta la sottorete. Dato che il discover è stato mandato in broadcast, è molto probabile che l'host sorgente riceva più \textit{offers}.
+                \item Il client, dopo aver scelto "\textit{l'offerta più conveniente}", risponderà al server DHCP con una \textbf{DHCP request}, contenete i parametri di configurazione.
+                \item Il server risponde con un \textbf{DHCP ACK} confermando i parametri. 
+                      
             \end{itemize}
             Si può configurare DHCP per fornire due tipi di indirizzi
             \begin{itemize}
@@ -927,8 +960,8 @@
             Come regola generale, gli indirizzi permanenti si assegnano a server mentre quelli dinamici ad host generici (assegnati solo per un tempo predeterminato, "\textbf{lease}").\\
             Quando il periodo di lease scade il server considera come libero quell'indirizzo, l'host può quindi rinunciarvi o rinegoziare con il server un'estensione del periodo di lease (solitamente approvate). Questo non vuol dire che DHCP non possa essere configurato per \textit{negare} sempre le suddette richieste.\\
             \\
-            In caso di perdita o duplicazione di pacchetti DHCP non vi è alcun errore, se un host non riceve \textit{Response} re-invia la \textit{request}, se invece riceve duplicati li ignora.\\
-            Quando un host trova un server DHCP lo memorizza per utilizzi futuri. Non è possibile che due \textit{DHCP-Request} arrivino in contemporanea.
+            In caso di perdita o duplicazione di pacchetti DHCP non vi è alcun errore, se un host non riceve \textit{response} re-invia la \textit{request}, se invece riceve duplicati li ignora.\\
+            Quando un host trova un server DHCP lo memorizza per utilizzi futuri. Non è possibile che due \textit{DHCP request} arrivino in contemporanea.
             
             \subsubsection{Formato dei messaggi}
                 \begin{figure}[H]
@@ -1082,7 +1115,7 @@
 \newpage                        
     \section{Livello Data-Link}
         L'obiettivo del livello \textbf{Data-Link} è quello di fornire al livello di Rete una connessione il più possibile affidabile tra due macchine adiacenti.\\
-        Per \textit{Macchine Adiacenti} si intende connesse da un canale di comunicazione, sia esso fisico o wireless. Condizione necessaria è però che questo canale sia quello che possiamo definire "\textit{tubo digitale}", ossia che l'ordine dei bit venga rispettato e quindi essi arrivino a destinazione come sono stati inviati.
+        Per \textit{Macchine Adiacenti} si intende connesse da un canale di comunicazione, sia esso fisico o wireless. Condizione necessaria è però che questo canale sia quella che possiamo definire una "\textit{pipe digitale}", ossia che l'ordine dei bit venga rispettato e quindi essi arrivino a destinazione come sono stati inviati.
 
         \subsection{Tipologia di servizi offerti al livello superiore}
             \begin{itemize}
@@ -1143,8 +1176,7 @@
                 \item Limitare la quantità di informazione inviata in base a quanta ne è ancora in grado di gestire la destinazione
             \end{itemize}
             Nelle reti \textbf{TCP/IP} il controllo di flusso e di recupero errori è affidato ai livelli superiori
-    
-\newpage            
+         
     \section{Il sotto-livello MAC}
         Il mezzo fisico, con cui il \textit{Livello Data-Link} si interfaccia, è collegato anch'esso tramite un mezzo fisico. Questo può essere:
         \begin{itemize}
@@ -1209,6 +1241,12 @@
             \subsubsection{Slotted ALOHA}
                 Proposto nel 1972 da Roberts per duplicare la capacità di Pure ALOHA.\\
                 L'algoritmo si basa sulla divisione del tempo in intervalli discreti. La differenza sta proprio in questo, infatti esso si comporta come il Pure ALOHA ma una trama può essere inviata solo ad intervalli di tempo definiti, è dunque necessario che vi sia sincronizzazione tra due stazioni.\\
+                Nella pratica segue quest'algoritmo:
+                \begin{itemize}
+                    \item Quando un nodo ha una trama da spedire aspetta l'inizio dell'intervallo di tempo successivo, per poi inviarla per intero
+                    \item Se non avvengono collisioni, l'operazione ha avuto successo
+                    \item Se invece si verifica una collisione, il nodo la rileva prima della fine dello slot e ritrrasmette con probabilità \textit{p} negli slot successivi fino a che non avrà successo, con $ p \in [0,1] $
+                \end{itemize}
                 Di conseguenza il \textbf{Periodio di Vulnerabilità} è T (\textit{Tempo di Trama}).
 
             \subsubsection{Carrier Sense Multiple Access (CSMA)}
@@ -1545,13 +1583,13 @@
 
                 \subsubsubsection{RTS/CTS}
                     Con lo scopo di risolvere questi problemi sono stati introdotti \textit{RTS} e \textit{CTS}.
-                    La sorgente, dopo aver percepito il canale libero per un intervallo di tempo pari a DIFS, invia una trama \textit{RTS}, a cui il ricevente risponderà con una trama \textit{CTS} dopo in intervallo SIFS. A questo punto i dati possono essere trasmessi.
+                    La sorgente, dopo aver percepito il canale libero per un intervallo di tempo pari a DIFS, invia in broadcast una trama \textit{RTS}, la stazione che si vedrà come destinatario risponderà con una trama \textit{CTS} dopo un intervallo SIFS. A questo punto i dati possono essere trasmessi.
                     Vediamo dunque, dopo questa introduzione, come vengono risolti i problemi del Terminale Nascosto ed Esposto
 
                     \paragraph{Problema del Terminale Nascosto}
                         \begin{itemize}
-                            \item A invia una trama RTS a B
-                            \item B invia, come risposta, una trama CTS in broadcast
+                            \item A invia una trama RTS in broadcast
+                            \item B invia, come risposta, una trama CTS, a sua volta in broadcast
                             \item A e C ricevono la trama CTS
                             \item C, sapendo che verranno inviati dei dati a B, evita di trasmettere
                             \item A può inviare dati a B senza preoccuparsi di possibili collisioni 
@@ -1561,11 +1599,11 @@
                             \includegraphics[width=\textwidth]{pic/nascosto_cts_rts.png}
                             \label{Soluzione al Terminale Nascosto con RTS/CTS}
                         \end{figure}
-                        Al fine di mettere a conoscenza le altre stazioni del tempo per cui intende trasmettere, A include la lunghezza della trasmissione nella trama RTS. Quest'informazione verrà poi inclusa anche nella trama CTS da B, in modo che tutte le stazioni che riceveranno la CTS sapranno per quanto dovranno attendere. 
+                        Al fine di mettere a conoscenza le altre stazioni del tempo per cui intende trasmettere, A include la lunghezza della trasmissione nella trama RTS. Quest'informazione verrà poi inclusa anche nella trama CTS da B, in modo che tutte le stazioni che riceveranno la CTS sapranno per quanto dovranno attendere. La trama \textit{DATA} verrà quindi inviata solo dopo aver "prenotato" il canale.
 
                     \paragraph{Problema del Terminale Esposto}
                         \begin{itemize}
-                            \item B invia una trama RTS ad A, questa verrà dunque percepita anche da C
+                            \item B invia una trama RTS in broadcast, questa verrà dunque percepita da A e da C
                             \item A risponde a B con una trama CTS, che non verrà però sentita da da C, in quanto fuori range
                             \item C assume quindi di non essere raggiungibile, quindi procede con la trasmissione a D
                         \end{itemize}
