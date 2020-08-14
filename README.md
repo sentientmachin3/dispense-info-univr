@@ -19,9 +19,9 @@ Bioinfo, non disperate, qualcuno ha pensato anche a voi [qua](https://materialeb
 - Architettura degli Elaboratori (In progress)
 - Fisica 2
 - Algebra Lineare
-- Analisi 2
-- Sistemi
-- Reti di Calcolatori
+- Analisi 2 (Come risolvere gli esercizi)
+- Sistemi (Teoria + Esercizi)
+- Reti di Calcolatori (Teoria)
 
 #### MAGISTRALE
 - Linguaggi (Con schema delle regole di inferenza)
