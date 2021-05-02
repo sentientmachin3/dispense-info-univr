@@ -1,4 +1,7 @@
 # Dispense Informatica Univr
+
+CERCASI QUALCUNO CHE ABBIA VOGLIA DI CONTINUARE A MANTENERE LA REPO.
+
 Collezione di codice LaTex di dispense scritte per alcuni corsi della Laurea in Informatica dell'Università di Verona.
 Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman@hotmail.it`. 
 
