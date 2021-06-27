@@ -923,28 +923,29 @@
                 \]
                 \textit{dove $ S_e $ è l'insieme degli agenti che utilizzano l'arco $ e $ e $ w_i $ è il peso di ogni agente (fino ad ora abbiamo considerato $ w_i = 1 $), si dimostri che esiste almeno un PNE per ogni Atomic Selfish Routing Network.}\\
                 \\
-                Prendiamo la \textit{Rete di Pigou} per comodità, dato che abbiamo visto essere caso pessimo per il Selfish Routing.\\
-                \begin{figure}[htb]\hspace*{\fill}%
-                    \begin{tikzpicture}
-                        \node[shape=circle, draw=black] (start) {$ s $};
-                        \node[shape=circle, draw=black] (target) [right=5 of start] {$ t $};
-
-                        \path [->] (start) edge[bend left=30] node[above] {$ \sum_{i} w_i $} (target);
-                        \path [->] (start) edge[bend right=30] node[below] {$ x $} (target);
-                    \end{tikzpicture}\hspace*{\fill}
-                \end{figure}\\
-                ovvero ho un costo fisso \underline{per agente} se utilizzo $ u $ mentre posso condividere il costo utilizzando $ l $.\\
-                Da questo nel mio flusso avrò $ C(f_u) = \sum_{i \in S_u} w_i \cdot c_u(w_i) $. Inoltre, la nostra $ \varPhi $ somma il costo del flusso per l'arco se questo viene utilizzato (quindi se $ f_e > 0 $).\\
-                Tramite Best-Response Dynamics posso raggiungere PNE facendo convergere $ \varPhi $. Nello specifico trovando
+                Applichiamo delle trasformazioni a $ \varPhi(f) $ per portarla in una notazione più comoda ai fini della dimostrazione
                 \[
-                    \argmin_{f}\; \varPhi(f)    
+                    \begin{aligned}
+                        \varPhi(f) &= \sum_{e \in E}\Bigg( f_e \cdot c_e(f_e) + \sum_{i \in S_e} w_i \cdot c_e(w_i) \Bigg) \\
+                        &= \sum_{i = 1}^{k} w_i \cdot \sum_{e \in P_i} c_e(f_e) + \sum_{e \in E} \sum_{i \in S_e} w_i \cdot c_e(w_i)
+                    \end{aligned}    
                 \]
-                ovvero il flusso che la minimizza il costo.\\
-                Ipotizziamo, come nell'esercizio precedente, di avere due agenti che intendono utilizzare la rete. Ragioniamo ora per casi:
-                \begin{enumerate}
-                    \item Se viene utilizzato solo l'arco $ u $ ogni agente è incentivato a cambiare (fissando la strategia dell'altro) in quanto ridurrebbe il suo costo. Questo vale anche per $ w_i = 1 $ per ogni $ i $.
-                    \item Se viene utilizzato solo $ l $ nessuno ha incentivo nel cambiare, dato che un cambio unilaterale di strategia lascerebbe invariato il costo dell'agente deviante.
-                    \item Se ogni agente utilizza un arco diverso si ha il flusso di costo minimo, in cui l'agente su $ l $ può solo aumentare il suo costo mentre quello in $ u $ lo lascerebbe invatiato.
-                \end{enumerate}
-                Abbiamo quindi dimostrato che, attraverso la minimizzazione di $ \varPhi $ (ottenuta trovando il flusso di costo minimo), abbiamo individuato 2 PNE (\textit{2.} e \textit{3.}).
+                Rifacciamoci ora alla definizione di PNE e definiamo con $ \hat{f} $ il flusso su cui devio.\\
+                Definiamo la differenza nella funzione potenziale $ \varPhi $ indotta da questa deviazione come
+                \[
+                    \begin{aligned}
+                        \varPhi(\hat{f}) - \varPhi(f) &= \sum_{i = 1}^{k} w_i\sum_{e \in \hat{P_i}} c_e(\hat{f_e}) + \sum_{e \in E} \sum_{i \in S_e} w_i c_e(w_i) - \sum_{i = 1}^{k} w_i \sum_{e \in P_i} c_e(f_e) + \sum_{e \in E} \sum_{i \in S_e} w_i c_e(w_i) \\
+                        &= \sum_{i = 1}^{k} w_i \cdot \sum_{e \in \hat{P_i}} c_e(\hat{f_e}) - \sum_{i = 1}^{k} w_i \cdot \sum_{e \in P_i} c_e(f_e) \\
+                        &= r \cdot \Bigg( \sum_{e \in \hat{P_i}} c_e(\hat{f_e}) - \sum_{e \in P_i} c_e(f_e) \Bigg)
+                    \end{aligned}
+                \]
+                È possibile vedere come, mantenendo per comodità le trasformazioni appena applicate, che la parte sinistra corrisponde all'aumento di un agente sugli archi del cammino, quindi
+                \[
+                    r \cdot \Bigg( \sum_{e \in \hat{P_i}} c_e(f_e + 1) - \sum_{e \in P_i} c_e(f_e) \Bigg)    
+                \]
+                Da questo, prendendo $ f $ tale che
+                \[
+                    f = \argmin_{f}\; \varPhi(f)    
+                \]
+                si può vedere che nessuna variazione di strategia unilaterale può ridurre ulteriormente $ \varPhi $. Quindi $ f $ è PNE.
 \end{document}
