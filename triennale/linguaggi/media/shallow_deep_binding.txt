@@ -1,0 +1,22 @@
+Ambiente Globale:
+{
+	int x = 4; //Usata in f con scope statico
+	int z = 0;
+
+	int f(int y)
+	{
+		return x*y;
+	}
+
+	int g(int h(int n))
+	{
+		int x = 7; //Usata in f con scope dinamico Shallow Binding
+		z = h(3) + x;
+	} 
+
+	Ambiente Main:
+	{
+		int x = 5; //Usata in f con scope dinamico Deep Binding
+		g(f);
+	}
+{
