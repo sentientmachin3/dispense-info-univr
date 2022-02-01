@@ -28,7 +28,7 @@ Bioinfo, non disperate, qualcuno ha pensato anche a voi [qua](https://materialeb
 
 #### MAGISTRALE
 - Linguaggi (Con schema delle regole di inferenza)
-- Analisi di Sistemi Informatici
+- Fondamenti di Analisi e Verifica del Software (*Incompleto*)
 - Progettazione di sistemi embedded
 - Sistemi Dinamici
 - Sistemi ad Eventi Discreti (Incompleta)
@@ -38,5 +38,6 @@ Bioinfo, non disperate, qualcuno ha pensato anche a voi [qua](https://materialeb
 - Crittografia (In progress)
 - Sicurezza delle Reti
 - Verifica Automatica di Sistemi (domande di teoria)
+- Teoria Computazionale dei Giochi (Set di Esercizi)
 
 Make TeX, not Word.
