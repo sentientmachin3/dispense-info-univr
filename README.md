@@ -1,14 +1,17 @@
 # Dispense Informatica Univr
 
-CERCASI QUALCUNO CHE ABBIA VOGLIA DI CONTINUARE A MANTENERE LA REPO.
+CERCASI CONTRIBUTORS.
 
-Collezione di codice LaTex di dispense scritte per alcuni corsi della Laurea in Informatica dell'Università di Verona.
-Per contribuire scrivere a `davideb1912@gmail.com`oppure a `matteodanziguitarman@hotmail.it`. 
+Collezione di appunti LaTex per alcuni dei corsi della Laurea in Informatica dell'Università di Verona.
 
-Bioinfo, non disperate, qualcuno ha pensato anche a voi [qua](https://materialebioinfounivr.wordpress.com/)
+## Contribuzioni
+Aprite una pull request che sono li per quello, qualcuno la guarderá.
 
-## Corsi inclusi nelle dispense
-#### TRIENNALE:
+## Bioinformatica
+Non disperate, qualcuno ha pensato anche a voi [qua](https://materialebioinfounivr.wordpress.com/)
+
+## Corsi inclusi
+#### Triennale:
 - Basi di Dati (Teoria)
 - Basi di Dati (Laboratorio)
 - Grafica al calcolatore (In progress)
@@ -26,7 +29,7 @@ Bioinfo, non disperate, qualcuno ha pensato anche a voi [qua](https://materialeb
 - Sistemi (Teoria + Esercizi)
 - Reti di Calcolatori (Teoria)
 
-#### MAGISTRALE
+#### Magistrale
 - Linguaggi (Con schema delle regole di inferenza)
 - Fondamenti di Analisi e Verifica del Software (*Incompleto*)
 - Progettazione di sistemi embedded
