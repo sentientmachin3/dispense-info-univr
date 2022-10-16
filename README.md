@@ -5,13 +5,19 @@ CERCASI CONTRIBUTORS.
 Collezione di appunti LaTex per alcuni dei corsi della Laurea in Informatica dell'Università di Verona.
 
 ## Contribuzioni
+
+Per compilare i sorgenti usare lo script `build.py` (non ci sono dipendenze, solo `python3`).
+
 Aprite una pull request che sono li per quello, qualcuno la guarderá.
 
 ## Bioinformatica
+
 Non disperate, qualcuno ha pensato anche a voi [qua](https://materialebioinfounivr.wordpress.com/)
 
 ## Corsi inclusi
+
 #### Triennale:
+
 - Basi di Dati (Teoria)
 - Basi di Dati (Laboratorio)
 - Grafica al calcolatore (In progress)
@@ -30,8 +36,9 @@ Non disperate, qualcuno ha pensato anche a voi [qua](https://materialebioinfouni
 - Reti di Calcolatori (Teoria)
 
 #### Magistrale
+
 - Linguaggi (Con schema delle regole di inferenza)
-- Fondamenti di Analisi e Verifica del Software (*Incompleto*)
+- Fondamenti di Analisi e Verifica del Software (_Incompleto_)
 - Progettazione di sistemi embedded
 - Sistemi Dinamici
 - Sistemi ad Eventi Discreti (Incompleta)
