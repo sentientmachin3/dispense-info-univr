@@ -224,3 +224,6 @@ TSWLatexianTemp*
 *-frn.pdf
 .DS_Store
 build/
+
+!magistrale/progettazione-di-sistemi-embedded/img/*
+!triennale/basi-di-dati-teoria/Esercitazione.pdf
