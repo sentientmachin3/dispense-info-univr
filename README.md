@@ -8,7 +8,7 @@ Collezione di appunti LaTex per alcuni dei corsi della Laurea in Informatica del
 Aprite una pull request che sono li per quello, qualcuno la guarderá.
 
 ## Bioinformatica
-Non disperate, qualcuno ha pensato anche a voi [qua](https://materialebioinfounivr.wordpress.com/)
+Non disperate, qualcuno ha pensato anche a voi [qua](https://t.me/+D2Nrqv7zvXw5MTc8)
 
 ## Corsi inclusi
 #### Triennale:
