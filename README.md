@@ -4,6 +4,8 @@ CERCASI CONTRIBUTORS.
 
 Collezione di appunti LaTex per alcuni dei corsi della Laurea in Informatica dell'Università di Verona.
 
+Se cercate qualcosa di relativo a `git`, sto riscrivendo (la mia vecchia dispensa)[https://github.com/sentientmachin3/git-guide]
+
 ## Contribuzioni
 Aprite una pull request che sono li per quello, qualcuno la guarderá.
 
